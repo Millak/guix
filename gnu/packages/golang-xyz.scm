@@ -6398,17 +6398,16 @@ package provides an API for comparing Golden files.")
 (define-public go-github-com-charmbracelet-x-term
   (package
     (name "go-github-com-charmbracelet-x-term")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch/lfs)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/x")
-             (commit (go-version->git-ref version
-                                          #:subdir "term"))))
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version #:subdir "term"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1shw55110fnn4xz80wmgr18czmiil6z1j064m90iw8c7j9llfzn5"))
+        (base32 "0gah6pnr4l7ap99haiqmn33csh4zqsls176nih2pn6hxm6089fij"))
        (modules '((guix build utils)))
        (snippet
         #~(begin (delete-all-but "." "term")))))
@@ -6417,8 +6416,8 @@ package provides an API for comparing Golden files.")
      (list
       #:import-path "github.com/charmbracelet/x/term"
       #:unpack-path "github.com/charmbracelet/x"))
-    (propagated-inputs (list go-github-com-rivo-uniseg
-                             go-golang-org-x-sys))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/charmbracelet/x")
     (synopsis "Terminal utilities and helpers")
     (description
