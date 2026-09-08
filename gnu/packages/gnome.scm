@@ -13781,17 +13781,28 @@ Document Analysis and Recognition program.")
                (base32
                 "074j59bz5zgnb7grw3clpwyxickw9268k6fj0980bw8gdxxvfayh"))))
     (build-system meson-build-system)
+    (outputs (list "doc" "out"))
     (arguments
      (list
+      #:configure-flags
+      #~(list "-Ddocumentation=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Tests require a running X server.
               (system "Xvfb :1 &")
-              (setenv "DISPLAY" ":1"))))))
+              (setenv "DISPLAY" ":1")))
+          (add-after 'install 'move-html-doc
+            (lambda _
+              (for-each mkdir-p
+                        (list (string-append #$output:doc "/share/doc")))
+              (rename-file
+               (string-append #$output "/share/doc")
+               (string-append #$output:doc "/share/doc")))))))
     (native-inputs
      (list gettext-minimal
+           gi-docgen
            `(,glib "bin")
            gobject-introspection
            gtk-doc/stable
