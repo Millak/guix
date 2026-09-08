@@ -3165,7 +3165,7 @@ S3 concurrently.  Helpful for when working with large objects.")
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager")
-    (version "0.1.22")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -3175,7 +3175,7 @@ S3 concurrently.  Helpful for when working with large objects.")
                                            #:subdir "feature/s3/transfermanager"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lf7jp1bbrnil1grkdqhhy5bssz82g03np2hpffadqjjpg9780w5"))
+        (base32 "03manwhrbmhzvlma616jyr18cjj1hdphhw7nb9b9z56cfy2q9919"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -3189,9 +3189,16 @@ S3 concurrently.  Helpful for when working with large objects.")
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
-           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
            go-github-com-aws-aws-sdk-go-v2-internal-configsources
            go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-aws-sdk-go-v2-service-signin
+           go-github-com-aws-aws-sdk-go-v2-service-sso
+           go-github-com-aws-aws-sdk-go-v2-service-ssooidc
+           go-github-com-aws-aws-sdk-go-v2-service-sts
            go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2 - S3 transfer manager module")
