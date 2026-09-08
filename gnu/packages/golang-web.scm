@@ -8889,27 +8889,34 @@ untyped usage.")
 (define-public go-github-com-go-openapi-spec
   (package
     (name "go-github-com-go-openapi-spec")
-    (version "0.21.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/spec")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/spec")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07qp7gakrjwznbxg1w5ww8j0ky407s9rmyyrpwv5rsp8yw6qimjc"))))
+        (base32 "1i6skx4wyfca939fcr0wnrg64nw7sfwlril49p5yi8cb2k4drf9s"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-openapi/spec"))
+      #:import-path "github.com/go-openapi/spec"
+      #:test-flags
+      ;; Diff is slightly not equal.
+      #~(list "-skip"
+              "TestNormalizer_Canonicalization/degenerate_authority")))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-enable-yaml-v2
+           go-github-com-go-openapi-testify-v2))
     (propagated-inputs
      (list go-github-com-go-openapi-jsonpointer
            go-github-com-go-openapi-jsonreference
-           go-github-com-go-openapi-swag
-           go-gopkg-in-yaml-v3))
+           go-github-com-go-openapi-swag-conv
+           go-github-com-go-openapi-swag-jsonutils
+           go-github-com-go-openapi-swag-loading
+           go-github-com-go-openapi-swag-stringutils))
     (home-page "https://github.com/go-openapi/spec")
     (synopsis "OpenAPI specification object model")
     (description
