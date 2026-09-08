@@ -45,7 +45,8 @@
  (version 0)
  (entry (commit "e788997691c524755f64fa853abf6ac2c36d8107")
         (title
-         (en "Deprecation changes in ``mpd-configuration''"))
+         (en "Deprecation changes in ``mpd-configuration''")
+         (pt "Mudanças depreciatórias em ``mpd-configuration''"))
         (body
          (en "The deprecated ``music-dir'', ``playlist-dir'', and ``address''
 fields in ``mpd-configuration'' have been removed.  Configurations still using
@@ -58,7 +59,21 @@ deprecation warning.  Group membership may be controlled by supplying a
 user-account in the ``user'' field.  Use of the ``group'' configuration option
 @url{https://mpd.readthedocs.io/en/stable/mpd.conf.5.html#confval-group, is
 strongly discouraged by upstream}, however, it may still be set in
-``extra-options'' if needed.")))
+``extra-options'' if needed.")
+         (pt "Os campos depreciados ``music-dir'', ``playlist-dir'' e
+``address'' de ``mpd-configuration'' foram removidos.  Configurações que ainda
+estejam usando aqueles campos precisarão mudar para os campos
+``music-directory'', ``playlist-directory'' e ``endpoints'' em vez daqueles.
+
+O campo ``group'' agora está deprecado e não mais serializa para o arquivo de
+configuração.  Acaso este campo seja usado em uam configuração, uma mensagem
+de depreciação será emitida.  Membresia de grupo pode ser controlada
+fornecendo uma conta de usuário no campo ``user''.  O uso da opção de
+configuração ``group''
+@url{https://mpd.readthedocs.io/en/stable/mpd.conf.5.html#confval-group, é
+desencorajado pelo fornecedor}, porém, ela ainda pode ser usada em
+``extra-options'' se necessário.")))
+
  (entry (commit "9a18a7e9e06ad01badbb799d0cf671a0be32b85a")
         (title
          (en "Linux-libre 7.1 is deprecated")
