@@ -9155,16 +9155,16 @@ go-swagger projects.")
 (define-public go-github-com-go-openapi-validate
   (package
     (name "go-github-com-go-openapi-validate")
-    (version "0.24.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/validate")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/validate")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04inl03ha8sqqn1ccslbsl68shzf53qqk4yi88kvis0qdhcpl9fk"))))
+        (base32 "1gw6h3m136xn4h1f85b75s0w6213w6fky6nikcpdhaip1lpqn4xn"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -9179,20 +9179,23 @@ go-swagger projects.")
                 (for-each delete-file
                           (list "benchmark_test.go"
                                 "example_validator_test.go"
-                                "doc_test.go"))))))
-      #:test-flags #~(list "-vet=off")))
+                                "doc_test.go"))))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-v2))
     (propagated-inputs
-     (list go-github-com-davecgh-go-spew
-           go-github-com-go-openapi-analysis
+     (list go-github-com-go-openapi-analysis
            go-github-com-go-openapi-errors
            go-github-com-go-openapi-jsonpointer
            go-github-com-go-openapi-loads
            go-github-com-go-openapi-spec
            go-github-com-go-openapi-strfmt
-           go-github-com-go-openapi-swag
-           go-gopkg-in-yaml-v3))
+           go-github-com-go-openapi-swag-conv
+           go-github-com-go-openapi-swag-fileutils
+           go-github-com-go-openapi-swag-jsonutils
+           go-github-com-go-openapi-swag-loading
+           go-github-com-go-openapi-swag-pools
+           go-github-com-go-openapi-swag-stringutils
+           go-go-yaml-in-yaml-v3))
     (home-page "https://github.com/go-openapi/validate")
     (synopsis "OpenAPI toolkit validation helpers")
     (description
