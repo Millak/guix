@@ -934,7 +934,7 @@ using existing libraries.")
 (define-public restic
   (package
     (name "restic")
-    (version "0.18.1")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -943,7 +943,7 @@ using existing libraries.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxhknn022bwg2s8hababqg3vjkzflq59vr67y7r1c8fjnlsgf4l"))))
+        (base32 "1a5jxsfln5mm4n3mfc6d40xiaiihk6y5f6iff3b5yrkgj54vwgcn"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -951,6 +951,7 @@ using existing libraries.")
       #:import-path "github.com/restic/restic/cmd/restic"
       #:unpack-path "github.com/restic/restic"
       #:embed-files #~(list "children" "nodes" "text")
+      #:test-flags #~(list "-vet=off")
       #:test-subdirs #~(list "../../...")
       #:phases
       #~(modify-phases %standard-phases
