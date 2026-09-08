@@ -2652,9 +2652,6 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
                    license:expat        ;dwm, sway, wlroots
                    license:cc0))))      ;tinywl
 
-(define-deprecated-package mangowc
-  mangowm)
-
 (define-public niri
   (package
    (name "niri")
