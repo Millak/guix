@@ -2398,11 +2398,6 @@ Changes over @code{nose}:
 @end itemize")
     (license license:lgpl2.0)))
 
-;; XXX: Deprecated on <2026-01-26>.
-;;; This package is unmaintained (see the note at the top of doc/index.rst).
-;;; Pynose is actively maintained successor of Nose tests runner.
-(define-deprecated-package python-nose python-pynose)
-
 (define-public python-pytest-aiohttp
   (package
     (name "python-pytest-aiohttp")

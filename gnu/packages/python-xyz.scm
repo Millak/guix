@@ -17510,11 +17510,6 @@ file (e.g. @file{PKG-INFO}).")
 use of the Meson build system.")
     (license license:expat)))
 
-;; XXX: Deprecated on <2026-01-26>.
-(define-deprecated/public-alias python-meson-python python-meson)
-;;; Deprecated on 2026-03-02.
-(define-deprecated-package meson-python python-meson)
-
 (define-public python-mfusepy
   (package
     (name "python-mfusepy")
@@ -30258,10 +30253,6 @@ what you expect in your tests.")
     (native-inputs (list python-setuptools which))
     (properties '((hidden? . #t)))))
 
-;; XXX: Deprecated on <2026-01-21>.
-(define-deprecated/public-alias python-dbusmock-minimal
-  python-dbusmock-for-tests)
-
 (define-public python-jsonplus
   (package
     (name "python-jsonplus")
@@ -42683,10 +42674,6 @@ Specification, to save you from duplicating the same snippet of logic in every
 Python utility you write that deals with user cache, configuration, or data
 files.")
     (license license:isc)))
-
-;; XXX: Deprecated on <2026-02-19>.
-(define-deprecated-package python-xdg
-  python-xdg-base-dirs)
 
 (define-public python-xkbcommon
   (package

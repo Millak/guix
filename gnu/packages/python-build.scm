@@ -1277,9 +1277,6 @@ Six supports every Python version since 2.5.  It is contained in only one
 Python file, so it can be easily copied into your project.")
     (license license:x11)))
 
-;; XXX: Deprecated on <2026-01-23>.
-(define-deprecated/public-alias python-six-bootstrap python-six)
-
 (define-public python-editables
   (package
     (name "python-editables")

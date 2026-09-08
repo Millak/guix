@@ -13841,9 +13841,6 @@ parameters may be omitted, in which case the @code{@@ARGV} array will be used
 to provide input parameters as described in the @samp{perltidy(1)} man page.")
     (license license:gpl2+)))
 
-;; Deprecated on 2025-11-20.
-(define-deprecated-package perltidy perl-tidy)
-
 (define-public perl-tie-cycle
   (package
     (name "perl-tie-cycle")

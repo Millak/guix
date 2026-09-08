@@ -73,9 +73,6 @@ you tailor the wrapping process to suit your application.")
     ;; See http://www.swig.org/Release/LICENSE for details.
     (license gpl3+)))
 
-;; XXX: Deprecated on <2026-02-27>.
-(define-public swig swig-4.0)
-
 (define-public swig-4.4
   (package
     (inherit swig-4.0)
@@ -97,6 +94,3 @@ you tailor the wrapping process to suit your application.")
                          guile-3.0
                          perl))
     (inputs (list pcre2))))
-
-;; XXX: Deprecated on <2026-02-27>.
-(define-deprecated/public-alias swig-next swig-4.4)

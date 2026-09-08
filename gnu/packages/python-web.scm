@@ -6432,9 +6432,6 @@ for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
     (license license:asl2.0)))
 
-;; XXX: Deprecated on <2026-01-23>.
-(define-deprecated-package python-tornado-6 python-tornado)
-
 (define-public python-tornado-http-auth
   (package
     (name "python-tornado-http-auth")
