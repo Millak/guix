@@ -708,6 +708,11 @@ requested using POOL."
     (if (valid-path? store store-path)
         (values `((content-type . (application/x-nix-archive
                                    (charset . "ISO-8859-1")))
+
+                  ;; Since the size is unknown, 'Content-Length' cannot be
+                  ;; provided so we have to fall back to chunked encoding.
+                  (transfer-encoding . ((chunked)))
+
                   (x-nar-compression . ,compression))
                 ;; XXX: We're not returning the actual contents, deferring
                 ;; instead to 'http-write'.  This is a hack to work around
@@ -897,9 +902,8 @@ EXP..."
 according to COMPRESSION."
   (match compression
     (($ <compression> 'gzip level)
-     ;; Note: We cannot used chunked encoding here because
-     ;; 'make-gzip-output-port' wants a file port.
-     (make-gzip-output-port port
+     (make-zlib-output-port port
+                            #:format 'gzip
                             #:level level
                             #:buffer-size %default-buffer-size))
     (($ <compression> 'lzip level)
@@ -950,6 +954,10 @@ blocking."
     (force-output port)
     (poll-set-add! (http-poll-set server) port *events*))
 
+  (define chunk-size
+    ;; Size in bytes of chunks for chunked transfer encoding.
+    (expt 2 17))
+
   (define compression
     (assoc-ref (response-headers response) 'x-nar-compression))
 
@@ -979,8 +987,10 @@ blocking."
                                 ;; returned port.  This is needed for the
                                 ;; keep-alive mechanism.
                                 (nar-compressed-port
-                                 (duplicate-port
-                                  (response-port response) "w+0b")
+                                 (make-chunked-output-port
+                                  (response-port response)
+                                  #:keep-alive? keep-alive?
+                                  #:buffering chunk-size)
                                  compression))))
             ;; XXX: Given our ugly workaround for <http://bugs.gnu.org/21093>
             ;; in 'render-nar', BODY here is just the file name of the store

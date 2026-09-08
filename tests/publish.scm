@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2016-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022, 2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -262,15 +262,15 @@ FileSize: ~a~%"
      (let ((nar (http-get-port
                  (publish-uri
                   (string-append "/nar/gzip/" (basename %item))))))
-       (call-with-gzip-input-port nar
-         (cut restore-file <> temp)))
+       (call-with-zlib-input-port nar
+         (cut restore-file <> temp)
+         #:format 'gzip))
      (call-with-input-file temp read-string))))
 
 (test-equal "/nar/gzip/* is really gzip"
   %gzip-magic-bytes
-  ;; Since 'gzdopen' (aka. 'call-with-gzip-input-port') transparently reads
-  ;; uncompressed gzip, the test above doesn't check whether it's actually
-  ;; gzip.  This is what this test does.  See <https://bugs.gnu.org/30184>.
+  ;; Explicitly check whether it's actually gzip.
+  ;; See <https://bugs.gnu.org/30184>.
   (let ((nar (http-get-port
               (publish-uri
                (string-append "/nar/gzip/" (basename %item))))))
