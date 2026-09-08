@@ -154,7 +154,7 @@
 (define-public aws-vault
   (package
     (name "aws-vault")
-    (version "7.3.0")
+    (version "7.13.6")
     (source
      (origin
        (method git-fetch)
@@ -164,18 +164,29 @@
               ;; abandoned project.
               ;; See: <https://github.com/99designs/aws-vault/issues/1269>
               ;;      <https://github.com/99designs/aws-vault/issues/1253>
-             (url "https://github.com/ByteNess/aws-vault")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ByteNess/aws-vault")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09wa18xzvmz98dy873n2lssfpipqmdrnngyq606zyvb109ji87hs"))))
+        (base32 "04gdz8hcpbb8711729vqfacggxpa6x957daw0zjz9xahsghyxn4r"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
       #:import-path "github.com/byteness/aws-vault"
+      #:embed-files
+      #~(list ".*\\.wasm" ".*\\.wasm\\.version" "version-build")
       #:build-flags
       #~(list (string-append "-ldflags=-X main.Version=" #$version))
+      #:test-flags
+      ;; Tests try to find MFA device and fail with error:
+      ;; mfa_unix_test.go:18: unexpected error: process provider: fork/exec
+      ;; /bin/sh: no such file or directory
+      #~(list "-skip" (string-join
+                       (list "TestProcessMfaProvider_CapturesStdout"
+                             "TestProcessMfaProvider_TrimsWhitespace"
+                             "TestProcessMfaProvider_StderrNotCaptured")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'contrib
@@ -203,7 +214,7 @@
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list go-github-com-99designs-keyring
+     (list go-github-com-alecaivazis-survey-v2
            go-github-com-alecthomas-kingpin-v2
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
@@ -212,6 +223,9 @@
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
            go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-byteness-keyring
+           go-github-com-charmbracelet-huh
+           go-github-com-charmbracelet-lipgloss
            go-github-com-google-go-cmp
            go-github-com-mattn-go-isatty
            go-github-com-mattn-go-tty
