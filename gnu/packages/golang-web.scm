@@ -8927,29 +8927,35 @@ model.")
 (define-public go-github-com-go-openapi-strfmt
   (package
     (name "go-github-com-go-openapi-strfmt")
-    (version "0.23.0")
+    (version "0.27.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/strfmt")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/strfmt")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00hqmfsgknhvp7mcbxfadpv4109f9gj59223yxhvmcviqg0a6a7b"))))
+        (base32 "0z0y6aix85rx3wwyx06d3746mmjp6khkr03cjigyv4lv9m5hggnr"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "enable/mongodb")
+            (delete-file-recursively "internal/testintegration")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-openapi/strfmt"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-v2))
     (propagated-inputs
-     (list go-github-com-asaskevich-govalidator
-           go-github-com-go-openapi-errors
+     (list go-github-com-go-openapi-errors
+           go-github-com-go-viper-mapstructure-v2
            go-github-com-google-uuid
-           go-github-com-mitchellh-mapstructure
-           go-github-com-oklog-ulid
-           go-go-mongodb-org-mongo-driver))
+           go-github-com-oklog-ulid-v2
+           go-golang-org-x-net
+           go-golang-org-x-text))
     (home-page "https://github.com/go-openapi/strfmt")
     (synopsis "OpenAPI toolkit common string formats")
     (description
