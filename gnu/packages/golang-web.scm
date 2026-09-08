@@ -8677,46 +8677,33 @@ language.")
 (define-public go-github-com-go-openapi-analysis
   (package
     (name "go-github-com-go-openapi-analysis")
-    (version "0.23.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/analysis")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/analysis")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i1sn6fzjv83y31b8lky0wh08xl8yj60y04jcidzcy5gmknavyfi"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; Introduce cycle with go-github-com-go-openapi-loads.
-                 (delete-file-recursively "analysis_test")))))
+        (base32 "0cl8mmsjp8835gv80vva6dcjc770xymmd440gpizhs9khdvfwx08"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/analysis"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Tests requiring network access.
-                  (("TestFlatten_RemoteAbsolute")
-                   "OffTestFlatten_RemoteAbsolute")))))
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      ;; Network access is required.
+      #:test-flags #~(list "-skip" "TestFlatten_RemoteAbsolute")))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-v2))
     (propagated-inputs
      (list go-github-com-go-openapi-jsonpointer
            go-github-com-go-openapi-spec
            go-github-com-go-openapi-strfmt
-           go-github-com-go-openapi-swag))
+           go-github-com-go-openapi-swag-jsonutils
+           go-github-com-go-openapi-swag-loading
+           go-github-com-go-openapi-swag-mangling
+           go-golang-org-x-text))
     (home-page "https://github.com/go-openapi/analysis")
     (synopsis "OpenAPI specification object model analyzer")
     (description
