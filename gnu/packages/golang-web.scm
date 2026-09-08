@@ -16384,7 +16384,7 @@ be used as both a binary and a library.")
 (define-public go-github-com-ncw-swift-v2
   (package
     (name "go-github-com-ncw-swift-v2")
-    (version "2.0.3")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -16393,13 +16393,14 @@ be used as both a binary and a library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "058mbdgm57rm24skscpl2lklqxs46sc4c3x5770xrd3yncry0rl8"))))
+        (base32 "00mbghs7gy4r02mg1qrhcpf513gwmv2p3dws9ip14ijgl7jsjiih"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/ncw/swift/v2"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Tests requiring access with TOKEN to API endpoints.
                        (list "TestAuthenticate"
                              "TestCDNDisable"
