@@ -13975,7 +13975,7 @@ etc.).")
 (define-public go-github-com-go-openapi-swag-jsonutils
   (package
     (name "go-github-com-go-openapi-swag-jsonutils")
-    (version "0.27.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -13984,7 +13984,7 @@ etc.).")
               (commit (go-version->git-ref version #:subdir "jsonutils"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rg5q7xif4gmhc99kkgvnz03d0d0z2vanyv8xa4myn6ykvacw458"))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -14004,6 +14004,7 @@ etc.).")
            go-github-com-go-openapi-testify-v2))
     (propagated-inputs
      (list go-github-com-go-openapi-swag-conv
+           go-github-com-go-openapi-swag-pools
            go-github-com-go-openapi-swag-typeutils))
     (home-page "https://github.com/go-openapi/swag")
     (synopsis "Tools to work with JSON in Go")
