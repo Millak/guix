@@ -27548,43 +27548,39 @@ Procedure Call (RPC) framework.")
 (define-public go-storj-io-eventkit
   (package
     (name "go-storj-io-eventkit")
-    (version "0.0.0-20250410172343-61f26d3de156")
+    (properties '((commit . "6861a92e2aa585fcd75ed69f85e1127f8a412ec6")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260716074419-6861a92e2aa5")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/storj/eventkit")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/storj/eventkit")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19vliv2ksw8wi382zfd5ak5zpm3yii2ivxhq5gk90m9x0swdg157"))))
+        (base32 "08q3jwwy8gm7iqrbmwbg7cbzk6r37bfm51j0h4pqwh6z0q1d7kph"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "storj.io/eventkit"
-      #:test-subdirs
-      ;; XXX: Remove when all dependencies are packaged.
-      #~(list "."
-              "destination/..."
-              "eventkitd/private/delimited/..."
-              "eventkitd/private/protostream/..."
-              "eventkitd/private/resumablecompressed/...")))
+      #:import-path "storj.io/eventkit"))
     (native-inputs
-     ;; For CLI tools.
-     (list ;; go-github-com-elek-bubbles
-           go-github-com-charmbracelet-bubbletea
+     (list go-github-com-charmbracelet-bubbletea
+           go-cloud-google-com-go-bigquery
            go-github-com-charmbracelet-lipgloss
-           go-github-com-spf13-cobra
-           go-github-com-spf13-viper
-           go-github-com-zeebo-errs-v2))
-    (propagated-inputs
-     (list ;; go-cloud-google-com-go-bigquery ; 100+ go-cloud-google-com-*
-           go-github-com-google-gopacket
-           go-github-com-pkg-errors
-           go-github-com-spacemonkeygo-monkit-v3
+           go-github-com-elek-bubbles
            go-github-com-spf13-cobra
            go-github-com-spf13-viper
            go-github-com-stretchr-testify
+           go-github-com-zeebo-errs-v2
+           go-storj-io-common))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-github-com-pkg-errors
+           go-github-com-spacemonkeygo-monkit-v3
            go-go-uber-org-zap
            go-golang-org-x-sync
            go-google-golang-org-api
