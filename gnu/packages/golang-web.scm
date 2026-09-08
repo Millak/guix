@@ -3379,24 +3379,41 @@ AWS Key Management Service.")
 (define-public go-github-com-aws-aws-sdk-go-v2-service-s3
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-s3")
-    (version "1.96.0")
+    (version "1.111.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/aws/aws-sdk-go-v2")
-             (commit (go-version->git-ref version
-                                          #:subdir "service/s3"))))
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version #:subdir "service/s3"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01zc9wccmx2kf2n88rv4wgxv59nai5w0qc6csyzpdw8ahvwk0bmh"))))
+        (base32 "03manwhrbmhzvlma616jyr18cjj1hdphhw7nb9b9z56cfy2q9919"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "s3")
+            (delete-all-but "." "service")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/aws-sdk-go-v2/service/s3"
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (native-inputs
+     (list go-github-com-aws-aws-sdk-go-v2-config))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go))
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2 - S3 service module")
     (description
