@@ -9113,7 +9113,7 @@ file system.")
 (define-public go-github-com-go-openapi-swag-typeutils
   (package
     (name "go-github-com-go-openapi-swag-typeutils")
-    (version "0.27.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -9122,15 +9122,19 @@ file system.")
               (commit (go-version->git-ref version #:subdir "typeutils"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rg5q7xif4gmhc99kkgvnz03d0d0z2vanyv8xa4myn6ykvacw458"))
-       (modules '((guix build utils)))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            (for-each delete-file-recursively
-                      (list "cmdutils" "conv" "fileutils" "jsonname"
-                            "jsonutils" "loading" "mangling" "netutils"
-                            "stringutils" "yamlutils"))))))
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "typeutils")))))
     (build-system go-build-system)
     (arguments
      (list
