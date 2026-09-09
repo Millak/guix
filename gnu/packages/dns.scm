@@ -26,7 +26,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2026 moksh <mysticmoksh@riseup.net>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -119,7 +119,7 @@
 (define-public adns
   (package
     (name "adns")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method git-fetch)
@@ -129,7 +129,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ln3l5j7wb1xazrzl76p9xar52p6l2k1cwy7jazxw1acl71k9h5n"))))
+         "1vklz29q10w0cs3nc70d1f1rg62sr50h8v4i7kp53x0hjzzfzyq1"))))
     (build-system gnu-build-system)
     (arguments
      (list
