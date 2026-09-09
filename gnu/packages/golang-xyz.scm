@@ -26829,6 +26829,33 @@ files, executing subprocesses, counting lines, and matching strings.  It was
 inspired by @url{https://github.com/bitfield/script}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-power-devops-perfstat
+  (package
+    (name "go-github-com-power-devops-perfstat")
+    (version "0.0.0-20260805114148-88456608a4f6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/power-devops/perfstat")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1143nnfssc0fm0xs6hdskv981ah403k540wq0iz8xlkxk7wlcrbs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t     ;source only for prometheus-node-exporter
+      #:tests? #f
+      #:import-path "github.com/power-devops/perfstat"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/power-devops/perfstat")
+    (synopsis "Golang interface to AIX libperfstat")
+    (description
+     "Package perfstat is Go interface to IBM AIX libperfstat.")
+    (license license:expat)))
+
 (define-public go-github-com-powerman-deepequal
   (package
     (name "go-github-com-powerman-deepequal")
