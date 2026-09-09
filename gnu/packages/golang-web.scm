@@ -20443,7 +20443,7 @@ It is part of the Sigstore project for software supply chain security.")
 (define-public go-github-com-sigstore-rekor
   (package
     (name "go-github-com-sigstore-rekor")
-    (version "1.4.3")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -20452,31 +20452,25 @@ It is part of the Sigstore project for software supply chain security.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g2xma0fzy7a4nv7bj04pj9vqg4hbbz3j3jxkir0sxql5ragj36d"))))
+        (base32 "1rn7f2rqxybgh46klpms6sznjv7nxmy5ya9k5ssxvylmk0ip80cj"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/sigstore/rekor"
       #:embed-files #~(list ".*\\.json")
-      ;; ;; XXX: Remove when all inputs are packaged.
+      ;; XXX: Remove when all inputs are packaged.
       #:test-subdirs
-      #~(list "pkg/client"
-              "pkg/events/newentry"
-              "pkg/indexstorage/mysql"
-              "pkg/pki/minisign"
-              "pkg/pki/pgp"
-              "pkg/pki/ssh"
-              "pkg/pki/tuf"
-              "pkg/pki/x509"
-              "pkg/pubsub/gcp"
-              "pkg/tle"
-              "pkg/types"
-              "pkg/util"
-              "pkg/verify")))
+      #~(list "pkg/pki" "pkg/tle" "pkg/util" "pkg/types" "pkg/client"
+              "pkg/verify" "pkg/pki/pgp" "pkg/pki/ssh" "pkg/pki/tuf"
+              "pkg/pki/x509" "pkg/pki/pkcs7" "pkg/types/jar" "pkg/types/rpm"
+              "pkg/types/tuf" "pkg/pubsub/gcp" "pkg/types/cose"
+              "pkg/types/dsse" "pkg/types/helm" "pkg/pki/minisign"
+              "pkg/types/intoto" "pkg/types/rekord" "pkg/types/rfc3161"
+              "pkg/events/newentry" "pkg/indexstorage/mysql"
+              "pkg/types/hashedrekord")))
     (native-inputs
-     (list go-github-com-asaskevich-govalidator
-           go-github-com-data-dog-go-sqlmock
+     (list go-github-com-data-dog-go-sqlmock
            go-github-com-golang-mock
            go-github-com-google-go-cmp
            go-github-com-spf13-cobra
@@ -20555,7 +20549,9 @@ It is part of the Sigstore project for software supply chain security.")
      "Rekor provides an immutable tamper-resistant ledger of metadata generated
 within a software project's supply chain.  It enables software maintainers
 and consumers to transparently record signed metadata to a ledger.")
-    (license license:asl2.0)))
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
 
 (define-public go-github-com-sigstore-rekor-tiles-v2
   (package
