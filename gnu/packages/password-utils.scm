@@ -49,6 +49,7 @@
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2026 Kjartan Oli Agustsson <kjartanoli@outlook.com>
+;;; Copyright © 2026 Robin Templeton <robin@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2504,3 +2505,34 @@ Himitsu for credentials.")
 Himitsu, allowing seamless access for applications storing secrets through the
 protocol.")
     (license license:expat)))
+
+(define-public onepass
+  (package
+    (name "onepass")
+    (version "3.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mrdomino/onepass")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19gia3vrsnx0gdhahc0wr4ih4mmrjan7kjxcy4l0sghxh24n8d4k"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:rust rust-1.95
+      #:install-source? #f
+      #:cargo-install-paths ''(".")))
+    (native-inputs (list pkg-config))
+    (inputs (cons* dbus openssl (cargo-inputs 'onepass)))
+    (home-page "https://github.com/mrdomino/onepass")
+    (synopsis "Mostly stateless deterministic password manager")
+    (description
+    "This is a command to compute passwords, by a one-way function, from
+Uniform Resource Identifiers of the services and one secret seed password, and
+maybe user names, increments or schemata for the outputs, like
+@code{[[:alnum:]]@{29@}$}.  It can read the seed at a prompt, from a keyring
+or from standard input.")
+    (license license:agpl3)))

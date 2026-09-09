@@ -777,6 +777,10 @@
   (crate-source "apple-flat-package" "0.20.0"
                 "185yjx9mkyv1h2y5s7qha9yi5kpq2dm82zixqdn3fjmgv0gmm7cw"))
 
+(define rust-apple-native-keyring-store-1.0.2
+  (crate-source "apple-native-keyring-store" "1.0.2"
+                "16mv96gx9f90gsjh90n9hpjp8hwk2lz1pa600nm0g7k40gyhnd9b"))
+
 (define rust-apple-xar-0.20.0
   (crate-source "apple-xar" "0.20.0"
                 "14sx6gqwhsq2g7yjgc8fn96344l7x3d8r65lsx4x1svivy0yfccn"))
@@ -912,6 +916,10 @@
 (define rust-argon2-0.5.3
   (crate-source "argon2" "0.5.3"
                 "0wn0kk97k49wxidfigmz1pdqmygqzi4h6w72ib7cpq765s4i0diw"))
+
+(define rust-argon2-0.6.0
+  (crate-source "argon2" "0.6.0"
+                "074hba97iw7yc20cdjsf8hk9ri431jqqs5pqprvcaqvdmkfm4k0k"))
 
 (define rust-ariadne-0.5.1
   (crate-source "ariadne" "0.5.1"
@@ -2862,6 +2870,11 @@
 (define rust-blake2-0.10.6
   (crate-source "blake2" "0.10.6"
                 "1zlf7w7gql12v61d9jcbbswa3dw8qxsjglylsiljp9f9b3a2ll26"
+                #:snippet '(delete-file-recursively "tests")))
+
+(define rust-blake2-0.11.0
+  (crate-source "blake2" "0.11.0"
+                "0vwz8wjm7n94f9nqw6kl1yqxqz5g1z9nlhpqq37qxvilk244spav"
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-blake2-0.9.2
@@ -6905,6 +6918,10 @@ fn main() {
   (crate-source "crypto-bigint" "0.5.5"
                 "0xmbdff3g6ii5sbxjxc31xfkv9lrmyril4arh3dzckd4gjsjzj8d"))
 
+(define rust-crypto-bigint-0.7.5
+  (crate-source "crypto-bigint" "0.7.5"
+                "0w829zgyjz7hfg80gzpqjqdp5m1m9lilyws8kwm31rm4rlzsllhs"))
+
 (define rust-crypto-box-0.10.0-pre.0
   (crate-source "crypto_box" "0.10.0-pre.0"
                 "1nbf98jp34h25xpy3lalrkprlw5n6phlsfbslbrhr0vhw3ilvnib"))
@@ -7729,6 +7746,10 @@ fn main() {
   (crate-source "dbus" "0.9.11"
                 "0wxzld0baycxa4z6zrmnh68yy456b0f82j8wyp8wyymvj8ln0hmr"))
 
+(define rust-dbus-0.9.12
+  (crate-source "dbus" "0.9.12"
+                "0bmk4bn1r8isjxbl780nkdd7grjq2r7125g3r34l0hwcrh1rzdis"))
+
 (define rust-dbus-0.9.9
   ;; TODO: Regenerate the 4 generated D-Bus interface bindings in src/ using
   ;; dbus-codegen-rust as a native-input, then delete the shipped copies.
@@ -7742,6 +7763,10 @@ fn main() {
 (define rust-dbus-secret-service-4.1.0
   (crate-source "dbus-secret-service" "4.1.0"
                 "19jgbqb841kbzmfgaqnbbhsc5ijck7fzl3zvgqyyb2bqvyg512vh"))
+
+(define rust-dbus-secret-service-keyring-store-1.0.1
+  (crate-source "dbus-secret-service-keyring-store" "1.0.1"
+                "1bixjrin8jlgsshiiqacm6pdjldyrqjq0d00q6xncql9nk9zy9vj"))
 
 (define rust-dbus-tokio-0.7.6
   (crate-source "dbus-tokio" "0.7.6"
@@ -17736,6 +17761,10 @@ fn main() {
   (crate-source "keyring" "3.6.3"
                 "072mzc4rk2qffdlc8c5s9h38c6fifyr9xxmsix599ra4y2pw7g7f"))
 
+(define rust-keyring-core-1.0.0
+  (crate-source "keyring-core" "1.0.0"
+                "17gwl3fn198sxqx2bwbbaywmd82i8yfk7l0b26m5376ab0a647pv"))
+
 (define rust-khronos-api-3.1.0
   (crate-source "khronos_api" "3.1.0"
                 "1p0xj5mlbagqyvvnv8wmv3cr7l9y1m153888pxqwg3vk3mg5inz2"))
@@ -23818,6 +23847,10 @@ fn main() {
   (crate-source "password-hash" "0.5.0"
                 "0ri1mim11zk0a9s40zdi288dfqvmdiryc7lw8vl46b59ifa08vrl"))
 
+(define rust-password-hash-0.6.1
+  (crate-source "password-hash" "0.6.1"
+                "0fvjsi13hdxyzv6nfl3yvhwqx6ggavppizwwrpzxd60n0ck1id5a"))
+
 (define rust-paste-1.0.14
   (crate-source "paste" "1.0.14"
                 "0k7d54zz8zrz0623l3xhvws61z5q2wd3hkwim6gylk8212placfy"))
@@ -24270,6 +24303,10 @@ fn main() {
 (define rust-pharos-0.5.3
   (crate-source "pharos" "0.5.3"
                 "055lg1dzrxnryfy34a9cyrg21b7cl6l2frfx2p7fdvkz864p6mp9"))
+
+(define rust-phc-0.6.1
+  (crate-source "phc" "0.6.1"
+                "14p8mwc1ikrllbrz1xv63vzxwb99hpb15yn7v3fzsfprfndpdp24"))
 
 (define rust-phf-0.10.1
   (crate-source "phf" "0.10.1"
@@ -26964,6 +27001,10 @@ fn main() {
 (define rust-read-process-memory-0.1.6
   (crate-source "read-process-memory" "0.1.6"
                 "1c1vmw8a2ywf7v96xfwbsyrnpk3fy8cc2a0rdxw8fs0b5wxni5w4"))
+
+(define rust-readpassphrase-3-1.0.2
+  (crate-source "readpassphrase-3" "1.0.2"
+                "1dvw5ia79b2gip5cqdpx9iq4p3fxgqi9aa5rfjjx0ss9kv8yr6i7"))
 
 (define rust-realfft-3.5.0
   (crate-source "realfft" "3.5.0"
@@ -30073,7 +30114,8 @@ fn main() {
 
 (define rust-sha1-0.6.1
   (crate-source "sha1" "0.6.1"
-                "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"))
+                "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-sha1-asm-0.5.3
   (crate-source "sha1-asm" "0.5.3"
@@ -32396,6 +32438,10 @@ fn main() {
   (crate-source "tauri-winrt-notification" "0.7.2"
                 "1fd9gcllx1rkp9h1ppq976bhqppnil5xsy36li1zx2g4gph6c7hb"
                 #:snippet '(delete-file-recursively "resources/test")))
+
+(define rust-tcm-readpassphrase-vendored-0.2.2
+  (crate-source "tcm-readpassphrase-vendored" "0.2.2"
+                "0r01xqqaay1w7r1p4pzdagzrvabpmgwsp1q2jpb506yl1f2ym21q"))
 
 (define rust-temp-dir-0.1.16
   (crate-source "temp-dir" "0.1.16"
@@ -38607,6 +38653,10 @@ fn main() {
 (define rust-windows-link-0.2.1
   (crate-source "windows-link" "0.2.1"
                 "1rag186yfr3xx7piv5rg8b6im2dwcf8zldiflvb22xbzwli5507h"))
+
+(define rust-windows-native-keyring-store-1.1.0
+  (crate-source "windows-native-keyring-store" "1.1.0"
+                "1y18q088xdxqbibpxc07qwjlma0qwdkpyxxvas6l7iyydzkjcd06"))
 
 (define rust-windows-numerics-0.2.0
   (crate-source "windows-numerics" "0.2.0"
@@ -76772,6 +76822,150 @@ fn main() {
                                 rust-zstd-sys-2.0.16+zstd.1.5.7
                                 rust-zune-core-0.5.1
                                 rust-zune-jpeg-0.5.15))
+                     (onepass =>
+                              (list rust-aho-corasick-1.1.5
+                               rust-anstream-1.0.0
+                               rust-anstyle-1.0.14
+                               rust-anstyle-parse-1.0.0
+                               rust-anstyle-query-1.1.5
+                               rust-anstyle-wincon-3.0.11
+                               rust-anyhow-1.0.104
+                               rust-apple-native-keyring-store-1.0.2
+                               rust-argon2-0.6.0
+                               rust-autocfg-1.5.1
+                               rust-base64ct-1.8.3
+                               rust-bitflags-2.13.1
+                               rust-blake2-0.11.0
+                               rust-block-buffer-0.12.1
+                               rust-byteorder-1.5.0
+                               rust-cc-1.4.4
+                               rust-cfg-if-1.0.4
+                               rust-chacha20-0.10.2
+                               rust-clap-4.6.6
+                               rust-clap-builder-4.6.6
+                               rust-clap-derive-4.6.4
+                               rust-clap-lex-1.1.0
+                               rust-cmov-0.5.4
+                               rust-colorchoice-1.0.5
+                               rust-core-foundation-0.10.1
+                               rust-core-foundation-sys-0.8.7
+                               rust-cpubits-0.1.1
+                               rust-cpufeatures-0.3.1
+                               rust-crossbeam-deque-0.8.7
+                               rust-crossbeam-epoch-0.9.20
+                               rust-crossbeam-utils-0.8.22
+                               rust-crypto-bigint-0.7.5
+                               rust-crypto-common-0.2.2
+                               rust-ctutils-0.4.2
+                               rust-dbus-0.9.12
+                               rust-dbus-secret-service-4.1.0
+                               rust-dbus-secret-service-keyring-store-1.0.1
+                               rust-digest-0.11.3
+                               rust-displaydoc-0.2.7
+                               rust-either-1.18.0
+                               rust-equivalent-1.0.2
+                               rust-errno-0.3.14
+                               rust-fastrand-2.5.0
+                               rust-find-msvc-tools-0.1.11
+                               rust-foreign-types-0.3.2
+                               rust-foreign-types-shared-0.1.1
+                               rust-form-urlencoded-1.2.2
+                               rust-getrandom-0.4.3
+                               rust-hashbrown-0.17.1
+                               rust-heck-0.5.0
+                               rust-hex-0.4.3
+                               rust-hybrid-array-0.4.14
+                               rust-icu-collections-2.3.0
+                               rust-icu-locale-core-2.3.0
+                               rust-icu-normalizer-2.3.0
+                               rust-icu-normalizer-data-2.3.0
+                               rust-icu-properties-2.3.0
+                               rust-icu-properties-data-2.3.0
+                               rust-icu-provider-2.3.1
+                               rust-idna-1.1.0
+                               rust-idna-adapter-1.2.2
+                               rust-indexmap-2.14.1
+                               rust-is-terminal-polyfill-1.70.2
+                               rust-keyring-core-1.0.0
+                               rust-libc-0.2.189
+                               rust-libdbus-sys-0.2.7
+                               rust-linux-raw-sys-0.12.1
+                               rust-litemap-0.8.3
+                               rust-log-0.4.34
+                               rust-memchr-2.8.3
+                               rust-nom-8.0.0
+                               rust-num-0.4.3
+                               rust-num-bigint-0.4.8
+                               rust-num-complex-0.4.6
+                               rust-num-integer-0.1.47
+                               rust-num-iter-0.1.46
+                               rust-num-rational-0.4.2
+                               rust-num-traits-0.2.19
+                               rust-once-cell-1.21.4
+                               rust-once-cell-polyfill-1.70.2
+                               rust-openssl-0.10.81
+                               rust-openssl-macros-0.1.1
+                               rust-openssl-sys-0.9.117
+                               rust-password-hash-0.6.1
+                               rust-percent-encoding-2.3.2
+                               rust-phc-0.6.1
+                               rust-pkg-config-0.3.34
+                               rust-potential-utf-0.1.6
+                               rust-proc-macro2-1.0.107
+                               rust-quote-1.0.47
+                               rust-r-efi-6.0.0
+                               rust-rand-core-0.10.1
+                               rust-rayon-1.12.0
+                               rust-rayon-core-1.13.0
+                               rust-readpassphrase-3-1.0.2
+                               rust-regex-1.13.1
+                               rust-regex-automata-0.4.18
+                               rust-regex-syntax-0.8.11
+                               rust-rustix-1.1.4
+                               rust-secrecy-0.10.3
+                               rust-security-framework-3.7.0
+                               rust-security-framework-sys-2.17.0
+                               rust-serde-1.0.229
+                               rust-serde-core-1.0.229
+                               rust-serde-derive-1.0.229
+                               rust-serde-spanned-1.1.1
+                               rust-shlex-2.0.1
+                               rust-smallvec-1.15.2
+                               rust-stable-deref-trait-1.2.1
+                               rust-strsim-0.11.1
+                               rust-syn-2.0.119
+                               rust-syn-3.0.4
+                               rust-synstructure-0.13.2
+                               rust-tcm-readpassphrase-vendored-0.2.2
+                               rust-tempfile-3.27.0
+                               rust-terminal-size-0.4.4
+                               rust-tinystr-0.8.4
+                               rust-toml-1.1.4+spec-1.1.0
+                               rust-toml-datetime-1.1.1+spec-1.1.0
+                               rust-toml-parser-1.1.3+spec-1.1.0
+                               rust-toml-writer-1.1.2+spec-1.1.0
+                               rust-typenum-1.20.1
+                               rust-unicase-2.9.0
+                               rust-unicode-ident-1.0.24
+                               rust-unicode-width-0.2.2
+                               rust-url-2.5.8
+                               rust-utf8-iter-1.0.4
+                               rust-utf8parse-0.2.2
+                               rust-vcpkg-0.2.15
+                               rust-windows-link-0.2.1
+                               rust-windows-native-keyring-store-1.1.0
+                               rust-windows-sys-0.61.2
+                               rust-winnow-1.0.4
+                               rust-writeable-0.6.4
+                               rust-yoke-0.8.3
+                               rust-yoke-derive-0.8.2
+                               rust-zerofrom-0.1.8
+                               rust-zerofrom-derive-0.1.7
+                               rust-zeroize-1.9.0
+                               rust-zeroize-derive-1.5.0
+                               rust-zerotrie-0.2.5
+                               rust-zerovec-0.11.8
+                               rust-zerovec-derive-0.11.6))
                      (oniongen-rs =>
                                   (list rust-aho-corasick-1.1.3
                                    rust-anstyle-1.0.13
