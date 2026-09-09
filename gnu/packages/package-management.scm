@@ -2677,8 +2677,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "5737ff6723c847de5f434a2daa5bceb548fd435f")
-        (revision "57"))
+  (let ((commit "1513eb5f274d17dfc7a6f8f2e17b8c0c1fd2f278")
+        (revision "58"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -2689,7 +2689,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1spg23wna8ngi30fl4cbhbx08yqfhhzaxb75kaz1yk0faanpwcdh"))
+                  "1bfjszvr6h4sgil1c0407p7bc6wggn71pjg9hvvs2phcqgrvd8ab"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2727,7 +2727,10 @@ in an isolated environment, in separate namespaces.")
                                           "guile-sqlite3"
                                           "guile-gnutls"
                                           "guile-fibers"
-                                          "guile-knots")))
+                                          "guile-knots"
+                                          "guile-safsaf"
+                                          "guile-webutils"
+                                          "guile-irregex")))
                        (wrap-program file
                          `("GUILE_LOAD_PATH" ":" prefix
                            (,scm ,(string-join
@@ -2763,6 +2766,7 @@ in an isolated environment, in separate namespaces.")
              guile-fibers
              guile-knots
              guile-prometheus
+             guile-safsaf
              guile-lib
              guile-lzlib
              guile-zstd
@@ -2778,6 +2782,7 @@ in an isolated environment, in separate namespaces.")
              guile-fibers
              guile-knots
              guile-prometheus
+             guile-safsaf
              guile-lib
              guile-lzlib
              guile-zstd
