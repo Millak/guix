@@ -1929,7 +1929,7 @@ Definition Language.")
 (define-public go-github-com-a-h-templ
   (package
     (name "go-github-com-a-h-templ")
-    (version "0.3.943")
+    (version "0.3.1020")
     (source
      (origin
        (method git-fetch)
@@ -1938,7 +1938,7 @@ Definition Language.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dqcdva7z53lhfv6ldjixwp4a363sr2cv5qm8rz2w7n8ba60m37f"))
+        (base32 "0w9q214dmbwv1i0fv493gfqqs91716i3knhpjzygqsp7jwlymzn2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
