@@ -1487,11 +1487,6 @@ the \"texlive\" importer."
   bootstrap build-tools codeberg core-packages home hurd installer
   qa-packages)
 
-(define-member (person "Ian Eure"
-                       "ian@retrospec.tv"
-                       "ieure")
-  mozilla emacs)
-
 (define-member (person "Zheng Junjie"
                        "z572@z572.online"
                        "Z572")
