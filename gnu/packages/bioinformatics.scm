@@ -7281,14 +7281,14 @@ with Python.")
 (define-public deacon
   (package
     (name "deacon")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "deacon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wmw8zyr03swbygwifj59samz9srfzxqw1gnm22msa0ng75282z0"))))
+        (base32 "09qckn6riqlblardwlwgpj7fbi4vggqqnckdi8cwbzvznwb824k2"))))
     (build-system cargo-build-system)
     (arguments
      (list
