@@ -27206,6 +27206,59 @@ policy.")
     (description "This package provides a go-redis extra CMD module.")
     (license license:bsd-2)))
 
+(define-public go-github-com-redis-go-redis-extra-redisotel-v9
+  (package
+    (name "go-github-com-redis-go-redis-extra-redisotel-v9")
+    (version "9.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/redis/go-redis")
+              (commit (go-version->git-ref version
+                                           #:subdir "extra/redisotel"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05c4dg0c8230763rk7nr6wd32f1qp1y56jw783pkpwyqbcx4fpas"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "extra" "redisotel")
+            (delete-all-but "." "extra")
+            ;; It's a helper for go-build-system to compile import-path and
+            ;; unpack-path when it struggles to find module.
+            (mkdir "extra/redisotel/v9")
+            (for-each (lambda (f)
+                        (rename-file f (string-append "extra/redisotel/v9/"
+                                                      (basename f))))
+                      (find-files  "./extra/redisotel"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/redis/go-redis/extra/redisotel/v9"
+      #:unpack-path "github.com/redis/go-redis"))
+    (propagated-inputs
+     (list go-github-com-redis-go-redis-extra-rediscmd-v9
+           go-github-com-redis-go-redis-v9
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://github.com/redis/go-redis")
+    (synopsis "OpenTelemetry instrumentation for go-redis")
+    (description
+     "This package provides an OpenTelemetry instrumentation for go-redis.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-redis-go-redis-v9
   (package
     (name "go-github-com-redis-go-redis-v9")
