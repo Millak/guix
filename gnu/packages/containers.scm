@@ -2708,7 +2708,7 @@ containers highly integrated with the hosts.")
 (define-public dive
   (package
     (name "dive")
-    (version "0.12.0") ;newer version needs docker/docker@28+
+    (version "0.13.1")
     (source
      (origin
        (method git-fetch)
@@ -2717,7 +2717,7 @@ containers highly integrated with the hosts.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p60bq0lc820p7x3nq8kxc8cx646c0z7zxqc7vav77zc4qbm3r8a"))))
+        (base32 "1i59cz6wf5ixb88kqr88cg4hi4g7ka6nhr5q8582sg8w91sacy1x"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2729,13 +2729,14 @@ containers highly integrated with the hosts.")
     (native-inputs
      (list go-github-com-awesome-gocui-gocui
            go-github-com-awesome-gocui-keybinding
-           go-github-com-cespare-xxhash
+           go-github-com-cespare-xxhash-v2
            go-github-com-docker-cli
            go-github-com-docker-docker
            go-github-com-dustin-go-humanize
            go-github-com-fatih-color
            go-github-com-google-uuid
-           go-github-com-logrusorgru-aurora
+           go-github-com-klauspost-compress
+           go-github-com-logrusorgru-aurora-v4
            go-github-com-lunixbochs-vtclean
            go-github-com-mitchellh-go-homedir
            go-github-com-phayes-permbits
