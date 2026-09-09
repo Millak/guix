@@ -28169,6 +28169,51 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
     (propagated-inputs '())
     (inputs '())))
 
+(define-public rekor-server
+  (package/inherit go-github-com-sigstore-rekor-tiles-v2
+    (name "rekor-server")
+    (arguments
+     (list #:build-flags
+           #~(list (string-append "-ldflags=-X sigs.k8s.io/release-utils/"
+                                  "version.gitVersion="
+                                  ;; See: guix/guix#11158
+                                  #$(package-version this-package)))
+           #:import-path  "github.com/sigstore/rekor-tiles/v2/cmd/..."
+           #:install-source?  #f
+           #:skip-build?  #f
+           #:tests?  #f
+           #:unpack-path "github.com/sigstore/rekor-tiles/v2"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'rename-binaries
+                 (lambda _
+                   (with-directory-excursion #$output
+                     (rename-file "bin/aws" "bin/rekor-server-aws")
+                     (rename-file "bin/gcp" "bin/rekor-server-gcp")
+                     (rename-file "bin/posix" "bin/rekor-server-posix")
+                     (rename-file "bin/gcpcloudsql"
+                                  "bin/rekor-server-gcpcloudsql")))))))
+    (native-inputs
+     (append
+      (package-propagated-inputs go-github-com-sigstore-rekor-tiles-v2)
+      (package-native-inputs go-github-com-sigstore-rekor-tiles-v2)))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides Rekor v2 multiple storage backends.
+
+Separate binaries for each backend are provided:
+@itemize
+@item @command{rekor-server-gcp}: GCP-specific binary (includes only Google
+Cloud dependencies)
+@item @command{rekor-server-aws}: AWS-specific binary (includes only AWS
+dependencies)
+@item @command{rekor-server-posix}: POSIX-based storage (lightweight, no cloud
+dependencies)
+@item @command{rekor-server-gcpcloudsql}: Alternative to GCP binary that uses
+CloudSQL instead of Spanner
+@end itemize")))
+
 (define-public sarama-tools
   (package/inherit go-github-com-ibm-sarama
     (name "sarama-tools")
