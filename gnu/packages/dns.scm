@@ -458,7 +458,7 @@ more.")
 (define-public ldns
   (package
     (name "ldns")
-    (version "1.8.4")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
@@ -466,7 +466,7 @@ more.")
         (string-append "https://www.nlnetlabs.nl/downloads/"
                        "ldns/ldns-" version ".tar.gz"))
        (sha256
-        (base32 "0is25vgf4qncvhwf0jy79gk8m6a5fxm4d5byfv6z3bxsjisr12w3"))
+        (base32 "0padp6fhfv0rb3q0cmz35ycabgc43dzw5f6f01186vjbk4hzl95m"))
        (patches
         ;; This patch adds the Guix-specific {drill,examples}{bin,man}dir make
         ;; flags used below.
