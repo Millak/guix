@@ -21247,6 +21247,29 @@ It stores colors in RGB and provides methods for converting these to various
 color spaces.")
     (license license:expat)))
 
+(define-public go-github-com-lufia-iostat
+  (package
+    (name "go-github-com-lufia-iostat")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lufia/iostat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rqwc5ydxjcbxfjhaa51bxdwjdbdkzng2hkcwm5ky20kybn0x7y5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;source only for prometheus-node-exporter
+      #:import-path "github.com/lufia/iostat"))
+    (home-page "https://github.com/lufia/iostat")
+    (synopsis "Reports I/O and CPU statistics")
+    (description "Package iostat presents I/O and CPU statistics.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-lunixbochs-vtclean
   (package
     (name "go-github-com-lunixbochs-vtclean")
