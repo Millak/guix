@@ -20319,6 +20319,34 @@ like Fulcio and Rekor.")
 verification of signatures and attestations produced by Sigstore tools.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sigstore-sigstore-go-bootstrap
+  (package
+    (inherit go-github-com-sigstore-sigstore-go)
+    (name "go-github-com-sigstore-sigstore-go-bootstrap")
+    (source
+     (origin
+       (inherit (package-source go-github-com-sigstore-sigstore-go))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "examples")
+            (for-each delete-file (find-files "." "^.*_test\\.go$"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/sigstore/sigstore-go"))
+    (propagated-inputs
+     (list go-github-com-digitorus-timestamp
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-strfmt
+           go-github-com-in-toto-attestation
+           go-github-com-sigstore-rekor
+           go-github-com-sigstore-timestamp-authority-v2
+           go-github-com-theupdateframework-go-tuf-v2))
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-sigstore-sigstore-pkg-signature-kms-aws
   (package
     (name "go-github-com-sigstore-sigstore-pkg-signature-kms-aws")
