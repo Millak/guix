@@ -96,7 +96,7 @@
                                                  "/html"))))))
       #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
-     (list doxygen graphviz pkg-config python python-setuptools swig))
+     (list doxygen graphviz pkg-config python python-setuptools swig-4.0))
     (inputs
      (list boost libconfuse))
     (propagated-inputs
