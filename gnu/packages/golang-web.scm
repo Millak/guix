@@ -13336,7 +13336,7 @@ controlled.  It is based on netlink messages.")
   (package
     (inherit go-github-com-jsimonetti-rtnetlink)
     (name "go-github-com-jsimonetti-rtnetlink-v2")
-    (version "2.0.2")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -13345,7 +13345,7 @@ controlled.  It is based on netlink messages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lgx3kip6hiigahcnvjy7d1qqxbm2vnfh2m3zrpfkqkh03dl39x4"))))
+        (base32 "0k8l655gcqyvxrc22ahn2j56anjsgfn29wr70ym8b8b16s9735cl"))))
     (arguments
      (list
       #:import-path "github.com/jsimonetti/rtnetlink/v2"))))
