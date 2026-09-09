@@ -37,6 +37,7 @@
   #:use-module (gnu packages python)
   #:use-module (guix gexp)
   #:use-module (guix licenses)
+  #:use-module (guix memoization)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -77,7 +78,7 @@
              (if (%current-target-system)
                  ;; When cross-compiling, this package needs a source directory
                  ;; of a native-build of itself.
-                 (list icu4c-build-root)
+                 (list (icu4c-build-root-from this-package))
                  '())))
     (inputs
      (list perl))
@@ -204,22 +205,23 @@ C/C++ part.")
          "icu4c-78-double-conversion.patch"
          "icu4c-suppress-warnings.patch"))))))
 
-(define-public icu4c-build-root
-  (package
-    (inherit icu4c)
-    (name "icu4c-build-root")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:tests? _ #f)
-         #f)
-        ((#:out-of-source? _ #t)
-         #t)
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (replace 'install
-               (lambda _
-                 (copy-recursively "../build" #$output)))))))
-    (native-inputs '())))
+(define icu4c-build-root-from
+  (mlambdaq (p)
+    (package
+      (inherit p)
+      (name "icu4c-build-root")
+      (arguments
+       (substitute-keyword-arguments arguments
+         ((#:tests? _ #f)
+          #f)
+         ((#:out-of-source? _ #t)
+          #t)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'install
+                (lambda _
+                  (copy-recursively "../build" #$output)))))))
+      (native-inputs '()))))
 
 (define-public java-icu4j
   (package
