@@ -5463,7 +5463,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.68")
+    (version "0.69")
     (source
      (origin
        (method git-fetch)
@@ -5473,7 +5473,7 @@ parallel computing platforms.  It also supports serial execution.")
               ;; Deeply related vendored dependencies.
               (recursive? #t)))
        (sha256
-        (base32 "1s1q07ml4plcca3zmf5hw06ms29gv78krly305gb9mvvi7fcpzbi"))
+        (base32 "1gi07v3py1zfpdl2b933kiy1f1sri9246vbf2d275hhalgls8g2n"))
        (file-name (git-file-name name version))
        (snippet
         #~(begin
