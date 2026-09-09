@@ -1043,16 +1043,21 @@ projects.")
 (define-public go-github-com-moby-policy-helpers
   (package
     (name "go-github-com-moby-policy-helpers")
-    (version "0.0.0-20260507153417-a39d60132186")
+    (properties '((commit . "72f704e6cdb62fe7ec41928f0da0f308e858abc0")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260901142052-72f704e6cdb6")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/moby/policy-helpers")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12fa602jianip7dg98f2i9i686s2a9bsclw8sqxw1ac1v19qlqr8"))
+        (base32 "1ylx9qs90izwlr9qlqhl1a4sxq84826pj8ahbdxpzfjvf94vhj48"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "vendor"))))
     (build-system go-build-system)
