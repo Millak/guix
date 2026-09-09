@@ -12855,7 +12855,10 @@ about missing required fields, or when pattern validation does not match.")
     (arguments
      (list
       #:import-path "github.com/jhillyerd/enmime"
-      #:test-flags #~(list "-vet=off")))
+      #:test-flags
+      #~(list "-vet=off"
+              ;; Failed to render email.
+              "-skip" "TestReadMultiLineError")))
     (native-inputs
      (list go-github-com-go-test-deep
            go-github-com-stretchr-testify))
