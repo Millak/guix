@@ -31422,7 +31422,7 @@ chmod command.")
            go-github-com-moby-patternmatcher
            go-github-com-opencontainers-go-digest
            go-github-com-pkg-errors
-           go-github-com-planetscale-vtprotobuf
+           go-github-com-planetscale-vtprotobuf-0.6
            go-github-com-tonistiigi-dchapes-mode
            go-golang-org-x-sync
            go-golang-org-x-sys

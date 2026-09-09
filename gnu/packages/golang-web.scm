@@ -18412,6 +18412,24 @@ dependent.")
 unmarshal code.")
     (license license:bsd-3)))
 
+;; For go-github-com-tonistiigi-fsutil, remove when other packages support
+;; v0.6+.
+(define-public go-github-com-planetscale-vtprotobuf-0.6
+  (hidden-package
+   (package
+     (inherit go-github-com-planetscale-vtprotobuf)
+     (name "go-github-com-planetscale-vtprotobuf")
+     (version "0.6.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/planetscale/vtprotobuf")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0bms8rrg8wrm3x9mspqrzzix24vjgi3p5zzbw108ydr1rnarwblf")))))))
+
 (define-public go-github-com-powerman-fileuri
   (package
     (name "go-github-com-powerman-fileuri")
