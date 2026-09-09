@@ -14059,7 +14059,7 @@ known as JOSE) technologies.")
 (define-public go-github-com-letsencrypt-boulder
   (package
     (name "go-github-com-letsencrypt-boulder")
-    (version "0.20260202.0")
+    (version "0.20260908.0")
     (source
      (origin
        (method git-fetch)
@@ -14068,7 +14068,7 @@ known as JOSE) technologies.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8pg1bnxb7ajpjs93ji8vibaqx5rs5wyv082klajdx80pz7mbks"))
+        (base32 "0kfkxb0f187dm1aj3pasnf5lf466cakl1b66zc51g5km6h6d6q91"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -14078,38 +14078,22 @@ known as JOSE) technologies.")
       #:skip-build? #t
       #:import-path "github.com/letsencrypt/boulder"
       #:test-subdirs
-      ;; XXX: Remove when all inputs are packaged.
-      #~(list "allowlist"
-              "core"
-              "crl/idp"
-              "csr"
-              "errors"
-              "goodkey"
-              "goodkey/sagoodkey"
-              "grpc/creds"
-              "grpc/internal/leakcheck"
-              "grpc/noncebalancer"
-              "iana"
-              "identifier"
-              "linter/lints"
-              "linter/lints/cabf_br"
-              "linter/lints/cpcps"
-              "linter/lints/rfc"
-              "log/validator"
-              "metrics/measured_http"
-              "must"
-              "nonce"
-              "pkcs11helpers"
-              "policy"
-              "precert"
-              "privatekey"
-              "probs"
-              "salesforce"
-              "sfe/forms"
-              "sfe/zendesk"
-              "strictyaml"
-              "test/load-generator/acme"
-              "test/zendeskfake")))
+      ;; XXX: Check why the rest of the submodules failed during test.
+      #~(list "crl" "csr" "web" "core" "iana" "must" "nonce" "probs" "errors"
+              "policy" "crl/idp" "goodkey" "precert" "unpause" "observer"
+              "unsigned" "allowlist" "publisher" "sfe/forms" "grpc/creds"
+              "identifier" "privatekey" "salesforce" "strictyaml"
+              "crl/checker" "crl/updater" "sfe/zendesk" "trees/entry"
+              "trees/proof" "linter/lints" "trees/mirror" "log/validator"
+              "pkcs11helpers" "trees/subtree" "trees/cosigned"
+              "ctpolicy/loglist" "linter/lints/rfc" "test/zendeskfake"
+              "trees/checkpoint" "goodkey/sagoodkey"
+              "trees/issuancelog" "grpc/noncebalancerv1"
+              "linter/lints/cabf_br" "observer/probers/aia"
+              "observer/probers/crl" "observer/probers/dns"
+              "observer/probers/tls" "metrics/measured_http"
+              "observer/probers/http" "grpc/internal/leakcheck"
+              "test/load-generator/acme")))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
@@ -14120,6 +14104,7 @@ known as JOSE) technologies.")
            go-github-com-go-logr-stdr
            go-github-com-go-sql-driver-mysql
            go-github-com-golang-groupcache
+           go-github-com-google-certificate-transparency-go
            go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
            go-github-com-jmhodges-clock
            go-github-com-letsencrypt-borp
@@ -14129,8 +14114,10 @@ known as JOSE) technologies.")
            go-github-com-miekg-dns
            go-github-com-miekg-pkcs11
            go-github-com-nxadm-tail
+           go-github-com-pelletier-go-toml
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
+           go-github-com-redis-go-redis-extra-redisotel-v9
            go-github-com-redis-go-redis-v9
            go-github-com-titanous-rocacheck
            go-github-com-weppos-publicsuffix-go
@@ -14142,27 +14129,23 @@ known as JOSE) technologies.")
            go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-trace
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-crypto
+           go-golang-org-x-mod
            go-golang-org-x-net
+           go-golang-org-x-sync
            go-golang-org-x-term
            go-golang-org-x-text
            go-golang-org-x-time
            go-google-golang-org-grpc
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3
-
-           ;; TODO: Complete packaging
-           ;; go-github-com-google-certificate-transparency-go
-           #;go-github-com-redis-go-redis-extra-redisotel-v9))
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/letsencrypt/boulder")
     (synopsis "ACME-based certificate authority used by Let's Encrypt")
     (description
      "Boulder is the software that runs @url{https://letsencrypt.org,Let's
 Encrypt} certificate authority.  This package provides the goodkey subpackage
 for checking RSA and ECDSA public keys for common weaknesses.")
-    (license license:mpl2.0)
-    ;; XXX: Don't expose since it's a partial package.
-    (properties '((hidden? . #t)))))
+    (license license:mpl2.0)))
 
 (define-public go-github-com-letsencrypt-challtestsrv
   (package
