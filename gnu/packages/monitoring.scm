@@ -1029,16 +1029,16 @@ WSGI and the node exporter textfile collector.")
 (define-public prometheus-node-exporter
   (package
     (name "prometheus-node-exporter")
-    (version "1.10.2")
+    (version "1.12.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/node_exporter")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/node_exporter")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10dqb97bv7v2xc31qjr7g8k7v0r1wq75xk846zbjgglw35nrpb2i"))))
+        (base32 "01y0n8v76yx63ggw22pcn1nw7p63kmnvnn3aysmwjq74hckhcjyp"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1076,26 +1076,25 @@ WSGI and the node exporter textfile collector.")
            go-github-com-coreos-go-systemd-v22
            go-github-com-dennwc-btrfs
            go-github-com-ema-qdisc
-           go-github-com-go-kit-log
            go-github-com-godbus-dbus-v5
            go-github-com-hashicorp-go-envparse
            go-github-com-hodgesds-perf-utils
-           go-github-com-josharian-native
-           go-github-com-jsimonetti-rtnetlink
+           go-github-com-illumos-go-kstat
+           go-github-com-jsimonetti-rtnetlink-v2
+           go-github-com-lufia-iostat
            go-github-com-mattn-go-xmlrpc
            go-github-com-mdlayher-ethtool
            go-github-com-mdlayher-netlink
            go-github-com-mdlayher-wifi
-           go-github-com-jsimonetti-rtnetlink-v2
            go-github-com-opencontainers-selinux
+           go-github-com-power-devops-perfstat
+           go-github-com-prometheus-community-go-runit
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
-           go-github-com-prometheus-community-go-runit
            go-github-com-prometheus-exporter-toolkit
            go-github-com-prometheus-procfs
            go-github-com-safchain-ethtool
-           go-golang-org-x-exp
            go-golang-org-x-sys
            go-howett-net-plist))
     (home-page "https://github.com/prometheus/node_exporter")
