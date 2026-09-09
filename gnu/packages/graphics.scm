@@ -42,7 +42,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>

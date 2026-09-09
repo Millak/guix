@@ -74,7 +74,7 @@
 # Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 # Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 # Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
-# Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+# Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 # Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 # Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
 #

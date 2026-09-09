@@ -5,7 +5,7 @@
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
 ;;; Copyright © 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright @ 2026 Johannes Elsing <Johannes.Elsing@gmx.de>
 ;;;
 ;;; This file is part of GNU Guix.

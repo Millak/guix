@@ -42,7 +42,7 @@
 ;;; Copyright © 2023 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>

@@ -154,7 +154,7 @@
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
-;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;; Copyright @ 2025 Amy Pillow <amypillow@lavache.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.org>

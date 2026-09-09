@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023, 2025 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

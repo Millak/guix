@@ -70,7 +70,7 @@
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

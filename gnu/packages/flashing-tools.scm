@@ -15,14 +15,14 @@
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024, 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2024, 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.

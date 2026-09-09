@@ -13,7 +13,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -1503,7 +1503,7 @@ the \"texlive\" importer."
   javascript)
 
 (define-member (person "Cayetano Santos"
-                       "csantosb@inventati.org"
+                       "csantosb@disroot.org"
                        "csantosb")
   ai emacs electronics hpc crypto reproduciblebuilds)
 

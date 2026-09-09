@@ -27,7 +27,7 @@
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.

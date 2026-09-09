@@ -12,7 +12,7 @@
 ;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;; Copyright © 2025 Felipe Silva <git@felipeqq2.rocks>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

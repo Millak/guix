@@ -7,7 +7,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
-;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>

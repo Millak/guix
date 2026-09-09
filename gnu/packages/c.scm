@@ -24,7 +24,7 @@
 ;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
 ;;; Copyright @ 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;

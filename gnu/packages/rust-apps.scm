@@ -45,7 +45,7 @@
 ;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>

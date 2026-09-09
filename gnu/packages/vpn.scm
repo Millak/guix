@@ -25,7 +25,7 @@
 ;;; Copyright © 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024, 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

@@ -95,7 +95,7 @@
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>

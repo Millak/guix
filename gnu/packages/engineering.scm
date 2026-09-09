@@ -47,7 +47,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025-2026 bdunahu <bdunahu@operationnull.com>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Thomas Kramer <thomas@f-si.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>

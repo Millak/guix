@@ -168,7 +168,7 @@
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025-2026 Nguyễn Gia Phong <cnx@loang.net>
-;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>

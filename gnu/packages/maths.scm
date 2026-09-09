@@ -72,7 +72,7 @@
 ;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2026 Luca Alloatti <luca-guix@f-si.org>
 ;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>

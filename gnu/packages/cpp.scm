@@ -54,7 +54,7 @@
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Emmanouil Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.

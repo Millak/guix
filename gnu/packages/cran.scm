@@ -42,7 +42,7 @@
 ;;; Copyright © 2024-2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;; Copyright © 2026 Laurent Gatto <lgatto@protonmail.ch>
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>

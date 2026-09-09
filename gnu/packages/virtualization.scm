@@ -44,7 +44,7 @@
 ;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

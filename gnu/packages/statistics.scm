@@ -26,7 +26,7 @@
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Rikard Nordgren <hrn@posteo.net>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.

@@ -32,7 +32,7 @@
 ;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025-2026 Jonas Meeuws <jonas.meeuws@gmail.com>
-;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

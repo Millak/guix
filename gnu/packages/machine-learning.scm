@@ -30,7 +30,7 @@
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024, 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
-;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
