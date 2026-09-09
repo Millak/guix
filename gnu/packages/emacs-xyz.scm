@@ -22713,6 +22713,38 @@ results are displayed on the modeline.")
 required by the LaTeX output produced by Org mode.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
+(define-public emacs-org-timegrid
+  ;; There are no tags, no releases.
+  (let ((commit "496873dc5aaede157e9523888a6fbba552806dbd")
+        (revision "0"))
+    (package
+      (name "emacs-org-timegrid")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/gleek/org-timegrid")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "192zhcbamzsvirh8r4pcj6p6b5qbmj1kpynsh7s9yv5ckqq4fycn"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "test/org-timegrid-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (home-page "https://github.com/gleek/org-timegrid")
+      (synopsis "SVG week calendar for Org-mode")
+      (description "This package provides an SVG week calendar for Org
+mode.  It reads timed active timestamps from Org-mode files and writes edits
+back to their source headings.  It allows create, move, resize, copy, rename,
+and remove calendar blocks with the mouse or keyboard.  The same renderer can
+add a compact, read-only day view to an existing Org-agenda.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-contacts
   (package
     (name "emacs-org-contacts")
