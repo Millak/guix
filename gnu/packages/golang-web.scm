@@ -19802,6 +19802,106 @@ implementation with sing.")
      (list go-github-com-dlclark-regexp2
            go-golang-org-x-text))))
 
+(define-public go-github-com-sassoftware-relic-v7
+  (package
+    (name "go-github-com-sassoftware-relic-v7")
+    (version "7.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sassoftware/relic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jbl44hrnmpr2lc9hm1f13da1zmi9ds162jam24b9mijv4bbxgjg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sassoftware/relic/v7"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "internal/realip" "internal/zhttp" "lib/assuan" "lib/comdoc"
+              "lib/compresshttp" "lib/pkcs7" "lib/x509tools")))
+    (native-inputs
+     (list go-github-com-cli-browser
+           go-github-com-prometheus-client-golang
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-cloud-google-com-go-kms
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-kms
+           go-github-com-azuread-microsoft-authentication-library-for-go
+           go-github-com-bradfitz-gomemcache
+           go-github-com-go-asn1-ber-asn1-ber
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-jose-go-jose-v3
+           go-github-com-golang-snappy
+           go-github-com-google-uuid
+           go-github-com-gregjones-httpcache
+           go-github-com-kr-pretty
+           go-github-com-lib-pq
+           go-github-com-miekg-pkcs11
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-peterbourgon-diskv
+           go-github-com-rs-zerolog
+           go-github-com-sassoftware-go-rpmutils
+           go-github-com-xi2-xz
+           go-github-com-zalando-go-keyring
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-time
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-gopkg-in-yaml-v3
+           go-howett-net-plist
+           go-software-sslmate-com-src-go-pkcs12
+
+           ;; TODO: Complete packaging
+           ;; go-github-com-azure-azure-sdk-for-go
+           ;; go-github-com-azure-go-autorest-autorest
+           ;; go-github-com-azure-go-autorest-autorest-adal
+           ;; go-github-com-azure-go-autorest-autorest-azure-auth
+           ;; go-github-com-beevik-etree
+           ;; go-github-com-howeyc-gopass
+           ;; go-github-com-qur-ar
+           #;go-github-com-streadway-amqp))
+    (home-page "https://github.com/sassoftware/relic")
+    (synopsis "Digital signatures to operating system packages")
+    (description
+     "relic is a multi-tool and server for package signing and working with
+hardware security modules (HSMs).")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
+(define-public go-github-com-sassoftware-relic
+  (package/inherit go-github-com-sassoftware-relic-v7
+    (name "go-github-com-sassoftware-relic")
+    (source
+     (origin
+       (inherit (package-source go-github-com-sassoftware-relic-v7))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; It's the same package but some projects expect differnt import
+            ;; path.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/sassoftware/relic/v7")
+               "github.com/sassoftware/relic"))))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _ "github.com/sassoftware/relic/v7")
+        "github.com/sassoftware/relic")))))
+
 (define-public go-github-com-schollz-peerdiscovery
   (package
     (name "go-github-com-schollz-peerdiscovery")
