@@ -3507,7 +3507,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                            ;; It is unclear why this test specifically
                            ;; fails in Guix's port of powerpc-linux.
                            (lambda _
-                             (substitute* "tests/ts/misc/enosys"
+                             (substitute* "tests/ts/enosys/enosys"
                                (("ts_init_subtest ioctl")
                                 (string-append
                                   "ts_init_subtest ioctl\n\n"
