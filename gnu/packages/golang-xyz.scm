@@ -16814,6 +16814,31 @@ ABI}.")
     (description "This package provides a simple Golang inotify wrapper.")
     (license license:expat)))
 
+(define-public go-github-com-illumos-go-kstat
+  (package
+    (name "go-github-com-illumos-go-kstat")
+    (version "0.0.0-20210513183136-173c9b0a9973")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/illumos/go-kstat")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10miq9y2nldvgmc8pnvly4a9ym1bjsjx5cic2dh9ppi80ipv7g1l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;source only for prometheus-node-exporter
+      #:import-path "github.com/illumos/go-kstat"))
+    (home-page "https://github.com/illumos/go-kstat")
+    (synopsis "Access kstats from Go")
+    (description
+     "Package kstat provides a Go interface to the Solaris/OmniOS
+@code{kstat(s)} system for user-level access to a lot of kernel statistics.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-imdario-mergo
   (hidden-package
    (package/inherit go-dario-cat-mergo
