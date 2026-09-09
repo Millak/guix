@@ -21673,6 +21673,43 @@ Features:
 Tink Go} library that provides support for AWS KMS.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tink-crypto-tink-go-awskms-v3
+  (package
+    (inherit go-github-com-tink-crypto-tink-go-awskms-v2)
+    (name "go-github-com-tink-crypto-tink-go-awskms-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tink-crypto/tink-go-awskms")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h6r4wdvz54h388y5m27mi7pvdicqc5v3z3rfswyy077za4x0f5r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tink-crypto/tink-go-awskms/v3"
+      #:unpack-path "github.com/tink-crypto/tink-go-awskms"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestKeyCommitment"
+                             "TestNewClientWithCredentialsGetAEADEncryptDecrypt"
+                             "TestNewAEADWithContextEncryptDecrypt"
+                             "TestEmptyAssociatedDataEncryptDecrypt"
+                             "TestKMSEnvelopeAEADEncryptAndDecrypt"
+                             "TestDecryptValidCiphertextForKeyURI")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-kms
+           go-github-com-tink-crypto-tink-go-v2))))
+
 (define-public go-github-com-tink-crypto-tink-go-gcpkms-v2
   (package
     (name "go-github-com-tink-crypto-tink-go-gcpkms-v2")
