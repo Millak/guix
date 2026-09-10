@@ -1223,40 +1223,29 @@ containers on Linux according to the OCI specification.")
 (define-public go-github-com-opencontainers-umoci
   (package
     (name "go-github-com-opencontainers-umoci")
-    (version "0.5.0")
+    ;; 0.6.0 (2025-10-15); to support latest
+    ;; go-github-com-cyphar-filepath-securejoin.
+    (properties '((commit . "f5d1219acaf67127ebacf6306776d3ff465735ea")
+                  (revision . "0")))
+    (version (git-version "0.6.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/opencontainers/umoci")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10pxiqk4194nbnvlvfvlbk31wp8k35in3g694y20f9261nn0qx6n"))
+        (base32 "06dc6jnl3wfk6vmq8cdpijvm8h6gygf0i7r4s9s8spyxlk2aph5c"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/opencontainers/umoci"
-      ;; convert spec to rootless: inspecting mount flags of /etc/resolv.conf:
-      ;; no such file or directory
-      #:test-flags
-      #~(list "-skip" "TestUnpackManifestCustomLayer|TestUnpackStartFromDescriptor")
-      #:test-subdirs
-      ;; cmd/umoci needs older version of image-spec, excluding it.
-      #~(list "." "mutate"
-              "oci/cas/dir"
-              "oci/casext/blobcompress"
-              "oci/config/generate"
-              "pkg/funchelpers"
-              "pkg/hardening"
-              "pkg/idtools"
-              "pkg/mtreefilter"
-              "pkg/pathtrie"
-              "pkg/system"
-              "pkg/unpriv")))
+      #:import-path "github.com/opencontainers/umoci"))
     (native-inputs
      (list go-github-com-mohae-deepcopy
            go-github-com-stretchr-testify))
@@ -1264,7 +1253,8 @@ containers on Linux according to the OCI specification.")
      (list go-github-com-adalogics-go-fuzz-headers
            go-github-com-apex-log
            go-github-com-blang-semver-v4
-           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-containerd-platforms
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-docker-go-units
            go-github-com-klauspost-compress
            go-github-com-klauspost-pgzip
