@@ -57,7 +57,7 @@
 (define-public go-code-forgejo-org-f3-gof3-v3
   (package
     (name "go-code-forgejo-org-f3-gof3-v3")
-    (version "3.11.39")
+    (version "3.11.52")
     (source
      (origin
        (method git-fetch)
@@ -66,7 +66,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gisxivmsy1r6kn4pcn96ry03mmh6y6hl26yi4zkihlj9m48brsb"))))
+        (base32 "1p6vf8s0wbczhq7by21asi5qffgccy55gxwrik3yqz2lly5f5viq"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -115,7 +115,7 @@
            ;; go-github-com-davidmz-go-pageant  ;Windows only
            go-github-com-hashicorp-go-version
            go-github-com-santhosh-tekuri-jsonschema-v6
-           go-gitlab-com-gitlab-org-api-client-go-0.116
+           go-gitlab-com-gitlab-org-api-client-go-v2
            go-golang-org-x-crypto))
     (home-page "https://code.forgejo.org/f3/gof3")
     (synopsis "Friendly Forge Format (F3)")
