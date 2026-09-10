@@ -34837,16 +34837,16 @@ pick one that suits you.")
 (define-public go-github-com-zclconf-go-cty
   (package
     (name "go-github-com-zclconf-go-cty")
-    (version "1.16.0")
+    (version "1.19.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/zclconf/go-cty")
-             (commit (string-append "v" version))))
+              (url "https://github.com/zclconf/go-cty")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rvvs9rplvh9gv90lsvwgw203ysz47qksw1xz3whhdvhn7ns8s8f"))))
+        (base32 "00ab3fy33isw1hm8zghyic5f7baic2bckcxpkm6ziz8n24lz2ajw"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -34860,6 +34860,7 @@ pick one that suits you.")
      (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-github-com-apparentlymart-go-textseg-v15
+           go-github-com-apparentlymart-go-textseg-v17
            go-github-com-vmihailenco-msgpack-v5
            go-golang-org-x-text))
     (home-page "https://github.com/zclconf/go-cty")
