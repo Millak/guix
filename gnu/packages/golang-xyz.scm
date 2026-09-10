@@ -2767,6 +2767,24 @@ cluster segmentation algorithm.")
          (package-arguments go-github-com-apparentlymart-go-textseg-v15)
        ((#:import-path _) "github.com/apparentlymart/go-textseg/v16")))))
 
+(define-public go-github-com-apparentlymart-go-textseg-v17
+  (package
+    (inherit go-github-com-apparentlymart-go-textseg-v16)
+    (name "go-github-com-apparentlymart-go-textseg-v17")
+    (version "17.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19vrkc6y0myqnz5vpi1m6bcja7d0mmw55lmp69mihgq3hdsmp6kd"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/apparentlymart/go-textseg/v17")))))
+
 (define-public go-github-com-araddon-dateparse
   (package
     (name "go-github-com-araddon-dateparse")
