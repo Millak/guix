@@ -1330,7 +1330,7 @@ automatically generating new passwords or manually setting your own.")
 (define-public qtpass
   (package
     (name "qtpass")
-    (version "1.4.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1339,7 +1339,7 @@ automatically generating new passwords or manually setting your own.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10ixahm4ap0l1rrz4cyswblm22ns9z1baf5lv3dn23wprfdcp8m0"))))
+        (base32 "1xx7ccvs9wvqfd8y5vm5n3qmcpfsryqzlb0ip1i19vrgdqrwm9nj"))))
     (build-system qt-build-system)
     (arguments
      (list
