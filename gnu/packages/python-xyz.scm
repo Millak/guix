@@ -52,7 +52,7 @@
 ;;; Copyright © 2018-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021, 2023 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2018-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
@@ -1319,6 +1319,37 @@ that aims to provide an intuitive & efficient developer experience.")
     (description
      "This package allows to detect if the user is using Dark Mode.")
     (license license:bsd-3)))
+
+(define-public python-dbus-deviation
+  (package
+    (name "python-dbus-deviation")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dbus-deviation" version))
+       (sha256
+        (base32 "18xp1s6k2x08d7a4ksh4dwf3sikvkdycylfz4lkmv213wbpqhsz0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            ;; See: <https://github.com/pwithnall/dbus-deviation/issues/22>.
+            (lambda _
+              (with-directory-excursion "dbusapi/tests"
+                (substitute* '("test_interfaceparser.py" "test_ast.py")
+                  (("assertEquals") "assertEqual"))))))))
+    (propagated-inputs (list python-lxml))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://tecnocode.co.uk/dbus-deviation/")
+    (synopsis "D-Bus introspection XML parser")
+    (description "The @{dbus-deviation} library and utility parses D-Bus
+introspection XML and processes it in various ways.  For example, it can
+represent a parsed D-Bus API XML description as an @acronym{AST, abstract
+syntax tree}, or calculate the differences between two D-Bus APIs.")
+    (license license:lgpl2.1+)))
 
 (define-public python-decopatch
   (package
