@@ -1107,7 +1107,7 @@ written in Go with pluggable metric collectors.")
 (define-public prometheus-postfix-exporter
   (package
     (name "prometheus-postfix-exporter")
-    (version "0.20.0")
+    (version "0.20.4")
     (source
      (origin
        (method git-fetch)
@@ -1118,7 +1118,7 @@ written in Go with pluggable metric collectors.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09p76wxkl07ad4mrbbf863zmjk506lssjqplqacxqhcbfjb3lvxm"))))
+        (base32 "0hwkdml7xxfxdzivrabg4457s3v6z0c2f59w73x17wybk71x6a1c"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1129,8 +1129,8 @@ written in Go with pluggable metric collectors.")
       #:test-flags #~(list "-tags" "nosystemd,nodocker")))
     (native-inputs
      (list go-github-com-alecthomas-kingpin-v2
-           go-github-com-coreos-go-systemd-v22
-           go-github-com-docker-docker
+           ;; go-github-com-coreos-go-systemd-v22    ;optional
+           ;; go-github-com-docker-docker
            go-github-com-nxadm-tail
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
