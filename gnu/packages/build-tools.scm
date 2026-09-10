@@ -582,6 +582,39 @@ files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
 
+(define-public meson-documentation
+  (package
+    (inherit meson)
+    (version (package-version meson))
+    (name "meson-documentation")
+    (source (origin
+              ;; XXX: The documentation is not included in the release
+              ;; tarball; use git-fetch, preserving the version of our meson
+              ;; package to have the matching documentation.
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/mesonbuild/meson")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f9pvc1p2z51qh4i6yd8cydbpcdkkblsv68zxdgcvk9j4akaaqb9"))))
+    (name "meson-documentation")
+    (build-system meson-build-system)
+    (arguments
+     ;; Disable the HTML documentation, which requires hotdoc, which itself
+     ;; has multiple Node.js dependencies, and is thus difficult to package in
+     ;; Guix.
+     (list #:configure-flags #~(list "-Dhtml=false")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "docs"))))))
+    (native-inputs (list python python-strictyaml))
+    (synopsis "Meson reference manual")
+    (description "This package provides the reference manual of
+Meson (@samp{meson-reference(3)}).")))
+
 (define-public muon
   (package
     (name "muon")
