@@ -595,7 +595,7 @@ Feature:
 (define-public rclone
   (package
     (name "rclone")
-    (version "1.72.1")
+    (version "1.75.1")
     (source
      (origin
        (method git-fetch)
@@ -604,11 +604,7 @@ Feature:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0npx1pzi2hfg9yyg1dil0a9a1b6mip7agxpscb4qb445rhc8qb"))
-       (snippet
-        #~(begin
-            ;; XXX: This test fails to compile: `undefined: testscript.Main'
-            (delete-file "fs/logger/logger_test.go")))))
+        (base32 "178v39d53lwdyrffdl34n43wmwvx14b62ns6mpkzx5b9sk3qcrbp"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -627,66 +623,35 @@ Feature:
               "nodes"
               "text")
       #:test-flags
-      #~(list "-short"
-              "-skip" (string-join
-                       ;; Requires docker-compose
-                       (list "TestIntegration"
+      #~(list "-skip" (string-join
+                       ;; Requires Docker.
+                       (list "TestDockerPluginMountUnix"
+                             ;; Network access is required.
+                             "TestAddPlugin"
                              "TestDockerPluginMountTCP"
-                             "TestDockerPluginMountUnix"
-                             ;; Requires install perms
+                             "TestGetVersion"
                              "TestInstallOnLinux"
-                             ;; Requires external storage cache
-                             "TestInternalObjNotFound"
-                             "TestInternalCachedWrittenContentMatches"
-                             "TestInternalCachedUpdatedContentMatches"
-                             "TestInternalDoubleWrittenContentMatches"
-                             "TestInternalWrappedFsChangeNotSeen"
-                             "TestInternalNotifyCreatesEmptyParts"
-                             "TestInternalChangeSeenAfterDirCacheFlush"
-                             "TestInternalCacheWrites"
-                             "TestInternalMaxChunkSizeRespected"
-                             "TestInternalBug2117"
-                             "TestInternalUploadTempDirCreated"
-                             "TestInternalMoveWithNotify"
-                             "TestSftp"
-                             "TestRc"
-                             "TestCache*"
-                             "TestListPlugins"
-                             ;; Requires network
+                             "TestRemovePlugin"
                              "TestZenodoRemote"
-                             "TestMetadata"
-                             "TestFTP"
-                             ;; Requires executable to be visible
-                             "TestEndToEnd"
-                             "TestEndToEndMigration"
-                             "TestEndToEndRepoLayoutCompat"
+                             ;; sorter: mkdir /var: permission denied.
+                             "TestSorterExt"
                              ;; Requires mount perms
                              "TestMount"
-                             ;; Requires network access
-                             "TestGetVersion"
-                             "TestMetadataMapper"
-                             "TestStatsGroupOperations"
-                             "TestSorterExt"
-                             ;; Bad interface conversion
-                             "TestRcDu"
-                             ;; Requires write access
-                             "TestAddPlugin"
-                             "TestRemovePlugin"
-                             "TestKvConcurrency"
-                             "TestKvExit"
-                             "TestFileSetModTime"
-                             "TestFileRename"
-                             "TestItem*"
-                             "TestRWFileHandle*"
-                             "TestRWFileModTimeWithOpenWriters"
-                             "TestRWCacheRename"
-                             "TestFunctional"
-                             "invalid_UTF-8")
+                             ;; rsync is required.
+                             "TestLogger/TestRepoCompare"
+                             "TestLogger/TestCheckVsSync"
+                             ;; gitannex is required
+                             "TestEndToEnd"
+                             "TestEndToEndMigration"
+                             "TestEndToEndRepoLayoutCompat")
                        "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "PATH" (string-append #$output "/bin" ":"
+                                            (getenv "PATH")))
               ;; As seen in go.mod
               (setenv "GODEBUG" "x509negativeserial=1")
               ;; As seen in Makefile
@@ -703,14 +668,17 @@ Feature:
             go-github-com-a8m-tree
             go-github-com-aalpar-deheap
             go-github-com-abbot-go-http-auth
+            go-github-com-adrg-xdg
             go-github-com-anacrolix-dms
             go-github-com-anacrolix-log
+            go-github-com-apache-arrow-go-v18
             go-github-com-atotto-clipboard
             go-github-com-aws-aws-sdk-go-v2
             go-github-com-aws-aws-sdk-go-v2-config
             go-github-com-aws-aws-sdk-go-v2-credentials
             go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
             go-github-com-aws-aws-sdk-go-v2-service-s3
+            go-github-com-aws-aws-sdk-go-v2-service-sts
             go-github-com-aws-smithy-go
             go-github-com-azure-azure-sdk-for-go-sdk-azcore
             go-github-com-azure-azure-sdk-for-go-sdk-azidentity
@@ -726,6 +694,7 @@ Feature:
             go-github-com-diskfs-go-diskfs
             go-github-com-dop251-scsu
             go-github-com-dropbox-dropbox-sdk-go-unofficial-v6
+            go-github-com-filenclouddienste-filen-sdk-go
             go-github-com-files-com-files-sdk-go-v3
             go-github-com-gabriel-vasile-mimetype
             go-github-com-gdamore-tcell-v2
@@ -733,11 +702,11 @@ Feature:
             ;; go-github-com-go-darwin-apfs                        ;macOS only
             go-github-com-go-git-go-billy-v5
             go-github-com-golang-jwt-jwt-v4
+            go-github-com-golang-jwt-jwt-v5
             go-github-com-google-uuid
             go-github-com-hanwen-go-fuse-v2
-            go-github-com-henrybear327-go-proton-api
-            go-github-com-henrybear327-proton-api-bridge
             go-github-com-ibm-go-sdk-core-v5
+            go-github-com-internxt-rclone-adapter
             go-github-com-jcmturner-gokrb5-v8
             go-github-com-jlaffaye-ftp
             ;; go-github-com-josephspurrier-goversioninfo        ;Windows only
@@ -753,18 +722,22 @@ Feature:
             go-github-com-minio-minio-go-v7
             go-github-com-mitchellh-go-homedir
             go-github-com-moby-sys-mountinfo
+            go-github-com-muesli-reflow
             go-github-com-ncw-swift-v2
             go-github-com-oracle-oci-go-sdk-v65
             go-github-com-patrickmn-go-cache
             go-github-com-peterh-liner
             go-github-com-pkg-sftp
+            go-github-com-pkg-xattr
             go-github-com-pmezard-go-difflib
             go-github-com-pquerna-otp
             go-github-com-prometheus-client-golang
             go-github-com-protonmail-go-crypto
             go-github-com-putdotio-go-putio-for-rclone
             go-github-com-quasilyte-go-ruleguard-dsl
+            go-github-com-rclone-go-proton-api
             go-github-com-rclone-gofakes3
+            go-github-com-rclone-proton-api-bridge
             go-github-com-rfjakob-eme
             go-github-com-rivo-uniseg
             go-github-com-rogpeppe-go-internal
@@ -798,6 +771,7 @@ Feature:
             go-gopkg-in-natefinch-lumberjack-v2
             go-gopkg-in-validator-v2
             go-gopkg-in-yaml-v3
+            go-moul-io-http2curl-v2
             go-storj-io-uplink)))
     (synopsis "@code{rsync} for cloud storage")
     (description "@code{Rclone} is a command line program to sync files and
