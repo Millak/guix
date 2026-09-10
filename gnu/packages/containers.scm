@@ -3956,16 +3956,22 @@ Tini is integrated with Docker.")
 (define-public umoci
   (package
     (name "umoci")
-    (version "0.6.0")
+    ;; 0.6.0 (2025-10-15); to support latest
+    ;; go-github-com-cyphar-filepath-securejoin.
+    (properties '((commit . "f5d1219acaf67127ebacf6306776d3ff465735ea")
+                  (revision . "0")))
+    (version (git-version "0.6.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/opencontainers/umoci")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m50x2q2h34g6sh786blf8r9wh098yzgwnicdlx0cgsqqwjsn0ia"))
+        (base32 "06dc6jnl3wfk6vmq8cdpijvm8h6gygf0i7r4s9s8spyxlk2aph5c"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -4007,8 +4013,7 @@ Tini is integrated with Docker.")
            go-github-com-apex-log
            go-github-com-blang-semver-v4
            go-github-com-containerd-platforms
-           go-github-com-cyphar-filepath-securejoin-0.4.1
-           go-github-com-cyphar-go-mtree
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-docker-go-units
            go-github-com-klauspost-compress
            go-github-com-klauspost-pgzip
@@ -4021,6 +4026,7 @@ Tini is integrated with Docker.")
            go-github-com-rootless-containers-proto-go-proto
            go-github-com-stretchr-testify
            go-github-com-urfave-cli
+           go-github-com-vbatts-go-mtree
            go-golang-org-x-sys
            go-google-golang-org-protobuf
            go-md2man))

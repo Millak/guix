@@ -9348,50 +9348,6 @@ more tangible.")
         (sha256
          (base32 "0cyqbxmrn3qgq8q0v7xmm9knc8nr60s017yrhkghcwg4yqqpmr9l")))))))
 
-;; For umoci@1.6.0, remove when a fresh version is released.
-(define-public go-github-com-cyphar-go-mtree
-  (let ((commit "54003baae6e5e009853fa0b67da7ad43cdc9059a")
-        (revision "0"))
-    (hidden-package
-     (package
-       (name "go-github-com-cyphar-go-mtree")
-       (version (git-version "0.0.0" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/cyphar/go-mtree")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "1z063grsqawnpmwv2m3gm4pfssm5ynzssvn9igw5x4l237zbpl52"))
-          (modules '((guix build utils)))
-          (snippet
-           #~(begin
-               ;; Module name has been changed upstream.
-               (substitute* (find-files "." "\\.go$")
-                 (("github.com/vbatts/go-mtree")
-                  "github.com/vbatts/go-mtree"))))))
-       (build-system go-build-system)
-       (arguments
-        (list
-         #:import-path "github.com/vbatts/go-mtree"))
-       (native-inputs
-        (list go-github-com-davecgh-go-spew))
-       (propagated-inputs
-        (list go-github-com-fatih-color
-              go-github-com-sirupsen-logrus
-              go-github-com-urfave-cli-v2
-              go-golang-org-x-crypto
-              go-golang-org-x-sys))
-       (home-page "https://github.com/cyphar/go-mtree")
-       (synopsis "File systems verification utility and library")
-       (description
-        "This package is alternative fork of
-@url{https://github.com/vbatts/go-mtree} required for @code{umoci} version
-1.6.0.")
-       (license license:bsd-3)))))
-
 (define-public go-github-com-d4l3k-messagediff
   (package
     (name "go-github-com-d4l3k-messagediff")
