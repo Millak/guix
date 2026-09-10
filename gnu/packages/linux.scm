@@ -1380,17 +1380,25 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define default-linux-debian-initrd-modules
   ;; Default set of modules that need to be available in the initrd when
   ;; booting Linux-debian.
-  (let* ((generic `("ext4" "crc32c_generic"                    ; Compiled as a module by 'CONFIG_EXT4_FS=m'.
+  (let* ((generic `("ahci"                                     ;for SATA controllers
+                    "nvme"                                     ;for NVMe controllers
+                    "ext4" "crc32c_generic"                    ;compiled as a module by 'CONFIG_EXT4_FS=m'.
                     "usb-storage" "uas"                        ;for the installation image etc.
                     "usbhid" "hid-generic"                     ;keyboards during early boot
+                    "mmc_block"                                ;for MMC block device driver
                     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
                     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
                     ,@virtio-modules))
+         (_86 (cons*
+               "hid-apple"
+               "pata_atiixp" ;for ATA controllers
+               "isci"
+               generic))
          (others (cons*
                   "hid-apple"
                   generic)))
-    `(("x86_64-linux"      . ,others)
-      ("i686-linux"        . ,others)
+    `(("x86_64-linux"      . ,_86)
+      ("i686-linux"        . ,_86)
       ("armhf-linux"       . ,others)
       ("aarch64-linux"     . ,others)
       ("mips64el-linux"    . ,others)
