@@ -6957,7 +6957,7 @@ authentication through Negotiate mechanism (see
 (define-public go-github-com-dropbox-dropbox-sdk-go-unofficial-v6
   (package
     (name "go-github-com-dropbox-dropbox-sdk-go-unofficial-v6")
-    (version "6.0.5")
+    (version "6.6.1")
     (source
      (origin
        (method git-fetch)
@@ -6966,7 +6966,7 @@ authentication through Negotiate mechanism (see
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09hjqglxr51qhg522r2m7k9hbv0sghcjync089f6by5mrl0ks4f4"))))
+        (base32 "0lqnqhas4flj2x306x36avz78ngzpcz83ihv7r2j0f14p8i6fssn"))))
     (build-system go-build-system)
     (arguments
      (list
