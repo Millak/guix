@@ -394,6 +394,44 @@ implementation of the kernel-userspace communication protocol, and does not
 use the C library from the project called FUSE.")
     (license (list license:bsd-2 license:bsd-3 license:hpnd))))
 
+(define-public go-buf-build-go-protoyaml
+  (package
+    (name "go-buf-build-go-protoyaml")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bufbuild/protoyaml-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "114mc47jzsn5qhc0jf0nm6md37pg2givsfywrvsalhg9id5m31f7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "buf.build/go/protoyaml"
+      #:embed-files #~(list "authoring.tmpl")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
+           go-buf-build-go-protovalidate
+           go-go-yaml-in-yaml-v3
+           go-google-golang-org-protobuf))
+    (home-page "https://buf.build/go/protoyaml")
+    (synopsis "Marshal and unmarshal Protobuf as YAML")
+    (description
+     "This package rovides fine-grained error details with file, line, column
+and snippet information.
+
+ProtoYAML returns either nil or an error with a detailed message.  For every
+error found in the file, the error message includes the file name (if Path is
+set on UnmarshalOptions), line number, column number, and snippet of the YAML
+that caused the error.")
+    (license license:asl2.0)))
+
 (define-public go-charm-land-bubbles-v2
   (package
     (name "go-charm-land-bubbles-v2")
