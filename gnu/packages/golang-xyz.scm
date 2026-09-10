@@ -26166,7 +26166,7 @@ composable way such that accurate error can be reasoned about.")
 (define-public go-github-com-openprinting-goipp
   (package
     (name "go-github-com-openprinting-goipp")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -26175,7 +26175,7 @@ composable way such that accurate error can be reasoned about.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p05dk37l393byvjanvi3ipqcax320vf3qynlzazm7czzzlw448h"))))
+        (base32 "0s5psffy5n4lkg9abfmfwajmrlx0ncn5qvih8xjlabrj8w01qdih"))))
     (build-system go-build-system)
     (arguments
      (list
