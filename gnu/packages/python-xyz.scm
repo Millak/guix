@@ -42520,6 +42520,27 @@ The @file{.whl} file extension is matched case-insensitively.
 @end itemize")
     (license license:expat)))
 
+(define-public python-wheezy-template
+  (package
+    (name "python-wheezy-template")
+    (version "3.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/akornatskyy/wheezy.template")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ky0j2d5znsx4pxb2szbpmxg6qw71134n4x5y22fiiicbbw8bm49"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-pytest))
+    (home-page "https://github.com/akornatskyy/wheezy.template")
+    (synopsis "Lightweight template library")
+    (description "This package provides a lightweight template library which
+aims to be compact, expressive, intuitive and fast.")
+    (license license:expat)))
+
 (define-public python-whenever
   (package
     (name "python-whenever")
