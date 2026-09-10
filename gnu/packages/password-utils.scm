@@ -1604,13 +1604,13 @@ separately.")
 (define-public cpass
   (package
     (name "cpass")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cpass" version))
               (sha256
                (base32
-                "1zp3a8mgqxn916fzj1v2yhgnl7v6s0vnd0qcghqs3qq648qmlwr5"))))
+                "010bf5dpcg0vc9wsay63nhn2wn5in2v40c3jn94d9qmxl67kqmn8"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ;no tests
