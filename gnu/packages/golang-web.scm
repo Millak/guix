@@ -24088,6 +24088,42 @@ interact with GitLab in a simple and uniform way.")
          #~(modify-phases #$phases
              (delete 'remove-examples))))))))
 
+(define-public go-gitlab-com-gitlab-org-api-client-go-v2
+  (package
+    (inherit go-gitlab-com-gitlab-org-api-client-go)
+    (name "go-gitlab-com-gitlab-org-api-client-go-v2")
+    (version "2.64.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/gitlab-org/api/client-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bca73i2pqq0ik1rzhxwix9wcriwc5avq8l1rwvjqa2ks95ac14x"))))
+    (arguments
+     (list
+      #:import-path "gitlab.com/gitlab-org/api/client-go/v2"
+      #:embed-files #~(list "authoring.tmpl")
+      #:test-subdirs
+      ;; Run test which do not require network access.
+      #~(list "config" "gitlaboauth2" "internal/graphql"
+              "internal/graphqlfields" "testing")))
+    (propagated-inputs
+     (list go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
+           go-buf-build-go-protovalidate
+           go-buf-build-go-protoyaml
+           go-github-com-google-go-querystring
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-makenowjust-heredoc-v2
+           go-github-com-zalando-go-keyring
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-oauth2
+           go-golang-org-x-time
+           go-google-golang-org-protobuf))))
+
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
