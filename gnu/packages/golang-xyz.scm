@@ -33173,7 +33173,7 @@ anti-fragmentation protection.")
 (define-public go-github-com-vbatts-go-mtree
   (package
     (name "go-github-com-vbatts-go-mtree")
-    (version "0.5.4")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -33182,7 +33182,7 @@ anti-fragmentation protection.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18m6dlhl9kl0wy0dficc5yy75qj58z315bcnaypgrm877vmzad9h"))
+        (base32 "0xa41bzdi4pxl2iysmnd79zmrapiczfsagrd8xqiricqgin75dih"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -33191,7 +33191,8 @@ anti-fragmentation protection.")
      (list
       #:import-path "github.com/vbatts/go-mtree"))
     (native-inputs
-     (list go-github-com-davecgh-go-spew))
+     (list go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-fatih-color
            go-github-com-sirupsen-logrus
