@@ -51,7 +51,7 @@
 (define-public ipp-usb
   (package
     (name "ipp-usb")
-    (version "0.9.28")
+    (version "0.9.34")
     (source
      (origin
        (method git-fetch)
@@ -60,7 +60,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068rfy8arjxhgwll46bfq0x3ypi05qjd6gv0zqynfrk2zcwn4f3y"))
+        (base32 "1ks5cmyrdcrgfsdkn9r7pid9j33mzkb4bivvsw0hfzac1pqmy5p3"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
