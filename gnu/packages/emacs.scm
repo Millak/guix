@@ -838,6 +838,7 @@ editor (with wide ints)" )
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
+(define-public emacs-next-lucid (emacs->emacs-next emacs-lucid))
 
 (define-public guile-emacs
   (let ((upstream-version "31.0.50")
