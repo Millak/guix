@@ -2111,7 +2111,7 @@ names.")
 (define-public hydra
   (package
     (name "hydra")
-    (version "9.6")
+    (version "9.7")
     (home-page "https://github.com/vanhauser-thc/thc-hydra")
     (source
      (origin
@@ -2122,7 +2122,7 @@ names.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "119ybvrs6yllycpwdlmmg4jsgfh7n2bq16vv8jcxlfmshs3wab8d"))))
+         "13l0kfi97mmiizk0j68wyfmwrr9hiz48s4rxc8crjd1zv75lg0z9"))))
     (build-system gnu-build-system)
     (arguments
      (list
