@@ -778,16 +778,16 @@ age, and PGP.")
 (define-public ssh-to-age
   (package
     (name "ssh-to-age")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Mic92/ssh-to-age")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f8s8k8sbdrifklspcc83rjp290v7mrqqp9jwg02dj2mm7iy2bfj"))))
+        (base32 "1j5hyqpik25zgdan8vp3c13fii4pn640xhf2qd6wg64fj28zxrcg"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
