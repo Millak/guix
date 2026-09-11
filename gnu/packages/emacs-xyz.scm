@@ -171,6 +171,7 @@
 ;;; Copyright © 2026 Julian Flake <julian@flake.de>
 ;;; Copyright © 2026 John Haman <mail@johnhaman.org>
 ;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
+;;; Copyright © 2026 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,6 +214,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages chez)
+  #:use-module (gnu packages chicken)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
@@ -1466,6 +1468,90 @@ communicating with LLM agents.")
      "This package offers a native comint shell experience to interact with any agent
 powered by @uref{https://agentclientprotocol.com/, Agent Client Protocol} (ACP).")
     (license license:gpl3+)))
+
+(define-public emacs-geiser-chicken
+  (let ((commit "ba0c16df8ce21f1722e27e4591656c9b64fafdff")
+        (revision "0"))
+    (package
+      (name "emacs-geiser-chicken")
+      (version (git-version "0.17" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/geiser/chicken")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02dqjly5qms6kxivw1al1l6kzjs7gblb2xv1f2ikhkab3mpxrs9x"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons "^src/" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'wrap-csi
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((dirs (search-path-as-list
+                              '("var/lib/chicken/12")
+                              (list
+                               #$@(map cadr (package-inputs this-package)))))
+                       (doc-dir (string-append
+                                 #$(this-package-input "chicken-doc")
+                                 "/share/doc-db"))
+                       (wrapped-csi (string-append #$output "/libexec/csi")))
+                  (mkdir-p (dirname wrapped-csi))
+                  (with-output-to-file wrapped-csi
+                    (lambda _
+                      (format (current-output-port) "#!~a
+export CHICKEN_REPOSITORY_PATH=~a${CHICKEN_REPOSITORY_PATH:+:}$CHICKEN_REPOSITORY_PATH
+export CHICKEN_DOC_REPOSITORY=~a
+exec ~a \"$@\""
+                              (search-input-file inputs "/bin/sh")
+                              (string-join dirs ":")
+                              doc-dir
+                              (search-input-file inputs "bin/csi"))))
+                  (chmod wrapped-csi #o555))))
+            (add-after 'wrap-csi 'patch-geiser-chicken-binary
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "geiser-chicken.el"
+                  (("\\(t \"csi\")")
+                   (format #f "(t ~s)"
+                           (string-append #$output "/libexec/csi"))))))
+            (add-after 'make-autoloads 'patch-autoloads
+              (lambda _
+                (substitute* "geiser-chicken-autoloads.el"
+                  ;; Activating implementations fails when Geiser is not yet
+                  ;; loaded, so let's defer that until it is.
+                  (("\\(geiser-activate-implementation .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))
+                  (("\\(geiser-implementation-extension .*\\)" all)
+                   (string-append
+                    "(eval-after-load 'geiser-impl '" all ")"))))))))
+      (inputs
+       (list bash-minimal
+             chicken
+             chicken-apropos
+             chicken-check-errors
+             chicken-doc
+             chicken-fmt
+             chicken-matchable
+             chicken-srfi-1
+             chicken-srfi-13
+             chicken-srfi-14
+             chicken-srfi-18
+             chicken-srfi-69
+             chicken-sxml-transforms
+             chicken-symbol-utils))
+      (propagated-inputs
+       (list emacs-geiser))
+      (home-page "https://www.nongnu.org/geiser/")
+      (synopsis "Chicken Scheme support for Geiser")
+      (description
+       "This package adds support for the Chicken Scheme implementation to
+Geiser, a generic Scheme interaction mode for the GNU Emacs editor.")
+      (license license:bsd-3))))
 
 (define-public emacs-geiser-guile
   (package
