@@ -846,6 +846,52 @@ with the @command{module} command commonly found on @acronym{HPC,
 high-performance computing} clusters.")
     (license license:gpl3+)))
 
+(define-public guix-package-version-history
+  (let ((commit "e5dc46b7f1b944cde8cd964ac060510003cf45ee")
+        (revision "0"))
+    (package
+      (name "guix-package-version-history")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url
+                 "https://codeberg.org/guix-extensions/package-version-history.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mqmk4fdrlhvv0ajx07180li53lam8pjrr8hryw2jzmh53df4j3s"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:scheme-file-regexp
+        #~(lambda (file stat)
+            (and ((file-name-predicate #$default-scheme-file-regexp)
+                  file stat)
+                 (not ((file-name-predicate "^(guix|channels|manifest)\\.scm$")
+                       file stat))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'move-to-extension-directory
+              (lambda _
+                (with-directory-excursion #$output
+                  (mkdir-p "share/guix/extensions/1.5/guix/extensions")
+                  (rename-file (string-append "share/guile/site/"
+                                              (target-guile-effective-version)
+                                              "/guix/extensions/package-version-history.scm")
+                               "share/guix/extensions/1.5/guix/extensions/package-version-history.scm")))))))
+      (native-inputs (list guix))
+      (inputs (list (lookup-package-input guix "guile")))
+      (home-page
+       "https://codeberg.org/guix-extensions/package-version-history")
+      (synopsis "Find commits providing a given package version")
+      (description
+       "This extension provides the @command{guix package-version-history}
+command, which allows you to finds the commits providing a given package
+version, or several package versions at once.")
+      (license license:gpl3+))))
+
 (define-public guix-removal-reporter
   (package
     (name "guix-removal-reporter")
