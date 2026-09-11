@@ -8107,8 +8107,46 @@ on:
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build pyproject-build-system)
                   (guix build utils))
-      ;; ;; TODO: Package tests deps.
-      #:tests? #f
+      ;; tests: 204 passed, 32 deselected, 1 warning
+      #:test-flags
+      #~(list "--pyargs" "mocpy"
+              ;; Network access is required to fetch test data.
+              "--deselect=moc/moc.py::mocpy.moc.moc.MOC.from_ivorn"
+              "--deselect=moc/moc.py::mocpy.moc.moc.MOC.from_vizier_table"
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    test))
+                      (list "test_abstract_moc.py::test_write"
+                            "test_moc.py::test_degrade_to_order"
+                            "test_moc.py::test_from_fits_image_without_cdelt"
+                            "test_moc.py::test_from_fits_images_2"
+                            "test_moc.py::test_from_fits_old"
+                            "test_moc.py::test_from_ivorn"
+                            (string-append "test_moc.py::test_from_valued_"
+                                           "healpix_cells_bayestar")
+                            (string-append "test_moc.py::test_from_valued_"
+                                           "healpix_cells_bayestar_and_split")
+                            "test_moc.py::test_from_vizier"
+                            "test_moc.py::test_moc_complement_consistency"
+                            "test_moc.py::test_moc_consistent_with_aladin"
+                            "test_moc.py::test_moc_from_fits"
+                            "test_moc.py::test_moc_from_fits_image"
+                            "test_moc.py::test_moc_from_fits_images"
+                            "test_moc.py::test_moc_from_fits_url"
+                            "test_moc.py::test_moc_serialize_to_fits"
+                            "test_moc.py::test_moc_serialize_to_json"
+                            "test_moc.py::test_mpl_border"
+                            "test_moc.py::test_mpl_fill"
+                            "test_moc.py::test_probability_in_multiordermap"
+                            "test_sfmoc.py::test_read_fits_file"
+                            "test_stmoc.py::test_difference_decals"
+                            "test_stmoc.py::test_intersection_decals"
+                            "test_stmoc.py::test_max_depth"
+                            "test_stmoc.py::test_min_max_times"
+                            "test_stmoc.py::test_query_time"
+                            "test_stmoc.py::test_serialization"
+                            "test_stmoc.py::test_stmoc_from_url"
+                            "test_stmoc.py::test_union_decals"
+                            "test_tmoc.py::test_tmoc_from_time_ranges")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-cargo-build-system
@@ -8129,6 +8167,7 @@ on:
               (delete-file-recursively "python/mocpy"))))))
     (native-inputs
      (list maturin
+           python-pytest
            rust
            (list rust "cargo")))
     (inputs (cargo-inputs 'python-mocpy))
@@ -8139,7 +8178,7 @@ on:
            python-requests
            python-regions
            python-matplotlib
-           ;; python-cdshealpix  ;not packaged yet in Guix
+           python-cdshealpix
            python-networkx))
     (home-page "https://cds-astro.github.io/mocpy/")
     (synopsis "Multi-Order Coverage maps")
