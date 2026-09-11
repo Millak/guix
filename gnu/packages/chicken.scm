@@ -457,6 +457,36 @@ While trying to improve the way records can be defined, this implementation
 is not hygienic.")
     (license license:bsd-3)))
 
+;; The chicken-doc-admin package uses chicken-doc and chicken-doc contains an
+;; index built by chicken-doc-admin, so we first build chicken-doc without said
+;; database.
+(define chicken-doc-bare
+  (package
+    (name "chicken-doc-bare")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "chicken-doc" version))
+       (sha256
+        (base32 "1iklziczpzb6rljjjc7ar7ba6lbdzfn7f5wx2pv3jrj7w3vdy4f5"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "chicken-doc"))
+    (propagated-inputs
+     (list chicken-matchable
+           chicken-fmt
+           chicken-sxml-transforms
+           chicken-srfi-1
+           chicken-srfi-13
+           chicken-srfi-69))
+    (home-page "https://wiki.call-cc.org/egg/chicken-doc")
+    (synopsis "Explore Chicken documentation locally")
+    (description "This package provides facilities to explore CHICKEN
+documentation from the command-line and from the REPL.  It also provides an API
+to access this documentation from your own programs.")
+    (license license:bsd-3)))
+
 (define-public chicken-fmt
   (package
     (name "chicken-fmt")
