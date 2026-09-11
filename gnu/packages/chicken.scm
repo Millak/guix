@@ -749,3 +749,37 @@ SSAX/SXML Sourceforge project.")
     (synopsis "Gloss & Runner for test egg")
     (description "This egg provides a glossary and a runner for the test egg.")
     (license license:expat)))
+
+(define-public chicken-uri-generic
+  (package
+    (name "chicken-uri-generic")
+    (version "4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "uri-generic" version))
+       (sha256
+        (base32 "0npnmr0v32k0zpr87jswhwipm973bsvz67rsq96n7bh9a6ixylxm"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list
+      #:egg-name "uri-generic"))
+    (native-inputs (list chicken-test))
+    (propagated-inputs
+     (list
+      chicken-matchable
+      chicken-srfi-1
+      chicken-srfi-14))
+    (home-page "https://wiki.call-cc.org/egg/uri-generic")
+    (synopsis "URI generic syntax (RFC 3986) parsing and manipulation")
+    (description "The uri-generic library contains procedures for parsing and
+manipulation of Uniform Resource Identifiers (RFC 3986).  It is intended to
+conform more closely to the RFC, and uses combinator parsing and character
+classes rather than regular expressions.
+
+This library should be considered to be a basis for creating scheme-specific
+URI parser libraries.  This library only parses the generic components from a
+URI.  Any specific library can further parse subcomponents.  For this reason,
+encoding and decoding of percent-encoded characters is not done automatically.
+This should be handled by specific URI scheme implementations.")
+    (license license:bsd-3)))
