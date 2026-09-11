@@ -589,6 +589,38 @@ these formatters efficiently without resorting to capturing and manipulating
 intermediate strings.")
     (license license:bsd-3)))
 
+(define-public chicken-getopt-long
+  (package
+    (name "chicken-getopt-long")
+    (version "4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "getopt-long" version))
+       (sha256
+        (base32 "054xnz9fsdk30plzw9rp944s03g2azrmnwcdji6d5wwx10v773hd"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "getopt-long"))
+    (native-inputs
+     (list chicken-matchable
+           chicken-test))
+    (propagated-inputs
+     (list chicken-matchable
+           chicken-srfi-1
+           chicken-srfi-13
+           chicken-srfi-14))
+    (home-page "https://wiki.call-cc.org/egg/getopt-long")
+    (synopsis "Parse command line options")
+    (description "The getopt-long library implements command line option
+parsing, in the spirit of the GNU C library function getopt_long.  Both
+long and short options are supported.
+
+The theory is that people should be able to constrain the set of options
+they want to process using a grammar, rather than some arbitrary
+structure.  The grammar makes the option descriptions easy to read.")
+    (license license:lgpl3)))
+
 (define-public chicken-html-parser
   (package
     (name "chicken-html-parser")
