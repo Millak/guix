@@ -457,6 +457,34 @@ While trying to improve the way records can be defined, this implementation
 is not hygienic.")
     (license license:bsd-3)))
 
+(define-public chicken-fmt
+  (package
+    (name "chicken-fmt")
+    (version "0.8.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "fmt" version))
+       (sha256
+        (base32 "1fbsg33hjkkf4kb98358brjaykcahq48jg359mbn2v6260azwj7p"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "fmt"))
+    (native-inputs
+     (list chicken-test))
+    (propagated-inputs
+     (list
+      chicken-srfi-1
+      chicken-srfi-13
+      chicken-srfi-69))
+    (home-page "https://wiki.call-cc.org/egg/fmt")
+    (synopsis "Combinator formatting library")
+    (description "A library of procedures for formatting Scheme objects to
+text in various ways, and for easily concatenating, composing and extending
+these formatters efficiently without resorting to capturing and manipulating
+intermediate strings.")
+    (license license:bsd-3)))
+
 (define-public chicken-http-curl
   (package
     (name "chicken-http-curl")
