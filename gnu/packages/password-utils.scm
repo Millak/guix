@@ -1540,16 +1540,16 @@ from password-store and gopass files.")
 (define-public browserpass-native
   (package
     (name "browserpass-native")
-    (version "3.1.0")
+    (version "3.1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/browserpass/browserpass-native")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1if72k526sqqxnw250qwxvzwvh1w0k8ag4p4xq3442b22hywx72i"))))
+        (base32 "1xskmb7jr42y000hab624dawri8lp4dyaq07j3cbfd6kphx7kjnf"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/browserpass/browserpass-native"
