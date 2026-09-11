@@ -818,6 +818,34 @@ CHICKEN Scheme, along with
     (description #f)
     (license license:bsd-3)))
 
+(define-public chicken-svnwiki-sxml
+  (package
+    (name "chicken-svnwiki-sxml")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "svnwiki-sxml" version))
+       (sha256
+        (base32 "10nm8lpbdnjj41r3cmvlf4izk309f9aysp4d9f3sj52i7pq1v80z"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "svnwiki-sxml"))
+    (native-inputs
+     (list chicken-test))
+    (propagated-inputs
+     (list chicken-matchable
+           chicken-html-parser
+           chicken-sxml-transforms
+           chicken-srfi-13
+           chicken-srfi-1
+           chicken-regex))
+    (home-page "https://wiki.call-cc.org/egg/svnwiki-sxml")
+    (synopsis "Parse svnwiki to sxml")
+    (description "This extension provides a parser which reads in text in
+svnwiki format and converts it into an abstract SXML representation.")
+    (license license:expat)))
+
 (define-public chicken-sxml-transforms
   (package
     (name "chicken-sxml-transforms")
