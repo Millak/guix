@@ -846,6 +846,66 @@ with the @command{module} command commonly found on @acronym{HPC,
 high-performance computing} clusters.")
     (license license:gpl3+)))
 
+(define-public guix-explorer
+  (let let
+      ((commit "f821e3ee5d2118719b68574ce87c5bb6fc92acb2")
+       (revision "0"))
+    (package
+      (name "guix-explorer")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/guix-extensions/explorer")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18nsciqfvi6i3kgah3jp702hx8kwy9cvd7z76wiy7rcvli0dv1xk"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:scheme-file-regexp
+        #~(lambda (file stat)
+            (and ((file-name-predicate #$default-scheme-file-regexp)
+                  file stat)
+                 (not ((file-name-predicate "^(guix|channels|manifest)\\.scm$")
+                       file stat))))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; During the compilation of the '.go' files the static content
+            ;; will be recorded to be in the build directory.  Here we hard
+            ;; code it to be in the installation so it can be found at
+            ;; runtime.
+            (add-before 'build 'hard-code-static-content
+              (lambda _
+                (substitute* "guix/extensions/explore.scm"
+                  (("\\(dirname \\(current-filename\\)\\)")
+                   (string-append "\""
+                                  #$output "/share/guix/extensions/1.5/guix/extensions" "\"")))))
+            (add-after 'build 'move-to-extension-directory
+              (lambda _
+                (let ((extension-dir (string-append #$output
+                                                    "/share/guix/extensions/1.5/guix/extensions")))
+                  (mkdir-p extension-dir)
+                  (rename-file (string-append #$output "/share/guile/site/"
+                                              (target-guile-effective-version)
+                                              "/guix/extensions/explore.scm")
+                               (string-append extension-dir "/explore.scm"))
+                  (for-each (lambda (file)
+                              (install-file (string-append "guix/extensions/"
+                                                           file) extension-dir))
+                            '("code.css" "d3.v6.js" "graph.js" "style.css"))))))))
+      (native-inputs (list guix))
+      (inputs (list (lookup-package-input guix "guile")))
+      (home-page "https://codeberg.org/guix-extensions/explorer")
+      (synopsis "Interactively explore your Guix System configuration")
+      (description
+       "This extension provides the @command{guix explore} command, which
+allows you to navigate the services of your Guix System configuration and the
+connections among them.")
+      (license license:gpl3+))))
+
 (define-public guix-package-version-history
   (let ((commit "e5dc46b7f1b944cde8cd964ac060510003cf45ee")
         (revision "0"))
