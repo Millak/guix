@@ -576,6 +576,27 @@ macros.")
     (description #f)
     (license license:bsd-3)))
 
+(define-public chicken-regex
+  (package
+    (name "chicken-regex")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "regex" version))
+       (sha256
+        (base32 "1v6xpkd6s5y6svg106v721an27js7cz5cl2h9y88pmchhvl066mm"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "regex"))
+    (home-page "https://wiki.call-cc.org/egg/regex")
+    (synopsis "Compatibility library for old regular expression API")
+    (description "This extension provides the regular expression API that used
+to be available in CHICKEN releases before version 4.6.2.  It is a thin wrapper
+around the functionality provided by irregex and is mostly intended to keep old
+code working.")
+    (license license:bsd-3)))
+
 (define-public chicken-silex
   (package
     (name "chicken-silex")
