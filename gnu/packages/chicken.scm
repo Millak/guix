@@ -456,6 +456,36 @@ While trying to improve the way records can be defined, this implementation
 is not hygienic.")
     (license license:bsd-3)))
 
+(define-public chicken-intarweb
+  (package
+    (name "chicken-intarweb")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://code.more-magic.net/intarweb/snapshot/intarweb-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1sq7hkqcl0xly7i6d8f6vfvp6vhyd5jzq2gd1w9hzk2ha6mpibn3"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list
+      #:egg-name "intarweb"))
+    (native-inputs (list chicken-test))
+    (propagated-inputs
+     (list chicken-srfi-1
+           chicken-srfi-13
+           chicken-srfi-14
+           chicken-defstruct
+           chicken-uri-common
+           chicken-base64))
+    (synopsis "Intarweb is an advanced http library")
+    (home-page "https://code.more-magic.net/intarweb")
+    (description "Intarweb parses all headers into more useful Scheme values.  It
+serves as a low-level basis for http servers or clients.")
+    (license license:bsd-3)))
+
 (define-public chicken-iset
   (package
     (name "chicken-iset")
