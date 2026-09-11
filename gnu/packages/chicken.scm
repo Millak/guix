@@ -487,6 +487,41 @@ documentation from the command-line and from the REPL.  It also provides an API
 to access this documentation from your own programs.")
     (license license:bsd-3)))
 
+(define-public chicken-doc-admin
+  (package
+    (name "chicken-doc-admin")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ursetto/chicken-doc-admin")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xc648qn5v6qww4vz0q27rqvqzkrc8d7hrb580bglhnhj0w4r0pb"))
+       (patches (search-patches "chicken-doc-admin-port-to-chicken-6.patch"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "chicken-doc-admin"))
+    (propagated-inputs
+     (list chicken-doc-bare
+           chicken-matchable
+           chicken-html-parser
+           chicken-sxml-transforms
+           chicken-svnwiki-sxml
+           chicken-srfi-1
+           chicken-srfi-13
+           chicken-srfi-69))
+    (home-page "https://wiki.call-cc.org/egg/chicken-doc-admin")
+    (synopsis "Administer Chicken documentation locally")
+    (description "This package provides facilities to create and modify a
+CHICKEN documentation repository for chicken-doc.  It includes a
+command-line tool to convert egg documentation and manual pages from the
+CHICKEN wiki for use with chicken-doc.  It also provides an API for
+repository manipulation.")
+    (license license:bsd-3)))
+
 (define-public chicken-fmt
   (package
     (name "chicken-fmt")

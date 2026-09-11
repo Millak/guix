@@ -37,7 +37,7 @@
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 # Copyright © 2020, 2023, 2025, 2026 Tanguy Le Carrour <tanguy@bioneland.org>
 # Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-# Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
+# Copyright © 2020, 2026 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
 # Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 # Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 # Copyright © 2021 Greg Hogan <code@greghogan.com>
@@ -1107,6 +1107,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cassini-headers-memset.patch		\
   %D%/packages/patches/catdoc-CVE-2017-11110.patch		\
   %D%/packages/patches/chez-scheme-bin-sh.patch			\
+  %D%/packages/patches/chicken-doc-admin-port-to-chicken-6.patch \
   %D%/packages/patches/circos-remove-findbin.patch		\
   %D%/packages/patches/cdparanoia-fpic.patch			\
   %D%/packages/patches/cdrkit-libre-cross-compile.patch	\

@@ -1,0 +1,269 @@
+This makes the program comopile, which lets us build documentation, which in
+turn allows to use geiser-chicken.
+
+Upstreaming is pending.
+
+--- a/chicken-doc-admin-cmd.scm
++++ b/chicken-doc-admin-cmd.scm
+@@ -1,21 +1,12 @@
+ (module chicken-doc-admin-cmd (main)
++  (import (scheme base)
++	  (chicken base)
++	  (chicken platform)
++	  (chicken port)
++	  (chicken process-context)
+ 
+-(import scheme)
+-(cond-expand
+- (chicken-4
+-  (import chicken)
+-  (use chicken-doc-admin)
+-  (require-library chicken-doc)
+-  (import (only chicken-doc verify-repository))
+-  (use ports))
+- (else
+-  (import (chicken base)
+-          (chicken platform)
+-          (chicken port)
+-          (chicken process-context))
+-  (import chicken-doc-admin)
+-  (import (only chicken-doc verify-repository))
+-  ))
++	  chicken-doc-admin
++	  (only chicken-doc verify-repository))
+ 
+ (define (usage)
+   (with-output-to-port (current-error-port)
+diff --git a/chicken-doc-admin.egg b/chicken-doc-admin.egg
+index 518fc9f..10134f3 100644
+--- a/chicken-doc-admin.egg
++++ b/chicken-doc-admin.egg
+@@ -11,7 +11,6 @@
+               sxml-transforms
+               (svnwiki-sxml 0.2.12)
+               srfi-1 srfi-13 srfi-69
+-              regex
+               )
+ (components (extension chicken-doc-admin
+                        (source-dependencies "chicken-doc-parser.scm" "file-locking.scm")
+diff --git a/chicken-doc-admin.scm b/chicken-doc-admin.scm
+index 5cb65f6..494d091 100644
+--- a/chicken-doc-admin.scm
++++ b/chicken-doc-admin.scm
+@@ -3,10 +3,6 @@
+ (include "chicken-doc-parser.scm")
+ (include "file-locking.scm")
+ 
+-(cond-expand
+- (chicken-4 (use chicken-syntax))  ; for eggdoc eval
+- (else))
+-
+ (module chicken-doc-admin
+ ;; Used by chicken-doc-admin command
+ (refresh-id-cache
+@@ -21,7 +17,6 @@
+  man-filename->path       ; for chickadee
+  )
+ 
+-(import scheme)
+ 
+ ;; Chicken 5 support:
+ ;;  eggdoc parsing (-e) will not work:
+@@ -35,47 +30,38 @@
+ ;;  - For target mode, uses foreign function calls to get repo location. Would like to replace this with an actual
+ ;;    API. Also may not be worth it; functionality not likely used. Virtually no eggs install .wiki files,
+ ;;    and target mode is probably even less used. For host eggs, repository-path API is used.
+-
+-
+-;; FIXME: Remove regex dep, if possible. string-substitute and string-search have different APIs.
+ ;; FIXME: Remove foreign dep in C5, if we can get binary versions a standard way.
+-(cond-expand
+- (chicken-4
+-  (import chicken)
+-  (use chicken-doc)
+-  (use matchable regex srfi-69 posix data-structures files extras srfi-13 srfi-1)
+-  (import irregex)
+-  (import foreign)  ;; for parse-installed-eggs
+-  (use setup-download)
+-  (use ports)
+-  )
+- (else
+-  (import (chicken base)
+-          (chicken condition)
+-          (rename (chicken file)
+-                  (file-executable? file-execute-access?))   ; c4 compat
+-          (except (chicken file posix) file-lock/blocking)   ; 5.0.0 bugfix in file-locking.scm
+-          (chicken foreign)
+-          (chicken format)
+-          (rename (only (chicken io) read-list)
+-                  (read-list read-file)) ; c4 compat
+-          (chicken irregex)
+-          (chicken platform)
+-          (chicken pathname)
+-          (chicken port)
+-          (chicken pretty-print)
+-          (chicken process-context)
+-          (chicken sort)
+-          (chicken string)
+-          (chicken time))
+-  (import matchable srfi-1 srfi-13 srfi-69)
+-  (import chicken-doc)
+-  (import regex)
+-  (import chicken-doc-file-locking)
+-  )
+- )
++  (import (scheme base)
++	  (scheme file)
++	  (scheme char)
++	  (scheme write)
++	  (scheme eval)
++	  (scheme lazy)
++	  (scheme read)
++	  (chicken base)
++	  (chicken condition)
++	  (chicken file)
++	  (chicken file posix)
++	  (chicken foreign)
++	  (chicken format)
++	  (chicken io)
++	  (chicken irregex)
++	  (chicken platform)
++	  (chicken pathname)
++	  (chicken port)
++	  (chicken pretty-print)
++	  (chicken process-context)
++	  (chicken sort)
++	  (chicken string)
++	  (chicken time)
+ 
+-(import chicken-doc-parser)
++	  matchable
++	  srfi-1
++	  srfi-13
++	  srfi-69
++
++	  chicken-doc
++	  chicken-doc-parser)
+ 
+ ;;; Locking
+ 
+@@ -350,7 +336,7 @@
+            (condition-case
+             (with-cwd dir         ;; Change to eggdoc's basedir; may need local files
+                       (lambda ()       ;; with-cwd not visible in eval, so do it outside
+-                        (let ((doc (with-input-from-file file read-file))  ; c5 read-list expects a port
++                        (let ((doc (with-input-from-file file read-list))  ; c5 read-list expects a port
+                               (str (gensym 'str)))
+                           (eval `(begin
+                                    (use eggdoc) ; eggdoc-svnwiki loaded above
+@@ -419,7 +405,7 @@
+                     (and (parse-egg/svnwiki pathname path fts)
+                          (if node 'modified 'added))))))
+            ((and (directory? pathname)
+-                 (file-execute-access? pathname))
++                 (file-executable? pathname))
+             (with-cwd pathname          ;; Possibly trap and warn on directory change failure.
+                       (lambda ()
+                         (let* ((basename (pathname-file pathname))
+@@ -515,7 +501,7 @@
+        (let ((re:dir (irregex `(: bos ,(make-pathname dir ""))))) ; strip off dir name
+          (for-each (lambda (pathname)
+                      (let ((pretty-path
+-                            (string-substitute re:dir "" pathname)))
++                            (irregex-replace re:dir "" pathname)))
+                        (display pretty-path) (display " -> ") (flush-output)
+                        (let ((code (parse-one-egg pathname type root #f force?))) ; eggname printed in parse-egg/eggdoc
+                          (unless (eq? code 'skipped)
+@@ -625,9 +611,9 @@
+     (lambda (t)
+       (symbolify-list
+        ;; chicken 5 specific
+-       (cond ((string-search re:module-path t) =>
++       (cond ((irregex-search re:module-path t) =>
+               (lambda (search-result)
+-                (let ((path-string (cadr search-result)))
++                (let ((path-string (irregex-match-substring search-result 1)))
+                   (condition-case
+                    (map (lambda (x) (->string x))
+                         (with-input-from-string path-string read))
+@@ -640,7 +626,9 @@
+                                ": "
+                                ((condition-property-accessor 'exn 'arguments) exn))
+                         #f)))))
+-             ((string-search re:module t) => cdr) ; Module r5rs -> ("r5rs")
++             ((irregex-search re:module t) =>
++              (lambda (x)
++                (list (irregex-match-substring x 1)))) ; Module r5rs -> ("r5rs")
+              ((string=? t "Debugging")
+               '(chicken debugging))
+              ((string=? t "Extension tools")
+@@ -710,7 +698,9 @@
+              
+              ;; C4 specific
+              
+-             ((string-search re:unit t) => cdr) ; Unit tcp -> ("tcp")
++             ((irregex-search re:unit t) =>
++              (lambda (x)
++                (list (irregex-match-substring x 1)))) ; Unit tcp -> ("tcp")
+              ;; A few of these were moved to sections under other topics in C5,
+              ;; so any links to these left in the C5 manual will not resolve.
+              ((string=? t "Callbacks")
+diff --git a/chicken-doc-parser.scm b/chicken-doc-parser.scm
+index b54b2f9..8f46e4e 100644
+--- a/chicken-doc-parser.scm
++++ b/chicken-doc-parser.scm
+@@ -1,19 +1,9 @@
+ (module chicken-doc-parser (parse-svnwiki extract-definitions)
+ 
+-(import scheme)
+-(cond-expand
+- (chicken-4
+-  (import chicken)
+-  (use extras)
+-  (use ports)
+-  (use svnwiki-sxml)
+-  (require-library srfi-1)
+-  (import (only srfi-1 append-map)))
+- (else
+-  (import (chicken base))
+-  (import svnwiki-sxml)
+-  (import (only srfi-1 append-map))
+-  ))
++  (import (scheme base)
++	  (scheme file)
++	  svnwiki-sxml
++	  (only srfi-1 append-map))
+ 
+ ;; Read svnwiki format text file at pathname (or port) FN and
+ ;; parse to SXML, returning parsed sxml doc.
+diff --git a/file-locking.scm b/file-locking.scm
+index d50cb70..f7b394b 100644
+--- a/file-locking.scm
++++ b/file-locking.scm
+@@ -1,7 +1,3 @@
+-(cond-expand
+- (chicken-4) ; Module not needed nor expected for Chicken 4.
+- (else
+-  
+ (module chicken-doc-file-locking (file-lock/blocking)
+ 
+ ;; Implement fix #1565 for Chicken 5.0.0 in posixunix.scm:posix#file-lock/blocking (core rev 7729e51103).
+@@ -24,7 +20,7 @@
+ 
+ #>
+ #include <fcntl.h>
+-static C_TLS struct flock C_flock;
++static struct flock C_flock;
+ #define C_flock_setup(t, s, n) (C_flock.l_type = C_unfix(t), C_flock.l_start = C_num_to_int(s), C_flock.l_whence = SEEK_SET, C_flock.l_len = C_num_to_int(n), C_SCHEME_UNDEFINED)
+ #define C_flock_lockw(p)    C_fix(fcntl(fileno(C_port_file(p)), F_SETLKW, &C_flock))
+ <#
+@@ -66,6 +62,3 @@ static C_TLS struct flock C_flock;
+    (set! file-lock/blocking posix:file-lock/blocking)))   ; actually unimplemented on windows, but that's ok
+ 
+ )
+-
+-  
+-))
+-- 
+2.54.0
+
