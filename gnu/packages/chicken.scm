@@ -151,15 +151,14 @@ extensions.")
        (sha256
         (base32
          "0z05x7f154n9bgmainrsmncf5i6dil43r9ymr3rdgwbg4wnxmz4s"))))
-    ;; TODO do we really have to make these propagated?
-    ;; I don't know Chicken's module system well enough to tell
+    (native-inputs
+     (list chicken-test))
     (propagated-inputs
      (list
+      chicken-blob
       chicken-datatype
       chicken-srfi-1
       chicken-srfi-14))
-    (inputs
-     (list chicken-test))
     (build-system chicken-build-system)
     (arguments
      (list #:egg-name "agrep"))
