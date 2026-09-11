@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2021, 2022, 2024 Eric Bavier <bavier@posteo.net>
@@ -29867,7 +29867,7 @@ translating between quadkey and tile coordinates.")
   (package
     ;; This is a command-line tool, so no "python-" prefix.
     (name "jube")
-    (version "2.6.1")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -29875,7 +29875,7 @@ translating between quadkey and tile coordinates.")
              "http://apps.fz-juelich.de/jsc/jube/jube2/download.php?version="
              version))
        (sha256
-        (base32 "0r5d2gdqa0f4c468q3k25ycw1k2g76gg8fyiln4ni98fvfsbx3il"))
+        (base32 "1z7cz7z2awwc1mq18whs9p9n7476l4sg2nk6vy2xf97jidd512zy"))
        (file-name (string-append "jube-" version ".tar.gz"))))
     (build-system pyproject-build-system)
     (arguments
