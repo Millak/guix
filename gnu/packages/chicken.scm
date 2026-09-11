@@ -245,6 +245,25 @@ result in a cache in the user's $HOME directory.")
 RFC4648.")
     (license license:expat)))
 
+(define-public chicken-blob
+  (package
+    (name "chicken-blob")
+    (version "0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "chicken-blob" version))
+       (sha256
+        (base32 "0ng6zz7y8xz0w0gplsrd2rlrrjbcd5jgvj7jidr66c5pqwnq2ih2"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "chicken-blob"))
+    (home-page "https://wiki.call-cc.org/man/5/Module%20%28chicken%20blob%29")
+    (synopsis "Replacement for CHICKEN 5's 'blob' module")
+    (description "This module provides a shim around the bytevector procedures
+to let old code work after blobs have been renamed to bytevectors in CHICKEN 6.")
+    (license license:expat)))
+
 (define-public chicken-bytevector-utils
   (package
     (name "chicken-bytevector-utils")
