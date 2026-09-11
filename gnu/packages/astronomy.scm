@@ -4302,6 +4302,91 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-cdshealpix
+  (package
+    (name "python-cdshealpix")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cds-astro/cds-healpix-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1168w75bq7xhrdd4wrhr84ffdkw8xfwi7pngv6kv4dpc5c5p729y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      ;; tests: 137 passed, 18 deselected, 18 warnings
+      #:test-flags
+      #~(list "--pyargs" "cdshealpix"
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "test_benchmark_healpix.py"
+                                                    test))
+                      ;; Benchmark tests.
+                      (list "::test_lonlat_to_healpix_broadcast"
+                            "::test_lonlat_to_healpix_broadcast_multithread"
+                            "::test_lonlat_to_healpix_astropy_broadcast"
+                            "::test_lonlat_to_healpix"
+                            "::test_lonlat_to_healpix_multithread"
+                            "::test_lonlat_to_healpix_astropy"
+                            "::test_healpix_to_lonlat_broadcast"
+                            "::test_healpix_to_lonlat_broadcast_multithread"
+                            "::test_healpix_to_lonlat_astropy_broadcast"
+                            "::test_healpix_to_lonlat"
+                            "::test_healpix_to_lonlat_multithread"
+                            "::test_healpix_to_lonlat_astropy"
+                            "::test_healpix_vertices_lonlat"
+                            "::test_healpix_vertices_lonlat_multithread"
+                            "::test_healpix_vertices_lonlat_astropy"
+                            "::test_healpix_neighbours"
+                            "::test_cone_search"
+                            "::test_cone_search_astropy")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "python/cdshealpix"))))))
+    (native-inputs
+     (list maturin
+           python-astropy-healpix
+           python-matplotlib
+           python-pytest
+           rust
+           (list rust "cargo")))
+    (inputs
+     (cargo-inputs 'python-cdshealpix))
+    (propagated-inputs
+     (list python-astropy))
+    (home-page "https://github.com/cds-astro/cds-healpix-python")
+    (synopsis "HEALPix manipulation library")
+    (description
+     "This package provides a HEALPix manipulation library.
+
+HEALPix describes a partionning of the sky into several equal area cells.
+This partionning is hierarchical meaning that each cell has a depth associated
+to it.")
+    (license license:bsd-3)))
+
 (define-public python-cesium
   (package
     (name "python-cesium")
