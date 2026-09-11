@@ -380,15 +380,18 @@ from Scheme.")
   (package
     (name "chicken-crypto-tools")
     (version "1.4")
-    (source (origin
-              (method url-fetch)
-              (uri (egg-uri "crypto-tools" version))
-              (sha256
-               (base32
-                "0ajf0qfnhp99f4x1dll2fhlxrsxamgrrwyksc7rrym77xmv8f1pd"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "crypto-tools" version))
+       (sha256
+        (base32
+         "0ajf0qfnhp99f4x1dll2fhlxrsxamgrrwyksc7rrym77xmv8f1pd"))))
     (build-system chicken-build-system)
     (arguments '(#:egg-name "crypto-tools"))
-    (home-page "https://wiki.call-cc.org/egg/crypto-tools")
+    (propagated-inputs
+     (list chicken-blob))
+    (home-page "https://wiki.call-cc.org/eggref/5/crypto-tools")
     (synopsis "Useful cryptographic primitives")
     (description "The crypto-tools egg implements useful cryptographic
 primitives.  More specifically, provided are:
