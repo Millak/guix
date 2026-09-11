@@ -485,6 +485,32 @@ these formatters efficiently without resorting to capturing and manipulating
 intermediate strings.")
     (license license:bsd-3)))
 
+(define-public chicken-html-parser
+  (package
+    (name "chicken-html-parser")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "html-parser" version))
+       (sha256
+        (base32 "1arabikig0g16izcnqpycdmcw5ffw12yfk4rkcgzfpzf4g25ppya"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "html-parser"))
+    (native-inputs (list chicken-test))
+    (propagated-inputs (list chicken-srfi-13))
+    (home-page "https://wiki.call-cc.org/egg/html-parser")
+    (synopsis "Permissive, scalable HTML parser")
+    (description "This library is intended as a permissive HTML parser for
+people who prefer the scalable interface described in Oleg Kiselyov's SSAX
+parser, as well as providing simple convenience utilities.  It correctly
+handles all invalid HTML, inserting virtual starting and closing tags as
+needed to maintain the proper tree structure needed for the foldts down/up
+logic.  A major goal of this parser is bug-for-bug compatibility with the
+way common web browsers parse HTML.")
+    (license license:bsd-3)))
+
 (define-public chicken-http-curl
   (package
     (name "chicken-http-curl")
