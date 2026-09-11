@@ -513,7 +513,7 @@ in an encrypted database, which is locked with a master key or key file.")
 (define-public pwsafe
   (package
     (name "pwsafe")
-    (version "3.70.1")
+    (version "3.72.2")
     (home-page "https://www.pwsafe.org/")
     (source
      (origin
@@ -522,7 +522,7 @@ in an encrypted database, which is locked with a master key or key file.")
              (url "https://github.com/pwsafe/pwsafe")
              (commit version)))
        (sha256
-        (base32 "1j3fxxbwbyhqhaqxx8jzfwq9ahx3ixh2f9zvxgcj0gs4hicaifa9"))
+        (base32 "1qkjjq2qdlvyypsqcx0j2aikrh0s7yq1w73n8snq7i9ymlxi4fnk"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -530,7 +530,7 @@ in an encrypted database, which is locked with a master key or key file.")
       #:configure-flags
       #~(list "-DGTEST_BUILD=OFF")))
     (native-inputs
-     (list gettext-minimal googletest-1.13 perl python-wrapper zip))
+     (list gettext-minimal googletest perl python-wrapper zip))
     (inputs
      (list curl
            file
