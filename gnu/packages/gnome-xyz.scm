@@ -30,6 +30,7 @@
 ;;; Copyright © 2025 Trevor Arjeski <tmarjeski@gmail.com>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
+;;; Copyright © 2026 Nemin <nemin@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -67,6 +69,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -2526,3 +2529,45 @@ way they prefer.")
       (description
        "@code{blackbox-terminal} is an elegant and customizable terminal for GNOME.")
       (license license:gpl3+))))
+
+(define-public ptyxis
+  (package
+    (name "ptyxis")
+    (version "50.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://gitlab.gnome.org/chergert/ptyxis/-/archive/" version
+             "/ptyxis-" version ".tar.gz"))
+       (sha256
+        (base32 "0fd337i83zj5948q19pa419cvb7avc713bb3pph8kjzvs6460wx4"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
+    (native-inputs
+     (list cmake-minimal
+           desktop-file-utils
+           gettext-minimal
+           (list glib "bin")
+           pkg-config))
+    (inputs
+     (list gtk
+           json-glib
+           libadwaita
+           libportal
+           vte))
+    (home-page "https://gitlab.gnome.org/chergert/ptyxis")
+    (synopsis "Container-oriented terminal for GNOME")
+    (description
+     "Ptyxis is a terminal emulator with an emphasis on multi-tabbed,
+container-oriented workflows.")
+    (license license:gpl3+)))
