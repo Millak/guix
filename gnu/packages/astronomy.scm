@@ -14307,6 +14307,36 @@ Features:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public termtrack
+  (package
+    (name "termtrack")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/trehn/termtrack")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g0q793lmzpv38yccp6951g4cg9rn4vby90f2dp405fl7l7cq5cx"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))   ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list python-pillow
+           python-pyshp
+           python-requests
+           python-skyfield))
+    (home-page "https://github.com/trehn/termtrack")
+    (synopsis "Track satellites in your terminal")
+    (description
+     "@code{termtrack} is @acronym{CLI, Command Line Interface} which tracks
+orbiting objects (such as the International Space Station) directly in
+terminal.")
+    (license license:gpl3)))
+
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
   (let ((commit "ac48210ec24432ec3ad330c4203e7eb21876a921")
