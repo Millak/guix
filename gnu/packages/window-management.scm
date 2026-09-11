@@ -3739,7 +3739,7 @@ and lightweight environment without sacrificing its appearance.")
 (define-public wcm
   (package
     (name "wcm")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -3748,11 +3748,13 @@ and lightweight environment without sacrificing its appearance.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x66w1gzcji3pc0zr0lyark596r7ikshfdkjkx4ccf46pz0mi01v"))))
+        (base32 "1y00v4fyrapdrj5w587qgfpp2vd26gglr0rhqbbk2h60vl7ja5sa"))))
     (build-system meson-build-system)
     (native-inputs (list cmake-minimal
+                         gettext-minimal
                          pkg-config))
     (inputs (list cairo
+                  fmt
                   gtkmm-3
                   glm
                   libevdev
