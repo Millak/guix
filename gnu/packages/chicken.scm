@@ -22,6 +22,7 @@
 (define-module (gnu packages chicken)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages curl)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -454,6 +455,35 @@ Languages} by Friedman, Wand, and Haynes.")
     (description "This module provides an alternative way to define records.
 While trying to improve the way records can be defined, this implementation
 is not hygienic.")
+    (license license:bsd-3)))
+
+(define-public chicken-http-curl
+  (package
+    (name "chicken-http-curl")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://forgejo.rolando.cl/cpm/http-curl/archive/v" version
+             ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zzy44kf7argrg6jy4mp4rf4msqj54qnb79kmykjp5lsv5mqni2k"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list
+      #:egg-name "http-curl"))
+    (inputs (list curl))
+    (native-inputs (list chicken-test))
+    (propagated-inputs
+     (list
+      chicken-intarweb
+      chicken-srfi-18))
+    (synopsis "HTTP client egg for CHICKEN Scheme based on libcurl")
+    (home-page "https://forgejo.rolando.cl/cpm/http-curl")
+    (description "Provides robust HTTPS/TLS support out of the box with an API
+compatible with http-client.")
     (license license:bsd-3)))
 
 (define-public chicken-intarweb
