@@ -487,6 +487,45 @@ documentation from the command-line and from the REPL.  It also provides an API
 to access this documentation from your own programs.")
     (license license:bsd-3)))
 
+(define-public chicken-doc
+  (let ((doc-repo-path "share/doc-db"))
+    (package
+      (inherit chicken-doc-bare)
+      (name "chicken-doc")
+      (arguments
+       (list #:egg-name "chicken-doc"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'build 'build-documentation-index
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((eggref (search-input-directory inputs "eggref/6"))
+                           (man (search-input-directory inputs "man/6")))
+                       (setenv "CHICKEN_DOC_REPOSITORY" #$doc-repo-path)
+                       (mkdir-p #$doc-repo-path)
+                       (invoke "chicken-doc-admin" "-i")
+                       (invoke "chicken-doc-admin" "-e" eggref)
+                       (invoke "chicken-doc-admin" "-m" man))))
+                 (add-after 'install 'install-documentation-index
+                   (lambda _
+                     (copy-recursively
+                      "share" (string-append #$output "/share")))))))
+      (native-inputs
+       (list chicken-doc-admin
+             (origin
+               (method svn-fetch)
+               (uri (svn-reference
+                      (url "https://code.call-cc.org/svn/chicken-eggs/wiki")
+                      (revision 46347)
+                      (user-name "anonymous")
+                      (password "")))
+               (sha256
+                (base32
+                 "06nma438n5yabhp1cv4swz3sa800y21bn9xafw5jq2jmcw2mg85p")))))
+      (native-search-paths
+       (list (search-path-specification
+               (variable "CHICKEN_DOC_REPOSITORY")
+               (files (list doc-repo-path))))))))
+
 (define-public chicken-doc-admin
   (package
     (name "chicken-doc-admin")
