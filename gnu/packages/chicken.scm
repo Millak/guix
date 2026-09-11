@@ -772,6 +772,44 @@ SSAX/SXML Sourceforge project.")
     (description "This egg provides a glossary and a runner for the test egg.")
     (license license:expat)))
 
+(define-public chicken-uri-common
+  (package
+    (name "chicken-uri-common")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "uri-common" version))
+       (sha256
+        (base32 "1vxqdzr49zm68ny9yx70yxacpzjym9n15w8kyqxnwgcrjgidndpy"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list
+      #:egg-name "uri-common"))
+    (native-inputs (list chicken-test))
+    (propagated-inputs
+     (list chicken-uri-generic
+           chicken-defstruct
+           chicken-matchable
+           chicken-srfi-1
+           chicken-srfi-13
+           chicken-srfi-14))
+    (home-page "https://wiki.call-cc.org/egg/uri-common")
+    (synopsis "Parser for common URI schemes")
+    (description "The uri-common library provides simple and easy-to-use
+parsing and manipulation procedures for URIs using common schemes.  These
+common schemes all have the following rules:
+@itemize
+@item An empty path after the hostname is considered to be identical to the
+root path.
+@item All components are to be fully URI-decoded (so no percent-encoded
+characters in it).
+@item The query argument will be in application/x-www-form-urlencoded form.
+@item The port is automatically determined if it is omitted and the URI scheme
+is known.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public chicken-uri-generic
   (package
     (name "chicken-uri-generic")
