@@ -434,6 +434,28 @@ variant records, as described in the book @i{Essentials of Programming
 Languages} by Friedman, Wand, and Haynes.")
     (license license:bsd-3)))
 
+(define-public chicken-defstruct
+  (package
+    (name "chicken-defstruct")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (egg-uri "defstruct" version))
+       (sha256
+        (base32 "0sm5d7cbdgpb70qy7jc0yxri2wazcxj2q5ii6gcsbpkzjmfd2fka"))))
+    (build-system chicken-build-system)
+    (arguments
+     (list #:egg-name "defstruct"))
+    (native-inputs (list chicken-test))
+    (propagated-inputs (list chicken-srfi-1))
+    (home-page "https://wiki.call-cc.org/egg/defstruct")
+    (synopsis "More convenient form of define-record")
+    (description "This module provides an alternative way to define records.
+While trying to improve the way records can be defined, this implementation
+is not hygienic.")
+    (license license:bsd-3)))
+
 (define-public chicken-iset
   (package
     (name "chicken-iset")
