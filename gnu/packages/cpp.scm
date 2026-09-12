@@ -192,6 +192,36 @@ to achieve the majority of argument parsing needs in a simple manner with an
 easy to use API.")
     (license license:expat)))
 
+(define-public argengine
+  (package
+    (name "argengine")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/juzzlin/Argengine")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m03lw3hd7a1k2np27r25ii1myhjxl178w1i4gfxdkzx551ynsrz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_EXAMPLES=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-static-archive
+            (lambda _
+              (delete-file
+               (in-vicinity #$output "lib/libArgengine_static.a")))))))
+    (home-page "https://github.com/juzzlin/Argengine")
+    (synopsis "Simple @acronym{CLI, Command Line Interface} parser")
+    (description "Argengine is a @acronym{CLI, Command Line Interface} parser
+for C++.  It is based on lambda callbacks and supports automatic help
+generation.")
+    (license license:expat)))
+
 (define-public argpp
   ;; No tagged releases; this is the master tip.
   (let ((commit "b52420a843327361713b6242e47afaa6b6ab2a89")
