@@ -13042,6 +13042,47 @@ between image and reference catalogs.  Currently only aligning images with
 @code{FITS WCS} and @code{JWST gWCS} are supported.")
     (license license:bsd-3)))
 
+(define-public python-twobody
+  (package
+    (name "python-twobody")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adrn/twobody")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v6bd7maarx99siv9iac2k590cc8lan1rlmf2s1b4lw3hnh2hifp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "twobody")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "twobody"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-astropy
+           python-scipy-minimal
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/adrn/twobody")
+    (synopsis "Solving the gravitational two-body problem")
+    (description
+     "@code{twobody} is a Python package for computing orbits and astronomical
+observables for binary stars, exoplanets, and other gravitational two-body
+systems.")
+    (license license:expat)))
+
 (define-public python-utilities-awetzel
   (package
     (name "python-utilities-awetzel")
