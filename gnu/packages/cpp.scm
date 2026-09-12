@@ -4719,7 +4719,7 @@ based on the implementation of std::variant in libc++.")
 (define-public nativefiledialog-extended
   (package
     (name "nativefiledialog-extended")
-    (version "1.2.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -4728,12 +4728,23 @@ based on the implementation of std::variant in libc++.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15l0jy3v4p6rgg9dk8zr80lqp51s32ii62cm4s90400ragdgh10v"))))
+        (base32 "1k4dm45l4mdg7lnywpz5wm6yxll9a9533b1ygx9nv8qcwsqw6ias"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
-    (native-inputs (list pkg-config))
+     (list
+      ;; Builds a folder of test binaries, not an automated test suite.
+      ;; Pass "-DNFD_BUILD_TESTS=ON" or enable sdl tests.
+      #:tests? #f
+      #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-unbundled-wayland-protocols
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/CMakeLists.txt"
+                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/.*/wayland-protocols")
+                 (search-input-directory
+                  inputs "share/wayland-protocols"))))))))
+    (native-inputs (list pkg-config wayland-protocols))
     (inputs (list gtk+))
     (home-page "https://github.com/btzy/nativefiledialog-extended")
     (synopsis "Native file dialog library with C and C++ bindings")
