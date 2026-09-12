@@ -10798,6 +10798,11 @@ interact with distribution components.")
       #:skip-build? #t
       #:test-subdirs
       ;; XXX: Remove when all inputs are packaged.
+      ;;
+      ;; daemon/graphdriver/btrfs is left out: its tests exercise the driver
+      ;; on the file system holding the build directory, so on btrfs they
+      ;; activate and fail because the build user cannot chown, and on any
+      ;; other file system they merely skip.
       #~(list "oci" "opts" "image" "layer" "quota" "client" "plugin" "errdefs"
               "registry" "testutil" "pkg/pools" "pkg/stack" "plugin/v2"
               "reference" "runconfig" "pkg/system" "pkg/tarsum" "image/cache"
@@ -10834,8 +10839,8 @@ interact with distribution components.")
               "api/server/router/swarm" "daemon/graphdriver/copy"
               "daemon/logger/templates" "libnetwork/drivers/host"
               "libnetwork/drivers/null" "api/server/router/system"
-              "api/server/router/volume" "daemon/graphdriver/btrfs"
-              "libnetwork/portallocator" "daemon/logger/jsonfilelog"
+              "api/server/router/volume" "libnetwork/portallocator"
+              "daemon/logger/jsonfilelog"
               "daemon/logger/loggerutils" "libnetwork/drivers/ipvlan"
               "pkg/plugins/pluginrpc-gen" "container/stream/bytespipe"
               "libnetwork/drivers/macvlan" "libnetwork/drivers/overlay"
