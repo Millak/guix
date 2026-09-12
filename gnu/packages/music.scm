@@ -3274,6 +3274,12 @@ MIDI files, based on libsmf.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "frescobaldi/lilypondinfo.py"
+                (("\"lilypond\"")
+                 (string-append
+                  "\"" (search-input-file inputs "bin/lilypond") "\"")))))
           (add-before 'build 'generate-xdg-files
             ;; Steps are taken from .github/workflows/release.yml.
             (lambda _
