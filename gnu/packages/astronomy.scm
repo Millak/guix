@@ -12230,6 +12230,49 @@ transformation for the imaging instruments on the @acronym{Hubble Space
 Telescope, HST}).")
     (license license:bsd-3)))
 
+(define-public python-sunkit-dem
+  ;; It is not released and has no git tags either.
+  (let ((commit "fdb2fa245f047cfac0fda34624e521bef71c8fa6")
+        (revision "0"))
+    (package
+      (name "python-sunkit-dem")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/sunpy/sunkit-dem")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gaja95r96nv5n998v8frjjz5kry9vp8isk59fr1ky311yrxpdjd"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-missing-scripts-entry-points
+              (lambda _
+                (substitute* "pyproject.toml"
+                  (("open_astronomy_package_template_example.*") ""))))
+            (add-before 'sanity-check 'set-home
+              (lambda _
+                (setenv "HOME" "/tmp"))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-astropy
+             python-setuptools
+             python-setuptools-scm))
+      (propagated-inputs
+       (list python-ndcube
+             python-sunpy))
+      (home-page "https://github.com/sunpy/sunkit-dem")
+      (synopsis "Computing differential emission measures")
+      (description
+       "@code{sunkit-dem} is a package for computing differential emission
+measures using multiple methods with a common API.")
+      (license license:bsd-3))))
+
 (define-public python-sunkit-image
   (package
     (name "python-sunkit-image")
