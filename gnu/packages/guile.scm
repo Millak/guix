@@ -915,7 +915,7 @@ type system, elevating types to first-class status.")
 (define-public guile-git
   (package
     (name "guile-git")
-    (version "0.11.1")
+    (version "0.12.1")
     (home-page "https://codeberg.org/guile-git/guile-git.git")
     (source (origin
               (method git-fetch)
@@ -925,19 +925,18 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xpzchnglddphi3chv53xqaz2x6rpq3l4s023w7r4mmndb6lgz0b"))))
+                "102py0bcr5jiayqy1l8dr1f11sv7c600y779jn68c4dsxlfg9has"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")       ; to prevent guild warnings
-       ;; https://codeberg.org/guile-git/guile-git/issues/20
-       ,@(if (target-ppc32?)
-           `(#:phases
-             (modify-phases %standard-phases
-               (add-after 'unpack 'skip-failing-test
-                 (lambda _
-                   (substitute* "Makefile.am"
-                     ((".*tests/blob\\.scm.*") ""))))))
-           '())))
+     (if (target-ppc32?)
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'skip-failing-test
+                     (lambda _
+                       ;; https://codeberg.org/guile-git/guile-git/issues/20
+                       (substitute* "Makefile.am"
+                         ((".*tests/blob\\.scm.*") ""))))))
+         '()))
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
