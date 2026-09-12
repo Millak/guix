@@ -3623,6 +3623,35 @@ validation.")
     (home-page "https://github.com/simdjson/simdjson")
     (license license:asl2.0)))
 
+(define-public simplelogger
+  (package
+    (name "simplelogger")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/juzzlin/SimpleLogger")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lw2lci1gwxi1v56zpr4b30lsgi0kw5njm8j3k4bvdciphs5wdd8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-static-archive
+            (lambda _
+              (delete-file
+               (in-vicinity #$output "lib/libSimpleLogger_static.a")))))))
+    (home-page "https://github.com/juzzlin/SimpleLogger")
+    (synopsis "Simple logging library")
+    (description "SimpleLogger is a thread-safe C++ logging library with
+configurable log-levels and support for various timestamp formats.  It can
+batch and cache log messages as well as collapse repeated messages.")
+    (license license:expat)))
+
 (define-public bloomberg-bde-tools
   (package
     (name "bloomberg-bde-tools")
