@@ -42232,7 +42232,7 @@ even for complex custom types.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -42241,7 +42241,7 @@ even for complex custom types.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yzv3jwbfg0h2n102718cw392gx2dkrbpj4b54khszrcgrsifa2a"))))
+        (base32 "0h6r9mk66w5wk8g2rfx6rlh26dvkix2rr08kv38bmqvg34kjz6fm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
