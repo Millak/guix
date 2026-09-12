@@ -5961,6 +5961,112 @@ intensity in relation to the total stellar intensity of @code{1.0}.  It is
 ideal for ray-tracing simulations of stars and planetary transits.")
     (license license:expat)))
 
+(define-public python-gala
+  (package
+    (name "python-gala")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adrn/gala")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19yxap11vzwdm0y12kzwqj0mga28rn0iq21mllmi6s3r3ijhcn8z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1147 passed, 311 skipped, 1 xfailed, 1 xpassed, 118 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "potential/potential/"
+                                                    "test_all_builtin.py"
+                                                    "::TestCylspline::"))
+                      ;; XXX: ImportError: cannot import name 'sph_harm' from
+                      ;; 'scipy.special'.
+                      ;; See: <https://github.com/adrn/gala/issues/635>.
+                      (list "test_against_agama"
+                            "test_circular_velocity"
+                            "test_compare"
+                            "test_energy"
+                            "test_gradient"
+                            "test_hessian"
+                            "test_hessian_density_consistency"
+                            "test_mass_enclosed"
+                            "test_numerical_density_vs_density"
+                            "test_numerical_gradient_vs_gradient"
+                            "test_orbit_integration"
+                            "test_pickle"
+                            "test_plot"
+                            "test_regression_165"
+                            "test_repr"
+                            "test_rotation_shift[density]"
+                            "test_rotation_shift[energy]"
+                            "test_rotation_shift[gradient]"
+                            "test_save_load"
+                            "test_unitsystem"))
+              "-k" (string-join
+                    ;; IndexError: only integers, slices (`:`), ellipsis
+                    ;; (`...`), numpy.newaxis (`None`) and integer or boolean
+                    ;; arrays are valid indices
+                    (list "not test_regression_missing_R"
+                          ;; TypeError: only 0-dimensional arrays can be
+                          ;; converted to Python scalars
+                          "test_estimate_dt_n_steps"
+                          ;; TypeError: scalar 'CartesianRepresentation'
+                          ;; object is not iterable.
+                          "test_reflex"
+                          ;; TypeError: only dimensionless scalar quantities
+                          ;; can be converted to Python scalars
+                          "test_integrator_energy_conservation"
+                          ;; assert False
+                          "test_density"
+                          "test_energy"
+                          "test_gradient"
+                          ;; ValueError: setting an array element with a
+                          ;; sequence.
+                          "test_single"
+                          "test_regression_dimensionless"
+                          ;; ValueError: Expected last dimension of `angles`
+                          ;; to match number of sequence axes specified, got
+                          ;; 4884.
+                          "test_rotating_frame_vs_inertial_frame"
+                          "test_energy_conservation")
+                    " and not "))))
+    (native-inputs
+     (list pybind11
+           python-cython
+           python-findiff
+           python-pytest
+           python-pytest-xdist
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list gsl))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-pyyaml
+           python-scipy
+           ;; [optional]
+           python-galpy
+           python-h5py
+           python-matplotlib
+           python-numexpr
+           python-sympy
+           python-tqdm
+           python-twobody))
+    (home-page "http://gala.adrian.pw/" )
+    (synopsis "Galactic dynamics in Python")
+    (description
+     "@code{gala} is an Astropy-affiliated Python package providing efficient
+tools for galactic dynamics research.  It combines Python’s flexibility with
+optimized low-level code (primarily C) for fast computations.")
+    (license license:expat)))
+
 (define-public python-galpy
   (package
     (name "python-galpy")
