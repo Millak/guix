@@ -2808,6 +2808,10 @@
   (crate-source "bitflags" "2.13.1"
                 "1nl76mpykmwmb8rq1l5vw1azdh1wvxdrnsk4sy3rdrzx01nvg25m"))
 
+(define rust-bitflags-2.13.2
+  (crate-source "bitflags" "2.13.2"
+                "01hbgjwvid66850fzi76mvn5f2bqycx6sf165ng1kfjqq9bl1v9x"))
+
 (define rust-bitflags-2.4.0
   (crate-source "bitflags" "2.4.0"
                 "0dc6xa7flfl59makmhixjcrslwlvdxxwrgxbr8p7bkvz53k2ls5l"))
@@ -4428,6 +4432,10 @@ fn main() {
 (define rust-cc-1.4.4
   (crate-source "cc" "1.4.4"
                 "0wq26vvhzv5ci9gx3cfiw320skvaysf9i701wp668lks6ps39m8a"))
+
+(define rust-cc-1.4.5
+  (crate-source "cc" "1.4.5"
+                "102dznr5n781pj0shcjncv6pdi9fanai38gpiphzlm551ivc4ph0"))
 
 (define rust-cc-traits-2.0.0
   (crate-source "cc-traits" "2.0.0"
@@ -6809,6 +6817,10 @@ fn main() {
   (crate-source "crossbeam-deque" "0.8.7"
                 "1sqcxia1mmz2fw8ba1v72jjrvbkvg7c6sz9l3sl07sv1gggf10ai"))
 
+(define rust-crossbeam-deque-0.8.8
+  (crate-source "crossbeam-deque" "0.8.8"
+                "06kip6ay8wcx5y4flg6wxbnyd44ay8308c8lf8y3iglh6v3kybv2"))
+
 (define rust-crossbeam-epoch-0.9.18
   (crate-source "crossbeam-epoch" "0.9.18"
                 "03j2np8llwf376m3fxqx859mgp9f83hj1w34153c7a9c7i5ar0jv"))
@@ -6816,6 +6828,10 @@ fn main() {
 (define rust-crossbeam-epoch-0.9.20
   (crate-source "crossbeam-epoch" "0.9.20"
                 "0gzg0v8in20iajikalg5i5qgpp0m26r426f0fs8nwk953w218s9d"))
+
+(define rust-crossbeam-epoch-0.9.21
+  (crate-source "crossbeam-epoch" "0.9.21"
+                "17bdp2linl0milbmx00s3bda3fphgc85im1gqwa3p6hhhw39hx6w"))
 
 (define rust-crossbeam-queue-0.3.12
   (crate-source "crossbeam-queue" "0.3.12"
@@ -6840,6 +6856,10 @@ fn main() {
 (define rust-crossbeam-utils-0.8.22
   (crate-source "crossbeam-utils" "0.8.22"
                 "05vwf7pmjq8c8f3fp5qqdm0z3cnk4p62wi8spf0jms5yjnh3v031"))
+
+(define rust-crossbeam-utils-0.8.23
+  (crate-source "crossbeam-utils" "0.8.23"
+                "1ilan2nw7fvka8hki80fr57a5dgd4mvcsvwq60437j6yvlwyw7m3"))
 
 (define rust-crossfont-0.8.1
   (crate-source "crossfont" "0.8.1"
@@ -10064,6 +10084,10 @@ fn main() {
 (define rust-find-msvc-tools-0.1.11
   (crate-source "find-msvc-tools" "0.1.11"
                 "145qpfb9r4ml2klr8v4byvrkikp61qyiks9n69b8z0vbscbb0pfl"))
+
+(define rust-find-msvc-tools-0.1.12
+  (crate-source "find-msvc-tools" "0.1.12"
+                "0bcxgbc8g33fkpzx71ws9307ad2jyxsm35my1bc6zikj79y1q3ry"))
 
 (define rust-find-msvc-tools-0.1.2
   (crate-source "find-msvc-tools" "0.1.2"
@@ -15412,6 +15436,10 @@ fn main() {
   (crate-source "hybrid-array" "0.4.14"
                 "0srzagwa3b41ildy4x3d7ckng51dj7aprkchnaysfbqm5asi8wbh"))
 
+(define rust-hybrid-array-0.4.15
+  (crate-source "hybrid-array" "0.4.15"
+                "05wsyp2n5gyf49qk51mblj9qyb15aay74m6fwmf74mpv1pqn9y17"))
+
 (define rust-hybrid-array-0.4.5
   (crate-source "hybrid-array" "0.4.5"
                 "1l48a0x1g9b2n0993abgljxfhzd59ph1m59grg0gz41g3flf0wgl"))
@@ -16320,6 +16348,10 @@ fn main() {
 (define rust-indexmap-2.14.1
   (crate-source "indexmap" "2.14.1"
                 "1sq9z90viwfw8053l32rrby563hy67xl8n6k65d92hi22i421ah7"))
+
+(define rust-indexmap-2.14.2
+  (crate-source "indexmap" "2.14.2"
+                "0mf86hbjkkcd82cpq683bblbs0zwa8ndla96ci8p1ji6bl7ijknc"))
 
 (define rust-indexmap-2.2.6
   (crate-source "indexmap" "2.2.6"
@@ -30727,6 +30759,10 @@ fn main() {
   (crate-source "smallvec" "1.15.2"
                 "143wzbqf6vgapdp2z4qpl0yvlqcn17s8cnk8m28rqly808zsdmlf"))
 
+(define rust-smallvec-1.16.1
+  (crate-source "smallvec" "1.16.1"
+                "14gqvsqdli51r1bii3hfqv5vx1b9r0gic4br0x9fsixmy5b70ims"))
+
 (define rust-smart-default-0.7.1
   (crate-source "smart-default" "0.7.1"
                 "1hgzs1250559bpayxmn46gzas5ycqn39wkf4srjgqh4461k1ic0f"))
@@ -32121,6 +32157,10 @@ fn main() {
 (define rust-syn-3.0.4
   (crate-source "syn" "3.0.4"
                 "17v4ac61x0hvj1879ywqzlwhyzg7n9lr9zniwrsif3b1ykfmq9z6"))
+
+(define rust-syn-3.0.5
+  (crate-source "syn" "3.0.5"
+                "1yc9vbm1wqs68fyj5f1f3f9isyh6i7wpxccvfrgpfnzn200jxpqj"))
 
 (define rust-sync-ptr-0.1.4
   (crate-source "sync-ptr" "0.1.4"
@@ -33586,6 +33626,10 @@ fn main() {
 (define rust-toml-1.1.4+spec-1.1.0
   (crate-source "toml" "1.1.4+spec-1.1.0"
                 "1xanf3v10j8hdjz37mkhg80w92cw25kxwndhcp4w5pxw9czydb1s"))
+
+(define rust-toml-1.1.6+spec-1.1.0
+  (crate-source "toml" "1.1.6+spec-1.1.0"
+                "0sj0g89pyrkm9g5zaaqsdlclr98xf1chvi8jv9qsn4897xa041lj"))
 
 (define rust-toml-datetime-0.6.11
   (crate-source "toml_datetime" "0.6.11"
@@ -76834,11 +76878,11 @@ fn main() {
                                rust-argon2-0.6.0
                                rust-autocfg-1.5.1
                                rust-base64ct-1.8.3
-                               rust-bitflags-2.13.1
+                               rust-bitflags-2.13.2
                                rust-blake2-0.11.0
                                rust-block-buffer-0.12.1
                                rust-byteorder-1.5.0
-                               rust-cc-1.4.4
+                               rust-cc-1.4.5
                                rust-cfg-if-1.0.4
                                rust-chacha20-0.10.2
                                rust-clap-4.6.6
@@ -76851,9 +76895,9 @@ fn main() {
                                rust-core-foundation-sys-0.8.7
                                rust-cpubits-0.1.1
                                rust-cpufeatures-0.3.1
-                               rust-crossbeam-deque-0.8.7
-                               rust-crossbeam-epoch-0.9.20
-                               rust-crossbeam-utils-0.8.22
+                               rust-crossbeam-deque-0.8.8
+                               rust-crossbeam-epoch-0.9.21
+                               rust-crossbeam-utils-0.8.23
                                rust-crypto-bigint-0.7.5
                                rust-crypto-common-0.2.2
                                rust-ctutils-0.4.2
@@ -76866,7 +76910,7 @@ fn main() {
                                rust-equivalent-1.0.2
                                rust-errno-0.3.14
                                rust-fastrand-2.5.0
-                               rust-find-msvc-tools-0.1.11
+                               rust-find-msvc-tools-0.1.12
                                rust-foreign-types-0.3.2
                                rust-foreign-types-shared-0.1.1
                                rust-form-urlencoded-1.2.2
@@ -76874,7 +76918,7 @@ fn main() {
                                rust-hashbrown-0.17.1
                                rust-heck-0.5.0
                                rust-hex-0.4.3
-                               rust-hybrid-array-0.4.14
+                               rust-hybrid-array-0.4.15
                                rust-icu-collections-2.3.0
                                rust-icu-locale-core-2.3.0
                                rust-icu-normalizer-2.3.0
@@ -76884,7 +76928,7 @@ fn main() {
                                rust-icu-provider-2.3.1
                                rust-idna-1.1.0
                                rust-idna-adapter-1.2.2
-                               rust-indexmap-2.14.1
+                               rust-indexmap-2.14.2
                                rust-is-terminal-polyfill-1.70.2
                                rust-keyring-core-1.0.0
                                rust-libc-0.2.189
@@ -76930,17 +76974,17 @@ fn main() {
                                rust-serde-derive-1.0.229
                                rust-serde-spanned-1.1.1
                                rust-shlex-2.0.1
-                               rust-smallvec-1.15.2
+                               rust-smallvec-1.16.1
                                rust-stable-deref-trait-1.2.1
                                rust-strsim-0.11.1
                                rust-syn-2.0.119
-                               rust-syn-3.0.4
+                               rust-syn-3.0.5
                                rust-synstructure-0.13.2
                                rust-tcm-readpassphrase-vendored-0.2.2
                                rust-tempfile-3.27.0
                                rust-terminal-size-0.4.4
                                rust-tinystr-0.8.4
-                               rust-toml-1.1.4+spec-1.1.0
+                               rust-toml-1.1.6+spec-1.1.0
                                rust-toml-datetime-1.1.1+spec-1.1.0
                                rust-toml-parser-1.1.3+spec-1.1.0
                                rust-toml-writer-1.1.2+spec-1.1.0

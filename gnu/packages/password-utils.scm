@@ -2509,7 +2509,7 @@ protocol.")
 (define-public onepass
   (package
     (name "onepass")
-    (version "3.1.9")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch)
@@ -2518,13 +2518,24 @@ protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19gia3vrsnx0gdhahc0wr4ih4mmrjan7kjxcy4l0sghxh24n8d4k"))))
+        (base32 "0jhdqrbq47w2kgh4x1677wjvz2014n9z54mz1zvk0g16bbir1cjc"))
+       ;; The macro std::assert_matches! is unstable in Rust 1.95.
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "src/seed_password/keyring/mod.rs"
+            (("use std::assert_matches;")
+             "")
+            (("assert_matches!\\((.*)\\);" _ value+pattern)
+             (string-append "assert!(matches!(" value+pattern "));"))))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:rust rust-1.95
       #:install-source? #f
-      #:cargo-install-paths ''(".")))
+      #:cargo-install-paths ''(".")
+      #:cargo-test-flags
+      ;; The test needs a session bus of D-Bus.
+      ''("--" "--skip=seed_password::keyring::tests::get_entry_succeeds")))
     (native-inputs (list pkg-config))
     (inputs (cons* dbus openssl (cargo-inputs 'onepass)))
     (home-page "https://github.com/mrdomino/onepass")
