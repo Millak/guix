@@ -12517,6 +12517,11 @@ dhcpv6 and dhcpv4
      (list
       #:skip-build? #t
       #:import-path "github.com/intel/goresctrl"
+      ;; The ioctl request types of pkg/sst (Intel Speed Select) are
+      ;; generated into a file whose "_amd64" suffix restricts it to x86_64,
+      ;; so neither pkg/sst nor cmd/sst-ctl, which imports it, compiles on
+      ;; any other architecture; test only on x86-64
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
       #:test-flags
       #~(list "-skip" (string-join
                        (list "TestInfo"
