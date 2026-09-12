@@ -39428,6 +39428,32 @@ be used to act both as a TFTP client or TFTP server.")
 using Levenshtein distance.")
     (license license:expat)))
 
+(define-public python-thumbhash
+  (let ((commit "3ef0480cc1a3a8230b54ebc4873b1007fcfcc329")
+        (revision "0"))
+    (package
+      (name "python-thumbhash")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/justinforlenza/thumbhash-py")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0nb3v6437gdaf4wrinzmkdjsvrlzihp3pyan05vnd97zsz41zs0z"))))
+      (arguments (list #:tests? #f))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-hatchling))
+      (home-page "https://github.com/justinforlenza/thumbhash-py")
+      (synopsis "Compact representation of an image placeholder")
+      (description
+       "This is a Python port of the
+@url{https://github.com/evanw/thumbhash,thumbhash} encoder by
+@url{https://github.com/evanw,Evan Wallace}.")
+      (license license:expat))))
+
 (define-public python-three-merge
   (package
     (name "python-three-merge")
