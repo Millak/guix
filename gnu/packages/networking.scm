@@ -1453,15 +1453,15 @@ or server shell scripts with network connections.")
 (define-public mbuffer
   (package
     (name "mbuffer")
-    (version "20230301")
+    (version "20260511")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://www.maier-komor.de/software/mbuffer/mbuffer-"
+                    "https://www.maier-komor.de/software/mbuffer/mbuffer-"
                     version ".tgz"))
               (sha256
                (base32
-                "009d4m48yjidb91vdnrfv84nnd76n0i57g607llan3y0vq4n5xsk"))))
+                "10spxhiw3z0q9q4h5dms6k4igwfh18li729nzc47m3s075pv7fhk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
