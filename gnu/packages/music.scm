@@ -3267,6 +3267,11 @@ MIDI files, based on libsmf.")
     (arguments
      (list
       #:tests? #f ;no tests included
+      #:imported-modules (append %qt-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build pyproject-build-system)
+                  ((guix build qt-build-system) #:prefix qt:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'generate-xdg-files
@@ -3281,18 +3286,10 @@ MIDI files, based on libsmf.")
                       "-d" "i18n/frescobaldi"
                       "--template" "linux/org.frescobaldi.Frescobaldi.metainfo.xml.in"
                       "-o" "linux/org.frescobaldi.Frescobaldi.metainfo.xml")))
-          (add-after 'wrap 'wrap-executable
-            (lambda _
-              ;; Ensure that icons are found at runtime.
-              (wrap-program (string-append #$output "/bin/frescobaldi")
-                `("QT_PLUGIN_PATH" prefix
-                  ,(list (string-append
-                          (string-join
-                           (list #$(this-package-input "qtbase")
-                                 #$(this-package-input "qtsvg")
-                                 #$(this-package-input "qtwayland"))
-                           "/lib/qt6/plugins:")
-                          "/lib/qt6/plugins")))))))))
+          (add-after 'wrap 'qt-wrap
+            (lambda args
+              (apply (assoc-ref qt:%standard-phases 'qt-wrap)
+                     `(,@args #:qtbase #$(this-package-input "qtbase"))))))))
     (native-inputs
      (list appstream            ;for appstreamctl
            desktop-file-utils   ;for desktop-file-validate
