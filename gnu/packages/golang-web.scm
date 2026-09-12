@@ -12668,10 +12668,23 @@ data.")
     (arguments
      (list
       #:import-path "github.com/ishidawataru/sctp"
+      ;; Every test but TestSCTPAddrString and TestResolveSCTPAddr opens an
+      ;; SCTP socket, which fails with "protocol not supported" on a kernel
+      ;; built without SCTP; the build environment cannot rely on it.
       #:test-flags
       #~(list "-skip" (string-join
-                       (list "TestSCTPConcurrentAccept"
-                             "TestStreams")
+                       (list "TestDialUseControlFuncWithoutLocalAddress"
+                             "TestGetStatus"
+                             "TestGetStatusUsage"
+                             "TestListenUseControlFuncWithoutLocalAddress"
+                             "TestNotificationHandlerAssignmentOnDialing"
+                             "TestNotificationHandlerAssignmentOnListening"
+                             "TestSCTPCloseRecv"
+                             "TestSCTPConcurrentAccept"
+                             "TestSCTPListenerName"
+                             "TestSCTPListenerNameFromFd"
+                             "TestStreams"
+                             "TestSyscallConn")
                        "|"))))
     (home-page "https://github.com/ishidawataru/sctp")
     (synopsis "SCTP support for Golang")
