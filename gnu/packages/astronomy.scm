@@ -8395,7 +8395,7 @@ Astronomy.")
 (define-public python-p-winds
   (package
     (name "python-p-winds")
-    (version "1.4.7")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -8404,7 +8404,7 @@ Astronomy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z94nvx47v50c7nq20kny49cr2w2xszvijy9bfxp2dbgq49ip244"))))
+        (base32 "0ww9djjdxrmaxibvj45k0k67z0agpqrxpvhjvnxm7wg5z50zqpzk"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))    ;network access is required to fetch test data
