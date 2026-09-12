@@ -927,14 +927,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "4.0.3")
+    (version "4.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "0azqllvaqqsy69qxcsnpi2bznffjyrminfjlhrfqqz36mia4cf20"))))
+        (base32 "0nfsjvrj8acv037mvixjdrhd8n33calvf7axx2r1bmiyd541qxy6"))))
     (build-system cmake-build-system)
     (arguments
      (list
