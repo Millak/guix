@@ -1235,7 +1235,7 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
                (("guiceVersion>.*")
                 (string-append
                   "guiceVersion>"
-                  ,(package-version java-guice)
+                  ,(package-version java-guice-5)
                   "</guiceVersion>\n"))
                (("sisuInjectVersion>.*")
                 (string-append
@@ -1256,8 +1256,7 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
                 (string-append
                   "slf4jVersion>"
                   ,(package-version java-slf4j-api)
-                  "</slf4jVersion>\n"))
-               (("<classifier>no_aop</classifier>") ""))
+                  "</slf4jVersion>\n")))
              #t))
          (replace 'install
            (install-pom-file "pom.xml")))))
@@ -1692,11 +1691,6 @@ generally generated from plugin sources using maven-plugin-plugin.")))
                  (modello-single-mode file "1.1.0" "xpp3-reader")
                  (modello-single-mode file "1.1.0" "xpp3-writer"))
                #t))
-           (add-before 'install 'fix-pom
-             (lambda _
-               (substitute* "pom.xml"
-                 (("<classifier>no_aop</classifier>") ""))
-               #t))
            (replace 'install
              (install-from-pom "pom.xml")))))
       (propagated-inputs
@@ -1714,7 +1708,7 @@ generally generated from plugin sources using maven-plugin-plugin.")))
          ("java-plexus-utils" ,java-plexus-utils)
          ("java-commons-lang3" ,java-commons-lang3)
          ("java-guava" ,java-guava)
-         ("java-guice" ,java-guice)
+         ("java-guice" ,java-guice-5)
          ("maven-resolver-api" ,maven-resolver-api)
          ("maven-resolver-spi" ,maven-resolver-spi)
          ("maven-resolver-util" ,maven-resolver-util)
