@@ -751,7 +751,7 @@ For PDF support, install the @emph{mupdf} package.")
 (define-public qpageview
   (package
     (name "qpageview")
-    (version "1.0.4")
+    (version "1.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -760,7 +760,7 @@ For PDF support, install the @emph{mupdf} package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g1lslc3aljhcl4nbwd81clmzbdl89n6dkaxn7nizc8f4v2iiaiy"))))
+                "0n3qn9n1xmsv9h6s7ddxc1w5r36pjsc8ws0kh52c3ya3jvgnnxm1"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                ;no tests in repository.
