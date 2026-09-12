@@ -1,0 +1,97 @@
+From 4a334e9ab6baf27d6d73fe053031a88fe1b0a30f Mon Sep 17 00:00:00 2001
+From: bdunahu <bdunahu@operationnull.com>
+Date: Sat, 12 Sep 2026 19:25:42 -0400
+Subject: [PATCH] Unbundle libs.
+
+---
+ CMakeLists.txt            | 20 +++++++++++++++-----
+ src/editor/CMakeLists.txt |  2 +-
+ src/game/CMakeLists.txt   |  2 +-
+ src/game/bridge.cpp       |  2 +-
+ src/game/database.cpp     |  2 +-
+ 5 files changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7abffa41..02fdd9d5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -197,11 +197,21 @@ else()
+     pkg_check_modules(VORBISFILE REQUIRED vorbisfile)
+ endif()
+ 
+-add_subdirectory(src/contrib/SimpleLogger EXCLUDE_FROM_ALL)
+-include_directories(src/contrib/SimpleLogger/src)
+-
+-add_subdirectory(src/contrib/Argengine EXCLUDE_FROM_ALL)
+-include_directories(src/contrib/Argengine/src)
++find_path(SLR_INC NAME simple_logger.hpp REQUIRED)
++find_library(SLR_LIB NAME SimpleLogger REQUIRED)
++add_library(SLR UNKNOWN IMPORTED)
++set_target_properties(SLR PROPERTIES
++    IMPORTED_LOCATION "${SLR_LIB}"
++    INTERFACE_INCLUDE_DIRECTORIES "${SLR_INC}"
++)
++
++find_path(ARG_INC NAME argengine.hpp REQUIRED)
++find_library(ARG_LIB NAME Argengine REQUIRED)
++add_library(ARG UNKNOWN IMPORTED)
++set_target_properties(ARG PROPERTIES
++    IMPORTED_LOCATION "${ARG_LIB}"
++    INTERFACE_INCLUDE_DIRECTORIES "${ARG_INC}"
++)
+ 
+ # Install paths depend on the build type and target platform
+ resolve_install_paths()
+diff --git a/src/editor/CMakeLists.txt b/src/editor/CMakeLists.txt
+index 38c583aa..2982247f 100644
+--- a/src/editor/CMakeLists.txt
++++ b/src/editor/CMakeLists.txt
+@@ -83,5 +83,5 @@ endif()
+ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+ add_executable(${EDITOR_BINARY_NAME} WIN32 ${SRC} ${MOC_SRC} ${RC_SRC} ${UI_HDRS} ${QM})
+ 
+-target_link_libraries(${EDITOR_BINARY_NAME} Qt6::Widgets Qt6::Xml Argengine_static)
++target_link_libraries(${EDITOR_BINARY_NAME} Qt6::Widgets Qt6::Xml ARG)
+ set_property(TARGET ${EDITOR_BINARY_NAME} PROPERTY CXX_STANDARD 17)
+diff --git a/src/game/CMakeLists.txt b/src/game/CMakeLists.txt
+index b4c19c77..b42469da 100644
+--- a/src/game/CMakeLists.txt
++++ b/src/game/CMakeLists.txt
+@@ -166,7 +166,7 @@ set(COMMON_LIBS
+     ${VORBIS_LIB}     # Valid only with MSVC
+     ${OGG_LIB})       # Valid only with MSVC
+ 
+-target_link_libraries(${GAME_BINARY_NAME} ${COMMON_LIBS} Qt6::OpenGL Qt6::Sql Qt6::Xml ${DUSTRAC_OPENGL_LIBS} SimpleLogger_static Argengine_static)
++target_link_libraries(${GAME_BINARY_NAME} ${COMMON_LIBS} Qt6::OpenGL Qt6::Sql Qt6::Xml ${DUSTRAC_OPENGL_LIBS} SLR ARG)
+ set_property(TARGET ${GAME_BINARY_NAME} PROPERTY CXX_STANDARD 17)
+ 
+ if(BUILD_TESTING)
+diff --git a/src/game/bridge.cpp b/src/game/bridge.cpp
+index 3df4d9cd..2c331cda 100644
+--- a/src/game/bridge.cpp
++++ b/src/game/bridge.cpp
+@@ -14,7 +14,7 @@
+ // along with Dust Racing 2D. If not, see <http://www.gnu.org/licenses/>.
+ 
+ #include "bridge.hpp"
+-#include "../contrib/SimpleLogger/src/simple_logger.hpp"
++#include "simple_logger.hpp"
+ #include "car.hpp"
+ #include "layers.hpp"
+ #include "renderer.hpp"
+diff --git a/src/game/database.cpp b/src/game/database.cpp
+index 5c563019..f06552a0 100644
+--- a/src/game/database.cpp
++++ b/src/game/database.cpp
+@@ -15,7 +15,7 @@
+ 
+ #include "database.hpp"
+ #include "../common/config.hpp"
+-#include "../contrib/SimpleLogger/src/simple_logger.hpp"
++#include "simple_logger.hpp"
+ #include "track.hpp"
+ #include "trackdata.hpp"
+ 
+-- 
+2.54.0
+

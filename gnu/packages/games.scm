@@ -13761,6 +13761,44 @@ to start over several times to find the most satisfactory ending.")
     (home-page "https://jxself.org/git/devours.git")
     (license license:agpl3+))))
 
+(define-public dustracing2d
+  (package
+    (name "dustracing2d")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/juzzlin/DustRacing2D")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a6s7j9n6jmcabryd2959xpalz7d85h2fgakkrh41399xm40msnp"))
+       (modules '((guix build utils)))
+       ;; Unbundle argengine, simplelogger.
+       (snippet #~(delete-file-recursively "src/contrib"))
+       (patches (search-patches "dustracing2d-unbundle-libs.patch"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DReleaseBuild=ON")))
+    (inputs
+     (list argengine
+           libogg
+           libvorbis
+           mesa
+           openal
+           simplelogger))
+    (native-inputs (list pkg-config qttools))
+    (home-page "https://juzzlin.github.io/DustRacing2D/")
+    (synopsis "Top-down car racing game")
+    (description "Dust Racing 2D is a tile-based, cross-platform 2D racing
+game supporting multiplayer play, different tracks, and gamemodes.  It also
+comes with a Qt-based level editor for easy level creation.")
+    (license (list license:gpl3+           ;game
+                   license:cc-by-sa3.0)))) ;assets
+
 (define-public schiffbruch
   ;; There haven't been any releases for several years, so I've taken the most
   ;; recent commit from the master branch that didn't fail to build (the last
