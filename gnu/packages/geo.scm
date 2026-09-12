@@ -978,13 +978,13 @@ lets developers use the functionality of Proj in their own software.")
 (define-public python-obspy
   (package
     (name "python-obspy")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "obspy" version))
        (sha256
-        (base32 "0vk6mw06vmx9fhhykk80ndw1pp8821nzifrmdjd7igkdc652s848"))))
+        (base32 "0m4c5qkkrl4fr1p0061qap605qvwybqyjvnbj5ml6v9b0l5hm6cm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
