@@ -10796,6 +10796,14 @@ interact with distribution components.")
      (list
       #:import-path "github.com/docker/docker"
       #:skip-build? #t
+      ;; These tests open SCTP sockets, which fails with "protocol not
+      ;; supported" on a kernel built without SCTP; the build environment
+      ;; cannot rely on it.
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestSCTP4ProxyNoListener"
+                             "TestSCTP6ProxyNoListener")
+                       "|"))
       #:test-subdirs
       ;; XXX: Remove when all inputs are packaged.
       ;;
