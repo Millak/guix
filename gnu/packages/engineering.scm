@@ -1474,14 +1474,14 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.13.3")
+    (version "0.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0vl1x20zw4nafw86f98w5i5sry7krvj20igzh6j7fivlibkzdwc3"))))
+        (base32 "0x8jm16ki6151aj8y27xwgaqk1szx8cndlhfy9h5k1jgk0xvgsv2"))))
     (build-system gnu-build-system)
     (arguments
      (list
