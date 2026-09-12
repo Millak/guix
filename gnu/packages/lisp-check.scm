@@ -731,33 +731,28 @@ testing.  It is an extension of the library written by Chris Riesbeck.")
   (sbcl-package->clasp-package sbcl-lisp-unit))
 
 (define-public sbcl-lisp-unit2
-  ;; There is a cyclical dependency between symbol-munger and lisp-unit2.
-  ;; See https://github.com/AccelerationNet/symbol-munger/issues/4
-  (let ((commit "b5aa17b298cf2f669f4c0262c471e1ee4ab4699a")
-        (revision "0"))
-    (package
-      (name "sbcl-lisp-unit2")
-      (version (git-version "0.9.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/AccelerationNet/lisp-unit2")
-               (commit commit)))
-         (file-name (git-file-name "cl-lisp-unit2" version))
-         (sha256
-          (base32 "140nn22n1xv3qaash3x6h2h7xmys44s3f42b7bakfhpc4qlx0b69"))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list sbcl-alexandria sbcl-cl-interpol sbcl-iterate
-             sbcl-symbol-munger))
-      (synopsis "Test Framework for Common Lisp")
-      (description
-       "LISP-UNIT2 is a Common Lisp library that supports unit testing in the
+  (package
+    (name "sbcl-lisp-unit2")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/aadcg/lisp-unit2")
+              (commit version)))
+       (file-name (git-file-name "cl-lisp-unit2" version))
+       (sha256
+        (base32 "025mnzxdvi9n6g6myjdh35pkpipaa2ynd060d5zrljx9fpilln38"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria sbcl-cl-interpol sbcl-iterate))
+    (synopsis "Test Framework for Common Lisp")
+    (description
+     "LISP-UNIT2 is a Common Lisp library that supports unit testing in the
 style of JUnit for Java.  It is a new version of the lisp-unit library written
 by Chris Riesbeck.")
-      (home-page "https://github.com/AccelerationNet/lisp-unit2")
-      (license license:expat))))
+    (home-page "https://codeberg.org/aadcg/lisp-unit2")
+    (license license:expat)))
 
 (define-public cl-lisp-unit2
   (sbcl-package->cl-source-package sbcl-lisp-unit2))
