@@ -1515,6 +1515,32 @@ dependent on sampled parameters.  It assumes one has a Bayesian posterior
 conditional posterior @code{P(y|x,D,M)} in the @code{(x,y)} plane.")
     (license license:expat)))
 
+(define-public python-findiff
+  (package
+    (name "python-findiff")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "findiff" version))
+       (sha256
+        (base32 "1zrfls5azm724a9c93dl9cc529zmq6dzcdrc1lqpaxkhbvd6xb9s"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-sympy))
+    (home-page "https://github.com/maroba/findiff")
+    (synopsis "Numerical derivatives and partial differential equations")
+    (description
+     "This package provides a Python package for finite difference derivatives
+in any number of dimensions.")
+    (license license:expat)))
+
 (define-public python-flox
   (package
     (name "python-flox")
