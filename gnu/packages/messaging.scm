@@ -1339,6 +1339,58 @@ Python.  It provides an event-driven IRC client framework with support for the
 basic IRC protocol, CTCP, and DCC connections.")
     (license license:expat)))
 
+(define-public python-slidge
+  (package
+    (name "python-slidge")
+    (version "0.4.2") ; 0.5.0 drops support for python < 3.13
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/slidge/slidge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0faiy4cm88gp9782xn1caxlbhlc6yqd8ic2391p0qgfkvl0b9k85"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; tests: 357 passed, 7 deselected
+     (list #:test-flags
+           #~(list "-k" (string-join
+                         ;; these tests fail because they test emoji behavior
+                         ;; that breaks down with the C locale
+                         (list "not test_reply_to_user"
+                               "test_avatar_forbidden_emoji_in_participant_nickname"
+                               "test_illegal_nickname"
+                               "test_illegal_nickname_quoted_fallback"
+                               "test_rename_from_contact_with_forbidden_char"
+                               "test_unassigned_code_points"
+                               "test_control_chars_and_unassigned_code_points")
+                         " and not "))))
+    (propagated-inputs (list python-aiohttp
+                             python-alembic
+                             python-configargparse
+                             python-defusedxml
+                             python-magic
+                             python-pillow
+                             python-qrcode
+                             python-slixmpp
+                             python-sqlalchemy-2
+                             python-thumbhash
+                             python-typing-extensions))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://slidge.im/")
+    (synopsis "Gateway library for XMPP to other networks")
+    (description "Slidge is a software library for creating gateways from XMPP
+to other networks, such as Telegram, Discord, or WhatsApp.  It allows for
+complete coverage of features in both networks, and makes it possible to bring
+all your contacts under the single umbrella of XMPP.")
+    (license license:agpl3+)))
+
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
