@@ -50,6 +50,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -477,7 +478,7 @@ MyPaint.")
   ;; “Edit->Preferences->Folders->Plug Ins”.
   (package
     (name "gimp-resynthesizer")
-    (version "3.0")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -486,11 +487,11 @@ MyPaint.")
               (commit (string-append "v" version))))
        (sha256
         (base32
-         "1w0mp8bpwlk6p2gwg9zqvckzyfc16djgmzjc8x9zp2biai3vkz7w"))
+         "0wzfbixx905pyspfimhk3kbcz2rgqspjwi2cz49bznx764mvr7yw"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config))
+     (list gettext-minimal pkg-config))
     (inputs
      (list cairo
            gdk-pixbuf
