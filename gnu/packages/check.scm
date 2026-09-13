@@ -1226,7 +1226,7 @@ similar to unit tests.")
 (define-public gotestsum
   (package
     (name "gotestsum")
-    (version "1.12.3")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1235,7 +1235,7 @@ similar to unit tests.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pj2d2rjab1zdzrc88ksf2v09fk9is9hg4rn6grcyaq76b8l3jcg"))))
+        (base32 "04mc0r3iy92kn2r5byqby2hkc20cxmwmf3dxklhb3sj6804zafsd"))))
     (build-system go-build-system)
     (arguments
      (list
