@@ -179,6 +179,31 @@ C++implementation.")
 definitions in Go programs.")
     (license license:bsd-3)))
 
+(define-public godepgraph
+  (package
+    (name "godepgraph")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kisielk/godepgraph")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14rb0fx14pzfgf7fsc6dy33n5njphck17nzng8hsja4jc5c3zqkw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/kisielk/godepgraph"))
+    (home-page "https://github.com/kisielk/godepgraph")
+    (synopsis "Go dependency graph visualization tool")
+    (description
+     "@command{godepgraph} is a program for generating a dependency graph of
+Go packages, supporting output in Graphviz and Mermaid formats.")
+    (license license:expat)))
+
 (define-public godoc
   (package
     (name "godoc")
