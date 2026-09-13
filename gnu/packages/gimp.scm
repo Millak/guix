@@ -270,7 +270,7 @@ buffers.")
 (define-public gimp
   (package
     (name "gimp")
-    (version "3.2.0")
+    (version "3.2.6")
     (source
      (origin
        (method url-fetch)
@@ -278,7 +278,7 @@ buffers.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "10z0n9shpqwny6hkwdin7nmp5vb0707gk7nzjg3f66z52qa3j616"))))
+        (base32 "1n4cl9h4i04jnk2klh9p9z1aazw4m5z4cg6sfqdn630cmn85xca0"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -334,6 +334,7 @@ buffers.")
            libxmu
            libxt
            python
+           python-pycairo
            python-pygobject-3.50
            gjs
            libxslt
