@@ -4810,9 +4810,11 @@ programs.")
               (let ((data (string-append (elpa-directory #$output) "/data")))
                 (mkdir-p data)
                 (copy-recursively "data" data)))))))
-    ;; TODO: Just emacs-magit-section instead of emacs-magit would be enough.
     (propagated-inputs
-     (list emacs-compat emacs-lsp-mode emacs-dash emacs-magit))
+     (list emacs-compat
+           emacs-dash
+           emacs-lsp-mode
+           emacs-magit-section))
     (synopsis "Lean 4 major mode for Emacs")
     (description "This package provides a major mode for the Lean theorem
 prover, version 4.")
