@@ -6011,7 +6011,9 @@ podcasts) in Emacs.")
                 "-f"
                 "ert-run-tests-batch-and-exit")))
       (propagated-inputs
-       (list emacs-elisp-refs emacs-magit emacs-http-server))
+       (list emacs-elisp-refs
+             emacs-http-server
+             emacs-magit-section))
       (home-page "https://codeberg.org/martenlienen/emcp")
       (synopsis "Emacs MCP client")
       (description
