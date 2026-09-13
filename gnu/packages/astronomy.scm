@@ -2019,7 +2019,7 @@ R. Seaman's protocol}
 (define-public phd2
     (package
       (name "phd2")
-      (version "2.6.14")
+      (version "2.6.14dev1")
       (source
        (origin
          (method git-fetch)
@@ -2028,7 +2028,7 @@ R. Seaman's protocol}
                 (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0n2jzlpwvjgj8ydg7hsqxnvy8s9pdi5z96id0231kgi87pyfkh7s"))
+          (base32 "1dlwiz3m43j6hw2garqhpv53mz495h5nw2kcs81zizg157h6wyr2"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (srfi srfi-26)))
