@@ -11903,6 +11903,84 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
      (list python-setuptools
            python-setuptools-scm))))
 
+(define-public python-stingray
+  (package
+    (name "python-stingray")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stingray" version))
+       (sha256
+        (base32 "06zaykdxa3ky7smxl7aca5gm31asiw8n8w4n631z8016c4w7h7xc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-ipython-minimal
+           python-objgraph
+           python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-sgp4
+           python-skyfield))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy
+           ;; [optional]
+           python-corner
+           python-emcee
+           ;; python-etils        ;not packaged yet in Guix
+           python-fsspec
+           python-h5py
+           ;; python-jax          ;not packaged yet in Guix
+           ;; python-jaxns        ;not packaged yet in Guix
+           python-jplephem
+           ;; python-lightkurve   ;not packaged yet in Guix
+           python-numba
+           python-numcodecs
+           python-pandas
+           python-pint-pulsar
+           python-pyarrow
+           ;; python-pyfftw       ;not packaged yet in Guix
+           python-pyyaml
+           python-statsmodels
+           ;; python-tfp-nightly  ;not packaged yet in Guix
+           ;; python-tinygp       ;not packaged yet in Guix
+           python-typing-extensions
+           ;; python-ultranest    ;not packaged yet in Guix
+           python-xarray))
+    (home-page "https://stingray.science")
+    (synopsis "Time Series Methods For Astronomical X-ray Data")
+    (description
+     "Stingray is a Python library designed to perform times series analysis
+and related tasks on astronomical light curves.  It supports a range of
+commonly-used Fourier analysis techniques, as well as extensions for analyzing
+pulsar data, simulating data sets, and statistical modelling.  Stingray is
+designed to be easy to extend, and easy to incorporate into data analysis
+workflows and pipelines.
+
+It provides:
+@itemize
+@item a library of time series methods, including power spectra, cross
+spectra, covariance spectra, lags, and so on;
+
+@item a set of scripts to load FITS data files from different missions;
+
+@item a light curve and event list simulator, with the ability to simulate
+different kinds of variability and more complicated phenomena based on the
+impulse response of given physical events (e.g. reverberation).
+@end itemize")
+    (license license:expat)))
+
 (define-public python-stpipe
   (package
     (name "python-stpipe")
