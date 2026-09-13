@@ -46,6 +46,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-build)
@@ -435,22 +436,22 @@ For @code{git worktrees}, this tool opens all checked out worktrees as new windo
 (define-public opentmux
   (package
     (name "opentmux")
-    (version "3.6a")
+    (version "0.1")
     (home-page "https://codeberg.org/opentmux/opentmux")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url home-page)
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fzp15rc5rzrq0nmj54qj5c0kadc9p56wjalr7p0z10qsr3v40sp"))))
+                "0b8gy3acysw0vi28g4327iq5cj3zsv9cvvx21iqnkcvk6hqvyrnc"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
     (native-inputs
-     (list autoconf automake bison pkg-config))
+     (list autoconf automake bison lowdown pkg-config))
     (synopsis "Terminal multiplexer")
     (description
      "opentmux is fork of tmux, before AI was introduced. tmux is a terminal
