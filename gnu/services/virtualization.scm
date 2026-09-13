@@ -1714,9 +1714,21 @@ CONFIG, a <virtual-build-machine>, is up and running."
                    (use-modules (gnu services herd)
                                 (srfi srfi-34))
 
-                   (guard (c ((service-not-found-error? c) #f))
-                     (->bool (live-service-running
-                              (current-service '#$service-name)))))))
+                   ;; Query the system shepherd.  FIXME: When guix-daemon is
+                   ;; running without root privileges, this fails, unless the
+                   ;; socket is made accessible to the 'guix-daemon' user.
+                   ;; See #7625.
+                   (parameterize ((%shepherd-socket-file
+                                   "/var/run/shepherd/socket"))
+                     (guard (c ((service-not-found-error? c) #f)
+                               (else
+                                (format (current-error-port)
+                                        "exception while checking '~a' \
+service availability: ~s~%"
+                                        '#$service-name c)
+                                #f))
+                       (->bool (live-service-running
+                                (current-service '#$service-name))))))))
 
 (define (build-vm-guix-extension config)
   (define vm-ssh-key
