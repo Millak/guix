@@ -654,7 +654,7 @@ Nitrokey token firmware.")
 (define-public python-pynitrokey
   (package
     (name "python-pynitrokey")
-    (version "0.12.2")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -663,7 +663,7 @@ Nitrokey token firmware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09a7cf7pz4qmm806b6grx8mxxnnbbzamywx46mpi1axbmnxrw4wq"))))
+        (base32 "0pg8f5756a9vvvc30f37cc9g8kvwcl0bay6qc2r5l7p8d3rvy1gd"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cffi
                              python-click
