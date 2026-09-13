@@ -176,6 +176,9 @@
       (cond
        ((string-prefix-ci? "cx" type-name)
         'bios)                          ;old, cost-optimized x86 servers
+       ((and (string-prefix-ci? "cpx" type-name)
+             (string-suffix-ci? "1" type-name))
+        'bios)                          ;cpx?1 types are non-efi
        (else
         'efi))))           ;newer, regular performance/general purpose servers
 
