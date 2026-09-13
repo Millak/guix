@@ -38206,7 +38206,11 @@ chevron marks.")
         (base32 "1xvrnpk7cnjm55ja6j7bdnszkzj914gmyzb12r89jh0z25r09crq"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-company emacs-json-mode emacs-magit emacs-mmm-mode))
+     (list emacs-company
+           emacs-json-mode
+           emacs-magit-section
+           emacs-mmm-mode
+           emacs-transient))
     (home-page "https://github.com/NixOS/nix-mode")
     (synopsis "Emacs major mode for editing Nix expressions")
     (description "@code{nixos-mode} provides an Emacs major mode for editing
