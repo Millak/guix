@@ -1759,16 +1759,16 @@ tools on.")
     (name "go-golang-org-x-vuln")
     ;; XXX: Newer version of govulncheck requires golang.org/x/telemetry,
     ;; which needs to be discussed if it may be included in Guix.
-    (version "1.1.4")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/vuln")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/vuln")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "004hmcaahgj0ajvpkrhbvs6av1nas8302vzy9is9msxyya3mclkp"))))
+        (base32 "0lx5c97x2yxx5jmj1skyqdkxp7k3df8qjfchgyaxccs3y1xicb2y"))))
     (build-system go-build-system)
     (arguments
      (list
