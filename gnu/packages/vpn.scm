@@ -1016,7 +1016,7 @@ packages.")
 (define-public python-proton-keyring-linux
   (package
     (name "python-proton-keyring-linux")
-    (version "0.2.1")
+    (version "0.2.3")
     (home-page "https://github.com/ProtonVPN/python-proton-keyring-linux")
     (source
      (origin
@@ -1026,7 +1026,7 @@ packages.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a2q10z44x75fvz6rmhki0vn6500v0ybi50hbhikhkpfr3a5vsbm"))))
+        (base32 "1yfs8y959g9vlfj8b5gkz6yng22yp0j6yfc1g1zkh6a9h9r26g9s"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools))
