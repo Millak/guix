@@ -969,7 +969,7 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
 (define-public python-proton-core
   (package
     (name "python-proton-core")
-    (version "0.7.0")
+    (version "0.7.4")
     (home-page "https://github.com/ProtonVPN/python-proton-core")
     (source
      (origin
@@ -979,7 +979,7 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j8pl2cx676g6akz110j0093bw6mg8g0p3nnng340y3kka9cngv5"))))
+        (base32 "17bxsk755fl6ahccpx05wr8szr9k6x12a68qncm1hfmlwqd4ag2r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
