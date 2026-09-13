@@ -3216,6 +3216,8 @@ Forgejo-based (e.g. Codeberg) repositories.")
     (arguments
      (list
       #:lisp-directory "lisp"
+      ;; The 'magit-section' library is provided by its own package.
+      #:exclude #~(cons "^magit-section\\.(el|info)$" %default-exclude)
       #:test-command #~(list "make" "-C" ".." "test")
       #:phases
       #~(modify-phases %standard-phases
@@ -3242,11 +3244,10 @@ Forgejo-based (e.g. Codeberg) repositories.")
     (inputs
      (list git perl))
     (propagated-inputs
-     ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
-     ;; magit itself.
      (list emacs-compat
            emacs-cond-let
            emacs-llama
+           emacs-magit-section
            emacs-transient
            emacs-with-editor))
     (home-page "https://magit.vc/")
