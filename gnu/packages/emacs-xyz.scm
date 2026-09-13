@@ -3428,8 +3428,8 @@ process, passing on the arguments as command line arguments.")
 (define-public emacs-magit-lfs
   ;; Last tag is from 2021 and missing changes adjusting to transient.el
   ;; deprecations.
-  (let ((commit "cd9f46e1840270be27e2c2d9dcf036ff0781f66d")
-        (revision "0"))
+  (let ((commit "266d9fecd661f09bedd1a7433a49727b4bdb0337")
+        (revision "1"))
     (package
       (name "emacs-magit-lfs")
       (version (git-version "0.4.1" revision commit))
@@ -3441,10 +3441,12 @@ process, passing on the arguments as command line arguments.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0psnyxrc7fy2vng81mak0ji7kw58ly01frzr5z2xpj08hxx16b3c"))))
+          (base32 "1ykqskra1428dzlgd94ad36jbcwnlnyd7fk6i748gi0mxw2k89qy"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ; no tests
-      (propagated-inputs (list emacs-magit emacs-transient emacs-dash))
+      (propagated-inputs
+       (list emacs-dash
+             emacs-magit))
       (home-page "https://github.com/Ailrun/magit-lfs")
       (synopsis "Git LFS support for Magit")
       (description "@code{magit-lfs} provides Magit integration for git-lfs.")
