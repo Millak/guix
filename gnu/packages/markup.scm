@@ -19,6 +19,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Andy Tai <atai@atai.org>
 ;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages compression)
@@ -302,32 +304,61 @@ convert it to structurally valid XHTML (or HTML).")
 (define-public lowdown
   (package
     (name "lowdown")
-    (version "1.1.0")
+    (version "3.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-"
-             version ".tar.gz"))
-       (sha256
-        (base32 "0y88gffrg1zrin0y53j4gbkmpia0r8p0kyklj501wavkqi83j7pk"))))
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/kristapsdz/lowdown")
+          (commit (string-append "VERSION_"
+                                 (string-map (lambda (ch)
+                                               (if (char=? ch #\.) #\_ ch))
+                                             version)))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0vs4fp55p79xj8r2j9v8dysrcsz1yw8jda30wn0zcp3y6hfms9cv"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:test-target "regress"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-Makefile
+            (lambda _
+              (substitute* "Makefile.configure"
+                (("^(CFLAGS[[:space:]]+=[[:space:]]+)" all)
+                 (string-append all "-fPIC ")))))
           (replace 'configure
             (lambda _
               (invoke "./configure"
                       (string-append "PREFIX=" #$output)
                       (string-append "MANDIR=" #$output "/share/man"))))
+          (replace 'build
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "bmake"
+                     (append make-flags
+                             (if parallel-build?
+                                 (list "-j" (number->string
+                                             (parallel-job-count)))
+                                 '())))))
+          (replace 'check
+            (lambda* (#:key test-target make-flags parallel-build?
+                      #:allow-other-keys)
+              (apply invoke "bmake" test-target
+                     (append make-flags
+                             (if parallel-build?
+                                 (list "-j" (number->string
+                                             (parallel-job-count)))
+                                 '())))))
           (replace 'install
-            (lambda _
-              (invoke "make" "install" "install_libs"))))
-      #:make-flags #~(list "CFLAGS=-fPIC")))
-    (native-inputs
-     (list which))
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "bmake" "install" "install_libs"
+                     (append make-flags
+                             (if parallel-build?
+                                 (list "-j" (number->string
+                                             (parallel-job-count)))
+                                 '()))))))))
+    (native-inputs (list bmake which))
     (home-page "https://kristaps.bsd.lv/lowdown/")
     (synopsis "Simple Markdown translator")
     (description "Lowdown is a Markdown translator producing HTML5, roff
