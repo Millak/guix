@@ -6974,6 +6974,62 @@ scheme and builds with the HEALPix C++ library.")
 ;; Deprecated on <2026-0815>.
 (define-public python-healpy-1.19 python-healpy)
 
+(define-public python-hendrics
+  (package
+    (name "python-hendrics")
+    (version "8.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hendrics" version))
+       (sha256
+        (base32 "1hf5xydbrw4yjpi2pmknrj35cqc14rinh96da47425ki2is1c72n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(map (lambda (test) (string-append "--deselect="
+                                           "hendrics/tests/test_efsearch.py"
+                                           test))
+             ;; Network access is required to download test data.
+             (list "::TestEFsearch::test_get_TOAs"
+                   "::TestEFsearch::test_get_TOAs_template"
+                   "::TestEFsearch::test_accelsearch_deorbit"))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pyparsing
+           python-pyyaml
+           python-scipy
+           python-stingray
+           python-tqdm
+           ;; [optional]
+           python-h5py
+           python-imageio
+           python-netcdf4
+           python-numba
+           python-pandas
+           python-pint-pulsar
+           ;; python-pyfftw      ;not packaged yet in Guix
+           python-pyyaml
+           python-scikit-image))
+    (home-page "https://hendrics.stingray.science")
+    (synopsis "High ENergy Data Reduction Interface from the Command Shell")
+    (description
+     "This package provides a set of command-line scripts based on Stingray is
+designed to do correctly and fairly easily a quick-look (spectral-) timing
+analysis of X-ray data.  Among the features already implemented are power
+density and cross spectra, time lags, pulsar searches with the Epoch folding
+and the Z_n^2 statistics, color-color and color-intensity diagrams,
+rms-energy, lag-energy, covariance-energy spectra.")
+    (license license:bsd-3)))
+
 (define-public python-hierarc
   (package
     (name "python-hierarc")
