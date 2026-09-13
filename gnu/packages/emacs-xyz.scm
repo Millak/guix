@@ -28208,7 +28208,9 @@ groups.")
                (base32
                 "16j1a2vx9awr5vk1x3i1m526ym6836zxlypx1f50fcwjy0w8q8a3"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-magit emacs-taxy))
+    (propagated-inputs
+     (list emacs-magit-section
+           emacs-taxy))
     (home-page "https://github.com/alphapapa/taxy.el")
     (synopsis "View Taxy structs in a Magit Section buffer")
     (description
