@@ -4312,6 +4312,11 @@ Linux-based operating system.")
          (string-append "--with-udev-rules-dir=" #$output "/lib/udev/rules.d"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-alsactl-udev-rules
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "alsactl/conf/90-alsa-restore.rules.in"
+                (("/usr/bin/cat")
+                 (search-input-file inputs "bin/cat")))))
           (add-before 'install 'pre-install
             (lambda _
               ;; Don't try to mkdir /var/lib/alsa.
