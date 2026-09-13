@@ -3259,6 +3259,56 @@ changes.  There is support for cherry picking, reverting, merging,
 rebasing, and other common Git operations.")
     (license license:gpl3+)))
 
+(define-public emacs-magit-section
+  (package
+    (inherit emacs-magit)
+    (name "emacs-magit-section")
+    (arguments
+     (list
+      #:lisp-directory "lisp"
+      #:include #~(list "^magit-section(-autoloads|-pkg)?\\.el$"
+                        "^magit-section\\.info$")
+      #:tests? #f                    ;Tests are executed in the parent package
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'ensure-package-description
+            (lambda _
+              (emacs-batch-edit-file "magit-section.el"
+                '(progn
+                  (require 'package)
+                  (package-generate-description-file (package-buffer-info)
+                                                     "magit-section-pkg.el")))))
+          (replace 'make-autoloads
+            (lambda _
+              (emacs-batch-eval
+                `(let ((backup-inhibited t))
+                   (require 'loaddefs-gen)
+                   (loaddefs-generate
+                    "." "magit-section-autoloads.el"
+                    ;; Only generate autoloads for 'magit-section.el'.
+                    ',(delete "./magit-section.el" (find-files "." "\\.el$"))))
+                #:dynamic? #t)
+              ;; Like the standard phase, allow byte-compiling the autoloads.
+              (substitute* "magit-section-autoloads.el"
+                ((";; no-byte-compile.*") ""))))
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "make" "-C" ".." "info")
+              ;; Copy the info file to the lisp directory, which acts as
+              ;; the root of the project for the emacs-build-system.
+              (install-file "../docs/magit-section.info" "../lisp"))))))
+    (inputs '())
+    (propagated-inputs
+     (list emacs-compat
+           emacs-cond-let
+           emacs-llama))
+    (synopsis "Sections for read-only buffers")
+    (description
+     "This package implements the main user interface of Magit — the
+collapsible sections that make up its buffers.  This package used to be
+distributed as part of Magit but how it can also be used by other packages
+that have nothing to do with Magit or Git.")))
+
 (define-public emacs-magit-stgit
   (package
     (name "emacs-magit-stgit")
