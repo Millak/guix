@@ -1282,7 +1282,7 @@ foundation for larger systems to be built on top of.")
 (define-public go-github-com-rootless-containers-rootlesskit-v3
   (package
     (name "go-github-com-rootless-containers-rootlesskit-v3")
-    (version "3.0.0")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1291,12 +1291,17 @@ foundation for larger systems to be built on top of.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0giw1whjpm64h8f1iamgym246rr3wl01w7zgw4lygrj7dqk3clmb"))))
+        (base32 "1nxx0ws8gq2s5rh037g4ixmdd9lsjybgm7yf4hn09r1kvyx1g8cj"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/rootless-containers/rootlesskit/v3"))
+      #:import-path "github.com/rootless-containers/rootlesskit/v3"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-masterminds-semver-v3
+           go-github-com-sirupsen-logrus
+           go-github-com-urfave-cli-v2))
     (propagated-inputs
      (list go-github-com-containernetworking-plugins
            go-github-com-containers-gvisor-tap-vsock
@@ -1304,12 +1309,9 @@ foundation for larger systems to be built on top of.")
            go-github-com-google-uuid
            go-github-com-gorilla-mux
            go-github-com-insomniacslk-dhcp
-           go-github-com-masterminds-semver-v3
            go-github-com-moby-sys-mountinfo
            go-github-com-moby-vpnkit
-           go-github-com-sirupsen-logrus
            go-github-com-songgao-water
-           go-github-com-urfave-cli-v2
            go-golang-org-x-sync
            go-golang-org-x-sys
            go-gotest-tools-v3))
