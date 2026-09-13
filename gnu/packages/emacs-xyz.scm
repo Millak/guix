@@ -46657,7 +46657,7 @@ go directly to where they belong.")
     (propagated-inputs
      (list emacs-dash
            emacs-emacsql
-           emacs-magit))
+           emacs-magit-section))
     (home-page "https://github.com/org-roam/org-roam/")
     (synopsis "Non-hierarchical note-taking with Org mode")
     (description "Emacs Org Roam is a solution for taking non-hierarchical
