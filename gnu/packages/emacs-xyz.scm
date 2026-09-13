@@ -14953,10 +14953,11 @@ efficient syntax for traversal.")
         (base32 "0hiv8ynygnqv2b5d7s43zab8d75fc34n06jvlm0wscjkq8rkmnkm"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
-    (propagated-inputs (list emacs-magit
-                             emacs-request
-                             emacs-tablist
-                             emacs-transient))
+    (propagated-inputs
+     (list emacs-magit-section
+           emacs-request
+           emacs-tablist
+           emacs-transient))
     (home-page "https://github.com/unmonoqueteclea/jira.el")
     (synopsis "Emacs Interface to Jira")
     (description "This package allows you to visualuze and manipulate Jira
