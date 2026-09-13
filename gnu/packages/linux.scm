@@ -2729,7 +2729,18 @@ and should be used with caution, especially on untested models.")
                    ;; Lazily fix another mismatch between what the kernel module
                    ;; build system expects and what this package provides.
                    (symlink "source/build" source-directory)))
-               (replace 'build (assoc-ref gnu:%standard-phases 'build))
+               (replace 'build
+                 (lambda* (#:key inputs #:allow-other-keys #:rest rest)
+                   (let ((kernel-dir
+                          (search-input-directory inputs "lib/modules/build")))
+                     ;; Avoid introducing store paths into the build output.
+                     ;; https://codeberg.org/guix/guix/issues/10409
+                     (setenv "KCFLAGS"
+                             (format #f "-ffile-prefix-map=~a=" kernel-dir))
+                     (apply (assoc-ref gnu:%standard-phases 'build)
+                            #:inputs inputs
+                            rest)
+                     (unsetenv "KCFLAGS"))))
                (add-before 'install 'resolve-symlink
                  ;; The build system silently fails to install from a symlink.
                  (lambda _

@@ -1765,12 +1765,18 @@ with the included @command{xfstests-check} helper.")
                 (("/sbin/modprobe")
                  (search-input-file inputs "/bin/modprobe")))))
           (replace 'build
-            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-              (apply invoke "make"
-                     `(,@(if parallel-build?
-                             `("-j" ,(number->string (parallel-job-count)))
-                             '())
-                       ,@make-flags))))
+            (lambda* (#:key inputs make-flags parallel-build?
+                      #:allow-other-keys)
+              (let ((kernel-dir
+                     (search-input-directory inputs "lib/modules/build")))
+                (apply invoke "make"
+                       ;; Avoid introducing store paths into the build output.
+                       ;; https://codeberg.org/guix/guix/issues/10409
+                       (format #f "KCFLAGS=-ffile-prefix-map=~a=" kernel-dir)
+                       `(,@(if parallel-build?
+                               `("-j" ,(number->string (parallel-job-count)))
+                               '())
+                         ,@make-flags)))))
           (replace 'install
             (lambda* (#:key inputs native-inputs
                       make-flags parallel-build? #:allow-other-keys)

@@ -49,14 +49,16 @@
                 (source-directory ".")
                 inputs
                 #:allow-other-keys)
-  (apply invoke "make" "-C"
-         (string-append (assoc-ref inputs "linux-module-builder")
-                        "/lib/modules/build")
-         (string-append "M=" (canonicalize-path source-directory))
-         `(,@(if parallel-build?
-                 `("-j" ,(number->string (parallel-job-count)))
-                 '())
-           ,@make-flags)))
+  (let ((kernel-dir (search-input-directory inputs "lib/modules/build")))
+    (apply invoke "make" "-C" kernel-dir
+           (string-append "M=" (canonicalize-path source-directory))
+           ;; Avoid introducing store paths into the build output.
+           ;; https://codeberg.org/guix/guix/issues/10409
+           (format #f "KCFLAGS=-ffile-prefix-map=~a=" kernel-dir)
+           `(,@(if parallel-build?
+                   `("-j" ,(number->string (parallel-job-count)))
+                   '())
+             ,@make-flags))))
 
 ;; Similar to the "modules_install" part of make-linux-libre.
 (define* (install #:key (make-flags '()) (parallel-build? #t)
@@ -64,12 +66,11 @@
                   inputs native-inputs outputs
                   #:allow-other-keys)
   (let* ((out (assoc-ref outputs "out"))
-         (moddir (string-append out "/lib/modules")))
+         (moddir (string-append out "/lib/modules"))
+         (kernel-dir (search-input-directory inputs "lib/modules/build")))
     ;; Install kernel modules
     (mkdir-p moddir)
-    (apply invoke "make" "-C"
-            (string-append (assoc-ref inputs "linux-module-builder")
-                           "/lib/modules/build")
+    (apply invoke "make" "-C" kernel-dir
             (string-append "M=" (canonicalize-path source-directory))
             ;; Disable depmod because the Guix system's module directory
             ;; is an union of potentially multiple packages.  It is not
