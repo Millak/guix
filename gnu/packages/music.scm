@@ -1353,6 +1353,13 @@ biographies, reviews and more.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-desktop-file
+            (lambda _
+              (substitute* "gtick.desktop"
+                (("/usr/bin")
+                 (string-append #$output "/bin"))
+                (("/usr/share")
+                 (string-append #$output "/share")))))
           (add-after 'unpack 'do-not-require-dmalloc
             ;; The use of dmalloc causes build errors like "expected
             ;; declaration specifiers or ‘...’ before string constant" (see
