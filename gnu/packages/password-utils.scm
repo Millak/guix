@@ -589,7 +589,7 @@ Counterpane's Passwordsafe.")
 (define-public otpclient
   (package
     (name "otpclient")
-    (version "4.4.1")
+    (version "5.0.6")
     (source
      (origin
        (method git-fetch)
@@ -598,7 +598,7 @@ Counterpane's Passwordsafe.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gqn3mhjsw5m0a2zadnhrnfd2a796wvvvigklkmdnfyjmhn3iqs6"))))
+        (base32 "1pcdfv0fbxpgznsm5ij0lis3nhm6c6pql4kx7xz2scbs594zw06f"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -608,6 +608,8 @@ Counterpane's Passwordsafe.")
       #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
       #:tests? #f                        ; No tests
+      #:configure-flags
+      #~(list "-DENABLE_MINIMIZE_TO_TRAY=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
@@ -619,17 +621,19 @@ Counterpane's Passwordsafe.")
           (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs (list adwaita-icon-theme
+                  bash-completion
+                  `(,glib "bin")             ;for glib-compile-resources
+                  gtk
+                  jansson
+                  libadwaita
                   libcotp
                   libgcrypt
                   libsecret
                   libzip
-                  gtk+
-                  jansson
-                  protobuf
                   protobuf-c
                   qrencode
                   zbar))
-    (native-inputs (list pkg-config protobuf))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/paolostivanin/OTPClient")
     (synopsis "Two-factor authentication client")
     (description "OTPClient is a GTK+-based @acronym{OTP, One Time Password}
