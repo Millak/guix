@@ -2841,35 +2841,26 @@ a running cat (runcat) for CPU usage.")
 (define-public wawa
   (package
     (name "wawa")
-    ;; Package has no release tag, using latest commit
-    (properties '((commit . "249f43876d05f73cc1ba9c51235a32f058478e8c")
-                  (revision . "0")))
-    ;; Makefile shows 1.0 version
-    (version (git-version "1.0.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://codeberg.org/sewn/wawa")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xvv9px2cmdr2lwcsly2c8y175z9cm5zhyay2k00cphxh59pkwfx"))
-       (snippet '(begin
-                   (for-each delete-file
-                             '("stb_image.h"
-                               "stb_image_resize2.h"))))))
+        (base32 "0729dl90qs997wnjfjlyc8kfhmqs4y2dm697576pf1kk5mgczf8p"))
+       (snippet #~(for-each delete-file
+                            '("stb_image.h" "stb_image_resize2.h")))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f ;no tests provided
+      #:tests? #f                       ;no tests provided
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "CPATH=" #$(this-package-input "stb"))
-              (string-append "PREFIX="
-                             #$output))
+              (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure))))
