@@ -1256,6 +1256,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-offline-package-registry.patch	\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elm-bump-ansi-wl-pprint-dependency-fix-build.patch \
+  %D%/packages/patches/elogind-fix-logind-dbus-install.patch    \
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-disable-jit-compilation.patch			\
   %D%/packages/patches/emacs-doc-toc-shell-commands.patch	\

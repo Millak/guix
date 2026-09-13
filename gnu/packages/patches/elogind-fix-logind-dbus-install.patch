@@ -1,0 +1,26 @@
+From e8af22a28f3bb60854ea65a84681dd13541f8c90 Mon Sep 17 00:00:00 2001
+From: artoo <artoo@artixlinux.org>
+Date: Wed, 13 May 2026 15:39:13 +0200
+Subject: [PATCH 1/1] fix logind dbus install
+
+---
+ src/login/meson.build | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/login/meson.build b/src/login/meson.build
+index 275d336ad..6cd6b46e7 100644
+--- a/src/login/meson.build
++++ b/src/login/meson.build
+@@ -208,7 +208,8 @@ if enable_logind
+                 input: 'org.freedesktop.login1.service.in',
+                 output: 'org.freedesktop.login1.service',
+                 command : [jinja2_cmdline, '@INPUT@', '@OUTPUT@'],
+-                install_dir : dbussystemservicedir)
++                install_dir : dbussystemservicedir,
++                install : true)
+ #endif // 0
+ 
+         install_data(
+-- 
+2.54.0
+
