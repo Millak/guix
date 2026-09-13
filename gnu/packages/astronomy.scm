@@ -1108,7 +1108,7 @@ for \"genetic modifications\" as described by e.g.
 (define-public ginga
   (package
     (name "ginga")
-    (version "7.3.0")
+    (version "7.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1117,7 +1117,7 @@ for \"genetic modifications\" as described by e.g.
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q4qdc4s2p9i6lzyvxcr3bfyclxsr0xg7dkmnz4ilgy561zxy87w"))))
+        (base32 "1a1bsqfyy4ahcqsbc68a7xyii2hcdvylyn4wmggihdagb8ym3hwp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
