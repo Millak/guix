@@ -36758,7 +36758,8 @@ and comments.")
                 ("tokei-program"
                  (search-input-file inputs "/bin/tokei"))))))))
     (inputs (list tokei))
-    (propagated-inputs (list emacs-magit))
+    (propagated-inputs
+     (list emacs-magit-section))
     (home-page "https://github.com/nagy/tokei.el")
     (synopsis "Display codebase statistics in Emacs")
     (description
