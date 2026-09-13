@@ -30269,8 +30269,7 @@ fn main() {
 
 (define rust-sha1-0.6.1
   (crate-source "sha1" "0.6.1"
-                "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"
-                #:snippet '(delete-file-recursively "tests")))
+                "0w1p0s9060cv1vlgfa5c93kjksmvzjjc8j780lns3jj5fk4hbnn1"))
 
 (define rust-sha1-asm-0.5.3
   (crate-source "sha1-asm" "0.5.3"
