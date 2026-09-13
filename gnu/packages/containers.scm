@@ -3664,6 +3664,39 @@ being rootless and not requiring any daemon to be running.")
      "@code{containers-storage} is a command line tool for manipulating local
 layer/image/container stores.")))
 
+(define-public rootlesskit
+  (package/inherit go-github-com-rootless-containers-rootlesskit-v3
+    (name "rootlesskit")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _)
+        "github.com/rootless-containers/rootlesskit/v3/cmd/...")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "")
+        "github.com/rootless-containers/rootlesskit/v3")))
+    (native-inputs
+     (append
+      (package-native-inputs
+       go-github-com-rootless-containers-rootlesskit-v3)
+      (package-propagated-inputs
+       go-github-com-rootless-containers-rootlesskit-v3)))
+    (propagated-inputs '())
+    (inputs '())
+    (synopsis "Linux-native fakeroot using user namespaces")
+    (description
+     "This package provides @acronym{Command Line Interface, CLI} commands
+implementing \"fake root\" container environment based on
+@url{http://man7.org/linux/man-pages/man7/user_namespaces.7.html,
+user_namespaces(7)}.
+
+@itemize
+@item @command{rootlessctl} - RootlessKit API client
+@item @command{rootlesskit-docker-proxy} - RootlessKit Docker network proxy
+@item @command{rootlesskit} - Linux-native fakeroot using user namespaces
+@end itemize")))
+
 (define-public runc
   ;; TODO: Inheerit form go-github-com-opencontainers-runc when it's moved
   ;; here.
