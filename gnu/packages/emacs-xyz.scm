@@ -46753,7 +46753,7 @@ structure of all your Org files – headings, links and so on..")
       #:test-command #~(list "makem.sh" "-vv" "test")))
     (propagated-inputs
      (list emacs-llama
-           emacs-magit
+           emacs-magit-section
            emacs-org-mem))
     ;; tests
     (native-inputs
