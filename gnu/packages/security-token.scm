@@ -553,7 +553,7 @@ and other operations.  It includes a library and a command-line tool.")
 (define-public python-nethsm
   (package
     (name "python-nethsm")
-    (version "2.1.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -562,7 +562,7 @@ and other operations.  It includes a library and a command-line tool.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v3jqz8dkwcrpp6h9zvm5wy9bpcbkd3b0ah23plv04k5qw5kgdfm"))))
+        (base32 "1lfz62l8pcaxhgs08g2r0jl5jqqs36zf3vw8zsi755nqvf87zrlh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
