@@ -108,7 +108,7 @@
 (define-public ccid
   (package
     (name "ccid")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
        (method git-fetch)
@@ -117,7 +117,7 @@
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lkaz121y9699nizb2j7gbql776dczgs06q2xc3i51bh5njykddd"))))
+        (base32 "1618rfnhzirlxy407a1dnk27z32davxsqnm4gxh4mv9xpszmn736"))))
     (build-system meson-build-system)
     (arguments
      (list
