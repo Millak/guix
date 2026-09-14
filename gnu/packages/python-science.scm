@@ -1659,18 +1659,22 @@ necessary for reproducing the experiments in the paper.")
 (define-public python-hepunits
   (package
     (name "python-hepunits")
-    (version "2.4.4")
+    (version "2.4.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hepunits" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/hepunits")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sq597amy82wnw7q61i9q2ylmp1cpnwdg7jrzxmv6kryz8lyfihq"))))
+        (base32 "0xkgaf7kmj1zrr8vd65xnam43xb9bd70q3kg7fvlshmd51k8z35r"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pint
-                         python-pytest))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pint
+           python-pytest))
     (home-page "https://github.com/scikit-hep/hepunits")
     (synopsis "Units and constants in the HEP system of units")
     (description "@code{hepunits} collects the most commonly used units and
