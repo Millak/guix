@@ -6181,7 +6181,7 @@ scanners/lexers/tokenizers.")
 (define-public go-pgregory-net-rapid
   (package
     (name "go-pgregory-net-rapid")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -6190,11 +6190,17 @@ scanners/lexers/tokenizers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jifhk3kz071m1qgc3jsswmy3512fsx2nqi157xq3r0vqf2jsgqr"))))
+        (base32 "1s5rpv88d0kgvbdm9wwk7879w9n5n04g3w3hh33qg3hafpgrfr8s"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "pgregory.net/rapid"))
+      #:import-path "pgregory.net/rapid"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; synctest.Run not supported with asynctimerchan!=0
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (home-page "https://pgregory.net/rapid/")
     (synopsis "Go property-based testing library")
     (description
