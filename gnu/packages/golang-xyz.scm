@@ -28906,7 +28906,7 @@ directories and offers customizable search strategies.")
 (define-public go-github-com-sahilm-fuzzy
   (package
     (name "go-github-com-sahilm-fuzzy")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -28915,7 +28915,7 @@ directories and offers customizable search strategies.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15j95gm7hcmg09x1b39vc4il8bryv4v0yljvvyq5vyc6iq66qrbz"))))
+        (base32 "1mn8813fbfigkh3z71lzqclxgfj2dfxjxp9nxrv1z076z1aj51c8"))))
     (build-system go-build-system)
     (native-inputs
      (list go-github-com-kylelemons-godebug))
