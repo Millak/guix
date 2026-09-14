@@ -24393,6 +24393,36 @@ rate of an arbitrary data stream.")
 first to a temp file, and then overwriting the target file in an atomic way.")
     (license license:expat)))
 
+(define-public go-github-com-natefinch-pie
+  (package
+    (name "go-github-com-natefinch-pie")
+    (version "0.0.0-20170715172608-9a0d72014007")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/natefinch/pie")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vipjdbzcna8ynlh23vcl76bspibrlvhyzxfqa4zadxcdd9gpcdz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/natefinch/pie"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))
+    (home-page "https://github.com/natefinch/pie")
+    (synopsis "Toolkit for creating plugins for Go applications")
+    (description
+     "Package pie provides a toolkit for creating plugins for Go
+applications.")
+    (license license:expat)))
+
 (define-public go-github-com-nathan-osman-go-sunrise
   (package
     (name "go-github-com-nathan-osman-go-sunrise")
