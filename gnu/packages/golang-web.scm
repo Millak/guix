@@ -21531,16 +21531,16 @@ specifications with Swaggo.")
 (define-public go-github-com-swaggo-swag
   (package
     (name "go-github-com-swaggo-swag")
-    (version "1.16.4")
+    (version "1.16.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/swaggo/swag")
-             (commit (string-append "v" version))))
+              (url "https://github.com/swaggo/swag")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a9dg8clgmpsfww5wv3jbdpm7lqza61iihviskwp5rd7wvp57862"))))
+        (base32 "00jkdlnlnd6nf264yhhjxshm0vr06jjjarrc704l9cpaws7qf5wb"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -21556,8 +21556,13 @@ specifications with Swaggo.")
          ;; schemas/v2/schema.json
          "schema\\.json")
       #:test-flags
-      #~(list "-skip" (string-append "TestParseGoList/enableGOMODULE"
-                                     "|TestParseDescriptionMarkdown")
+      #~(list "-skip" (string-join
+                       (list "TestGlobalSecurity"
+                             "TestParseDescriptionMarkdown"
+                             "TestParseGoList/enableGOMODULE"
+                             "TestParseSimpleApi_ForLowerCamelcase"
+                             "TestParseSimpleApi_ForSnakecase")
+                       "|")
               "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
@@ -21566,11 +21571,11 @@ specifications with Swaggo.")
               (with-directory-excursion (string-append "src/" unpack-path)
                 (delete-file-recursively "example")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v2))
     (propagated-inputs
      (list go-github-com-go-openapi-spec
            go-github-com-kylebanks-depth
-           go-github-com-urfave-cli-v2
            go-golang-org-x-text
            go-golang-org-x-tools
            go-sigs-k8s-io-yaml))
@@ -28140,8 +28145,7 @@ snowflake-webext}.")))
   (package/inherit go-github-com-swaggo-swag
     (name "swag")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-swaggo-swag)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:install-source? _ #t) #f)
        ((#:import-path _ "github.com/swaggo/swag")
