@@ -34772,6 +34772,8 @@ Platforms supported:
      (arguments
       (list
        #:import-path "github.com/zyedidia/go-runewidth"))
+     (propagated-inputs
+      (list go-github-com-rivo-uniseg))
      (home-page "https://github.com/zyedidia/go-runewidth")
      (description
       "It's an alternative fork of
