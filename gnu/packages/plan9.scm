@@ -124,11 +124,11 @@ protocol.")
     (license license:gpl2+)))
 
 (define-public drawterm
-  (let ((revision "3")
-        (commit "fbfcaea5d4bebb1899b21182b4a2b4f513b4dbc8"))
+  (let ((revision "4")
+        (commit "64dcc2432d85a0bdf64bb706be8787042beb8db6"))
     (package
       (name "drawterm")
-      (version (git-version "20260701" revision commit))
+      (version (git-version "20260912" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -137,7 +137,7 @@ protocol.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "18q2x51vfy1d3w8bzrfv2gdhz14lasgr9ynkgzw5325dgc02l2y0"))))
+          (base32 "0wds8m0w2gcka91vhqkk481yq3as0racyccvw6fix109gkzjvlak"))))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags (list "CONF=unix"
