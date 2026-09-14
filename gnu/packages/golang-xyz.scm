@@ -12245,6 +12245,38 @@ i.e.  line editing and command history for simple TUI programs.")
      "Go library for input handling using Windows Console API.")
     (license license:expat)))
 
+(define-public go-github-com-erikgeiser-promptkit
+  (package
+    (name "go-github-com-erikgeiser-promptkit")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/erikgeiser/promptkit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pln6gibcjc7ymlf8whca5l94r3gn0i5f3jwz3hrjxwfshqj5df8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/erikgeiser/promptkit"))
+    (propagated-inputs
+     (list go-charm-land-bubbles-v2
+           go-charm-land-bubbletea-v2
+           go-charm-land-lipgloss-v2
+           go-github-com-muesli-reflow
+           go-github-com-muesli-termenv
+           go-golang-org-x-term))
+    (home-page "https://github.com/erikgeiser/promptkit")
+    (synopsis "Go prompt library")
+    (description
+     "Promptkit is a collection of common command line prompts for interactive
+programs. Each prompts comes with sensible defaults, re-mappable key bindings
+and many opportunities for heavy customization.")
+    (license license:expat)))
+
 (define-public go-github-com-errata-ai-ini
   (package
     (name "go-github-com-errata-ai-ini")
