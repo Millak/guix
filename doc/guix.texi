@@ -20212,18 +20212,19 @@ set with @command{passwd} are of course preserved across reboot and
 reconfiguration.
 
 If you @emph{do} want to set an initial password for an account, then
-this field should contain the encrypted password, as a
-string@footnote{You can technically set a plain, unencrypted password
-string, which is discouraged for security reasons, but can be useful
-when testing, for example to set an empty password with @code{(password
-"")}.}.  You can use the @code{crypt} procedure for this purpose:
+this field must contain the encrypted password@footnote{An
+exception to this is if you want to set an empty password; in this case,
+the password value should be a plain empty string, as in @samp{(password
+"")}}, as a string.  You can use the @code{crypt} procedure for this purpose:
 
 @lisp
 (user-account
   (name "charlie")
   (group "users")
 
-  ;; Specify a SHA-512-hashed initial password.
+  ;; Specify a SHA-512-hashed initial password; the
+  ;; second argument is an arbitrary string of your
+  ;; choosing used as the salt.
   (password (crypt "InitialPassword!" "$6$abc")))
 @end lisp
 
