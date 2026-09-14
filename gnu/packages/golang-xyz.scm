@@ -2009,16 +2009,16 @@ be stripped.")
 (define-public go-github-com-alecthomas-kong
   (package
     (name "go-github-com-alecthomas-kong")
-    (version "1.12.1")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/alecthomas/kong")
-             (commit (string-append "v" version))))
+              (url "https://github.com/alecthomas/kong")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rx1vab7azz9f8xm044dlvx24dqggh25fjq1sxx4mizgvr28yjgq"))))
+        (base32 "1wbkzylbz57ky3jp7mylyysasbbvz0vaxs34ff4nk3pv1zci4ds4"))))
     (build-system go-build-system)
     (arguments
      (list
