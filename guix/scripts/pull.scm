@@ -81,6 +81,7 @@
     (debug . 0)
     (verbosity . 1)
     (require-trusted-channels . default)
+    (max-channel-indirections . 2)
     (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)
@@ -104,6 +105,9 @@ Download and deploy the latest version of Guix.\n"))
       --commit=COMMIT    download the specified \"guix\" channel COMMIT"))
   (display (G_ "
       --branch=BRANCH    download the tip of the specified \"guix\" channel BRANCH"))
+  (display (G_ "
+      --max-indirections=N
+                         allow up to N channel indirections"))
   (display (G_ "
       --allow-downgrades allow downgrades to earlier channel revisions"))
   (display (G_ "
@@ -203,6 +207,11 @@ Download and deploy the latest version of Guix.\n"))
          (option '("branch") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'ref `(branch . ,arg) result)))
+         (option '("max-indirections") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'max-channel-indirections
+                               (string->number* arg)
+                               result)))
          (option '("allow-downgrades") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'validate-pull warn-about-backward-updates
@@ -751,6 +760,7 @@ Return true when there is more package info to display."
      channel-introduction-first-commit-signer
      channel-introduction-first-signed-commit
      openpgp-fingerprint
+     downloaded-channels
      %default-channels
      %default-guix-channel
      guix-channel?)))
@@ -905,7 +915,10 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define require-trusted-channels
     (assoc-ref opts 'require-trusted-channels))
 
-  (define (load-channels file)
+  (define max-indirections
+    (assoc-ref opts 'max-channel-indirections))
+
+  (define* (load-channels file #:optional (indirections 0))
     (let* ((url? (or (string-prefix? "https://" file)
                      (string-prefix? "http://" file)))
            (swhid? (string-prefix? "swh:" file))
@@ -915,20 +928,29 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
                            (else file))
                           %safe-channel-bindings
                           #:isolated? isolated?)))
-      (if (and (list? result) (every channel? result))
-          (begin
-            ;; When downloading channels, keep going if and only if these are
-            ;; channels the user trusts.
-            (check-trusted-channels result
-                                    (match require-trusted-channels
-                                      ((? boolean? x)
-                                       (if x 'error 'warning))
-                                      ('default
-                                       (if (or url? swhid?)
-                                           'error
-                                           'warning))))
-            result)
-          (leave (G_ "'~a' did not return a list of channels~%") file))))
+      (match result
+        (((? channel?) ...)
+         ;; When downloading channels, keep going if and only if these are
+         ;; channels the user trusts.
+         (check-trusted-channels result
+                                 (match require-trusted-channels
+                                   ((? boolean? x)
+                                    (if x 'error 'warning))
+                                   ('default
+                                     (if (or url? swhid?)
+                                         'error
+                                         'warning))))
+         result)
+        ((? downloaded-channels?)
+         (if (>= indirections max-indirections)
+             (leave (G_ "~a: too many channel indirections; stopping~%") file)
+             (let ((target (downloaded-channels-url result)))
+               (info (G_ "following indirection from '~a' to '~a'~%")
+                     file target)
+               (append (load-channels target (+ 1 indirections))
+                       (downloaded-channels-append result)))))
+        (_
+         (leave (G_ "'~a' did not return a list of channels~%") file)))))
 
   (define selected-channels
     (collect-alist-values 'select opts))

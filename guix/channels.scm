@@ -67,6 +67,7 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
+  #:autoload   (web uri) (string->uri uri->string uri-scheme)
   #:export (channel
             channel?
             channel-name
@@ -83,6 +84,11 @@
             channel-introduction-first-commit-signer
 
             openpgp-fingerprint
+
+            downloaded-channels
+            downloaded-channels?
+            downloaded-channels-url
+            downloaded-channels-append
 
             %default-guix-channel
             %default-channels
@@ -151,6 +157,40 @@
   channel-introduction?
   (first-signed-commit  channel-introduction-first-signed-commit)  ;hex string
   (first-commit-signer  channel-introduction-first-commit-signer)) ;bytevector
+
+;; List of channels to be downloaded.  Records of this type may be returned by
+;; user channel files; in turn, 'pull' and 'time-machine' handle them
+;; according to user settings: max number of indirections, evaluation mode,
+;; trusted channels.
+(define-record-type <downloaded-channels>
+  (%downloaded-channels uri append)
+  downloaded-channels?
+  (uri    downloaded-channels-uri)
+  (append downloaded-channels-append))
+
+(define (downloaded-channels-url channels)
+  "Return the URL of CHANNELS, a <downloaded-channels> record."
+  (uri->string (downloaded-channels-uri channels)))
+
+(define* (downloaded-channels url #:key (append '()))
+  "Return a new <downloaded-channels> record.  Consumers such as 'guix pull'
+will interpret it as an indirection to URL; channels listed in APPEND are
+appended to those given by the URL."
+  (match (string->uri url)
+    (#f
+     ;; Invalid URI.
+     (raise (formatted-message (G_ "~s: invalid channel URL") url)))
+    (uri
+     ;; Prevent downloads of file:///etc/passwd or similar.
+     (unless (memq (uri-scheme uri) '(http https swh))
+       (raise (formatted-message (G_ "~s: unsupported channel URL") url)))
+     (match append
+       (((? channel?) ...) #t)
+       (_
+        (throw 'wrong-type-arg "downloaded-channels"
+               "Wrong type for #:append: ~S" (list append) (list append))))
+
+     (%downloaded-channels uri append))))
 
 (define (make-channel-introduction commit signer)
   "Return a new channel introduction: COMMIT is the introductory where

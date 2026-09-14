@@ -4997,6 +4997,7 @@ Allow arbitrary code execution from channel files, both the default
 @file{channels.scm} files and those passed with @option{--channels} as
 mentioned above.
 
+@anchor{channel-evaluation}
 @cindex sandboxing, of channel evaluation
 By default, channel files are evaluated in an isolated ``sandbox''
 where only trivial declarative code returning a list of channels is
@@ -5015,6 +5016,13 @@ When using @code{--unsafe-channel-evaluation}, channel files can
 cases, only use @code{--unsafe-channel-evaluation} when you fully
 understand the code of the channel files you use!
 @end quotation
+
+@cindex indirection, for downloaded channels
+@item --max-indirections=@var{n}
+Allow up to @var{n} channel indirections @i{via}
+@code{downloaded-channels} (@pxref{Downloading a List of Channels}).
+The default is 2.  Setting it to zero disallows use of
+@code{downloaded-channels}.
 
 @item --no-channel-files
 @itemx -q
@@ -5333,6 +5341,13 @@ the channel files you use!
 @xref{unsafe-channel-evaluation, @option{--unsafe-channel-evaluation} in
 @command{guix pull}}, for background information.
 @end quotation
+
+@cindex indirection, for downloaded channels
+@item --max-indirections=@var{n}
+Allow up to @var{n} channel indirections @i{via}
+@code{downloaded-channels} (@pxref{Downloading a List of Channels}).
+The default is 2.  Setting it to zero disallows use of
+@code{downloaded-channels}.
 
 @item --no-channel-files
 @itemx -q
@@ -5806,6 +5821,7 @@ account security concerns and deal with authenticated updates.
 * Specifying Additional Channels::  Extending the package collection.
 * Using a Custom Guix Channel::  Using a customized Guix.
 * Replicating Guix::            Running the @emph{exact same} Guix.
+* Downloading a List of Channels:: Fetching a channel file.
 * Customizing the System-Wide Guix::  Default channels on Guix System.
 * Channel Authentication::      How Guix verifies what it fetches.
 * Channels with Substitutes::   Using channels with available substitutes.
@@ -5964,6 +5980,70 @@ artifacts with very fine grain, and to reproduce software environments at
 will---some sort of ``meta reproducibility'' capabilities, if you will.
 @xref{Inferiors}, for another way to take advantage of these super powers.
 
+@node Downloading a List of Channels
+@section Downloading a List of Channels
+
+@cindex channels, downloading
+@cindex downloading channel files
+In some cases, you might want to delegate maintenance of your set of
+channels to a third party---a person responsible for this in your team,
+or perhaps an automated system that publishes a channel file when some
+criteria are met (@pxref{Channels with Substitutes}, for an example of
+that).
+
+In that case you can make your channel file an @dfn{alias} for some
+downloaded channel file, as in the example below:
+
+@lisp
+;; Use the channels published at example.org.
+(downloaded-channels "https://example.org/channels.scm")
+@end lisp
+
+If you save the content above as @file{~/.config/guix/channels.scm},
+every time you run @command{guix pull} it will first download the given
+channel file and then pull from the channels it specifies.
+
+This mechanism is safe because, by default, the channel file itself is
+evaluated in an isolated environment (@pxref{channel-evaluation,
+@command{guix pull} channel evaluation}), and because only @dfn{trusted
+channels} are accepted (@pxref{trusted-channels, the definition of
+``trusted channels''}).  Likewise, the @option{--max-indirections} option
+of @command{guix pull} allows you to set an upper bound on the number of
+times a channel file might create an indirection to another channel file
+@i{via} @code{downloaded-channels}.
+
+@quotation Note
+@code{downloaded-channels} causes the download a channel file as
+currently provided by a server; the contents of that file may change
+over time, or the server might stop providing it altogether.
+
+For reproducibility purposes, you may want to track the output of
+@command{guix describe} (@pxref{Replicating Guix}).
+@end quotation
+
+The @code{downloaded-channels} is exported by @code{(guix channels)} and
+defined below.
+
+@cindex SWHID, for channel files
+@deffn {Procedure} downloaded-channels @var{uri} [#:append '()]
+Return an opaque object representing a list of channels to be downloaded
+from @var{uri}, a string.  @var{uri} can be either an HTTP or HTTPS URL,
+or a @uref{https://swhid.org,Software Hash Identifier} (SWHID) denoting
+a channel file.
+
+Optionally, @code{#:append} can specify a list of channels to be
+appended to those downloaded from @var{uri}.
+
+@quotation Note
+This procedure does @emph{not} return a list of channels.  Thus it
+cannot be composed with other channel lists by calling @code{append}, it
+cannot be traversed with @code{map}, and so on.  This restriction might
+be lifted in the future; you can also use @code{#:append} to append a
+list of channels to the result.
+@c See <https://codeberg.org/guix/guix/pulls/11246#issuecomment-22934251>.
+@end quotation
+@end deffn
+
 @node Customizing the System-Wide Guix
 @section Customizing the System-Wide Guix
 
@@ -6074,7 +6154,55 @@ pull} uses the latest commit with available substitutes for the package
 definitions: this is done by querying the continuous integration
 server at @url{https://ci.guix.gnu.org}.
 
+@lisp
+;; Tell 'guix pull' to download the channel file generated by
+;; the continuous integration server upon success.
+(downloaded-channels
+  "https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master")
+@end lisp
+
+Note that this does not mean that all the packages that you will
+install after running @command{guix pull} will have available
+substitutes.  It only ensures that @command{guix pull} will not try to
+compile package definitions.  @xref{Downloading a List of Channels}, for
+more about @code{downloaded-channels}.
+
+The above snippet gives you nothing but the @code{guix} channel.  To get
+multiple channels, you need to point to a continuous integration server
+that builds the combination of channels you care about.  For instance,
+the snippet below gives you a combination of the @code{guix} and
+@code{guix-science} channels that was successfully evaluated:
+
+@lisp
+(downloaded-channels
+  "https://guix.bordeaux.inria.fr/eval/latest/channels.scm?spec=guix-science")
+@end lisp
+
+Perhaps you'll want to add your personal channel to those downloaded,
+for example because it is not built by the continuous integration
+service referred to above.  Worry not! You can append your own channel
+to those downloaded by passing @code{#:append}:
+
+@lisp
+(downloaded-channels
+  "https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master"
+  #:append (list (channel
+                   (name 'my-channel)
+                   (url "https://example.org/my-channel.git"))))
+@end lisp
+
+Of course there is no guarantee that @code{my-channel} itself was ever
+successfully built, but at least you have that guarantee for the other
+channels.
+
+@quotation Compatibility Note
+@code{downloaded-channels} did not exist in Guix 1.5.0 and earlier.
+
 @findex channel-with-substitutes-available
+With those older versions, the way to achieve a similar result was to
+call the @code{channel-with-substitutes-available} procedure from your
+channel file:
+
 @lisp
 (use-modules (guix ci))
 
@@ -6083,25 +6211,11 @@ server at @url{https://ci.guix.gnu.org}.
        "https://ci.guix.gnu.org"))
 @end lisp
 
-Note that this does not mean that all the packages that you will
-install after running @command{guix pull} will have available
-substitutes.  It only ensures that @command{guix pull} will not try to
-compile package definitions.  This is particularly useful when using
-machines with limited resources.
-
-@quotation Warning
-Use of this functionality in your channel file requires it to be
-evaluated in ``unsafe'' mode, with the
-@option{--unsafe-channel-evaluation} option.
+This procedure is still available but calling it from in your channel
+file requires it to be evaluated in ``unsafe'' mode, with the
+@option{--unsafe-channel-evaluation} option, which is not recommended.
 @xref{unsafe-channel-evaluation, the @command{guix pull} documentation},
 for more info.
-
-However, a similar result can be achieved by running, say:
-
-@example
-guix pull \
-  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
-@end example
 @end quotation
 
 @node Creating a Channel

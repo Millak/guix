@@ -74,6 +74,46 @@ cat > "$channels_file" <<EOF
 EOF
 guix repl -- "$channels_file"
 
+# Check '--max-indirections' and 'downloaded-channels'.
+cat > "$channels_file" <<EOF
+(downloaded-channels "https://example.org/channels.scm")
+EOF
+
+guix time-machine -C "$channels_file" --max-indirections=0 2> "$log_file" && false
+grep "too many channel indirections" "$log_file"
+
+# Get 'time-machine' to download a channel file without an introduction, this
+# time via 'downloaded-channels'.  Check that this fails with an appropriate
+# error message.
+cat > "$channels_file" <<EOF
+(use-modules (guix tests http)
+             (guix diagnostics)
+             (guix scripts time-machine))
+
+(define channels
+  '(list (channel       ;this channel lacks an introduction
+           (name 'guix)
+           (url "https://example.org/evil/guix.git")
+           (commit "cabba9e900d2350aef42e65643de78500b2aad06"))))
+
+(with-http-server (list (list 200 (object->string channels)))
+  (let* ((error (open-output-string))
+         (port (mkstemp "guix-channels-XXXXXX"))
+         (file (port-filename port)))
+    (write (quasiquote (downloaded-channels ,(%local-url))) port)
+    (close-port port)
+    (catch 'quit
+      (lambda ()
+        (parameterize ((guix-warning-port error))
+          (guix-time-machine "-C" file "--" "describe")
+          (primitive-exit 1)))
+      (lambda _
+        (delete-file file)
+        (exit (->bool (string-contains (get-output-string error)
+                                       "cannot be authenticated")))))))
+EOF
+guix repl -- "$channels_file"
+
 cat > "$channels_file" <<EOF
 %default-channels
 EOF

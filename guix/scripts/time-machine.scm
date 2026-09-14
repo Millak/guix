@@ -72,6 +72,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
   (display (G_ "
       --branch=BRANCH    use the tip of the specified BRANCH"))
   (display (G_ "
+      --max-indirections=N
+                         allow up to N channel indirections"))
+  (display (G_ "
       --disable-authentication
                          disable channel authentication"))
   (display (G_ "
@@ -118,6 +121,11 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
          (option '("branch") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'ref `(branch . ,arg) result)))
+         (option '("max-indirections") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'max-channel-indirections
+                               (string->number* arg)
+                               result)))
          (option '("unsafe-channel-evaluation") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'isolated-channel-evaluation? #f result)))
@@ -153,6 +161,7 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
+    (max-channel-indirections . 2)
     (require-trusted-channels . default)
     (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
