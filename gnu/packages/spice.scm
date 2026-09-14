@@ -407,16 +407,29 @@ share smart cards from client system to local or remote virtual machines.")
         (base32 "1l5bv6x6j21l487mk3n93ai121gg62n6b069r2jpf72cbhra4gx4"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'build-with-recent-meson
-                 ;; Fix ‘ERROR: Function does not take positional arguments.’
-                 (lambda _
-                   (substitute* "data/meson.build"
-                     (("i18n\\.merge_file \\(.*" match)
-                      (string-append match "#"))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-with-recent-meson
+            ;; Fix ‘ERROR: Function does not take positional arguments.’
+            (lambda _
+              (substitute* "data/meson.build"
+                (("i18n\\.merge_file \\(.*" match)
+                 (string-append match "#")))))
+          (add-after 'install 'wrap-program
+            (lambda* _
+              (for-each
+               (lambda (command)
+                 (wrap-program (string-append #$output "/bin/" command)
+                   ;; Wrap GDK_PIXBUF_MODULE_FILE to load icons in pure
+                   ;; environments.
+                   `("GDK_PIXBUF_MODULE_FILE" =
+                     (,(getenv "GDK_PIXBUF_MODULE_FILE")))))
+               '("remote-viewer" "virt-viewer")))))))
     (native-inputs
-     (list `(,glib "bin")
+     (list adwaita-icon-theme
+           `(,glib "bin")
            gettext-minimal
            perl                         ;for pod2man
            pkg-config
