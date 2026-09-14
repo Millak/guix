@@ -3430,22 +3430,26 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-particle
   (package
     (name "python-particle")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "particle" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/particle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14h4nndm3pk97q05ic25m07ral501wl05sg8yc3ln15m3kn5s529"))))
+        (base32 "0sfv7d5l1f6vgv4aliq0swvswpz580zk0zp7frbkq786jmx9zxs7"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-attrs
-                             python-hepunits))
-    (native-inputs (list python-hatch-vcs
-                         python-hatchling
-                         python-pandas
-                         python-pytest
-                         python-pytest-benchmark
-                         python-tabulate))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pandas-minimal
+           python-pytest
+           python-pytest-benchmark))
+    (propagated-inputs
+     (list python-attrs
+           python-hepunits))
     (home-page "https://github.com/scikit-hep/particle")
     (synopsis "Extended PDG particle data and MC identification codes")
     (description
