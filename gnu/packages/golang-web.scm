@@ -14815,7 +14815,7 @@ clients that speak the Gemini protocol.")
 (define-public go-github-com-mark3labs-mcp-go
   (package
     (name "go-github-com-mark3labs-mcp-go")
-    (version "0.8.3")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -14824,16 +14824,44 @@ clients that speak the Gemini protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ijd4cj6nqsqr4fds0ckjjl2hvid71w28fp3dcsjamgggy303mgx"))))
+        (base32 "01wdlfk227czqchk00x8cry35yzbj99v76dfy4jc288dns889grm"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "otel")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/mark3labs/mcp-go"
-      #:skip-build? #t))
-    (propagated-inputs (list go-github-com-google-uuid))
+      #:embed-files
+      ;; For go-github-com-santhosh-tekuri-jsonschema-v6:
+      #~(list "applicator"
+              "content"
+              "core"
+              "format"
+              "format-annotation"
+              "format-assertion"
+              "meta-data"
+              "schema"
+              "unevaluated"
+              "validation")
+      #:test-flags
+      #~(list "-skip"
+              ;; Network access is required.
+              (string-append "TestOAuthHandler_SetExpectedState_CrossRequestScenario"
+                             "|TestSSEServer/TestSSEHandlerWithDynamicMounting"))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/mark3labs/mcp-go")
+     (list go-github-com-rogpeppe-go-internal
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-jsonschema-go
+           go-github-com-google-uuid
+           go-github-com-santhosh-tekuri-jsonschema-v6
+           go-github-com-spf13-cast
+           go-github-com-yosida95-uritemplate-v3))
+    (home-page "https://mcp-go.dev/")
     (synopsis "Model Context Protocol implementation in Go")
     (description
      "This package implements the Model Context Protocol, including clients and
