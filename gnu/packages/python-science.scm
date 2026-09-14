@@ -1789,6 +1789,9 @@ Features:
 (define-public python-iminuit
   (package
     (name "python-iminuit")
+    ;; TODO: PyPI archive bundles https://github.com/root-project/root which
+    ;; is shipped as a git submodule in "extern/root", it would be nice to have
+    ;; Root on board in Guix.
     (version "2.32.0")
     (source
      (origin
@@ -1797,32 +1800,12 @@ Features:
        (sha256
         (base32 "1lpprnn6h1f065b4aay6cr2bk6s5h3fv3gfnbbkrp5b5hv8k8ax3"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "-k" "not test_interactive_pyside6")))
     (native-inputs
-     (list cmake-minimal
-           pybind11-2
-           python-annotated-types
-           python-boost-histogram
-           python-ipykernel
-           python-jacobi
-           python-joblib
-           python-pydantic
-           python-pytest
-           python-resample
+     (list python-pytest
            python-scikit-build-core
-           python-tabulate))
-    ;; All inputs besides python-numpy are optional but greatly improve
-    ;; the package.
-    ;; FIXME: Numba segfaults Python in some tests.
+           python-scipy-minimal))
     (propagated-inputs
-     (list python-ipywidgets
-           python-matplotlib
-           ;; python-numba
-           ;; python-numba-stats
-           python-numpy
-           python-scipy
-           python-unicodeitplus))
+     (list python-numpy))
     (home-page "https://github.com/scikit-hep/iminuit")
     (synopsis "Python interface for MINUIT2")
     (description
