@@ -1539,16 +1539,23 @@ inference for statistical models.")
 (define-public python-resample
   (package
     (name "python-resample")
-    (version "1.10.2")
+    (version "1.10.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "resample" version))
-       (sha256
-        (base32 "0c9ccygxqjvlklfcngk30myzqbvis8szj5nzj9c305v58pcj2656"))))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/resample")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1bh5cw467rn4z59jmiak1gczvkvx6wp1k36blq051ccsdc0da026"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy python-scipy))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
     (home-page "https://github.com/scikit-hep/resample")
     (synopsis "Resampling-based inference in Python")
     (description "This package provides a resampling-based inference based on
