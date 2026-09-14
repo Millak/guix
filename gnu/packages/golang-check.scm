@@ -2686,7 +2686,7 @@ tests (golden files and Go values in e.g. @code{foo_test.go}).")
   (package
     (inherit go-github-com-hexops-autogold)
     (name "go-github-com-hexops-autogold-v2")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2695,7 +2695,7 @@ tests (golden files and Go values in e.g. @code{foo_test.go}).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ih02l1c9z55ixrl39v0g3fv38nwl578bdjnygl14rbh5dqac0y"))))
+        (base32 "0wgn8c5zkpdx3w0lki6bij8zfdvj0vjy5vnc2zrh6ks0k30dh47f"))))
     (arguments
      (list
       #:import-path "github.com/hexops/autogold/v2"))))
