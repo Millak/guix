@@ -71,6 +71,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
@@ -477,26 +478,51 @@ cloc can handle a greater variety of programming languages.")
 (define-public scc
   (package
     (name "scc")
-    (version "3.7.0")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/boyter/scc")
-             (commit (string-append "v" version))))
+              (url "https://github.com/boyter/scc")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kybs8849whpl1rgbgnwcy0z9nb1jzcjdimba91n6zng9ksz9sl0"))))
+        (base32 "025iqg1d53qf87pbplh686xxxirz07ffzmgrmn4ayy5by31g95ra"))
+       (modules '((guix build utils)))
+       (snippet #~(begin (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/boyter/scc"))
+      #:import-path "github.com/boyter/scc"
+      #:embed-files
+      ;; For go-github-com-santhosh-tekuri-jsonschema-v6:
+      #~(list "applicator"
+              "content"
+              "core"
+              "format"
+              "format-annotation"
+              "format-assertion"
+              "meta-data"
+              "schema"
+              "unevaluated"
+              "validation")
+      #:test-flags
+      ;; One test fails to compare UNICODE strings.
+      #~(list "-skip" "TestUnicodeAwareTrimMatchesOneAtATime")
+      #:test-subdirs
+      ;; package github.com/boyter/scc/examples/language: C source files not
+      ;; allowed when not using cgo or SWIG: c.c
+      #~(list "." "cmd/badges" "processor")))
     (native-inputs
      (list go-github-com-agnivade-levenshtein
            go-github-com-boyter-gocodewalker
            go-github-com-boyter-simplecache
+           go-github-com-clipperhouse-uax29-v2
+           go-github-com-go-git-go-git-v5
            go-github-com-json-iterator-go
+           go-github-com-mark3labs-mcp-go
+           go-github-com-mattn-go-isatty
            go-github-com-mattn-go-runewidth
            go-github-com-rs-zerolog
            go-github-com-spf13-cobra
@@ -505,7 +531,7 @@ cloc can handle a greater variety of programming languages.")
            go-golang-org-x-crypto
            go-golang-org-x-text))
     (home-page "https://github.com/boyter/scc")
-    (synopsis "Fast code counter written in Go")
+    (synopsis "Sloc, Cloc and Code")
     (description
      "@command{scc} provides a lines-of-code counter similar to tools like
 @command{cloc} and @command{sloccount}.  It aims to be fast as possible while
