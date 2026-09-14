@@ -2551,6 +2551,39 @@ particular test phases or milestones have been reached. It is part of the
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-apache-openwhisk-client-go
+  (package
+    (name "go-github-com-apache-openwhisk-client-go")
+    (version "0.0.0-20250309042127-fa7fa7e48863")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apache/openwhisk-client-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v0z4h2jnx5lr5i1gziqgikddl4f1c0bh3ag01pqim5mmbvpwrrr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apache/openwhisk-client-go"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-google-go-querystring
+           go-github-com-cloudfoundry-jibber-jabber
+           go-github-com-hokaccha-go-prettyjson
+           go-github-com-nicksnyder-go-i18n))
+    (home-page "https://openwhisk.apache.org/")
+    (synopsis "Go client library for the Apache OpenWhisk platform")
+    (description
+     "This package provides a Go client library to access the Openwhisk API.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-apex-log
   (package
     (name "go-github-com-apex-log")
