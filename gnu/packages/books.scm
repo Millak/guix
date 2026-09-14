@@ -48,6 +48,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages emacs)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -140,6 +141,10 @@ words and the subject's response.")
         #:tests? #f ;no tests
         ;; Docs are named metaspec, system name is metaspectre
         #:asd-systems ''("metaspectre")
+        #:modules `((guix build emacs-utils)
+                    ,@%asdf-build-modules)
+        #:imported-modules `((guix build emacs-utils)
+                             ,@%asdf-build-system-modules)
         #:phases
         #~(modify-phases %standard-phases
             ;; metaspectre has internal version & origin variables that are
@@ -233,6 +238,12 @@ words and the subject's response.")
                   ;; creates.
                   (copy-recursively "out/html" html)
                   (install-file "out/texi/metaspec.info" info))))
+            (add-after 'install 'install-emacs-files
+              (lambda _
+                (let ((lisp-dir
+                       (string-append #$output "/share/emacs/site-lisp")))
+                  (install-file "assets/metaspec.el" lisp-dir)
+                  (emacs-generate-autoloads #$name lisp-dir))))
             ;; The metaspectre package/system is only intended for building the
             ;; metaspec documentation.  It should never really be consumed by
             ;; anything downstream.  So we remove all of the files that various
@@ -244,7 +255,12 @@ words and the subject's response.")
                     (delete-file-recursively "etc")
                     (delete-file-recursively "lib")
                     (delete-file-recursively "share/common-lisp"))))))))
-      (native-inputs (list cl-alexandria cl-ppcre cl-stencl texinfo))
+      (native-inputs
+       (list cl-alexandria
+             cl-ppcre
+             cl-stencl
+             emacs-minimal
+             texinfo))
       (home-page "https://metaspec.dev/")
       (synopsis "Produce ANSI Common Lisp standard")
       (description
