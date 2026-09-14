@@ -6524,20 +6524,37 @@ for static dimensionality checking and protobuffer serialization.")
 (define-public python-uhi
   (package
     (name "python-uhi")
-    (version "0.5.0")
+    (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "uhi" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/uhi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0753b7yw0zi06g4azafnk3w8i3q6js9i6wwg3pya464gygrbnncm"))))
+        (base32 "1hrk39w6mim91kk70vclh7k3fpwn8d1h6g9gh0jx16f5ii8py8i6"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-boost-histogram
-                         python-fastjsonschema
-                         python-hatch-vcs
-                         python-hatchling
-                         python-pytest))
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests introduce cycle with python-hist.
+      #~(list "--ignore=tests/test_hdf5.py"
+              "--ignore=tests/test_json.py"
+              "--ignore=tests/test_zip.py")))
+    (native-inputs
+     (list python-boost-histogram
+           python-dependency-groups
+           python-hatch-vcs
+           python-hatchling
+           python-packaging
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           ;; [optional]
+           python-fastjsonschema
+           python-h5py))
     (home-page "https://github.com/scikit-hep/uhi")
     (synopsis "Universal Histogram Interface")
     (description "This is a package meant primarily for documenting histogram
