@@ -94,7 +94,7 @@ functions to ensure they are called with the right arguments during testing.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "31.0.0.2")
+    (version "31.1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -103,22 +103,28 @@ functions to ensure they are called with the right arguments during testing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bcdibsxw5m6ia2krfnan1b8gjfccdg6i8z316z32f4r9y1r3nd6"))))
+                "19706p8g1pq1dgp2j8a5bl1a62f288ksanbb09901q874g32n0my"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'skip-failing-test
+          (add-before 'check 'fix-tests
             (lambda _
-              (for-each
-               (lambda (f)
-                 (substitute* "compat-tests.el"
-                   (((format #f "\\(ert-deftest compat-~a.*" f) all)
-                    (string-append all " (skip-unless nil)"))))
-               (list "exec-path" "executable-find" "make-nearby-temp-file"
-                     "package-get-version" "temporary-file-directory"))))
+              (setenv "HOME" (getcwd))
+              (substitute* "compat-tests.el"
+                ;; Tell tramp to our local PATH for the mock remote PATH
+                (("\\(require 'tramp\\)" all)
+                 (string-append
+                  all "\n"
+                  "(add-to-list 'tramp-remote-path 'tramp-own-remote-path)"))
+                ;; Skip some tests.
+                ;; The "package-get-version" test would pass if we
+                ;; byte-compiled the tests.
+                ;; The "exec-path" test looks for "/bin" in out PATH.
+                (("\\(ert-deftest compat-(package-get-version|exec-path) .*" all)
+                   (string-append all " (skip-unless nil)")))))
           (add-before 'install 'make-doc
             (lambda _
               (invoke "make" "compat.info"))))))
