@@ -1267,7 +1267,6 @@ Grammars (PEGs).")
            #:configure-flags
            #~'("-DWITH_LUA_ENGINE=Lua"
                "-DWITH_SHARED_LIBUV=On"
-               "-DBUILD_MODULE=Off"
                "-DBUILD_SHARED_LIBS=On"
                "-DLUA_BUILD_TYPE=System")
            #:phases
