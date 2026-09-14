@@ -12445,7 +12445,7 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "2.1.5")
+    (version "2.1.6")
     (source
      (origin
        (method url-fetch)
@@ -12453,7 +12453,7 @@ advanced image management tool")
                            "releases/download/v" version "/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "00qfbmbnqwwyxdn6y4729y39wpym8n8n2l6qfd8mvd1xppc9q8gh"))))
+        (base32 "1yncj0jnvfingyrkrb0in0rx12r3g0sakbr26fzhw8r16cb4d7v4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
