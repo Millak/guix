@@ -29208,6 +29208,29 @@ implementation in Go.")
 determine whether a file path matches a given pattern.")
     (license license:asl2.0)))
 
+(define-public go-github-com-shiena-ansicolor
+  (package
+    (name "go-github-com-shiena-ansicolor")
+    (version "0.0.0-20230509054315-a9deabde6e02")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shiena/ansicolor")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058cfacl9jddi86rb0cgms3c6b93sw12ynikw0lbpvwn2psa3bfq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shiena/ansicolor"))
+    (home-page "https://github.com/shiena/ansicolor")
+    (synopsis "ANSICON for Golang")
+    (description
+     "Package ansicolor provides color console in Windows as ANSICON.")
+    (license license:expat)))
+
 (define-public go-github-com-shirou-gopsutil
   (package
     (name "go-github-com-shirou-gopsutil")
