@@ -176,6 +176,7 @@
             boot-parameters->menu-entry
 
             local-host-aliases                    ;deprecated
+            local-host-entries
             %root-account
             %default-privileged-programs
             %setuid-programs
