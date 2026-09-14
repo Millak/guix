@@ -12096,6 +12096,31 @@ user interface for humans, to read and edit before passing the JSON data to
 the machine.")
     (license license:expat)))
 
+(define-public go-github-com-hokaccha-go-prettyjson
+  (package
+    (name "go-github-com-hokaccha-go-prettyjson")
+    (version "0.0.0-20211117102719-0474bc63780f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hokaccha/go-prettyjson")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1njd6d4j8fqwl9k6910288a7gd54xshp8wya7qlrdwyn2kn6ig2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hokaccha/go-prettyjson"
+      #:test-flags #~(list "-skip" "Example")))    ;diff is not equal
+    (propagated-inputs
+     (list go-github-com-fatih-color))
+    (home-page "https://github.com/hokaccha/go-prettyjson")
+    (synopsis "JSON pretty print for Golang")
+    (description "Package prettyjson provides JSON pretty print.")
+    (license license:expat)))
+
 (define-public go-github-com-huaweicloud-huaweicloud-sdk-go-v3
   (package
     (name "go-github-com-huaweicloud-huaweicloud-sdk-go-v3")
