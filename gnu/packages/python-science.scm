@@ -6788,20 +6788,17 @@ tabular datasets.  This package provides the core modules of Vaex.")
 (define-public python-vector
   (package
     (name "python-vector")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vector" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/vector")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19jc889z6jxfyyqya5c6sx0hps6j5zgj0shp6k552f264jg5xyaq"))))
+        (base32 "0gxcihgs2cxxhfayv9ixis4pgjnp45c33pqym6cdp0n8j4y6y6zm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 813 passed, 3 skipped, 1 deselected
-      #:test-flags
-      ;; assert array([2.]) == array([-2.])
-      #~(list "--deselect=tests/test_issues.py::test_issue_443" )))
     (native-inputs
      (list ;; python-dask-awkward   ;not packaged yet in Guix
            python-hatch-vcs
