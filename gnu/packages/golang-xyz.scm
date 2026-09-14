@@ -24710,6 +24710,35 @@ localization of Go code, covering pluralized strings for all 200+ languages in
 @acronym{CLDR, Unicode Common Locale Data Repository}.")
     (license license:expat)))
 
+;; Ror go-github-com-apache-openwhisk-client-go, remove when v2 is supported.
+(define-public go-github-com-nicksnyder-go-i18n
+  (hidden-package
+   (package
+     (inherit go-github-com-nicksnyder-go-i18n-v2)
+     (name "go-github-com-nicksnyder-go-i18n")
+     (version "1.10.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/nicksnyder/go-i18n")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1wkb10y1ngqzk6l5zl4x0rkrrxkwqyj6gpigszjyiiqn0haf5vm7"))
+        (modules '((guix build utils)))
+        (snippet
+         #~(begin
+             (delete-file-recursively "v2")))))
+     (build-system go-build-system)
+     (arguments
+      (list
+       #:skip-build? #t
+       #:import-path "github.com/nicksnyder/go-i18n"))
+     (propagated-inputs
+      (list go-github-com-pelletier-go-toml
+            go-gopkg-in-yaml-v2)))))
+
 (define-public go-github-com-nightlyone-lockfile
   (package
     (name "go-github-com-nightlyone-lockfile")
