@@ -4460,6 +4460,12 @@ passwords in the GNOME keyring.")
     (arguments
      (list
       #:configure-flags #~(list "CC=gcc" "--enable-coverage")
+      #:make-flags
+      #~'(#$@(if (target-hurd?)
+                 '("XFAIL_TESTS=dbus/filedescriptor-errors.test")
+                 '())
+          ;; Disable icon theme cache generation as per glib-or-gtk-build-system.
+          "gtk_update_icon_cache=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-gcc-by-default
