@@ -5009,19 +5009,27 @@ Supported Barcode Types:
 
 (define-public go-github-com-boyter-gocodewalker
   (package
+    ;; 1.5.1 (2025-08-26); no releases since that time.
     (name "go-github-com-boyter-gocodewalker")
-    (version "1.5.2-0.20260227212453-19676720409f")
+    (properties '((commit . "27ad42ef7a817826dca649f55f7d1e6d21f1c140")
+                  (revision . "0")
+                  (go-pseudo-version . "1.5.2-0.20260905064325-27ad42ef7a81")))
+    (version (git-version "1.5.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/boyter/gocodewalker")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/boyter/gocodewalker")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v4gm4jll26hl0bb9k7bq0r4sam1crcmlbhrs6jh0kcfzh96yvgb"))))
+        (base32 "1m8zfh55viws8qw20grqqinw8d96nhd8mc2i8c8pvk24p6il03n5"))))
     (build-system go-build-system)
-    (arguments (list #:import-path "github.com/boyter/gocodewalker"))
+    (arguments
+     (list
+      #:import-path "github.com/boyter/gocodewalker"))
     (home-page "https://github.com/boyter/gocodewalker")
     (synopsis "Library for walking code directories")
     (description
