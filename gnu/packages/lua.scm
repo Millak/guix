@@ -1299,6 +1299,8 @@ Grammars (PEGs).")
     (license license:asl2.0)))
 
 (define-public-lua-variants lua-luv
+  (lua-5.5 lua5.5-luv)
+  (lua-5.4 lua5.4-luv)
   (lua-5.3 lua5.3-luv)
   (lua-5.2 lua5.2-luv)
   (lua-5.1 lua5.1-luv))
