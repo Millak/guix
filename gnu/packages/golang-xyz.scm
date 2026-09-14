@@ -34828,7 +34828,7 @@ Go host programs.")
 (define-public go-github-com-zalando-go-keyring
   (package
     (name "go-github-com-zalando-go-keyring")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
      (origin
        (method git-fetch)
@@ -34837,7 +34837,7 @@ Go host programs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gavcs0k2wnw0q7zgcdhwca1phqls70wb93j2bdmjlvmrq9na6f4"))))
+        (base32 "1qmmrn73iscj2v0pdqahzb3cxgpl2qh5liin452k1f47qs4ihysf"))))
     (build-system go-build-system)
     (arguments
      (list
