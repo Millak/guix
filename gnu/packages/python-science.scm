@@ -2494,7 +2494,7 @@ support for DICOM.")
 (define-public python-numba-stats
   (package
     (name "python-numba-stats")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -2503,7 +2503,7 @@ support for DICOM.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fv3bdpsnjirhd8wqvivfsbym6l3br6p26nr104q07144xahyxw4"))))
+        (base32 "1raa5rlm3mdj25mhrvpnlvzj3c2r1gq378hy9xpxhdbyz061vzg0"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
