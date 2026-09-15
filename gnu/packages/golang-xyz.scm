@@ -19703,6 +19703,28 @@ memory limit.")
 with the Go standard library's @code{database/sql} package.")
     (license license:expat)))
 
+(define-public go-github-com-kkdai-bstream
+  (package
+    (name "go-github-com-kkdai-bstream")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kkdai/bstream")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02brc58hhkkfhgb4yxjv3wshq355w533q7d49qrlfkhk265qph7w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kkdai/bstream"))
+    (home-page "https://github.com/kkdai/bstream")
+    (synopsis "Bit Stream helper in Go")
+    (description "This package provides bit stream helpers in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-klauspost-asmfmt
   (package
     (name "go-github-com-klauspost-asmfmt")
