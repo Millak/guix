@@ -21042,6 +21042,39 @@ individual fields based on tags.  It's an alternative fork of
 @url{https://github.com/go-playground/validator}.")
     (license license:expat)))
 
+(define-public go-github-com-liamg-magic
+  (package
+    (name "go-github-com-liamg-magic")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/liamg/magic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zd7igz0131bfpy8m50lwjbrkmgmi0zmwa3cwgvi7h3d6gzrynan"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Use higher version of gotest.tools
+            (substitute* (find-files "." "\\.go$")
+              (("gotest.tools") "gotest.tools/v3"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/liamg/magic"))
+    (native-inputs
+     (list go-gotest-tools-v3))
+    (propagated-inputs
+     (list go-github-com-bmatcuk-doublestar-v4))
+    (home-page "https://github.com/liamg/magic")
+    (synopsis "File type detection by magic bytes in Go")
+    (description
+     "This package provides detectors and verifiers using magic bytes in Go.")
+    (license license:gpl2)))
+
 (define-public go-github-com-lib-pq
   (package
     (name "go-github-com-lib-pq")
