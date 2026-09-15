@@ -4245,17 +4245,17 @@ which can be used to parse directory listings.")
 
 (define-public perl-finance-quote
   (package
-   (name "perl-finance-quote")
-   (version "1.70")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "https://cpan.metacpan.org/authors/id/B/BP/BPSCHUCK/"
-                          "Finance-Quote-" version ".tar.gz"))
-      (sha256
-       (base32 "05bryjwc7igdpvhzkalbl068mjx484nld3rx071wjvzpg1xwh6jz"))))
-   (build-system perl-build-system)
-   (native-inputs
+    (name "perl-finance-quote")
+    (version "1.70")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://cpan.metacpan.org/authors/id/B/BP/BPSCHUCK/"
+                           "Finance-Quote-" version ".tar.gz"))
+       (sha256
+        (base32 "05bryjwc7igdpvhzkalbl068mjx484nld3rx071wjvzpg1xwh6jz"))))
+    (build-system perl-build-system)
+    (native-inputs
      (list perl-test-harness
            perl-date-manip
            perl-date-range
@@ -4266,36 +4266,36 @@ which can be used to parse directory listings.")
            perl-pathtools
            perl-test-pod
            perl-test-pod-coverage))
-   (propagated-inputs
-    (list perl-datetime
-          perl-datetime-format-strptime
-          perl-html-parser
-          perl-html-tableextract
-          perl-html-tokeparser-simple
-          perl-html-tree
-          perl-html-treebuilder-xpath
-          perl-http-cookiejar
-          perl-http-cookies
-          perl-http-message
-          perl-io-string
-          perl-json
-          perl-libwww
-          perl-lwp-protocol-https
-          perl-mozilla-ca
-          perl-spreadsheet-xlsx
-          perl-readonly
-          perl-string-util
-          perl-text-template
-          perl-try-tiny
-          perl-web-scraper
-          perl-xml-libxml))
-   (home-page "https://metacpan.org/release/Finance-Quote")
-   (synopsis "Stock and mutual fund quotes")
-   (description
-    "The @code{Finance::Quote} module retries stock quotes from various
+    (propagated-inputs
+     (list perl-datetime
+           perl-datetime-format-strptime
+           perl-html-parser
+           perl-html-tableextract
+           perl-html-tokeparser-simple
+           perl-html-tree
+           perl-html-treebuilder-xpath
+           perl-http-cookiejar
+           perl-http-cookies
+           perl-http-message
+           perl-io-string
+           perl-json
+           perl-libwww
+           perl-lwp-protocol-https
+           perl-mozilla-ca
+           perl-spreadsheet-xlsx
+           perl-readonly
+           perl-string-util
+           perl-text-template
+           perl-try-tiny
+           perl-web-scraper
+           perl-xml-libxml))
+    (home-page "https://metacpan.org/release/Finance-Quote")
+    (synopsis "Stock and mutual fund quotes")
+    (description
+     "The @code{Finance::Quote} module retries stock quotes from various
 internet sources, including Yahoo! Finance, Fidelity Investments, and the
 Australian Stock Exchange.")
-   (license license:gpl2)))
+    (license license:gpl2)))
 
 (define-public perl-gssapi
   (package
