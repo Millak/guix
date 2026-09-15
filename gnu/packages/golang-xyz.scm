@@ -9655,6 +9655,40 @@ Recently Used, LRU} data structures with near O(1) perf and optional
 time-based expiration support.")
     (license license:isc)))
 
+(define-public go-github-com-decred-dcrd-lru
+  ;; Upstream note: "Deprecated: Use github.com/decred/dcrd/container/lru
+  ;; instead."
+  (package
+    (name "go-github-com-decred-dcrd-lru")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/decred/dcrd")
+              (commit (go-version->git-ref version #:subdir "lru"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14fd4lwx58sfchk38x2ccjh8bpmyxzfrggxdf5j9fyjzb2hw9q2m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/decred/dcrd/lru"
+      #:unpack-path "github.com/decred/dcrd"))
+    (home-page "https://github.com/decred/dcrd")
+    (synopsis "LRU implementation in Go")
+    (description
+     "This package implements generic least-recently-used caches with near
+O(1) perf.
+
+A least-recently-used (LRU) cache is a cache that holds a limited number of
+items with an eviction policy such that when the capacity of the cache is
+exceeded, the least-recently-used item is automatically removed when inserting
+a new item.  The meaning of used in this implementation is either accessing
+the item via a lookup or adding the item into the cache, including when the
+item already exists.")
+    (license license:isc)))
+
 (define-public go-github-com-delthas-go-libnp
   (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
         (revision "1"))
