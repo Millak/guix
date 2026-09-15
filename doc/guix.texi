@@ -51751,7 +51751,7 @@ VM@.  To enable that you'll also have to pass the following flags to @command{qe
 name=com.redhat.spice.0
 @end example
 
-You'll also need to add the @code{(spice-vdagent-service)} to your
+You'll also need to add the @code{(spice-vdagent-service-type)} to your
 system definition (@pxref{Miscellaneous Services, Spice service}).
 
 Here is a working example with QEMU @samp{10.0.8}:
