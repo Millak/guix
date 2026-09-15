@@ -14735,6 +14735,34 @@ clients that speak the Gemini protocol.")
 @@url{https://github.com/makeworld-the-better-one/go-gemini,go-gemini}.")
     (license license:expat)))
 
+(define-public go-github-com-mark3labs-mcp-go
+  (package
+    (name "go-github-com-mark3labs-mcp-go")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mark3labs/mcp-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ijd4cj6nqsqr4fds0ckjjl2hvid71w28fp3dcsjamgggy303mgx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mark3labs/mcp-go"
+      #:skip-build? #t))
+    (propagated-inputs (list go-github-com-google-uuid))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/mark3labs/mcp-go")
+    (synopsis "Model Context Protocol implementation in Go")
+    (description
+     "This package implements the Model Context Protocol, including clients and
+servers using standard transports.")
+    (license license:expat)))
+
 (define-public go-github-com-markbates-goth
   (package
     (name "go-github-com-markbates-goth")
