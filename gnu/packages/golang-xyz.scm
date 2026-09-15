@@ -22498,16 +22498,16 @@ locale reading differently across Unix and Windows systems.")
 (define-public go-github-com-mattn-go-runewidth
   (package
     (name "go-github-com-mattn-go-runewidth")
-    (version "0.0.19")
+    (version "0.0.30")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mattn/go-runewidth")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mattn/go-runewidth")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w9hjbim23dwzf6lgmmgss0ikdjrxx4pd27p8ds8spv1k4mdp68s"))))
+        (base32 "1lcxwml2asn8jfyhvspxz82nxkscikibb0g90jqai3jmq03p49ys"))))
     (build-system go-build-system)
     (arguments
      (list
