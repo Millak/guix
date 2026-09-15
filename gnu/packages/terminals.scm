@@ -689,7 +689,7 @@ to all types of devices that provide serial consoles.")
                    ": No such file or directory"))))
             (add-before 'install 'install-rules
               (lambda _
-                (let ((rules.d (string-append #$output "/etc/udev/rules.d")))
+                (let ((rules.d (string-append #$output "/lib/udev/rules.d")))
                   (mkdir-p rules.d)
                   (with-output-to-file
                       (string-append rules.d "/70-pcspkr-beep.rules")
@@ -708,7 +708,10 @@ allowing different sounds to indicate different events.  While it can be run
 quite happily on the command line, its intended place of residence is within
 scripts, notifying the user when something interesting occurs.  Of course, it
 has no notion of what's interesting, but it's very good at that notifying
-part.")
+part.
+
+Add a @code{udev-rules-service} rule to your system configuration to use
+beep, e.g. @code{(udev-rules-service 'beep beep)}.")
       (home-page "https://github.com/spkr-beep/beep")
       (license license:gpl2+))))
 
