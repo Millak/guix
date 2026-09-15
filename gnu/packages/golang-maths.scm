@@ -396,6 +396,34 @@ converted by casting.")
 systems.")
     (license license:expat)))
 
+(define-public go-github-com-elliotchance-pie-v2
+  (package
+    (name "go-github-com-elliotchance-pie-v2")
+    (version "2.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elliotchance/pie")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1387iz6di0rvv3xq4psrkrj5qa3pb7dp7c0pplg8zm8wimabhx9d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elliotchance/pie/v2"
+      #:unpack-path "github.com/elliotchance/pie"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-exp))
+    (home-page "https://github.com/elliotchance/pie")
+    (synopsis "Utilities for Go slices and maps")
+    (description
+     "This package provides generic utility functions for Go slices and maps.")
+    (license license:expat)))
+
 (define-public go-github-com-hablullah-go-juliandays
   (package
     (name "go-github-com-hablullah-go-juliandays")
