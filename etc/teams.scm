@@ -1722,6 +1722,11 @@ the \"texlive\" importer."
                        "vivien")
   hpc)
 
+(define-member (person "Ghislain Vaillant"
+                       "ghislain.vaillant@inria.fr"
+                       "ghisvail")
+  bioinformatics python science)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
