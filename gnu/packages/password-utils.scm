@@ -1347,16 +1347,24 @@ automatically generating new passwords or manually setting your own.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
-            (lambda _
-              (invoke "qmake"
-                      "QMAKE_LRELEASE=lrelease"
-                      "QMAKE_LUPDATE=lupdate"
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Though qtpass.pri has variables QMAKE_LRELEASE and
+              ;; QMAKE_LUPDATE, they are somehow discarded.
+              (invoke "qmake6"
+                      "QMAKE_CXXFLAGS=-Wno-unused-parameter"
+                      (string-append
+                       "QT_TOOL.lrelease.binary="
+                       (search-input-file inputs "/bin/lrelease"))
+                      (string-append
+                       "QT_TOOL.lupdate.binary="
+                       (search-input-file inputs "/bin/lupdate"))
                       (string-append "PREFIX=" #$output))))
           (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'check (assoc-ref gnu:%standard-phases 'check))
@@ -1376,9 +1384,9 @@ automatically generating new passwords or manually setting your own.")
                              (string-append icons "/qtpass-icon.svg"))
                 (install-file "qtpass.1" man)))))))
     (native-inputs
-     (list qttools-5))
+     (list qttools))
     (inputs
-     (list qtsvg-5))
+     (list qtsvg))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")
     (description
