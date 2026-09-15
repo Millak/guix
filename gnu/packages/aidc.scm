@@ -42,6 +42,8 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages perl)
@@ -300,6 +302,33 @@ characters, and is highly robust.")
      "Golang library for generating QR codes in the terminal.  Originally this
 was a port of the NodeJS version.  Recently it's been updated to allow for
 smaller code generation using ASCII 'half blocks'.")
+    (license license:expat)))
+
+(define-public go-github-com-mdp-qrterminal-v3
+  (package
+    (name "go-github-com-mdp-qrterminal-v3")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdp/qrterminal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "078669ngq4gzkdngb80s8fck7fnin02jxbz8q0cz698jfwxng91s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdp/qrterminal/v3"))
+    (native-inputs
+     (list go-github-com-mattn-go-colorable))
+    (propagated-inputs
+     (list go-golang-org-x-term go-rsc-io-qr))
+    (home-page "https://github.com/mdp/qrterminal")
+    (synopsis "Render QR codes in terminals")
+    (description
+     "This package provides a Go library for rendering QR codes in terminals.")
     (license license:expat)))
 
 (define-public go-rsc-io-qr
