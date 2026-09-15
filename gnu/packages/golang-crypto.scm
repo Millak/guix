@@ -687,6 +687,53 @@ needing to use secp256k1 elliptic curve cryptography.")
     (description "This package provides Bitcoin hash functionality.")
     (license license:isc)))
 
+(define-public go-github-com-btcsuite-btcd-btcec-v2
+  (package
+    (name "go-github-com-btcsuite-btcd-btcec-v2")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/btcsuite/btcd")
+              (commit (go-version->git-ref version #:subdir "btcec"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04apnqisk42zzi6s2hnv53cqwxv7s7wqsvffd5l00bf1raql1dq2"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "btcec" "chainhash")
+            ;; This is a workaround to provide a correct import-path.
+            (rename-file "btcec" "tmp")
+            (mkdir-p "btcec/v2")
+            (copy-recursively "tmp" "btcec/v2")
+            (delete-file-recursively "tmp")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/btcsuite/btcd/btcec/v2"
+      #:unpack-path "github.com/btcsuite/btcd"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-btcsuite-btcd-chaincfg-chainhash
+           go-github-com-btcsuite-btcd-chainhash-v2
+           go-github-com-decred-dcrd-dcrec-secp256k1-v4))
+    (home-page "https://github.com/btcsuite/btcd")
+    (synopsis "Elliptic curves for Bitcoin")
+    (description
+     "This package implements elliptic curves needed for Bitcoin.")
+    (license license:isc)))
+
 (define-public go-github-com-btcsuite-btcd-chainhash-v2
   (package
     (name "go-github-com-btcsuite-btcd-chainhash-v2")
