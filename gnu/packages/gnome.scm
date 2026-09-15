@@ -8820,6 +8820,71 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
       (license license:gpl2+)
       (properties `((upstream-name . "NetworkManager-fortisslvpn"))))))
 
+(define-public network-manager-libreswan
+  (package
+    (name "network-manager-libreswan")
+    (version "1.2.30")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://gnome/sources/NetworkManager-libreswan/"
+                    (version-major+minor version)
+                    "/NetworkManager-libreswan-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1lqigbqx6y51ys6rvlmv9qg72hlyd2xvl0zq53jqfj5vscvayw36"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~'("--enable-absolute-paths"
+                            "--localstatedir=/var"
+                            "--with-gtk4=yes")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (define (quoted-input-file inputs file)
+                (string-append "\"" (search-input-file inputs file) "\""))
+
+              (substitute* "src/nm-libreswan-service.c"
+                (("nm_libreswan_find_helper_bin\\(\"([^\"]*)\", error\\)"
+                  all bin)
+                 (quoted-input-file inputs (string-append "/sbin/" bin)))
+                (("nm_libreswan_find_helper_libexec\\(\"([^\"]*)\", error\\)"
+                  all bin)
+                 (cond
+                  ;; Removed from libreswan 5.3 and forward.
+                  ((string=? bin "_stackmanager")
+                   (or (false-if-exception
+                        (quoted-input-file inputs
+                                             "/libexec/ipsec/_stackmanager"))
+                       all))
+                  (else
+                   (quoted-input-file
+                    inputs
+                    (string-append "/libexec/ipsec/" bin)))))))))))
+    (native-inputs
+     (list `(,glib "bin")
+           intltool
+           libnma
+           pkg-config))
+    (inputs
+     (list gcr-3
+           gtk
+           gtk+
+           libreswan
+           libsecret
+           libnl
+           network-manager
+           webkitgtk-for-gtk3))
+    (home-page "https://gitlab.gnome.org/GNOME/NetworkManager-libreswan")
+    (synopsis "Libreswan plug-in for NetworkManager")
+    (description
+     "This extension of NetworkManager allows it to take care of connections
+to @acronym{VPNs, virtual private networks} via Libreswan.")
+    (license license:gpl2+)
+    (properties `((upstream-name . "NetworkManager-libreswan")))))
+
 (define-public network-manager-l2tp
   (package
     (name "network-manager-l2tp")
