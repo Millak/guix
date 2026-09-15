@@ -12323,6 +12323,44 @@ Alphanum Algorithm} developed by Dave Koelle in Go.")
 based on @url{https://github.com/natefinch/lumberjack,lumberjack}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-fastfilter-xorfilter
+  (package
+    (name "go-github-com-fastfilter-xorfilter")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FastFilter/xorfilter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115dpjn2jsvmk2p9nfqyr6jwj1scghkkizq6v1awgxb7jxmsxmkj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/FastFilter/xorfilter"))
+    (native-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/FastFilter/xorfilter")
+    (synopsis "Go library implementing xor and binary fuse filters")
+    (description
+     "This package provides xor and binary fuse filters implementations as
+alternative to Bloom and cuckoo filters.  Unlike Bloom filters, they are
+naturally compressible using standard techniques (gzip, zstd, etc.).
+
+Papers:
+
+Thomas Mueller Graf, Daniel Lemire, Binary Fuse Filters: Fast and Smaller Than
+Xor Filters, Journal of Experimental Algorithmics 27 (1.5), 2022.
+DOI: 10.1145/3510449
+
+Thomas Mueller Graf, Daniel Lemire, Xor Filters: Faster and Smaller Than Bloom
+and Cuckoo Filters, Journal of Experimental Algorithmics 25 (1), 2020.
+DOI: 10.1145/3376122")
+    (license license:asl2.0)))
+
 (define-public go-github-com-fatih-camelcase
   (package
     (name "go-github-com-fatih-camelcase")
