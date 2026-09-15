@@ -76,11 +76,7 @@ root ALL=(ALL) ALL
    (base-pam-services #:allow-empty-passwords? #t))
 
   (packages
-   (append (list font-bitstream-vera
-                 ;; Auto-started script providing SPICE dynamic resizing for
-                 ;; Xfce (see:
-                 ;; https://gitlab.xfce.org/xfce/xfce4-settings/-/issues/142).
-                 x-resize)
+   (append (list font-bitstream-vera)
            %base-packages))
 
   (services

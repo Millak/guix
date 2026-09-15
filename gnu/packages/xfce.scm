@@ -806,7 +806,8 @@ allows you to shut down the computer from Xfce.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "03rxgycs7gz8pww4xn151paf2jgvln9m8i9p28s7id8wvkdsw20h"))
-       (patches (search-patches "xfce4-settings-defaults.patch"))))
+       (patches (search-patches "xfce4-settings-defaults.patch"
+                                "xfce4-settings-hotplug-events.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
