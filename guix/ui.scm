@@ -2379,10 +2379,21 @@ contain a 'define-command' form."
 
 (define (commands)
   "Return the list of commands, alphabetically sorted."
-  (filter-map source-file-command
-              (append (command-files)
-                      (append-map command-files
-                                  (extension-directories)))))
+  (let* ((suffix "/guix/extensions")
+         ;; 'extension-directories' can return entries pointing to either
+         ;; '/path/to/guix/extensions' (old style) or to
+         ;; '/path/to/SCHEMA_VERSION'.  In the latter case, concatenate
+         ;; "/guix/extensions" since that is where the .scm resides, with
+         ;; (guix extensions NAME) as its module name.
+         (extension-directories* (map (lambda (directory)
+                                        (if (string-suffix? suffix directory)
+                                            directory
+                                            (string-append directory suffix)))
+                                      (extension-directories))))
+    (filter-map source-file-command
+                (append (command-files)
+                        (append-map command-files
+                                    extension-directories*)))))
 
 (define (show-guix-help)
   (define (internal? command)
