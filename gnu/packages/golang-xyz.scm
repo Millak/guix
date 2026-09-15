@@ -22277,6 +22277,25 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 operation systems.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-go-tty-v2
+  (package
+    (inherit go-github-com-mattn-go-tty)
+    (name "go-github-com-mattn-go-tty-v2")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mattn/go-tty")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19apbjjni5a3rfiddsz34kk9l17kr36s4kcfn10ikk805bv8r297"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-tty/v2"))))
+
 (define-public go-github-com-mattn-go-zglob
   (package
     (name "go-github-com-mattn-go-zglob")
