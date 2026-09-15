@@ -37205,7 +37205,7 @@ with one function call.  IceCream makes print debugging a little sweeter.")
 (define-public python-sbsv
   (package
     (name "python-sbsv")
-    (version "0.2.3")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -37214,11 +37214,24 @@ with one function call.  IceCream makes print debugging a little sweeter.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xzx0xhikwqvmzdbhprzljfvnxznr3an3jf0v07hwkixvh80s4f5"))
+        (base32 "0wgqb7j2slp05zm6s2qqsb5821vzz1w3jdcwsn2k3jfj7mylnryq"))
        (modules '((guix build utils)))
-       (snippet #~(delete-file-recursively "libsbsv")))) ;separate C library
+       (snippet
+        #~(begin                        ;unbundle c-sbsv
+            (delete-file-recursively "libsbsv")
+            (substitute* "setup.py"
+              ((" *\"libsbsv/src/.*") "")
+              ((" *include_dirs=.*,") "libraries=['sbsv'],")
+              ((" *optional=True,.*") ""))))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-hatchling python-pytest))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-setuptools-legacy
+                          (lambda _
+                            (substitute* "pyproject.toml"
+                              ((":__legacy__") "")))))))
+    (native-inputs (list python-setuptools python-pytest))
+    (inputs (list c-sbsv))
     (home-page "https://github.com/hsh814/sbsv")
     (synopsis "Square bracket separated values")
     (description
