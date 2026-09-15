@@ -50,7 +50,7 @@
 (define-public blacksmith
   (package
     (name "blacksmith")
-    (version "0.0.2")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -59,7 +59,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15ib0lal2sdjb4j2a4r3645w5axbd1a6j8w9f0pxr8v3ra9cjp5m"))
+                "1fm8n36b6cxd2lwr9idfqs49if6mnpyklqrgjs4kh652vxkh364r"))
               (modules '((guix build utils)))
               (snippet `(begin
                           (delete-file-recursively "external")
@@ -99,7 +99,7 @@
     (native-inputs
      (list pkg-config))
     (inputs
-     (list argagg asmjit-1.17 nlohmann-json))
+     (list argagg asmjit nlohmann-json))
     (home-page "https://comsec.ethz.ch/research/dram/blacksmith")
     (synopsis "Rowhammer fuzzer with non-uniform and frequency-based patterns")
     (description
