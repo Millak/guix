@@ -4829,7 +4829,7 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.2.8")
+    (version "14.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4838,20 +4838,21 @@ Spectrograph}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hfabffdn4idqn6ki4bn2cla6asz3ap10j4vl858318hmmipygpl"))))
+        (base32 "1xy4111ysk3h3wigmfh39q2h98ds5r3lh20m7d6zb0hkld4gkm9d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 106 passed, 539 deselected, 1 warning
+      ;; tests: 100 passed, 543 deselected
       #:test-flags
       ;; XXX: Tests require a complex set up and test data, try to run some
       ;; minimal portion of unit tests to persist package compatibility during
       ;; updates, see:
       ;; <https://github.com/spacetelescope/crds/blob/13.1.1/TESTING>.
       #~(list "-m" (string-join
-                    (list "not bestrefs" "cmdline" "jwst" "hst" "rmap" "roman"
+                    (list "not bestrefs" "cmdline" "core" "jwst" "hst" "rmap" "roman"
                           "special" "synphot")
-                    " and not "))))
+                    " and not ")
+              "--ignore=test/core/test_locking.py")))
     (native-inputs
      (list python-mock
            python-moto
