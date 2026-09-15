@@ -3985,7 +3985,7 @@ Origins Spectrograph}.")
 (define-public python-camb
   (package
     (name "python-camb")
-    (version "2.0.0")
+    (version "2.0.3")
     (source
      (origin
        (method git-fetch)
@@ -3994,7 +3994,7 @@ Origins Spectrograph}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1drjaijsz4nr3g6pl2pi7236wyzl6bv63wxg7jq0knrza0104d37"))))
+        (base32 "1nish5xdpl8lrs6x5613plf4j84ya1q3q8wjd65dg2f8gnbxw5cl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
