@@ -21987,6 +21987,44 @@ with @code{echo}.
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-markusmobius-go-dateparser
+  (package
+    (name "go-github-com-markusmobius-go-dateparser")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/markusmobius/go-dateparser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pxpw6ix1hvak2m311kdn9bip8004nv786xjj59cmbk07xarbcaa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/markusmobius/go-dateparser"
+      ;; The codegen and digit commands are upstream maintenance tools.
+      ;; codegen would download Unicode CLDR repositories and W3Techs
+      ;; data, while the latter would download Unicode Scripts.txt.
+      #:test-subdirs
+      #~(list "." "date" "internal/..." "scripts/speedtest")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-elliotchance-pie-v2
+           go-github-com-hablullah-go-hijri
+           go-github-com-jalaali-go-jalaali
+           go-golang-org-x-text))
+    (home-page "https://github.com/markusmobius/go-dateparser")
+    (synopsis "Date string parsers for Go")
+    (description
+     "This package parses localized date strings and extracts dates from text.
+Generated re2go matchers are enabled by default with or without cgo; users do
+not need the generator or a build tag.  Optional RE2 backends affect only the
+remaining regex operations.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-maruel-natural
   (package
     (name "go-github-com-maruel-natural")
