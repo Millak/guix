@@ -127,14 +127,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-sq" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0s9vr1aszwp1p2c2x7cq06q7niwn0bn9pfawq09jf4p0gph85dlh"))))
+        (base32 "14cck374a6znahiv53zp0rx5smki7wnx7nglwfvz08bw45gb3ilw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:imported-modules ((guix build copy-build-system)
