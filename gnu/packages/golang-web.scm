@@ -12572,6 +12572,35 @@ accessing S3.  Or, to have a simple and convenience S3 mock- and test-server.
 It's an alternative fork of @url{https://github.com/johannesboyne/gofakes3}.")
     (license license:expat)))
 
+;; Upstream has no release tags; nak 0.20.6 requires this exact indirect Go
+;; version.
+(define-public go-github-com-imvexed-fasturl
+  (package
+    (name "go-github-com-imvexed-fasturl")
+    (version "0.0.0-20230304231329-4e41488060f3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ImVexed/fasturl")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02acf5dbfx29kr04ap27y7pfxjbggiyla29nx0256h5wli0ifrav"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ImVexed/fasturl"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/ImVexed/fasturl")
+    (synopsis "URL parser for Go")
+    (description
+     "This package provides a Go URL parser using a
+@@url{http://www.colm.net/open-source/ragel/, Ragel} state-machine instead of
+regex, or the built in standard library @code{url.Parse}.")
+    (license license:expat)))
+
 (define-public go-github-com-inetaf-tcpproxy
   (package
     (name "go-github-com-inetaf-tcpproxy")
