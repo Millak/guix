@@ -12964,6 +12964,48 @@ WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
 object.")
     (license license:lgpl3+)))
 
+(define-public python-swiftemulator
+  (package
+    (name "python-swiftemulator")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "swiftemulator" version))
+       (sha256
+        (base32 "0vfwl8qm7il8nki61pw2gl38vnkdcs4dn7vg6lj7zkka2pf7zqqb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.py$")
+              (("pyDOE") "pydoe"))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-attrs
+           python-corner
+           python-emcee
+           python-george
+           python-numpy
+           python-pydoe
+           python-pyyaml
+           python-salib
+           python-scikit-learn
+           python-tqdm
+           python-unyt
+           python-velociraptor))
+    (home-page "https://github.com/SWIFTSIM/emulator")
+    (synopsis "SWIFT simulation cosmological emulator")
+    (description
+     "This package provides a Gaussian process emulator for creating synthetic
+model data across high dimensional parameter spaces, initially developed for
+use with the @url{http://swift.dur.ac.uk/, SWIFT} simulation code.")
+    (license (list license:gpl3+
+                   license:lgpl3+))))
+
 (define-public python-swiftgalaxy
   (package
     (name "python-swiftgalaxy")
