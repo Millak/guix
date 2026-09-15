@@ -304,34 +304,20 @@ Internet and from a wide variety of machine architectures.")
                 "0h3aw43wzjkh6921xczmknyrkxal4dx0vwfnry567i4panyzkq33"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       '("--localstatedir=/var")
-       ;; The test-session-info test fails for unknown reasons (see:
-       ;; https://gitlab.freedesktop.org/spice/linux/vd_agent/-/issues/24).
-       #:make-flags '("XFAIL_TESTS=tests/test-session-info")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-makefile.in
-           (lambda _
-             (substitute* "Makefile.in"
-               (((string-append "\\$\\(mkdir_p\\) \\$\\(DESTDIR\\)"
-                                "\\$\\(localstatedir\\)/run/spice-vdagentd"))
-                "-$(mkdir_p) $(DESTDIR)$(localstatedir)/run/spice-vdagentd"))))
-         (add-after 'unpack 'patch-spice-vdagent.desktop
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "data/spice-vdagent.desktop"
-               (("Exec=/usr/bin/spice-vdagent")
-                (string-append "Exec=" (assoc-ref outputs "out")
-                               "/bin/spice-vdagent")))))
-         (add-after 'unpack 'fix-test-termination
-           (lambda _
-             ;; The termination tests depend on finding the socket file name
-             ;; in the spice-vdagent command line it launched, but by default
-             ;; ps truncates its output, which causes the test to fail (see:
-             ;; https://gitlab.freedesktop.org/spice/linux/vd_agent/-/merge_requests/36).
-             (substitute* "tests/test-termination.c"
-               (("ps -ef")
-                "ps -efww")))))))
+     (list
+      #:configure-flags #~(list "--localstatedir=/var")
+      ;; The test-session-info test fails for unknown reasons (see:
+      ;; https://gitlab.freedesktop.org/spice/linux/vd_agent/-/issues/24).
+      #:make-flags #~(list "XFAIL_TESTS=tests/test-session-info")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'patch-spice-vdagent.desktop
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (string-append #$output "/etc/xdg/autostart/"
+                                          "spice-vdagent.desktop")
+                (("Exec=/usr/bin/spice-vdagent")
+                 (string-append "Exec=" (search-input-file
+                                         outputs "bin/spice-vdagent")))))))))
     (inputs
      (list alsa-lib
            dbus
