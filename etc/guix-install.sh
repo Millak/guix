@@ -18,6 +18,7 @@
 # Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 # Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 # Copyright © 2025 Noé Lopez <noelopez@free.fr>
+# Copyright © 2026 Owen T. Heisler <writer@owenh.net>
 #
 # This file is part of GNU Guix.
 #
@@ -103,7 +104,7 @@ WAR=$'[ \033[33;1mWARN\033[0m ] '
 INF="[ INFO ] "
 
 DEBUG=0
-GNU_URL="https://ftpmirror.gnu.org/gnu/guix/"
+GNU_URL="https://ftp.gnu.org/gnu/guix/"
 
 # The following associative array holds set of GPG keys used to sign the
 # releases, keyed by their corresponding Codeberg user name.
