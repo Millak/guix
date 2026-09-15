@@ -426,6 +426,34 @@ common ChaCha variant is ChaCha20 (20 rounds).  ChaCha20 is standardized in
 RFC 7539.")
     (license license:expat)))
 
+(define-public go-github-com-aead-siphash
+  (package
+    (name "go-github-com-aead-siphash")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aead/siphash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01kd1z82sc4nh3nj9c25aryyp396s7jrqc2kz9d7qq1vy2hdbznc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aead/siphash"))
+    (home-page "https://github.com/aead/siphash")
+    (synopsis "SipHash pseudo-random function")
+    (description
+     "This package implements the @code{SipHash-64} and @code{SipHash-128}
+pseudo-random-functions - with the recommended parameters: c = 2 and d = 4.
+@code{SipHash} computes a message authentication code (MAC) from a
+variable-length message and a 128 bit secret key. @code{SipHash} was designed
+to be efficient, even for short inputs, with performance comparable to
+non-cryptographic hash functions.")
+    (license license:expat)))
+
 (define-public go-github-com-aperturerobotics-jacobsa-crypto
   (let ((commit "b1eb679742a8deed015a4406384eea6bd985d08a")
         (revision "0"))
