@@ -4020,6 +4020,42 @@ writing DICOM medical imaging data.  It can read, modify and write DICOM
 data.")
     (license license:expat)))
 
+(define-public python-pydoe
+  (package
+    (name "python-pydoe")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydoe" version))
+       (sha256
+        (base32 "1jr0dal2sibj6y5qr0i7h1b52x73c06pl5q20ad4zam93n7hpadi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "pydoe"
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "pydoe"))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (home-page "https://pydoe.github.io/pydoe/")
+    (synopsis "Design of Experiments for Python")
+    (description
+     "PyDOE is a Python package for design of experiments (DOE),
+ enabling scientists, engineers, and statisticians to efficiently construct
+experimental designs.")
+    (license license:bsd-3)))
+
 (define-public python-pyet
   (package
     (name "python-pyet")
