@@ -2895,17 +2895,17 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-astrocut
   (package
     (name "python-astrocut")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astrocut" version))
        (sha256
-        (base32 "1mq8vwjyinzzvmaadmn5ijj6618qa90w4nyq8iszw2zz0fq13028"))))
+        (base32 "1w9r48wdq2x6z6gmzr36nlqvm30hcdrrxn395hf21rxdqjiklh9w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 126 passed, 2 skipped, 39 deselected, 1 xfailed, 205 warnings
+      ;; tests: 119 passed, 1 skipped, 39 deselected, 3 warnings
       #:test-flags
       #~(list "--deselect=docs/astrocut/index.rst::index.rst"
               #$@(map (lambda (ls)
@@ -2952,15 +2952,7 @@ astronomical images, especially when there is no WCS information available.")
                         ;; assert np.False_ where np.False_ = <built-in
                         ;; method all of numpy.ndarray object at
                         ;; 0x7fff553cde90>()
-                        ("test_utils.py" "test_get_cutout_wcs"))))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Report upstream: ModuleNotFoundError: No module named
-          ;; 'packagename'.
-          (add-after 'unpack 'fix-setup.cfg
-            (lambda _
-              (substitute* "setup.cfg"
-                (("astropy-package-template-example.*") "")))))))
+                        ("test_utils.py" "test_get_cutout_wcs"))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
@@ -2976,11 +2968,12 @@ astronomical images, especially when there is no WCS information available.")
            python-gwcs
            python-pillow
            python-requests
-           python-roman-datamodels
            python-s3fs
            python-s3path
            python-scipy
-           python-spherical-geometry))
+           python-spherical-geometry
+           ;; [optional]
+           python-stdatamodels))
     (home-page "https://astrocut.readthedocs.io")
     (synopsis "Cutout tools for astronomical images")
     (description
