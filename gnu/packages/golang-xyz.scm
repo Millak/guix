@@ -12620,23 +12620,24 @@ string into a slice of words.")
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
-    (version "1.17.0")
+    (version "1.19.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fatih/color")
-             (commit (string-append "v" version))))
+              (url "https://github.com/fatih/color")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07axwr6016xwylxlsrw3cnkg1kg963zqqgf06pc3dgicfg5qrhj2"))))
+        (base32 "0d9mgydf4f288vzmfqalilq2zfrixrvnifmi6jh2iwwxg3b2c0v2"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/fatih/color"))
     (propagated-inputs
      (list go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty))
+           go-github-com-mattn-go-isatty
+           go-golang-org-x-sys))
     (home-page "https://pkg.go.dev/github.com/fatih/color")
     (synopsis "Print colored text in Go")
     (description
