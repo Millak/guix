@@ -160,7 +160,7 @@ slicing.")
 (define-public c-sbsv
   (package
     (name "c-sbsv")
-    (version "0.2.3")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -169,19 +169,26 @@ slicing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xzx0xhikwqvmzdbhprzljfvnxznr3an3jf0v07hwkixvh80s4f5"))
+        (base32 "0wgqb7j2slp05zm6s2qqsb5821vzz1w3jdcwsn2k3jfj7mylnryq"))
        (modules '((guix build utils)))
        (snippet #~(begin                ;remove the separate Python library
                     (delete-file-recursively "sbsv")
                     (delete-file-recursively "tests")
+                    (delete-file "MANIFEST.in")
                     (delete-file "pyproject.toml")
+                    (delete-file "setup.cfg")
+                    (delete-file "setup.py")
                     (delete-file "uv.lock")))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'change-directory
-                 (lambda _ (chdir "libsbsv"))))))
+                 (lambda _ (chdir "libsbsv")))
+               (add-after 'change-directory 'prefer-dynamic-build
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("\\<STATIC\\>") "SHARED")))))))
     (home-page "https://github.com/hsh814/sbsv")
     (synopsis "Square bracket separated values")
     (description
