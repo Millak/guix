@@ -5169,7 +5169,7 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)
@@ -5178,7 +5178,7 @@ Cesium.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13mlcqrbydhyfd3z7vzw49wlav83fssr2qwwv5h58djgjqnjmjk1"))))
+        (base32 "0fqnww18lbyj1jmhx0kj4avxkk3rg6wik4irhdx462s73p48zs0f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
