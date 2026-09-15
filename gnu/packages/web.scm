@@ -4246,15 +4246,22 @@ which can be used to parse directory listings.")
 (define-public perl-finance-quote
   (package
     (name "perl-finance-quote")
-    (version "1.70")
+    (version "1.71")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://cpan.metacpan.org/authors/id/B/BP/BPSCHUCK/"
                            "Finance-Quote-" version ".tar.gz"))
        (sha256
-        (base32 "05bryjwc7igdpvhzkalbl068mjx484nld3rx071wjvzpg1xwh6jz"))))
+        (base32 "1vszmwzpim5hcnasc4fl7gbw14wc8ycwlpwqfn866rl83bh0y4ri"))))
     (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-tz
+            (lambda _
+              (setenv "TZ" "Europe/Prague"))))))
     (native-inputs
      (list perl-test-harness
            perl-date-manip
@@ -4286,6 +4293,7 @@ which can be used to parse directory listings.")
            perl-readonly
            perl-string-util
            perl-text-template
+           perl-timedate
            perl-try-tiny
            perl-web-scraper
            perl-xml-libxml))
