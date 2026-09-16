@@ -55340,7 +55340,7 @@ XDG specifications for the desktop.
 
 @subsubheading XDG User Directories
 
-@defvar{home-xdg-user-directories-service-type}
+@defvar home-xdg-user-directories-service-type
 
 This service sets the names of default user directories such as
 @samp{Downloads} and @samp{Documents}.  These settings are respected by
