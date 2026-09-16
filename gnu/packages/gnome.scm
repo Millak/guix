@@ -8585,7 +8585,7 @@ services.")
 (define-public network-manager-openvpn
   (package
     (name "network-manager-openvpn")
-    (version "1.12.0")
+    (version "1.12.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8594,7 +8594,7 @@ services.")
                     "/NetworkManager-openvpn-" version ".tar.xz"))
               (sha256
                (base32
-                "11p8ny4swrim80a4axids9ajd4nzv2zc5n69f2nafamxmv0d8gwh"))))
+                "1zas9g0hjhlhp7vny7xrbv9w4zw1g5va2b07r0pxzv800n5y6cnf"))))
     (build-system gnu-build-system)
     (arguments
      (list
