@@ -1240,7 +1240,7 @@ and its highly optimized now for efficient performance.")
            pkg-config
            python       ; used to generate the Python bindings
            python-setuptools
-           swig))
+           swig-4.0))
     (inputs
      (append
       (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
