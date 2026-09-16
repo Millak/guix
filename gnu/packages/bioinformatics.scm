@@ -17011,34 +17011,32 @@ API services.")
 (define-public python-mgatk
   (package
     (name "python-mgatk")
-    (version "0.7.0")
+    (version "0.9.0")
     (source
      (origin
-       (method git-fetch) ; no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/caleblareau/mgatk")
-             ;; There is no tag for 0.7.0, but this is the commit
-             ;; corresponding to the version bump, see
-             ;; <https://github.com/caleblareau/mgatk/issues/101>.
-             (commit "8ffeac8476564049ef51b4d4d40eed452ae2fc38")))
+              (url "https://github.com/caleblareau/mgatk")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qspzglj487bpyg8wpc29fjr8mj993q8w3jrdhylggiqpjx4l607"))))
+         "0lxq9k50a7qh5mnxi5r076c83fnq13q0264zxjvqbv38zsq1bbac"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-biopython
+     (list python-bam-dedup
+           python-biopython
            python-click
+           python-matplotlib
            python-numpy
            python-optparse-pretty
            python-pandas
            python-pysam
            python-regex
            python-ruamel.yaml
-           python-setuptools
            snakemake))
     (native-inputs
-     (list python-pytest python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/caleblareau/mgatk")
     (synopsis "Mitochondrial genome analysis toolkit")
     (description "This package is a Python-based command line interface for
