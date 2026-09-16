@@ -4129,14 +4129,14 @@ background agent taking care of maintaining the necessary state.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.10.23+cargo-0.97.1")
+    (version "0.10.25+cargo-0.99.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "044bmg7dk8mr6w9qja52jrszh7qk23nhnbkd7b4nd26qb9wp0pvn"))))
+         (base32 "09y6amkx8gk34hjds5r7ymri7q1wrp54lf5nwk63qxwaibjxsbbb"))))
     (build-system cargo-build-system)
     (arguments (list #:install-source? #f))
     (native-inputs
