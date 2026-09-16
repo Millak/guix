@@ -813,16 +813,25 @@ Return the new origin S-expression or #f if transformation isn't applicable."
 
 (define (show-stylings)
   (display (G_ "Available styling rules:\n"))
-  (display (G_ "- format: Format the given package definition(s)\n"))
-  (display (G_ "- inputs: Rewrite package inputs to the “new style”\n"))
   (display (G_ "- arguments: Rewrite package arguments to G-expressions\n"))
-  (display (G_ "- git-source: Rewrite source fetch method to Git.\n")))
+  (display (G_ "- format: Format the given package definition(s)\n"))
+  (display (G_ "- git-source: Rewrite source fetch method to Git.\n"))
+  (display (G_ "- inputs: Rewrite package inputs to the “new style”\n"))
+  (display (G_ "\n"))
+  (display (G_ "Rules supporting --parameter=PARAM option:\n"))
+  (display (G_ "- remove-input, remove-native-input, remove-propagated-input:
+  Remove a PARAM from the given PACKAGE(s) native-inputs, inputs or
+  propagated-inputs field.  If PACKAGE is not provided, apply the rule for each
+  occurrence of PARAM across all packages.\n")))
 
 (define (show-help)
   (display (G_ "Usage: guix style [OPTION]... [PACKAGE]...
 Update package definitions to the latest style.\n"))
   (display (G_ "
   -S, --styling=RULE     apply RULE, a styling rule"))
+  (display (G_ "
+      --parameter=PARAM  use PARAM, e.g. package name, as a parmeter for
+                         the styling RULE supporting it"))
   (display (G_ "
   -l, --list-stylings    display the list of available style rules"))
   (newline)
