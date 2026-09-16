@@ -1826,6 +1826,12 @@ provides the GNU compiler for the Go programming language.")
 (define-public gccgo-16
   (make-gccgo gcc-16))
 
+;; Default gccgo using the same version as the default gcc
+;; XXX: We have switched to gcc-15 over gcc-14 for fixes for the Hurd.
+;; See: https://codeberg.org/guix/guix/pulls/4477.
+(define-public gccgo
+  (make-gccgo gcc-15))
+
 (define-public isl
   (package
     (name "isl")
