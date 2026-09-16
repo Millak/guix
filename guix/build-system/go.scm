@@ -141,9 +141,9 @@ commit hash and its date rather than a proper release tag."
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
-                (go (if (supported-package? (default-go))
-                      (default-go)
-                      (default-gccgo)))
+                (go (if (supported-package? (default-go) system)
+                        (default-go)
+                        (default-gccgo)))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
