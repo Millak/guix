@@ -12095,7 +12095,7 @@ terminals.")
 (define-public sbcl-clingon
   (package
     (name "sbcl-clingon")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -12104,7 +12104,7 @@ terminals.")
               (commit (string-append "v" version))))
        (file-name (git-file-name "cl-clingon" version))
        (sha256
-        (base32 "1a31xjvdgikarafhy8f11pprqgw55yv57ahd4j71k124lxrz8wfz"))))
+        (base32 "1zi7slknz00l4isj6aykif075rg4lnwczrvm83cl31s540ky3w9y"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rove))
