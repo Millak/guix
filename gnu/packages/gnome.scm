@@ -8637,56 +8637,6 @@ to virtual private networks (VPNs) via OpenVPN.")
     (license license:gpl2+)
     (properties `((upstream-name . "NetworkManager-openvpn")))))
 
-(define-public network-manager-vpnc
-  (package
-    (name "network-manager-vpnc")
-    (version "1.2.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnome/sources/NetworkManager-vpnc/"
-                    (version-major+minor version)
-                    "/NetworkManager-vpnc-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1k7vkalslzmz8zvfy76k7z10b9krm7da917gwzyw7zf8afm32pnn"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--enable-absolute-paths"
-                           "--localstatedir=/var"
-                           "--with-gtk4=yes")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-path
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             (let* ((vpnc (search-input-file inputs "/sbin/vpnc"))
-                    (modprobe (search-input-file inputs "/bin/modprobe"))
-                    (pretty-ovpn (string-append "\"" vpnc "\"")))
-               (substitute* "src/nm-vpnc-service.c"
-                    (("\"/usr/local/sbin/vpnc\"") pretty-ovpn)
-                    (("\"/usr/sbin/vpnc\"") pretty-ovpn)
-                    (("\"/sbin/vpnc\"") pretty-ovpn)
-                    (("/sbin/modprobe") modprobe))))))))
-    (native-inputs
-     (list `(,glib "bin")
-           intltool
-           pkg-config))
-    (inputs
-     (list gtk+
-           gtk
-           kmod
-           vpnc
-           network-manager
-           libnma
-           libsecret))                 ;TODO: remove after it's the default
-    (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
-    (synopsis "VPNC plug-in for NetworkManager")
-    (description
-     "Support for configuring virtual private networks based on VPNC.
-Compatible with Cisco VPN concentrators configured to use IPsec.")
-    (license license:gpl2+)
-    (properties `((upstream-name . "NetworkManager-vpnc")))))
-
 (define-public network-manager-openconnect
   (package
     (name "network-manager-openconnect")
@@ -8814,6 +8764,9 @@ Cisco's AnyConnect SSL VPN.")
 to @acronym{VPNs, virtual private networks} via Libreswan.")
     (license license:gpl2+)
     (properties `((upstream-name . "NetworkManager-libreswan")))))
+
+(define-deprecated/public-alias network-manager-vpnc
+  network-manager-libreswan)
 
 (define-public network-manager-l2tp
   (package
