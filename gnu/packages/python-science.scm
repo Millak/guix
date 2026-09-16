@@ -7175,6 +7175,7 @@ are source structure, project manager, interactive help, workspace...")
            python-conda-inject
            python-configargparse
            python-connection-pool
+           python-docutils
            python-dpath
            python-gitpython
            python-humanfriendly
@@ -7202,8 +7203,7 @@ are source structure, project manager, interactive help, workspace...")
            python-wrapt
            python-yte))
     (native-inputs
-     (list python-docutils
-           python-numpy
+     (list python-numpy
            python-pandas
            python-pytest
            python-setuptools
