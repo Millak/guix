@@ -65,6 +65,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages dns)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -498,6 +499,60 @@ endpoints.")
      "n2n is a light VPN software which makes it easy to create virtual
 networks bypassing intermediate firewalls.")
     (license license:gpl3+)))
+
+(define-public libreswan
+  (package
+    (name "libreswan")
+    (version "5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.libreswan.org/libreswan-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32 "0md822vvlr7aq909j7agky410jm22hi3jnz04y8wq5jkcb7l0qyj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "USE_DNSSEC=false"      ; XXX: missing unbound-event.h
+              "USE_ML_KEM_768=false"  ; enable with nss >= 3.118
+              "USE_ML_KEM_1024=false"
+              "NSS_LDFLAGS=-L`pkg-config --variable libdir nss` -lnss3"
+              ;; Vendored header apparently differs from kernel,
+              ;; includes additional definitions.
+              "USE_XFRM_HEADER_COPY=true"
+              ;; The following options are typically configured through
+              ;; linux.mk by reading /etc/os-release; provide them manually.
+              "LINUX_VARIANT=guix"
+              "LINUX_VERSION_CODENAME="
+              "LINUX_VERSION_ID="
+              "INITSYSTEM=none"       ; should be shepherd
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "SYSCONFDIR=$(PREFIX)/etc"
+              "NSSDIR=$(PREFIX)/share/ipsec/nss")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure))))
+    (inputs (list curl
+                  libcap-ng
+                  libevent
+                  libxcrypt
+                  linux-pam
+                  nss))
+    (native-inputs (list bison
+                         docbook-xml-4.5
+                         docbook-xsl
+                         flex
+                         pkg-config
+                         xmlto))
+    (home-page "https://libreswan.org/")
+    (synopsis "IPSec/IKE protocol implementation")
+    (description "Libreswan is an implementation of the
+@acronym{IPSec,Internet Protocol Security} and
+@acronym{IKE,Internet Key Exchange} protocols.")
+    (license license:gpl2+)))
 
 (define-public strongswan
   (package
