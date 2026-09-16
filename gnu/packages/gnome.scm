@@ -8771,7 +8771,7 @@ to @acronym{VPNs, virtual private networks} via Libreswan.")
 (define-public network-manager-l2tp
   (package
     (name "network-manager-l2tp")
-    (version "1.52.2")
+    (version "1.52.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8780,7 +8780,7 @@ to @acronym{VPNs, virtual private networks} via Libreswan.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p6ymx2vmrvyqgz1i1v80r9jydpbhm72yq0np0vfrr279jdlqhb5"))))
+                "0j6iil7hg2fs5kzs419n89gdjvib8vc70gw7gmal5qs086lfjkb5"))))
     (build-system gnu-build-system)
     (arguments
      (list
