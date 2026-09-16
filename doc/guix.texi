@@ -16327,10 +16327,12 @@ a generic updater that crawls, by default, the HTML page where the
 source tarball of the package is hosted, when applicable.  Behavior can
 be customized with the following package properties:
 
+@cindex release-monitoring-url package property, for generic-html updater
 @table @code
 @item release-monitoring-url
 an alternate URL to crawl;
 
+@cindex release-file-regexp package property, for generic-html updater
 @item release-file-regexp
 an regular expression matching release file names, whose first
 subexpression must correspond to the version string.
@@ -16357,19 +16359,24 @@ tag name and compare tags correctly, users can define the following
 properties for a package.
 
 @itemize
+@cindex release-tag-prefix package property, for generic-git updater
 @item @code{release-tag-prefix}: a regular expression for matching a prefix of
 the tag name.
 
+@cindex release-tag-suffix package property, for generic-git updater
 @item @code{release-tag-suffix}: a regular expression for matching a suffix of
 the tag name.
 
+@cindex release-tag-version-delimiter package property, for generic-git updater
 @item @code{release-tag-version-delimiter}: a string used as the delimiter in
 the tag name for separating the numbers of the version.
 
+@cindex accept-pre-releases package property, for generic-git updater
 @item @code{accept-pre-releases}: by default, the updater will ignore
 pre-releases; to make it also look for pre-releases, set the this
 property to @code{#t}.
 
+@cindex stable-version-regexp package property, for generic-git updater
 @item @code{stable-version-regexp}: a regular expression for matching the
 version string, if specified the updater will pick the latest version from
 matching ones when the @option{--target-version} option is omitted.
