@@ -90,6 +90,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages enchant)
@@ -4684,6 +4685,8 @@ execution mechanism for Common Lisp.")))
              sbcl-cl-ppcre
              sbcl-defpackage-plus
              sbcl-trivial-features))
+      (native-inputs
+       (list c2ffi))
       (arguments
        (list #:asd-systems ''("cl-autowrap" "cl-plus-c" "cl-autowrap/libffi")
              #:phases
@@ -4692,7 +4695,10 @@ execution mechanism for Common Lisp.")))
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "autowrap-libffi/library.lisp"
                        (("libffi.so")
-                        (search-input-file inputs "lib/libffi.so"))))))))
+                        (search-input-file inputs "lib/libffi.so")))
+                     (substitute* "autowrap-libffi/autowrap.lisp"
+                       (("/usr/lib64/libffi-3.2.1/include")
+                        (search-input-directory inputs "include"))))))))
       (home-page "https://github.com/rpav/cl-autowrap")
       (synopsis "FFI wrapper generator for Common Lisp")
       (description "This is a c2ffi-based wrapper generator for Common Lisp.")
