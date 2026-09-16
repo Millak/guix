@@ -354,282 +354,263 @@ parser definition into a C output.")
                               "deps/zstd"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--shared-cares"
-                           "--shared-libuv"
-                           "--shared-http-parser"
-                           "--shared-http-parser-libname=llhttp"
-                           "--shared-nghttp2"
-                           "--shared-openssl"
-                           "--shared-zlib"
-                           "--shared-brotli"
-                           "--with-intl=system-icu"
-                           "--shared-ngtcp2"
-                           "--shared-nghttp3"
-                           "--shared-zstd"
-                           "--shared-uvwasi"
-                           "--shared-hdr-histogram"
-                           "--shared"
-                           ;; Needed for correct snapshot checksums
-                           "--v8-enable-snapshot-compression")
-       #:test-target "test-ci-js"
-       #:modules
-       ((guix build gnu-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-hardcoded-program-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Fix hardcoded /bin/sh references.
-             (substitute* '("lib/child_process.js"
-                            "lib/internal/v8_prof_polyfill.js"
-                            "test/parallel/test-child-process-spawnsync-shell.js"
-                            "test/parallel/test-stdio-closed.js"
-                            "test/sequential/test-child-process-emfile.js"
-                            "test/parallel/test-fs-write-sigxfsz.js"
-                            "test/parallel/test-stdin-from-file-spawn.js")
-               (("'/bin/sh'")
-                (string-append "'" (search-input-file inputs "/bin/sh") "'")))
-             ;; Fix hardcoded /usr/bin/env references.
-             (substitute* '("test/parallel/test-child-process-default-options.js"
-                            "test/parallel/test-child-process-env.js"
-                            "test/parallel/test-child-process-exec-env.js")
-               (("'/usr/bin/env'")
-                (string-append "'" (search-input-file inputs "/bin/env") "'")))))
-         (add-after 'patch-hardcoded-program-references 'delete-problematic-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; FIXME: These tests fail in the build container, but they don't
-             ;; seem to be indicative of real problems in practice.
-             (for-each delete-file
-                       '("test/parallel/test-cluster-primary-error.js"
-                         "test/parallel/test-cluster-primary-kill.js"
-                         "test/parallel/test-node-run.js"))
-             ;; These require a DNS resolver.
-             (for-each delete-file
-                       '("test/parallel/test-dns.js"
-                         "test/parallel/test-dns-lookupService-promises.js"
-                         "test/parallel/test-net-socket-connect-without-cb.js"
-                         "test/parallel/test-tcp-wrap-listen.js"
-                         "test/report/test-report-exclude-network.js"))
-             ;; These tests require networking.
-             (for-each delete-file
-                       '("test/parallel/test-https-agent-unref-socket.js"))
-             ;; These tests are timing-sensitive, and fail sporadically on
-             ;; slow, busy, or even very fast machines.
-             (for-each delete-file
-                       '("test/parallel/test-fs-utimes.js"))
-             ;; FIXME: This test fails randomly:
-             ;; https://github.com/nodejs/node/issues/31213
-             (delete-file "test/parallel/test-net-listen-after-destroying-stdin.js")
-             ;; FIXME: These tests fail on armhf-linux:
-             ;; https://github.com/nodejs/node/issues/31970
-             ,@(if (target-arm32?)
-                   '((for-each delete-file
-                               '("test/parallel/test-zlib.js"
-                                 "test/parallel/test-zlib-brotli.js"
-                                 "test/parallel/test-zlib-brotli-flush.js"
-                                 "test/parallel/test-zlib-brotli-from-brotli.js"
-                                 "test/parallel/test-zlib-brotli-from-string.js"
-                                 "test/parallel/test-zlib-convenience-methods.js"
-                                 "test/parallel/test-zlib-random-byte-pipes.js"
-                                 "test/parallel/test-zlib-write-after-flush.js")))
-                   '())
-             ;; https://github.com/nodejs/node/issues/45906
-             ;; This test depends on 64-bit time_t so skipping on 32-bit systems.
-             ,@(if (target-32bit?)
-                   '((delete-file "test/parallel/test-fs-utimes-y2K38.js")
-                     (delete-file "test/parallel/test-debugger-heap-profiler.js"))
-                   '())
-             ;; These tests have an expiry date: they depend on the validity of
-             ;; TLS certificates that are bundled with the source.  We want this
-             ;; package to be reproducible forever, so remove those.
-             ;; TODO: Regenerate certs instead.
-             (for-each delete-file
-                       '("test/parallel/test-tls-passphrase.js"
-                         "test/parallel/test-tls-server-verify.js"))
-             ;; These tests fail when linking to upstream libuv.
-             ;; https://github.com/nodejs/node/commit/3f6addd590
-             (for-each delete-file
-                       '("test/parallel/test-process-euid-egid.js"
-                         "test/parallel/test-process-initgroups.js"
-                         "test/parallel/test-process-setgroups.js"
-                         "test/parallel/test-process-uid-gid.js"))))
-         (add-after 'delete-problematic-tests 'patch-problematic-tests
-           (lambda _
-             ;; TODO: These tests seem to not work by default, but seem fixed now online
-             (substitute*
-                 '("test/parallel/test-http2-premature-close.js"
-                   "test/parallel/test-http2-invalid-last-stream-id.js")
-               (("client\\.connect\\(address\\)")
-                "client.connect(address.port)"))))
-         (add-before 'configure 'set-bootstrap-host-rpath
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let* ((inputs        (or native-inputs inputs))
-                    (brotli        (assoc-ref inputs "brotli"))
-                    (c-ares        (assoc-ref inputs "c-ares"))
-                    (hdrhistogram  (assoc-ref inputs "hdrhistogram-c"))
-                    (icu4c         (assoc-ref inputs "icu4c"))
-                    (libuv         (assoc-ref inputs "libuv"))
-                    (llhttpish     (assoc-ref inputs "llhttpish"))
-                    (nghttp2       (assoc-ref inputs "nghttp2"))
-                    (nghttp3       (assoc-ref inputs "nghttp3"))
-                    (ngtcp2        (assoc-ref inputs "ngtcp2"))
-                    (openssl       (assoc-ref inputs "openssl"))
-                    (uvwasi        (assoc-ref inputs "uvwasi"))
-                    (zlib          (assoc-ref inputs "zlib"))
-                    (zstd          (assoc-ref inputs "zstd"))
-                    (host-binaries '("torque"
-                                     "bytecode_builtins_list_generator"
-                                     "gen-regexp-special-case"
-                                     "node_mksnapshot"
-                                     "mksnapshot"
-                                     "node_js2c")))
-               (substitute* '("node.gyp" "tools/v8_gypfiles/v8.gyp")
-                 (((string-append "'target_name': '("
-                                  (string-join host-binaries "|")
-                                  ")',")
-                   target)
-                  (string-append target
-                                 "'ldflags': ['-Wl,-rpath="
-                                 brotli "/lib:"
-                                 c-ares "/lib:"
-                                 hdrhistogram "/lib:"
-                                 icu4c "/lib:"
-                                 libuv "/lib:"
-                                 llhttpish "/lib:"
-                                 nghttp2 "/lib:"
-                                 nghttp3 "/lib:"
-                                 ngtcp2 "/lib:"
-                                 openssl "/lib:"
-                                 uvwasi "/lib:"
-                                 zlib "/lib:"
-                                 zstd "/lib"
-                                 "'],"))))))
-         (replace 'configure
-           ;; Node's configure script is actually a python script, so we can't
-           ;; run it with bash.
-           (lambda* (#:key outputs (configure-flags '()) native-inputs inputs
-                     #:allow-other-keys)
-             (let* ((prefix (assoc-ref outputs "out"))
-                    (xflags ,(if (%current-target-system)
-                                 `'("--cross-compiling"
-                                    ,(string-append
-                                      "--dest-cpu="
-                                      (match (%current-target-system)
-                                        ((? (cut string-prefix? "arm" <>))
-                                         "arm")
-                                        ((? (cut string-prefix? "aarch64" <>))
-                                         "arm64")
-                                        ((? (cut string-prefix? "i686" <>))
-                                         "ia32")
-                                        ((? (cut string-prefix? "x86_64" <>))
-                                         "x64")
-                                        ((? (cut string-prefix? "powerpc64" <>))
-                                         "ppc64")
-                                        ((? (cut string-prefix? "riscv64" <>))
-                                         "riscv64")
-                                        (_ "unsupported"))))
-                                 ''()))
-                    (flags (cons (string-append "--prefix=" prefix)
-                                 (append xflags configure-flags))))
-               (format #t "build directory: ~s~%" (getcwd))
-               (format #t "configure flags: ~s~%" flags)
-               ;; Node's configure script expects the CC environment variable to
-               ;; be set.
-               (setenv "CC_host" "gcc")
-               (setenv "CXX_host" "g++")
-               (setenv "CC" ,(cc-for-target))
-               (setenv "CXX" ,(cxx-for-target))
-               (setenv "PKG_CONFIG" ,(pkg-config-for-target))
-               (apply invoke
-                      (let ((inpts (or native-inputs inputs)))
-                        (with-exception-handler
-                            (lambda (e)
-                              (if (search-error? e)
-                                  (search-input-file inpts "/bin/python3")
-                                  (raise-exception e)))
-                          (lambda ()
-                            (search-input-file inpts "/bin/python"))
-                          #:unwind? #t))
-                      "configure"
-                      flags))))
-         (add-after 'patch-shebangs 'patch-nested-shebangs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Based on the implementation of patch-shebangs
-             ;; from (guix build gnu-build-system).
-             (let ((path (append-map (match-lambda
-                                       ((_ . dir)
-                                        (list (string-append dir "/bin")
-                                              (string-append dir "/sbin")
-                                              (string-append dir "/libexec"))))
-                                     (append outputs inputs))))
-               (for-each
-                (lambda (file)
-                  (patch-shebang file path))
-                (find-files (search-input-directory outputs "lib/node_modules")
-                            (lambda (file stat)
-                              (executable-file? file))
-                            #:stat lstat)))))
-         (add-after 'patch-nested-shebangs 'do-not-capture-python
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; patch-shebangs embeds the Python store path into node-gyp's
-             ;; Python scripts, pulling Python into node's closure.  Revert
-             ;; to /usr/bin/env python3 so downstream gyp builds supply
-             ;; their own Python.
-             (let ((node-gyp (string-append (assoc-ref outputs "out")
-                                            "/lib/node_modules/npm"
-                                            "/node_modules/node-gyp")))
-               (for-each
-                (lambda (f)
-                  (substitute* f
-                    (("^#!.*/bin/python3") "#!/usr/bin/env python3")))
-                (find-files node-gyp "\\.py$")))))
-         ;; npm installs dependencies by copying their files over a tar
-         ;; stream.  A file with more than one hardlink is marked as a
-         ;; "Link".  pacote/lib/fetcher.js calls node-tar's extractor with a
-         ;; filter that ignores any "Link" entries.  This means that
-         ;; dependending on the number of hardlinks on files in a node-*
-         ;; package *some* of its files may not be installed when generating
-         ;; another package's "node_modules" directory.  The build output
-         ;; would differ depending on irrelevant file system state.
-         ;;
-         ;; To avoid this, we patch node-tar to treat files with hardlinks
-         ;; the same as any other file, so that node-tar has no choice but
-         ;; to extract all of them --- independent of pacote's filter.
-         ;;
-         ;; Why not patch pacote's filter instead?  This has led to subtle
-         ;; differences in where the files are installed, so it's easier to
-         ;; just ensure that files with hardlinks are always treated as
-         ;; regular files.
-         ;;
-         ;; Discussion:
-         ;;   https://lists.gnu.org/archive/html/guix-devel/2023-07/msg00040.html
-         ;; Upstream bug report:
-         ;;   https://github.com/npm/pacote/issues/285
-         (add-after 'install 'ignore-number-of-hardlinks
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((dir (string-append (assoc-ref outputs "out")
-                                       "/lib/node_modules/npm/node_modules"
-                                       "/tar/dist")))
-               (substitute*
-                   (list (string-append dir "/esm/write-entry.js")
-                         (string-append dir "/commonjs/write-entry.js"))
-                 (("this.stat.nlink > 1") "false")))))
-         (add-after 'install 'fix-node-gyp-reference
-           ;; Note: programs like node-gyp only receive these values if
-           ;; they are started via `npm` or `npx`.
-           ;; See: https://github.com/nodejs/node-gyp#npm-configuration
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (spec)
-                  (wrap-program (string-append out spec)
-                    `("npm_package_config_node_gyp_nodedir" = (,out))))
-                '("/bin/npm"
-                  "/bin/npx"))))))))
+     (list
+      #:configure-flags
+      ;; Search for 'shared_optgroup.add_argument' in
+      ;; configure.py to find the relevant options.
+      #~(list "--shared"
+              "--shared-brotli"
+              "--shared-cares"
+              "--shared-hdr-histogram"
+              "--shared-http-parser"
+              "--shared-http-parser-libname=llhttp"
+              "--shared-libuv"
+              "--shared-nghttp2"
+              "--shared-nghttp3"
+              "--shared-ngtcp2"
+              "--shared-openssl"
+              "--shared-uvwasi"
+              "--shared-zlib"
+              "--shared-zstd"
+              ;; Needed for correct snapshot checksums
+              "--v8-enable-snapshot-compression"
+              "--with-intl=system-icu")
+      #:test-target "test-ci-js"
+      #:modules `(,@%default-gnu-modules
+                  (srfi srfi-1)
+                  (ice-9 format)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-hardcoded-program-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix hardcoded /bin/sh references.
+              (substitute* '("lib/child_process.js"
+                             "lib/internal/v8_prof_polyfill.js"
+                             "test/parallel/test-child-process-spawnsync-shell.js"
+                             "test/parallel/test-stdio-closed.js"
+                             "test/sequential/test-child-process-emfile.js"
+                             "test/parallel/test-fs-write-sigxfsz.js"
+                             "test/parallel/test-stdin-from-file-spawn.js")
+                (("'/bin/sh'")
+                 (string-append "'" (search-input-file inputs "/bin/sh") "'")))
+              ;; Fix hardcoded /usr/bin/env references.
+              (substitute* '("test/parallel/test-child-process-default-options.js"
+                             "test/parallel/test-child-process-env.js"
+                             "test/parallel/test-child-process-exec-env.js")
+                (("'/usr/bin/env'")
+                 (string-append "'" (search-input-file inputs "/bin/env") "'")))))
+          (add-after 'patch-hardcoded-program-references 'delete-problematic-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: These tests fail in the build container, but they don't
+              ;; seem to be indicative of real problems in practice.
+              (for-each delete-file
+                        '("test/parallel/test-cluster-primary-error.js"
+                          "test/parallel/test-cluster-primary-kill.js"
+                          "test/parallel/test-node-run.js"))
+              ;; These require a DNS resolver.
+              (for-each delete-file
+                        '("test/parallel/test-dns.js"
+                          "test/parallel/test-dns-lookupService-promises.js"
+                          "test/parallel/test-net-socket-connect-without-cb.js"
+                          "test/parallel/test-tcp-wrap-listen.js"
+                          "test/report/test-report-exclude-network.js"))
+              ;; These tests require networking.
+              (for-each delete-file
+                        '("test/parallel/test-https-agent-unref-socket.js"))
+              ;; These tests are timing-sensitive, and fail sporadically on
+              ;; slow, busy, or even very fast machines.
+              (for-each delete-file
+                        '("test/parallel/test-fs-utimes.js"))
+              ;; FIXME: This test fails randomly:
+              ;; https://github.com/nodejs/node/issues/31213
+              (delete-file "test/parallel/test-net-listen-after-destroying-stdin.js")
+              ;; FIXME: These tests fail on armhf-linux:
+              ;; https://github.com/nodejs/node/issues/31970
+              #$@(if (target-arm32?)
+                     '((for-each delete-file
+                                 '("test/parallel/test-zlib.js"
+                                   "test/parallel/test-zlib-brotli.js"
+                                   "test/parallel/test-zlib-brotli-flush.js"
+                                   "test/parallel/test-zlib-brotli-from-brotli.js"
+                                   "test/parallel/test-zlib-brotli-from-string.js"
+                                   "test/parallel/test-zlib-convenience-methods.js"
+                                   "test/parallel/test-zlib-random-byte-pipes.js"
+                                   "test/parallel/test-zlib-write-after-flush.js")))
+                     '())
+              ;; https://github.com/nodejs/node/issues/45906
+              ;; This test depends on 64-bit time_t so skipping on 32-bit systems.
+              #$@(if (target-32bit?)
+                     '((delete-file "test/parallel/test-fs-utimes-y2K38.js")
+                       (delete-file "test/parallel/test-debugger-heap-profiler.js"))
+                     '())
+              ;; These tests have an expiry date: they depend on the validity of
+              ;; TLS certificates that are bundled with the source.  We want this
+              ;; package to be reproducible forever, so remove those.
+              ;; TODO: Regenerate certs instead.
+              (for-each delete-file
+                        '("test/parallel/test-tls-passphrase.js"
+                          "test/parallel/test-tls-server-verify.js"))
+              ;; These tests fail when linking to upstream libuv.
+              ;; https://github.com/nodejs/node/commit/3f6addd590
+              (for-each delete-file
+                        '("test/parallel/test-process-euid-egid.js"
+                          "test/parallel/test-process-initgroups.js"
+                          "test/parallel/test-process-setgroups.js"
+                          "test/parallel/test-process-uid-gid.js"))))
+          (add-after 'delete-problematic-tests 'patch-problematic-tests
+            (lambda _
+              ;; TODO: These tests seem to not work by default, but seem fixed now online
+              (substitute*
+                  '("test/parallel/test-http2-premature-close.js"
+                    "test/parallel/test-http2-invalid-last-stream-id.js")
+                (("client\\.connect\\(address\\)")
+                 "client.connect(address.port)"))))
+          (add-before 'configure 'set-bootstrap-host-rpath
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (when native-inputs
+                (let* ((safe-lookup (lambda (label)
+                                      (or (assoc-ref native-inputs label)
+                                          (error "could not find native input"
+                                                 label))))
+                       (host-inputs (map safe-lookup
+                                         '("brotli"
+                                           "c-ares"
+                                           "hdrhistogram-c"
+                                           "icu4c"
+                                           "libuv"
+                                           "llhttpish"
+                                           "nghttp2"
+                                           "nghttp3"
+                                           "ngtcp2"
+                                           "openssl"
+                                           "uvwasi"
+                                           "zlib"
+                                           "zstd")))
+                       (host-binaries '("torque"
+                                        "bytecode_builtins_list_generator"
+                                        "gen-regexp-special-case"
+                                        "node_mksnapshot"
+                                        "mksnapshot"
+                                        "node_js2c")))
+                  (substitute* '("node.gyp" "tools/v8_gypfiles/v8.gyp")
+                    (((string-append "'target_name': '("
+                                     (string-join host-binaries "|")
+                                     ")',")
+                      target)
+                     (format #f "~a 'ldflags': ['-Wl,-rpath=~{~a/lib~^:~}'],"
+                             target host-inputs)))))))
+          (replace 'configure
+            ;; Node's configure script is actually a python script, so we can't
+            ;; run it with bash.
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (let* ((xflags #$(if (%current-target-system)
+                                   `'("--cross-compiling"
+                                      ,(string-append
+                                        "--dest-cpu="
+                                        (match (%current-target-system)
+                                          ((? (cut string-prefix? "arm" <>))
+                                           "arm")
+                                          ((? (cut string-prefix? "aarch64" <>))
+                                           "arm64")
+                                          ((? (cut string-prefix? "i686" <>))
+                                           "ia32")
+                                          ((? (cut string-prefix? "x86_64" <>))
+                                           "x64")
+                                          ((? (cut string-prefix? "powerpc64" <>))
+                                           "ppc64")
+                                          ((? (cut string-prefix? "riscv64" <>))
+                                           "riscv64")
+                                          (_ "unsupported"))))
+                                   ''()))
+                     (flags (cons (string-append "--prefix=" #$output)
+                                  (append xflags configure-flags))))
+                (format #t "build directory: ~s~%" (getcwd))
+                (format #t "configure flags: ~s~%" flags)
+                ;; Node's configure script expects the CC environment variable to
+                ;; be set.
+                (setenv "CC_host" "gcc")
+                (setenv "CXX_host" "g++")
+                (setenv "CC" #$(cc-for-target))
+                (setenv "CXX" #$(cxx-for-target))
+                (setenv "PKG_CONFIG" #$(pkg-config-for-target))
+                (apply invoke "python3" "configure" flags))))
+          (add-after 'patch-shebangs 'patch-nested-shebangs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Based on the implementation of patch-shebangs
+              ;; from (guix build gnu-build-system).
+              (let ((path (append-map (match-lambda
+                                        ((_ . dir)
+                                         (list (string-append dir "/bin")
+                                               (string-append dir "/sbin")
+                                               (string-append dir "/libexec"))))
+                                      (append outputs inputs))))
+                (for-each
+                 (lambda (file)
+                   (patch-shebang file path))
+                 (find-files (search-input-directory outputs "lib/node_modules")
+                             (lambda (file stat)
+                               (executable-file? file))
+                             #:stat lstat)))))
+          (add-after 'patch-nested-shebangs 'do-not-capture-python
+            (lambda _
+              ;; patch-shebangs embeds the Python store path into node-gyp's
+              ;; Python scripts, pulling Python into node's closure.  Revert
+              ;; to /usr/bin/env python3 so downstream gyp builds supply
+              ;; their own Python.
+              (let ((node-gyp (string-append #$output
+                                             "/lib/node_modules/npm"
+                                             "/node_modules/node-gyp")))
+                (for-each
+                 (lambda (f)
+                   (substitute* f
+                     (("^#!.*/bin/python3") "#!/usr/bin/env python3")))
+                 (find-files node-gyp "\\.py$")))))
+          ;; npm installs dependencies by copying their files over a tar
+          ;; stream.  A file with more than one hardlink is marked as a
+          ;; "Link".  pacote/lib/fetcher.js calls node-tar's extractor with a
+          ;; filter that ignores any "Link" entries.  This means that
+          ;; dependending on the number of hardlinks on files in a node-*
+          ;; package *some* of its files may not be installed when generating
+          ;; another package's "node_modules" directory.  The build output
+          ;; would differ depending on irrelevant file system state.
+          ;;
+          ;; To avoid this, we patch node-tar to treat files with hardlinks
+          ;; the same as any other file, so that node-tar has no choice but
+          ;; to extract all of them --- independent of pacote's filter.
+          ;;
+          ;; Why not patch pacote's filter instead?  This has led to subtle
+          ;; differences in where the files are installed, so it's easier to
+          ;; just ensure that files with hardlinks are always treated as
+          ;; regular files.
+          ;;
+          ;; Discussion:
+          ;;   https://lists.gnu.org/archive/html/guix-devel/2023-07/msg00040.html
+          ;; Upstream bug report:
+          ;;   https://github.com/npm/pacote/issues/285
+          (add-after 'install 'ignore-number-of-hardlinks
+            (lambda _
+              (let ((dir (string-append #$output
+                                        "/lib/node_modules/npm/node_modules"
+                                        "/tar/dist")))
+                (substitute*
+                    (list (string-append dir "/esm/write-entry.js")
+                          (string-append dir "/commonjs/write-entry.js"))
+                  (("this.stat.nlink > 1") "false")))))
+          (add-after 'install 'fix-node-gyp-reference
+            ;; Note: programs like node-gyp only receive these values if
+            ;; they are started via `npm` or `npx`.
+            ;; See: https://github.com/nodejs/node-gyp#npm-configuration
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (command)
+                 (wrap-program (search-input-file outputs command)
+                   `("npm_package_config_node_gyp_nodedir" = (,#$output))))
+               '("bin/npm"
+                 "bin/npx")))))))
     (native-inputs
-     (list ;; Runtime dependencies for binaries used as a bootstrap.
+     (list
+      ;; Runtime dependencies for binaries used as a bootstrap.
       brotli
       c-ares-for-node-lts
       hdrhistogram-c
@@ -649,15 +630,11 @@ parser definition into a C output.")
       procps
       python
       util-linux))
-    (native-search-paths
-     (list (search-path-specification
-             (variable "NODE_PATH")
-             (files '("lib/node_modules")))))
     (inputs
      (list bash-minimal
            brotli
-           coreutils-minimal
            c-ares-for-node-lts
+           coreutils-minimal
            hdrhistogram-c
            icu4c-78
            libuv-for-node-lts
@@ -669,6 +646,10 @@ parser definition into a C output.")
            uvwasi-for-node-lts
            zlib
            `(,zstd "lib")))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "NODE_PATH")
+             (files '("lib/node_modules")))))
     (synopsis "Evented I/O for V8 JavaScript")
     (description
      "Node.js is a platform built on Chrome's JavaScript runtime
@@ -679,8 +660,8 @@ devices.")
     (supported-systems (fold delete %supported-systems '("powerpc-linux")))
     (home-page "https://nodejs.org/")
     (license license:expat)
-    (properties `((max-silent-time . 7200)   ;2h, needed on ARM
-                  (timeout . 21600)          ;6h
+    (properties `((max-silent-time . 7200) ;2h, needed on ARM
+                  (timeout . 21600)        ;6h
                   (cpe-name . "node.js")
                   (release-monitoring-url
                    . ,(format #f "https://nodejs.org/dist/latest-v~a.x/"
