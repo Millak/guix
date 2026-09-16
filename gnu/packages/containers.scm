@@ -1164,6 +1164,135 @@ filesystem layers, container images, and containers.")
 ;;; Executables:
 ;;;
 
+(define-public buildah
+  (package
+    (name "buildah")
+    (version "1.44.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containers/buildah")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0ivy7i0pqzhpsnd38l9favi32vgm0xcsn5bg4cxxqg6yzgw0fshh"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
+      #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
+      #:test-target "test-unit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; When running go, things fail because HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")))
+          ;; Add -trimpath to build flags to avoid keeping references to go
+          ;; packages.
+          (add-after 'set-env 'patch-buildflags
+            (lambda _
+              (substitute* "Makefile"
+                (("BUILDFLAGS :=") "BUILDFLAGS := -trimpath "))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test-unit")
+                (invoke "make" "test-conformance")
+                (invoke "make" "test-integration"))))
+          (add-after 'install 'symlink-helpers
+            (lambda _
+              (mkdir-p (string-append #$output "/_guix"))
+              (for-each
+               (lambda (what)
+                 (symlink (string-append (car what) "/bin/" (cdr what))
+                          (string-append #$output "/_guix/" (cdr what))))
+               ;; Only tools that cannot be discovered via $PATH are
+               ;; symlinked.  Rest is handled in the 'wrap-buildah phase.
+               `((#$aardvark-dns     . "aardvark-dns")
+                 (#$netavark         . "netavark")))))
+          (add-after 'install 'wrap-buildah
+            (lambda _
+              (wrap-program (string-append #$output "/bin/buildah")
+                `("CONTAINERS_HELPER_BINARY_DIR" =
+                  (,(string-append #$output "/_guix")))
+                `("PATH" suffix
+                  (,(string-append #$crun           "/bin")
+                   ,(string-append #$gcc            "/bin") ; cpp
+                   ,(string-append #$passt          "/bin")
+                   "/run/privileged/bin")))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (invoke "make" "install.completions"
+                      (string-append "PREFIX=" #$output)))))))
+    (inputs (list bash-minimal
+                  btrfs-progs
+                  eudev
+                  glib
+                  gpgme
+                  libassuan
+                  libseccomp
+                  lvm2))
+    (native-inputs
+     (list bats
+           go
+           go-md2man
+           pkg-config))
+    (synopsis "Build @acronym{OCI, Open Container Initiative} images")
+    (description
+     "Buildah is a command-line tool to build @acronym{OCI, Open Container
+Initiative} container images.  More generally, it can be used to:
+
+@itemize
+@item
+create a working container, either from scratch or using an image as a
+starting point;
+@item
+create an image, either from a working container or via the instructions
+in a @file{Dockerfile};
+@item
+mount a working container's root filesystem for manipulation;
+@item
+use the updated contents of a container's root filesystem as a filesystem
+layer to create a new image.
+@end itemize")
+    (home-page "https://buildah.io")
+    (license license:asl2.0)))
+
+(define-public catatonit
+  (package
+    (name "catatonit")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openSUSE/catatonit/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14vh0xpg6lzmh7r52vi9w1qfc14r7cfhfrbca7q5fg62d3hx7kxi"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool))
+    (home-page "https://github.com/openSUSE/catatonit")
+    (synopsis "Container init")
+    (description
+     "Catatonit is a simple container init tool developed as a rewrite of
+@url{https://github.com/cyphar/initrs, initrs} in C due to the need for static
+compilation of Rust binaries with @code{musl}.  Inspired by other container
+inits like @url{https://github.com/krallin/tini, tini} and
+@url{https://github.com/Yelp/dumb-init, dumb-init}, catatonit focuses on
+correct signal handling, utilizing @code{signalfd(2)} for improved stability.
+Its main purpose is to support the key usage by @code{docker-init}:
+@code{/dev/init} – <your program>, with minimal additional features planned.")
+    (license license:gpl2+)))
+
 (define-public checkpointctl
   (package/inherit go-github-com-checkpoint-restore-checkpointctl
     (name "checkpointctl")
@@ -1184,6 +1313,58 @@ filesystem layers, container images, and containers.")
     (description
      "This package provides a tool to read and manipulate checkpoint archives
 as created by Podman, CRI-O and containerd.")))
+
+(define-public cni-plugins
+  (package
+    (name "cni-plugins")
+    (version "1.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containernetworking/plugins")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12z6w2jk6xgfiwdxys7skpkxldz1cgaa7scgfcr90lsghay59s6w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; XXX: Tests require root access, see test_linux.sh.
+      #:tests? #f
+      #:import-path "github.com/containernetworking/plugins/plugins/..."
+      #:unpack-path "github.com/containernetworking/plugins"))
+    (native-inputs
+     (list go-github-com-alexflint-go-filemutex
+           go-github-com-buger-jsonparser
+           go-github-com-containernetworking-cni
+           go-github-com-coreos-go-iptables
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-godbus-dbus-v5
+           go-github-com-insomniacslk-dhcp
+           go-github-com-mattn-go-shellwords
+           ;; go-github-com-microsoft-hcsshim
+           go-github-com-networkplumbing-go-nft
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
+           go-github-com-opencontainers-selinux
+           go-github-com-pkg-errors
+           go-github-com-safchain-ethtool
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-sys
+           go-sigs-k8s-io-knftables
+           util-linux))
+    (home-page "https://github.com/containernetworking/plugins")
+    (synopsis "Container Network Interface (CNI) network plugins")
+    (description
+     "This package provides Container Network Interface (CNI) plugins to
+configure network interfaces in Linux containers.")
+    (license license:asl2.0)))
 
 (define-public crun
   (package
@@ -1481,6 +1662,61 @@ Guix machinery.")
     (home-page "https://codeberg.org/fishinthecalculator/guix-compose")
     (license license:gpl3+)))
 
+(define-public gvisor-tap-vsock
+  (package/inherit go-github-com-containers-gvisor-tap-vsock
+    (name "gvisor-tap-vsock")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            ;; Build binary outputs are taken from project's Makefile.
+            (replace 'build
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "github.com/containers/gvisor-tap-vsock/cmd/gvproxy"
+                       "github.com/containers/gvisor-tap-vsock/cmd/qemu-wrapper"
+                       "github.com/containers/gvisor-tap-vsock/cmd/vm"))))
+            (add-after 'install 'fix-bin-name
+              (lambda _
+                (rename-file (string-append #$output "/bin/vm")
+                             (string-append #$output "/bin/gvforwarder"))))))))
+    (native-inputs
+     (package-propagated-inputs go-github-com-containers-gvisor-tap-vsock))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public libslirp
+  (package
+    (name "libslirp")
+    (version "4.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/slirp/libslirp")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "19f1p37b4ybqbgk817g3sqhdvr1gl3d1063hj7zg1jqa301s2afw"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (propagated-inputs
+     ;; In Requires of slirp.pc.
+     (list glib))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://gitlab.freedesktop.org/slirp/libslirp")
+    (synopsis "User-mode networking library")
+    (description
+     "libslirp is a user-mode networking library used by virtual machines,
+containers or various tools.")
+    (license license:bsd-3)))
+
 (define-public runc
   ;; TODO: Inheerit form go-github-com-opencontainers-runc when it's moved
   ;; here.
@@ -1558,32 +1794,6 @@ packaged according to the
 Container Initiative (OCI) format} and is a compliant implementation of the
 Open Container Initiative specification.")
     (license license:asl2.0)))
-
-(define-public libslirp
-  (package
-    (name "libslirp")
-    (version "4.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.freedesktop.org/slirp/libslirp")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "19f1p37b4ybqbgk817g3sqhdvr1gl3d1063hj7zg1jqa301s2afw"))
-       (file-name (git-file-name name version))))
-    (build-system meson-build-system)
-    (propagated-inputs
-     ;; In Requires of slirp.pc.
-     (list glib))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://gitlab.freedesktop.org/slirp/libslirp")
-    (synopsis "User-mode networking library")
-    (description
-     "libslirp is a user-mode networking library used by virtual machines,
-containers or various tools.")
-    (license license:bsd-3)))
 
 (define-public skopeo
   (package
@@ -1745,116 +1955,6 @@ containers by creating a tap interface available to processes in the
 namespace, and mapping network traffic outside the namespace using native
 Layer-4 sockets.")
     (license (list license:gpl2+ license:bsd-3))))
-
-(define-public cni-plugins
-  (package
-    (name "cni-plugins")
-    (version "1.9.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/containernetworking/plugins")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12z6w2jk6xgfiwdxys7skpkxldz1cgaa7scgfcr90lsghay59s6w"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "vendor")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      ;; XXX: Tests require root access, see test_linux.sh.
-      #:tests? #f
-      #:import-path "github.com/containernetworking/plugins/plugins/..."
-      #:unpack-path "github.com/containernetworking/plugins"))
-    (native-inputs
-     (list go-github-com-alexflint-go-filemutex
-           go-github-com-buger-jsonparser
-           go-github-com-containernetworking-cni
-           go-github-com-coreos-go-iptables
-           go-github-com-coreos-go-systemd-v22
-           go-github-com-godbus-dbus-v5
-           go-github-com-insomniacslk-dhcp
-           go-github-com-mattn-go-shellwords
-           ;; go-github-com-microsoft-hcsshim
-           go-github-com-networkplumbing-go-nft
-           go-github-com-onsi-ginkgo-v2
-           go-github-com-onsi-gomega
-           go-github-com-opencontainers-selinux
-           go-github-com-pkg-errors
-           go-github-com-safchain-ethtool
-           go-github-com-vishvananda-netlink
-           go-github-com-vishvananda-netns
-           go-golang-org-x-sys
-           go-sigs-k8s-io-knftables
-           util-linux))
-    (home-page "https://github.com/containernetworking/plugins")
-    (synopsis "Container Network Interface (CNI) network plugins")
-    (description
-     "This package provides Container Network Interface (CNI) plugins to
-configure network interfaces in Linux containers.")
-    (license license:asl2.0)))
-
-(define-public gvisor-tap-vsock
-  (package/inherit go-github-com-containers-gvisor-tap-vsock
-    (name "gvisor-tap-vsock")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)
-       ((#:tests? _ #t) #f)
-       ((#:phases _ '%standard-phases)
-        #~(modify-phases %standard-phases
-            ;; Build binary outputs are taken from project's Makefile.
-            (replace 'build
-              (lambda arguments
-                (for-each
-                 (lambda (cmd)
-                   (apply (assoc-ref %standard-phases 'build)
-                          `(,@arguments #:import-path ,cmd)))
-                 (list "github.com/containers/gvisor-tap-vsock/cmd/gvproxy"
-                       "github.com/containers/gvisor-tap-vsock/cmd/qemu-wrapper"
-                       "github.com/containers/gvisor-tap-vsock/cmd/vm"))))
-            (add-after 'install 'fix-bin-name
-              (lambda _
-                (rename-file (string-append #$output "/bin/vm")
-                             (string-append #$output "/bin/gvforwarder"))))))))
-    (native-inputs
-     (package-propagated-inputs go-github-com-containers-gvisor-tap-vsock))
-    (propagated-inputs '())
-    (inputs '())))
-
-(define-public catatonit
-  (package
-    (name "catatonit")
-    (version "0.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/openSUSE/catatonit/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14vh0xpg6lzmh7r52vi9w1qfc14r7cfhfrbca7q5fg62d3hx7kxi"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool))
-    (home-page "https://github.com/openSUSE/catatonit")
-    (synopsis "Container init")
-    (description
-     "Catatonit is a simple container init tool developed as a rewrite of
-@url{https://github.com/cyphar/initrs, initrs} in C due to the need for static
-compilation of Rust binaries with @code{musl}.  Inspired by other container
-inits like @url{https://github.com/krallin/tini, tini} and
-@url{https://github.com/Yelp/dumb-init, dumb-init}, catatonit focuses on
-correct signal handling, utilizing @code{signalfd(2)} for improved stability.
-Its main purpose is to support the key usage by @code{docker-init}:
-@code{/dev/init} – <your program>, with minimal additional features planned.")
-    (license license:gpl2+)))
 
 (define-public podman
   (package
@@ -2041,106 +2141,6 @@ being rootless and not requiring any daemon to be running.")
     (description
      "@code{containers-storage} is a command line tool for manipulating local
 layer/image/container stores.")))
-
-(define-public buildah
-  (package
-    (name "buildah")
-    (version "1.44.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/containers/buildah")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0ivy7i0pqzhpsnd38l9favi32vgm0xcsn5bg4cxxqg6yzgw0fshh"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "PREFIX=" #$output)
-              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
-      #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
-      #:test-target "test-unit"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'unpack 'set-env
-            (lambda _
-              ;; When running go, things fail because HOME=/homeless-shelter.
-              (setenv "HOME" "/tmp")))
-          ;; Add -trimpath to build flags to avoid keeping references to go
-          ;; packages.
-          (add-after 'set-env 'patch-buildflags
-            (lambda _
-              (substitute* "Makefile"
-                (("BUILDFLAGS :=") "BUILDFLAGS := -trimpath "))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "make" "test-unit")
-                (invoke "make" "test-conformance")
-                (invoke "make" "test-integration"))))
-          (add-after 'install 'symlink-helpers
-            (lambda _
-              (mkdir-p (string-append #$output "/_guix"))
-              (for-each
-               (lambda (what)
-                 (symlink (string-append (car what) "/bin/" (cdr what))
-                          (string-append #$output "/_guix/" (cdr what))))
-               ;; Only tools that cannot be discovered via $PATH are
-               ;; symlinked.  Rest is handled in the 'wrap-buildah phase.
-               `((#$aardvark-dns     . "aardvark-dns")
-                 (#$netavark         . "netavark")))))
-          (add-after 'install 'wrap-buildah
-            (lambda _
-              (wrap-program (string-append #$output "/bin/buildah")
-                `("CONTAINERS_HELPER_BINARY_DIR" =
-                  (,(string-append #$output "/_guix")))
-                `("PATH" suffix
-                  (,(string-append #$crun           "/bin")
-                   ,(string-append #$gcc            "/bin") ; cpp
-                   ,(string-append #$passt          "/bin")
-                   "/run/privileged/bin")))))
-          (add-after 'install 'install-completions
-            (lambda _
-              (invoke "make" "install.completions"
-                      (string-append "PREFIX=" #$output)))))))
-    (inputs (list bash-minimal
-                  btrfs-progs
-                  eudev
-                  glib
-                  gpgme
-                  libassuan
-                  libseccomp
-                  lvm2))
-    (native-inputs
-     (list bats
-           go
-           go-md2man
-           pkg-config))
-    (synopsis "Build @acronym{OCI, Open Container Initiative} images")
-    (description
-     "Buildah is a command-line tool to build @acronym{OCI, Open Container
-Initiative} container images.  More generally, it can be used to:
-
-@itemize
-@item
-create a working container, either from scratch or using an image as a
-starting point;
-@item
-create an image, either from a working container or via the instructions
-in a @file{Dockerfile};
-@item
-mount a working container's root filesystem for manipulation;
-@item
-use the updated contents of a container's root filesystem as a filesystem
-layer to create a new image.
-@end itemize")
-    (home-page "https://buildah.io")
-    (license license:asl2.0)))
 
 (define-public umoci
   (package
