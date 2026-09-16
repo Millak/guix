@@ -1117,6 +1117,20 @@ coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
     (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
+(define-public mbedtls-4.0
+  (hidden-package
+   (package
+     (inherit mbedtls)
+     (version "4.0.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://github.com/Mbed-TLS/mbedtls/releases"
+                            "/download/mbedtls-" version
+                            "/mbedtls-" version ".tar.bz2"))
+        (sha256
+         (base32 "09r8pzbflhvd3nhz74v0fzvjxkmpxkp6fj0f8ppxshd5ngvlffig")))))))
+
 (define-public mbedtls-3
   (package
     (inherit mbedtls)
