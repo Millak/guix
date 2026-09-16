@@ -2180,7 +2180,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.96))
+  (let ((base-rust rust-1.98))
     (package
       (inherit base-rust)
       (properties (append
@@ -2207,11 +2207,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                    (substitute* "lexer/ok/single_line_comments.rast"
                      (("/usr/bin/env bash")
                       (search-input-file inputs "bin/bash"))))))
-             (add-after 'unpack 'disable-tests-requiring-git
-               (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/publish_lockfile.rs"
-                   ,@(make-ignore-test-list
-                      '("fn note_resolve_changes")))))
              (add-after 'unpack 'disable-tests-using-cargo-publish
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/install.rs"
@@ -2242,11 +2237,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                              ,@(make-ignore-test-list
                                 '("fn test_missing_tests")))))))
                    `())
-             (add-after 'unpack 'skip-unupdated-clippy-tests
-               (lambda _
-                 (with-directory-excursion "src/tools/clippy/tests/ui"
-                   (delete-file "cognitive_complexity.rs")
-                   (delete-file "cognitive_complexity.stderr"))))
              (add-after 'unpack 'disable-tests-requiring-network-access
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/git.rs"
@@ -2254,10 +2244,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                       '("fn dep_with_scp_like_submodule_url")))
                  (substitute* "src/tools/cargo/tests/testsuite/git_auth.rs"
                    ,@(make-ignore-test-list
-                      '("fn net_err_suggests_fetch_with_cli")))
-                 (substitute* "src/tools/cargo/tests/testsuite/package.rs"
-                   ,@(make-ignore-test-list
-                      '("fn publish_to_crates_io_warns")))))
+                      '("fn net_err_suggests_fetch_with_cli")))))
              (add-after 'unpack 'patch-process-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
@@ -2277,10 +2264,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
-                 (substitute* "src/tools/cargo/tests/testsuite/freshness.rs"
-                   ,@(make-ignore-test-list
-                      '("fn linking_interrupted")))
-                 ;; Likewise for the ctrl_c_kills_everyone test.
                  (substitute* "src/tools/cargo/tests/testsuite/death.rs"
                    ,@(make-ignore-test-list
                       '("fn ctrl_c_kills_everyone")))))
