@@ -1018,41 +1018,37 @@ has been designed to be fast, light and unintrusive.")
                 "1bwywljm4lzgwl5mig0h4621z7lx3xz0lzhwq9ys71lxdh8ka6qp"))))))
 
 (define-public ftest
-  ;; There aren't any releases and it looks more like a small side project.
-  ;; It is included for completeness to run tests for package utfcpp.
-  (let ((commit "c4ad4af0946b73ce1a40cbc72205d15d196c7e06")
-        (revision "0"))
-    (package
-      (name "ftest")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/nemtrif/ftest")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1jcd76zjhx5f2nsi80hj7gmywgpz1f7vcw8lv5yf7gx0l99dn86x"))))
-      ;; No CMakeLists.txt file provided, only one to run tests
-      (build-system copy-build-system)
-      (arguments
-       (list #:install-plan
-             #~'(("ftest.h" "include/ftest/"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-before 'install 'check
-                   (lambda _
-                     (with-directory-excursion "tests"
-                       (invoke "cmake" ".")
-                       (invoke "make")
-                       (invoke "ctest")))))))
-      (native-inputs (list cmake-minimal))
-      (home-page "https://github.com/nemtrif/ftest")
-      (synopsis "C++ testing framework")
-      (description
-       "This package provides a simple and limited unit-test framework for C++.")
-      (license license:boost1.0))))
+  (package
+    (name "ftest")
+    (version "0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nemtrif/ftest")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ryshbwikx95qv6d6spk5bbb1ff2lhi3i3fkmx7f974qrdch55i1"))))
+    ;; No CMakeLists.txt file provided, only one to run tests.
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("ftest.h" "include/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'check
+                 (lambda _
+                   (with-directory-excursion "tests"
+                     (invoke "cmake" ".")
+                     (invoke "make")
+                     (invoke "ctest")))))))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/nemtrif/ftest")
+    (synopsis "C++ testing framework")
+    (description
+     "This package provides a simple and limited unit-test framework for C++.")
+    (license license:boost1.0)))
 
 (define-public kyua
   (package
