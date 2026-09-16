@@ -18339,8 +18339,8 @@ navigate code in a tree-like fashion.")
   ;; receiving many improvements. See:
   ;; - <https://github.com/abo-abo/lispy/issues/513>
   ;; - <https://github.com/abo-abo/lispy/issues/684>
-  (let ((commit "df1b7e614fb0f73646755343e8892ddda310f427")
-        (revision "3"))
+  (let ((commit "2b211508f18dee10d10f9291e6572634b001e6f8")
+        (revision "4"))
     (package
       (name "emacs-lispy")
       (version (git-version "0.27.0" revision commit))
@@ -18352,9 +18352,9 @@ navigate code in a tree-like fashion.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "02pmnn9cqslahnvllqzawp2j5icmb3wgkrk4qrfxjds68jg7pjj4"))
+          (base32 "14q4c0pbsb4n08vdx3zmgk08kr4cjqsyd7kpzpgjmc1ppn71mhqp"))
          (patches
-          (search-patches "emacs-lispy-fix-thread-last-test.patch"))))
+          (search-patches "emacs-lispy-revert-js.patch"))))
       (build-system emacs-build-system)
       (arguments
        (list

@@ -1265,7 +1265,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
-  %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
+  %D%/packages/patches/emacs-lispy-revert-js.patch   \
   %D%/packages/patches/emacs-native-comp-driver-options.patch   \
   %D%/packages/patches/emacs-native-comp-fix-filenames.patch   \
   %D%/packages/patches/emacs-native-comp-pin-packages.patch   \
