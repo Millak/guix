@@ -20,7 +20,7 @@
 ;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -850,25 +850,25 @@ spreadsheets and outputs it in comma-separated-value format, and
 (define-public utfcpp
   (package
     (name "utfcpp")
-    (version "3.2.5")
+    (version "4.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/nemtrif/utfcpp")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              ;; Unbundle ftest
-              (snippet
-               '(begin
-                  (delete-file-recursively "extern")
-                  (substitute* (find-files "tests" "\\.cpp")
-                    (("\"../extern/ftest/ftest.h\"")
-                     "<ftest/ftest.h>"))))
+              ;; Unbundle ftest.
+              (snippet '(delete-file "tests/ftest.h"))
               (sha256
                (base32
-                "195n47dblx765xas54vkgyin3xsvfnvcdc614njzqmcxybfpvix2"))))
+                "0d82ayrnrcj8b6x422pnn9gjliwyjwmkc56lz6m1xzjrallygkmx"))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list #$(string-append "-DUTF8CPP_ENABLE_TESTS="
+                                    (if (%current-target-system)
+                                        "OFF"
+                                        "ON")))))
     (native-inputs (list ftest))
     (home-page "https://github.com/nemtrif/utfcpp")
     (synopsis "Portable C++ library for handling UTF-8")
