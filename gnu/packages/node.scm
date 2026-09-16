@@ -35,18 +35,24 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages dns)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages)
@@ -320,38 +326,40 @@ parser definition into a C output.")
               (sha256
                (base32
                 "1z4lxmf5zh0mjzr63kqj2ybf1d79g0gdc4xs3ps88z7xnvplvxd6"))
-              (modules '((guix build utils)))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26)))
               (snippet
-               '(begin
-                  ;; openssl.cnf is required for build.
-                  (for-each delete-file-recursively
-                            (find-files
-                             "deps/openssl"
-                             (lambda (file stat)
-                               (not (string-contains file "nodejs-openssl.cnf")))))
-                  ;; [temp.names] requires a 'template' when calling a template
-                  ;; member via a dependent expression.  This header is compiled
-                  ;; for 32-bit targets (V8_TARGET_ARCH_32_BIT), so
-                  ;; non-conformance goes unnoticed elsewhere.  Coincidentally
-                  ;; fixed in upstream v8 at:
-                  ;; https://chromium-review.googlesource.com/c/v8/v8/+/6830052
-                  (substitute*
-                      "deps/v8/src/compiler/turboshaft/int64-lowering-reducer.h"
-                    (("__ Tuple<Word32, Word32>")
-                     "__ template Tuple<Word32, Word32>"))
-                  ;; Remove bundled software, where possible
-                  (for-each delete-file-recursively
-                            '("deps/brotli"
-                              "deps/cares"
-                              "deps/histogram"
-                              "deps/icu-small"
-                              "deps/nghttp2"
-                              "deps/ngtcp2"
-                              "deps/llhttp"
-                              "deps/uv"
-                              "deps/uvwasi"
-                              "deps/zlib"
-                              "deps/zstd"))))))
+               #~(begin
+                   ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+                   (define (delete-all-but directory . preserve)
+                     (with-directory-excursion directory
+                       (let* ((pred (negate (cut member <>
+                                                 (cons* "." ".." preserve))))
+                              (items (scandir "." pred)))
+                         (for-each (cut delete-file-recursively <>) items))))
+
+                   ;; the nodejs-openssl.cnf file is required by the build
+                   ;; system.
+                   (delete-all-but "deps/openssl" "nodejs-openssl.cnf")
+                   (delete-all-but "deps"
+                                   "acorn"
+                                   "amaro"
+                                   "corepack" ;used by test suite
+                                   "inspector_protocol"
+                                   "minimatch"
+                                   "ncrypto"
+                                   "npm" ;used by test suite
+                                   "openssl"
+                                   "postject"
+                                   "undici"
+                                   "v8")
+                   ;; TODO: Remove when the node-lts version becomes >= 25.
+                   ;; <https://chromium-review.googlesource.com/c/v8/v8/+/6830052>
+                   (substitute*
+                       "deps/v8/src/compiler/turboshaft/int64-lowering-reducer.h"
+                     (("__ Tuple<Word32, Word32>")
+                      "__ template Tuple<Word32, Word32>"))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -359,20 +367,27 @@ parser definition into a C output.")
       ;; Search for 'shared_optgroup.add_argument' in
       ;; configure.py to find the relevant options.
       #~(list "--shared"
+              "--shared-ada"
               "--shared-brotli"
               "--shared-cares"
+              "--shared-gtest"
               "--shared-hdr-histogram"
               "--shared-http-parser"
               "--shared-http-parser-libname=llhttp"
               "--shared-libuv"
+              "--shared-merve"
+              "--shared-nbytes"
               "--shared-nghttp2"
               "--shared-nghttp3"
               "--shared-ngtcp2"
               "--shared-openssl"
+              "--shared-simdjson"
+              "--shared-simdutf"
+              "--shared-sqlite"
               "--shared-uvwasi"
               "--shared-zlib"
               "--shared-zstd"
-              ;; Needed for correct snapshot checksums
+              ;; Needed for correct snapshot checksums.
               "--v8-enable-snapshot-compression"
               "--with-intl=system-icu")
       #:make-flags #~(list "V=1")       ;to see build commands
@@ -477,14 +492,21 @@ parser definition into a C output.")
                        (host-inputs (map safe-lookup
                                          '("brotli"
                                            "c-ares"
+                                           "cpp-ada-url-parser"
+                                           "googletest"
                                            "hdrhistogram-c"
                                            "icu4c"
                                            "libuv"
                                            "llhttpish"
+                                           "merve"
+                                           "nbytes"
                                            "nghttp2"
                                            "nghttp3"
                                            "ngtcp2"
                                            "openssl"
+                                           "simdjson"
+                                           "simdutf"
+                                           "sqlite"
                                            "uvwasi"
                                            "zlib"
                                            "zstd")))
@@ -614,14 +636,21 @@ parser definition into a C output.")
       ;; Runtime dependencies for binaries used as a bootstrap.
       brotli
       c-ares-for-node-lts
+      cpp-ada-url-parser
+      googletest
       hdrhistogram-c
       icu4c-78
       libuv-for-node-lts
       llhttpish
+      merve
+      nbytes
       `(,nghttp2-for-node-lts "lib")
       nghttp3
       ngtcp2
       openssl
+      simdjson
+      simdutf
+      sqlite-next
       uvwasi-for-node-lts
       zlib
       `(,zstd "lib")
@@ -636,14 +665,21 @@ parser definition into a C output.")
            brotli
            c-ares-for-node-lts
            coreutils-minimal
+           cpp-ada-url-parser
+           googletest
            hdrhistogram-c
            icu4c-78
            libuv-for-node-lts
            llhttpish
+           merve
+           nbytes
            `(,nghttp2-for-node-lts "lib")
            nghttp3
            ngtcp2
            openssl
+           simdjson
+           simdutf
+           sqlite-next
            uvwasi-for-node-lts
            zlib
            `(,zstd "lib")))
