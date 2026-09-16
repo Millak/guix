@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024, 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,12 +57,16 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:autoload (guix http-client) (http-fetch/cached)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
+  #:autoload (json parser) (json->scm)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26))
+  #:use-module (srfi srfi-26)
+
+  #:export (latest-node-lts-version))
 
 ;; Stripped-down build phases for JS packages.  Uses esbuild + NODE_PATH instead
 ;; of npm, so editing node-build-system does not rebuild node-lts.  Set the
@@ -285,6 +290,24 @@
     (description "This package offers an API for compiling an incremental
 parser definition into a C output.")
     (license license:expat)))
+
+(define (latest-node-lts-version)
+  "Return the last Node.js LTS release version string, or #f."
+  (define release-index-url "https://nodejs.org/dist/index.json")
+  (define releases (vector->list
+                    (call-with-port (http-fetch/cached release-index-url)
+                      json->scm)))
+  (let ((version (and=> (find (lambda (release)
+                                (assoc-ref release "lts"))
+                              releases)
+                        (cut assoc-ref <> "version"))))
+    (if (string-prefix? "v" version)
+        (string-drop version 1)
+        version)))
+
+;;; To find out if %current-node-lts-major-version needs to be updated, you
+;;; can use: (version-major (latest-node-lts-version))
+(define %current-node-lts-major-version "24")
 
 (define-public node-lts
   (package
@@ -656,9 +679,12 @@ devices.")
     (supported-systems (fold delete %supported-systems '("powerpc-linux")))
     (home-page "https://nodejs.org/")
     (license license:expat)
-    (properties '((max-silent-time . 7200)   ;2h, needed on ARM
+    (properties `((max-silent-time . 7200)   ;2h, needed on ARM
                   (timeout . 21600)          ;6h
-                  (cpe-name . "node.js")))))
+                  (cpe-name . "node.js")
+                  (release-monitoring-url
+                   . ,(format #f "https://nodejs.org/dist/latest-v~a.x/"
+                              %current-node-lts-major-version))))))
 
 (define-public node node-lts)
 
