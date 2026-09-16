@@ -1,0 +1,35 @@
+Upstream-status: <https://github.com/lief-project/LIEF/pull/1380>
+
+From 029bba8595a6747805e11fde8ed1443eee2349f6 Mon Sep 17 00:00:00 2001
+From: Daeho Ro <40587651+daeho-ro@users.noreply.github.com>
+Date: Wed, 16 Sep 2026 22:12:02 +0900
+Subject: [PATCH] core: support utfcpp 4.2
+
+---
+ src/utils.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/utils.cpp b/src/utils.cpp
+index c5246b6fc6..2df012ff6f 100644
+--- a/src/utils.cpp
++++ b/src/utils.cpp
+@@ -38,8 +38,8 @@ template<typename octet_iterator>
+ result<uint32_t> next(octet_iterator& it, octet_iterator end) {
+   using namespace utf8;
+   using namespace utf8::internal;
+-  utfchar32_t cp = 0;
+-  internal::utf_error err_code = validate_next(it, end, cp);
++  octet_iterator start = it;
++  internal::utf_error err_code = validate_next(it, end);
+   switch (err_code) {
+     case UTF8_OK: break;
+     case NOT_ENOUGH_ROOM: return make_error_code(lief_errors::data_too_large);
+@@ -48,7 +48,7 @@ result<uint32_t> next(octet_iterator& it, octet_iterator end) {
+     case OVERLONG_SEQUENCE:
+     case INVALID_CODE_POINT: return make_error_code(lief_errors::read_error);
+   }
+-  return cp;
++  return utf8::unchecked::next(start);
+ }
+ 
+ std::string u16tou8(const char16_t* buffer, size_t size, bool remove_null_char) {

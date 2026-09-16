@@ -15,7 +15,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -39,6 +39,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
@@ -47,16 +48,20 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages textutils)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -323,6 +328,72 @@ static analysis of the ELF binaries at hand.")
         ((#:make-flags flags #~'())
          #~(append #$flags '("CFLAGS=-fPIC")))))
     (properties `((hidden? . #t) ,@(package-properties libelf)))))
+
+(define-public lief
+  (package
+    (name "lief")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lief-project/LIEF")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yhs1x8nli5lhwiq383nnfv8ajgbdidcjckdls1j0zrmyf9kbfa2"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third-party"))
+              (patches (search-patches "lief-utfcpp-4.2.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DLIEF_OPT_EXTERNAL_EXPECTED=ON"
+                   "-DLIEF_OPT_EXTERNAL_SPAN=ON"
+                   "-DLIEF_EXTERNAL_SPDLOG=ON"
+                   "-DLIEF_OPT_FROZEN_EXTERNAL=ON"
+                   "-DLIEF_OPT_MBEDTLS_EXTERNAL=ON"
+                   "-DLIEF_OPT_NLOHMANN_JSON_EXTERNAL=ON"
+                   "-DLIEF_OPT_UTFCPP_EXTERNAL=ON"
+                   "-DBUILD_SHARED_LIBS=ON")
+           ;; The test suite is disabled by default, and requires to
+           ;; download/extract a 350 MiB compressed archive of test data.
+           #:tests? #f))
+    (inputs
+     (list frozen
+           mbedtls-4.0     ;<https://github.com/lief-project/LIEF/issues/1381>
+           nlohmann-json
+           spdlog
+           utfcpp))    ;<https://github.com/lief-project/LIEF/issues/1382>
+    (propagated-inputs
+     ;; Included in the include/LIEF/third-party headers.
+     (list libexpected
+           tcbrindle-span))
+    (home-page "https://lief.re/")
+    (synopsis "Library to instrument executable formats")
+    (description "The @acronym{LIEF, Library to Instrument Executable Formats}
+library can parse, modify and abstract ELF, PE, MachO and other formats.  It
+provides an abstraction over common features like sections, symbols and entry
+points.  This package provides the C/C++ API.  The table below lists its main
+features in more details:
+@table @asis
+@item Parsing
+LIEF can parse ELF, PE, MachO, COFF, OAT, DEX, VDEX, ART and provides a
+user-friendly API to access their internals.
+
+@item Modify
+LIEF can be used to modify some parts of these formats (adding a section,
+changing a symbol's name, etc.)
+
+@item Abstract
+Three formats have common features like sections, symbols, entry point, etc.  LIEF
+factors them.
+
+@item API
+The LIEF API is available for C/C++ (this package), Python (@code{python-lief}),
+and other languages.
+@end table")
+    (license license:asl2.0)))
 
 (define-public patchelf
   (package

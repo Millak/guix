@@ -1766,6 +1766,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libvirt-respect-modules-path.patch	\
   %D%/packages/patches/libzmf-doxygen-1.14.patch		\
   %D%/packages/patches/libziparchive-add-includes.patch		\
+  %D%/packages/patches/lief-utfcpp-4.2.patch                    \
   %D%/packages/patches/linphone-desktop-cmake-belcard.patch	\
   %D%/packages/patches/linphone-desktop-cmake-find-modules.patch	\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
