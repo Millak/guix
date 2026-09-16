@@ -5230,7 +5230,7 @@ system to prevent more bugs.")
 (define-public cpp-ada-url-parser
   (package
     (name "cpp-ada-url-parser")
-    (version "2.9.2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5239,12 +5239,13 @@ system to prevent more bugs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xvvjlia627ajl966gdxzy2b1j0jiimx7zx8ypmffwx0k6x72qam"))))
+        (base32 "1hlhga3dz4hdaj0n8jdz6cnw3skg9c4wm9ar9chfdnwf88nyiy2f"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "-DCPM_LOCAL_PACKAGES_ONLY=ON")
+      #~(list "-DADA_TESTING=ON"
+              "-DCPM_LOCAL_PACKAGES_ONLY=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-deps
@@ -5273,7 +5274,7 @@ system to prevent more bugs.")
                  "zipfile.ZIP_DEFLATED, strict_timestamps=False")))))))
     (native-inputs (list cpm-cmake
                          cxxopts
-                         fmt-10
+                         fmt
                          googletest
                          python
                          simdjson))
