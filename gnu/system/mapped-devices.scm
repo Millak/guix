@@ -185,8 +185,10 @@ these lines:
 @example
  (operating-system
    ;; @dots{}
-   (initrd-modules (append (list~{ ~s~})
-                           %base-initrd-modules)))
+   (initrd-modules
+    (append
+     (list~{ ~s~})
+     (base-initrd-modules (operating-system-kernel this-operating-system)))))
 @end example
 
 If you think this diagnostic is inaccurate, use the @option{--skip-checks}

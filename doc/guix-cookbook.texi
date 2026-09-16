@@ -3321,8 +3321,10 @@ is below. Save the resulting file as @file{guix-config.scm}.
   (swap-devices (list "/dev/sdb"))
 
 
-  (initrd-modules (cons "virtio_scsi"    ; Needed to find the disk
-                        %base-initrd-modules))
+  (initrd-modules
+   (cons "virtio_scsi"                   ; Needed to find the disk
+         (base-initrd-modules
+          (operating-system-kernel this-operating-system))))
 
   (users (cons (user-account
                 (name "janedoe")
@@ -3553,7 +3555,10 @@ here is a sample:
 	       (terminal-outputs '(console))))
 
   ;; Add a kernel module for RAID-1 (aka. "mirror").
-  (initrd-modules (cons* "raid1"  %base-initrd-modules))
+  (initrd-modules
+   (cons* "raid1"
+          (base-initrd-modules
+           (operating-system-kernel this-operating-system))))
 
   (mapped-devices
    (list (mapped-device
