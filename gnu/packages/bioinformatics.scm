@@ -771,6 +771,40 @@ databases to perform alignment and is more robust.  Because it is
 alignment-free, it runs much faster and also easier to use.")
     (license license:gpl2+)))
 
+(define-public python-bam-dedup
+  (package
+    (name "python-bam-dedup")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bam_dedup" version))
+       (sha256
+        (base32 "1bf2pa0bbxg99ky244rqjzgiszzavc6adg1g5p39sb6ikb39alxj"))
+       ;; Delete generated C code.
+       (snippet
+        '(begin (delete-file "dedup/_fast.c")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "dedup" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "dedup"))))))
+    (native-inputs (list python-cython python-pytest python-setuptools))
+    (propagated-inputs (list python-pysam))
+    (home-page "https://github.com/caleblareau/bam-dedup")
+    (synopsis "Read deduplications on BAM files")
+    (description
+     "This package provides a fast, JVM-free toolkit for removing duplicate
+reads from BAM/CRAM.  It handles the two major kinds of duplication event in
+sequencing data, each a faithful, independent port of the standard reference
+tool, with the performance-critical inner loops accelerated in Cython.")
+    (license license:expat)))
+
 (define-public r-anglemania
   (let ((commit "f27399fb947adfa0de6134493e737658ca591af5")
         (revision "1"))
