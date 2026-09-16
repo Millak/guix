@@ -9575,6 +9575,45 @@ German and Dutch stemmers as sub-packages.")
     (propagated-inputs
      (list go-github-com-elliotchance-orderedmap-v2))))
 
+(define-public go-github-com-decred-dcrd-container-lru
+  (package
+    (name "go-github-com-decred-dcrd-container-lru")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/decred/dcrd")
+              (commit (go-version->git-ref version #:subdir "container/lru"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rnbbsm1lmwqpn208gwl3cjsmpdh6kg6l1qns4182xmsakijmvb6"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "container" "lru")
+            (delete-all-but "." "container")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/decred/dcrd/container/lru"
+      #:unpack-path "github.com/decred/dcrd"))
+    (home-page "https://github.com/decred/dcrd")
+    (synopsis "LRU data structures for Go")
+    (description
+     "Package lru provides generic type and concurrent safe @acronym{Least
+Recently Used, LRU} data structures with near O(1) perf and optional
+time-based expiration support.")
+    (license license:isc)))
+
 (define-public go-github-com-delthas-go-libnp
   (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
         (revision "1"))
