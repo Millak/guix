@@ -5279,10 +5279,12 @@ system to prevent more bugs.")
                          python
                          simdjson))
     (home-page "https://github.com/ada-url/ada")
-    (synopsis "URL parser")
-    (description
-     "Ada is a fast and spec-compliant URL parser written in C++.
-Specification for URL parser can be found from the WHATWG website.")
+    (synopsis "WHATWG-compliant URL parser")
+    (description "Ada (not to be confused with the programming language) is a
+fast and specification-compliant URL parser written in C++.  It conforms to
+the @url{https://url.spec.whatwg.org/#url-parsing, WHATWG specification} and fully
+supports the relevant @url{https://www.unicode.org/reports/tr46/#ToUnicode,
+Unicode Technical Standard}.")
     (license license:gpl3+)))
 
 (define-public tclap
