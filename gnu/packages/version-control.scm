@@ -1512,7 +1512,7 @@ write native speed custom Git applications in any language with bindings.")
   ;; This is a pinned version used as a dependency for 'rust-cargo-c'.
   ;; Update periodically.
   (package/inherit libgit2-1.9
-    (version "1.9.2")
+    (version "1.9.7")
     (source (origin
               (inherit (package-source libgit2-1.9))
               (method git-fetch)
@@ -1522,11 +1522,15 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1f3wnw0s5fx4lf68i400mj6l7qyw9hf6mr7i2xlqqmp9q23q89sc"))
-              (patches
-               (search-patches "libgit2-uninitialized-proxy-settings.patch"
-                               "libgit2-proxy-reconnection.patch"
-                               "libgit2-path-max.patch"))))
+                "0jhm723bc9v18yanlqvmwn9kpmnvbcavnlhd4jcw0n082d7jl54h"))
+              (snippet
+               #~(for-each delete-file-recursively
+                           '("deps/chromium-zlib"
+                             "deps/llhttp"
+                             "deps/ntlmclient"
+                             "deps/pcre2"
+                             "deps/winhttp"
+                             "deps/zlib")))))
     (arguments
      (list #:configure-flags
            #~(list "-DUSE_NTLMCLIENT=OFF"         ;TODO: package this
@@ -1547,10 +1551,10 @@ write native speed custom Git applications in any language with bindings.")
                        ;; Tests may be disabled if cross-compiling.
                        (format #t "Test suite not run.~%")))))))
     (inputs
-     (list libssh2 http-parser))
+     (list http-parser))
     (propagated-inputs
      ;; These libraries are in 'Requires.private' in libgit2.pc.
-     (list openssl pcre2 zlib))
+     (list libssh2 openssl pcre2 zlib))
     (properties '((hidden? . #t)))))
 
 (define-public libgit2-1.8
