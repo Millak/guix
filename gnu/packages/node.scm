@@ -649,14 +649,14 @@ parser definition into a C output.")
 (define-public node-lts
   (package
     (inherit node-bootstrap)
-    (version "24.20.0")
+    (version "24.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
-                                  "/node-v" version ".tar.gz"))
+                                  "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "0bq6j2cf9q9ijpc3aklkigdg6dkizqm0fx4zy2c8j0drda316wcq"))
+                "1z4lxmf5zh0mjzr63kqj2ybf1d79g0gdc4xs3ps88z7xnvplvxd6"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -876,7 +876,7 @@ parser definition into a C output.")
      (list ;; Runtime dependencies for binaries used as a bootstrap.
       c-ares-for-node-lts
       brotli
-      icu4c-76
+      icu4c-78
       libuv-for-node-lts
       `(,nghttp2-for-node-lts "lib")
       openssl
@@ -892,7 +892,7 @@ parser definition into a C output.")
      (list bash-minimal
            coreutils
            c-ares-for-node-lts
-           icu4c-76
+           icu4c-78
            libuv-for-node-lts
            llhttpish
            brotli
