@@ -18334,35 +18334,34 @@ navigate code in a tree-like fashion.")
     (license license:gpl3+)))
 
 (define-public emacs-lispy
-  ;; No release since May 2019 and tons of fixes have landed on master.
-  ;; https://github.com/abo-abo/lispy/issues/513
-  (let ((commit "df1b7e614fb0f73646755343e8892ddda310f427"))
+  ;; INFO: abo-abo's latest public release was 2019-05-08, and latest commit
+  ;; was 2023-03-14.  A temporary fork was created by enzuru, and it is
+  ;; receiving many improvements. See:
+  ;; - <https://github.com/abo-abo/lispy/issues/513>
+  ;; - <https://github.com/abo-abo/lispy/issues/684>
+  (let ((commit "df1b7e614fb0f73646755343e8892ddda310f427")
+        (revision "3"))
     (package
       (name "emacs-lispy")
-      (version (git-version "0.27.0" "3" commit))
-      (home-page "https://github.com/abo-abo/lispy")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/abo-abo/lispy")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "02pmnn9cqslahnvllqzawp2j5icmb3wgkrk4qrfxjds68jg7pjj4"))
-                (patches
-                 (search-patches "emacs-lispy-fix-thread-last-test.patch"))
-                (file-name (git-file-name name version))))
+      (version (git-version "0.27.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/enzuru/lispy")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02pmnn9cqslahnvllqzawp2j5icmb3wgkrk4qrfxjds68jg7pjj4"))
+         (patches
+          (search-patches "emacs-lispy-fix-thread-last-test.patch"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-ace-window emacs-hydra emacs-iedit emacs-swiper
-             emacs-zoutline))
-      (native-inputs
-       (list which emacs-clojure-mode emacs-undercover))
       (arguments
        (list
-        #:include #~(cons* "^lispy-clojure\\.clj$"
-                           "^lispy-python\\.py$"
-                           %default-include)
+        #:include
+        #~(cons* "^lispy-clojure\\.clj$"
+                 "^lispy-python\\.py$"
+                 %default-include)
         #:phases
         ;; XXX: Some failing tests
         #~(modify-phases %standard-phases
@@ -18391,6 +18390,17 @@ navigate code in a tree-like fashion.")
                     (basic-save-buffer))))))
         ;; Set BEMACS to prevent the test suite from loading straight.el.
         #:test-command #~(list "make" "test" "BEMACS=emacs -batch")))
+      (propagated-inputs
+       (list emacs-ace-window
+             emacs-hydra
+             emacs-iedit
+             emacs-swiper
+             emacs-zoutline))
+      (native-inputs
+       (list which
+             emacs-clojure-mode
+             emacs-undercover))
+      (home-page "https://github.com/enzuru/lispy")
       (synopsis "Modal S-expression editing")
       (description
        "Due to the structure of Lisp syntax it's very rare for the programmer
