@@ -5769,6 +5769,7 @@ to do spectral analysis in Python.")
                    (when tests?
                      (invoke "python3" "tests/tests.py")))))))
     (native-inputs (list python-poetry-core
+                         python-pytest
                          snakemake))
     (synopsis "Snakemake executor plugin: slurm-jobstep")
     (description "A Snakemake executor plugin for running srun jobs inside of
