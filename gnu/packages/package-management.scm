@@ -2187,7 +2187,7 @@ endif()
            libexpected
            nlohmann-json
            reproc
-           spdlog-1.15
+           spdlog
            yaml-cpp))
     (home-page "https://github.com/mamba-org/mamba")
     (synopsis "Fast cross-platform package manager library")

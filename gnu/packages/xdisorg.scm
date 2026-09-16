@@ -3850,7 +3850,7 @@ create layout indicator widgets.")
     (build-system meson-build-system)
     (native-inputs
      (list catch2 pkg-config))
-    (inputs (list spdlog-1.15))
+    (inputs (list spdlog))
     (arguments
      (list
       #:configure-flags

@@ -208,7 +208,7 @@ AMD GPU assembly kernels.")
      (list rocm-hip-runtime
            msgpack-cxx
            fmt-11
-           spdlog-1.15))
+           spdlog))
     (native-inputs
      (list cli11
            googletest

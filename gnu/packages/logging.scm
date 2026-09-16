@@ -256,10 +256,10 @@ provides some unique features such as CSV log format and wide string support.")
 output in multiple windows in a terminal.")
     (license license:gpl2+)))
 
-(define-public spdlog-1.15
+(define-public spdlog
   (package
     (name "spdlog")
-    (version "1.15.3")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -268,7 +268,7 @@ output in multiple windows in a terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12m46hh59rgamr3qg3jyvxf5mkfj0c91ym4v0l79xqcqdps93cyj"))
+        (base32 "0dhvr6dqjddrwc7af6x1j6kf9x5z1gnfy8isk03dqp0ic51f3gbc"))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
     (build-system cmake-build-system)
@@ -294,7 +294,7 @@ output in multiple windows in a terminal.")
                                    " DESTINATION "
                                    #$output:bin "/bin"
                                    ")\n"))))))))
-    (native-inputs (list catch2-3.5))
+    (native-inputs (list catch2))
     (inputs (list googlebenchmark))
     (propagated-inputs (list fmt-12))
     (home-page "https://github.com/gabime/spdlog")
@@ -302,9 +302,6 @@ output in multiple windows in a terminal.")
     (description "Spdlog is a very fast header-only/compiled C++ logging
 library.")
     (license license:expat)))
-
-;; Update when changing the pinned version of fmt.
-(define-public spdlog spdlog-1.15)
 
 (define-public rsyslog
   (package

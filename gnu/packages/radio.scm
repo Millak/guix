@@ -1135,7 +1135,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            qwt
            sdl
            soapysdr
-           spdlog-1.15
+           spdlog
            volk
            zeromq))
     (native-search-paths

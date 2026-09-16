@@ -458,7 +458,7 @@ particular CPU vendor or architecture.")
                   numactl
                   curl
                   fmt-12
-                  spdlog-1.15
+                  spdlog
                   boost
                   catch2))
     (native-inputs
