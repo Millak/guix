@@ -1429,7 +1429,8 @@ the \"texlive\" importer."
 (define-member (person "Maxim Cournoyer"
                        "maxim@guixotic.coop"
                        "apteryx")
-  maintainers codeberg core documentation electronics gnome qt telephony)
+  maintainers codeberg core documentation electronics javascript gnome
+  qt telephony)
 
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com"
