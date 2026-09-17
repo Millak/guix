@@ -2048,6 +2048,37 @@ It also supports IPython/Jupyter.")
 by Pavel Raiskup.")
     (license license:gpl3+)))
 
+(define-public python-hatch-cython
+  (package
+    (name "python-hatch-cython")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joshua-auchincloss/hatch-cython")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fczzvmg7i62p3wr2jayyl11p5q5cmwnyw79f0a6jv5d9xhaygpn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "tests")))
+    (native-inputs
+     (list python-hatchling
+           python-numpy
+           python-pytest
+           python-toml))
+    (propagated-inputs
+     (list python-cython
+           python-hatchling
+           python-setuptools))
+    (home-page "https://github.com/joshua-auchincloss/hatch-cython")
+    (synopsis "Cython build hooks for Hatch")
+    (description "This package provides a Cython build hooks for Hatch.")
+    (license license:expat)))
+
 (define-public python-hatch-gettext
   (package
     (name "python-hatch-gettext")
