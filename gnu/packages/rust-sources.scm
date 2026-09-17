@@ -1187,6 +1187,35 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
 intelligence.")
      (license license:expat))))
 
+;;;
+;;; Workspace dependency of temporal-capi.
+;;;
+(define-public rust-temporal-0.2.6
+  (hidden-package
+   (package
+     (name "rust-temporal")
+     (version "0.2.6")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/boa-dev/temporal")
+               (commit "6a5d18375acd62ba778726df68cdc9dd3d09f285")))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0cb4h98gf34hgmfgl41zxsgw5j2n22avxja3n3z1z057z2gkk8cw"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates
+            ''("zoneinfo_rs" "timezone_provider" "temporal_rs")))
+     (propagated-inputs (cargo-inputs 'temporal))
+     (home-page "https://github.com/boa-dev/temporal")
+     (synopsis "Temporal in Rust")
+     (description "This package provides Temporal in Rust.")
+     (license (list license:expat license:asl2.0))))) ;dual-licensed
+
 ;; Workspace dependency of zed.
 ;;
 ;; Cargo side: Cargo unifies dependency versions across zed's

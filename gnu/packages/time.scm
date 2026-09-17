@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -61,6 +61,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
@@ -931,3 +932,53 @@ choosing.")
 from a starting point you provide.  The user can pause and resume the
 countdown from the text user interface.")
     (license expat)))
+
+(define-public temporal-capi
+  (package
+    (name "temporal-capi")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "temporal_capi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wm53x8bxh2smpl4a6d7s4iqlngxsd556yhyinjalb529k5bk3pl"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-for-cdylib
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("^\\[lib].*" all)
+                 (string-append all "crate-type = [\"cdylib\"]\n")))
+              (substitute* "src/lib.rs"
+                (("#!\\[no_std].*") ""))))
+          (replace 'install
+            (lambda _
+              (for-each (lambda (x)
+                          (install-file x (string-append
+                                           #$output "/include/temporal_rs")))
+                        (find-files "bindings" "\\.h(pp)?$"))
+              ;; Use `find-files' as the output directory changes when
+              ;; cross-compiling.
+              (let* ((shared-objects (find-files "." "libtemporal_capi.so"))
+                     (libtemporal_capi.so (car
+                                           (filter (lambda (x)
+                                                     (string=? "release"
+                                                               (basename
+                                                                (dirname x))))
+                                                   shared-objects))))
+                (install-file libtemporal_capi.so
+                              (string-append #$output "/lib"))))))))
+    (inputs (list rust-temporal-0.2.6))
+    (home-page "https://github.com/boa-dev/temporal")
+    (synopsis "C and C++ interfaces to @code{temporal_rs}")
+    (description "This package provides C and C++ interfaces to
+@code{temporal_rs}, a Rust date/time library that provides support for
+calendrical calculations and time zones that is based on the ECMAScript
+Temporal specification.")
+    (license (list asl2.0 expat)))) ;dual-licensed
