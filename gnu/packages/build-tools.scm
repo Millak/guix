@@ -439,7 +439,8 @@ files and generates build instructions for the Ninja build system.")
      (list
       #:modules '((guix build cargo-build-system)
                   ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
+                  (guix build utils)
+                  (ice-9 match))
       #:imported-modules `((guix build cargo-build-system)
                            (guix build cargo-utils)
                            ,@%pyproject-build-system-modules)
@@ -486,30 +487,20 @@ files and generates build instructions for the Ninja build system.")
                           (find-files (string-append #$output "/lib/" pyversion)
                                       "^maturin$")))))
           (add-after 'install 'install-completions
-            (lambda _
-              (let ((share (string-append #$output "/share"))
-                    (maturin (string-append #$output "/bin/maturin")))
-                ;; TODO? fig, powershell
-                (mkdir-p (string-append #$output "/etc/bash_completion.d"))
-                (with-output-to-file
-                    (string-append #$output "/etc/bash_completion.d/maturin")
-                  (lambda _ (invoke maturin "completions" "bash")))
-                (mkdir-p (string-append share "/fish/vendor_completions.d"))
-                (with-output-to-file
-                    (string-append share "/fish/vendor_completions.d/maturin.fish")
-                  (lambda _ (invoke maturin "completions" "fish")))
-                (mkdir-p (string-append share "/zsh/site-functions"))
-                (with-output-to-file
-                    (string-append share "/zsh/site-functions/_maturin")
-                  (lambda _ (invoke maturin "completions" "zsh")))
-                (mkdir-p (string-append share "/elvish/lib"))
-                (with-output-to-file
-                    (string-append share "/elvish/lib/maturin")
-                  (lambda _ (invoke maturin "completions" "elvish")))
-                (mkdir-p (string-append share "/nushell/vendor/autoload"))
-                (with-output-to-file
-                    (string-append share "/nushell/vendor/autoload/maturin")
-                  (lambda _ (invoke maturin "completions" "nushell")))))))))
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary (in-vicinity #$output "bin/maturin")))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "completions" shell))))))
+                '(("bash" . "etc/bash_completion.d/maturin")
+                  ("elvish" . "share/elvish/lib/maturin")
+                  ("fish" . "fish/vendor_completions.d/maturin.fish")
+                  ("nushell" . "share/nushell/vendor/autoload/maturin")
+                  ("zsh" . "zsh/site-functions/_maturin"))))))))
     (propagated-inputs
      (list python-tomli))
     (inputs (append
