@@ -213,7 +213,7 @@ empty list."
                   (warning (G_ "~a is unreachable (~a)~%")
                            (uri->string (http-get-error-uri c))
                            (http-get-error-code c))
-                  '#())                           ;return an empty release set
+                  '())                 ;return an empty release set
                  ((and (http-get-error? c)
                        (= 403 (http-get-error-code c)))
                   ;; See
@@ -234,7 +234,7 @@ from @url{https://github.com/settings/tokens} with your GitHub account.
 
 Alternatively, you can wait until your rate limit is reset, or use the
 @code{generic-git} updater instead."))
-                       #f))                       ;bail out
+                       #f))             ;bail out
                     (_
                      (raise c)))))
 
@@ -275,9 +275,9 @@ object."
   (define source-uri
     (github-uri (origin-uri (package-source package))))
 
-  ;; This procedure returns (version . tag) pair, or #f
-  ;; if RELEASE doesn't seyem to correspond to a version.
   (define (release->version release)
+    ;; Return (version . tag) pair, or #f if RELEASE doesn't seem to
+    ;; correspond to a version.
     (let* ((tag (or (assoc-ref release "tag_name") ;a "release"
                     (assoc-ref release "name")))   ;a tag
            (name (package-upstream-name package))
@@ -294,7 +294,8 @@ object."
        ((string-prefix? "version" tag)
         (cons (if (char-set-contains? char-set:digit (string-ref tag 7))
                   (substring tag 7)
-                  (substring tag 8)) tag))
+                  (substring tag 8))
+              tag))
        ((string-prefix? "v" tag)
         (cons (substring tag 1) tag))
        ;; Finally, reject tags that don't start with a digit:
@@ -310,7 +311,7 @@ object."
     (json
      (filter-map release->version
                  (match (remove pre-release? json)
-                   (() json)      ;keep everything
+                   (() json)            ;keep everything
                    (releases releases))))))
 
 (define* (import-release pkg #:key version partial-version?)
