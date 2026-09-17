@@ -55,6 +55,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages machine-learning)
+  #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -678,6 +679,7 @@ recognition engine.")
      (list alsa-lib
            espeak-ng
            libsndfile
+           libout123
            pulseaudio
            sonic
            utfcpp))
