@@ -2809,6 +2809,10 @@
   (crate-source "bindgen" "0.72.1"
                 "15bq73y3wd3x3vxh3z3g72hy08zs8rxg1f0i1xsrrd6g16spcdwr"))
 
+(define rust-bindgen-0.73.2
+  (crate-source "bindgen" "0.73.2"
+                "1yhccxrl59v8ihjmgxy20n51j1kbdqyj2n3a21mm8x9mabpzhzkq"))
+
 (define rust-bindgen-cuda-0.1.6
   (crate-source "bindgen_cuda" "0.1.6"
                 "1ygav3d9955n5ad8y0b07wqfyqf946pyxkncgjv3p116ndgyaar8"))
@@ -26607,6 +26611,10 @@ fn main() {
   (crate-source "prettyplease" "0.2.37"
                 "0azn11i1kh0byabhsgab6kqs74zyrg69xkirzgqyhz6xmjnsi727"))
 
+(define rust-prettyplease-0.3.0
+  (crate-source "prettyplease" "0.3.0"
+                "1h203bs7923vf7508nsxh8i7jx1lq7qm89pnzb10yi9ffm60zzib"))
+
 (define rust-prettytable-rs-0.10.0
   (crate-source "prettytable-rs" "0.10.0"
                 "0nnryfnahfwy0yxhv4nsp1id25k00cybx3ih8xjsp9haa43mx8pf"))
@@ -37402,7 +37410,8 @@ fn main() {
 
 (define rust-unicode-ident-1.0.25
   (crate-source "unicode-ident" "1.0.25"
-                "17sixcpvmmxz60pywjfbx0kzhpjwljl4ls6khw4wnxwdyrfa2wmb"))
+                "17sixcpvmmxz60pywjfbx0kzhpjwljl4ls6khw4wnxwdyrfa2wmb"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-unicode-ident-1.0.26
   (crate-source "unicode-ident" "1.0.26"
@@ -90368,65 +90377,55 @@ fn main() {
                                                     rust-zerocopy-derive-0.8.56
                                                     rust-zmij-1.0.23))
                      (rust-bindgen-cli =>
-                                       (list rust-aho-corasick-1.1.3
+                                       (list rust-aho-corasick-1.1.5
                                         rust-annotate-snippets-0.11.5
-                                        rust-anstream-0.6.18
-                                        rust-anstyle-1.0.10
-                                        rust-anstyle-parse-0.2.6
-                                        rust-anstyle-query-1.1.2
-                                        rust-anstyle-wincon-3.0.7
-                                        rust-bindgen-0.71.1
-                                        rust-bitflags-2.9.0
+                                        rust-anstream-1.0.0
+                                        rust-anstyle-1.0.14
+                                        rust-anstyle-parse-1.0.0
+                                        rust-anstyle-query-1.1.5
+                                        rust-anstyle-wincon-3.0.11
+                                        rust-bindgen-0.73.2
+                                        rust-bitflags-2.13.2
                                         rust-cexpr-0.6.0
-                                        rust-cfg-if-1.0.0
-                                        rust-clang-sys-1.8.1
-                                        rust-clap-4.5.35
-                                        rust-clap-builder-4.5.35
-                                        rust-clap-complete-4.5.47
-                                        rust-clap-derive-4.5.32
-                                        rust-clap-lex-0.7.4
-                                        rust-colorchoice-1.0.3
-                                        rust-either-1.15.0
+                                        rust-cfg-if-1.0.5
+                                        rust-clang-sys-1.9.1
+                                        rust-clap-4.6.7
+                                        rust-clap-builder-4.6.7
+                                        rust-clap-complete-4.6.11
+                                        rust-clap-derive-4.6.7
+                                        rust-clap-lex-1.1.1
+                                        rust-colorchoice-1.0.5
                                         rust-env-logger-0.10.2
-                                        rust-glob-0.3.2
+                                        rust-glob-0.3.4
                                         rust-heck-0.5.0
-                                        rust-hermit-abi-0.5.0
-                                        rust-humantime-2.2.0
-                                        rust-is-terminal-0.4.16
-                                        rust-is-terminal-polyfill-1.70.1
-                                        rust-itertools-0.13.0
-                                        rust-libc-0.2.171
-                                        rust-libloading-0.8.6
-                                        rust-log-0.4.27
-                                        rust-memchr-2.7.4
+                                        rust-hermit-abi-0.5.3
+                                        rust-humantime-2.4.0
+                                        rust-is-terminal-0.4.17
+                                        rust-is-terminal-polyfill-1.70.2
+                                        rust-libc-0.2.189
+                                        rust-libloading-0.8.9
+                                        rust-log-0.4.34
+                                        rust-memchr-2.8.3
                                         rust-minimal-lexical-0.2.1
                                         rust-nom-7.1.3
-                                        rust-once-cell-1.21.3
-                                        rust-prettyplease-0.2.32
-                                        rust-proc-macro2-1.0.94
-                                        rust-quote-1.0.40
-                                        rust-regex-1.11.1
-                                        rust-regex-automata-0.4.9
-                                        rust-regex-syntax-0.8.5
-                                        rust-rustc-hash-2.1.1
-                                        rust-shlex-1.3.0
+                                        rust-once-cell-polyfill-1.70.2
+                                        rust-prettyplease-0.3.0
+                                        rust-proc-macro2-1.0.107
+                                        rust-quote-1.0.47
+                                        rust-regex-1.13.1
+                                        rust-regex-automata-0.4.18
+                                        rust-regex-syntax-0.8.11
+                                        rust-rustc-hash-2.1.3
+                                        rust-shlex-2.0.1
                                         rust-strsim-0.11.1
-                                        rust-syn-2.0.100
+                                        rust-syn-3.0.6
                                         rust-termcolor-1.4.1
-                                        rust-unicode-ident-1.0.18
-                                        rust-unicode-width-0.2.0
+                                        rust-unicode-ident-1.0.25
+                                        rust-unicode-width-0.2.2
                                         rust-utf8parse-0.2.2
-                                        rust-winapi-util-0.1.9
-                                        rust-windows-sys-0.59.0
-                                        rust-windows-targets-0.52.6
-                                        rust-windows-aarch64-gnullvm-0.52.6
-                                        rust-windows-aarch64-msvc-0.52.6
-                                        rust-windows-i686-gnu-0.52.6
-                                        rust-windows-i686-gnullvm-0.52.6
-                                        rust-windows-i686-msvc-0.52.6
-                                        rust-windows-x86-64-gnu-0.52.6
-                                        rust-windows-x86-64-gnullvm-0.52.6
-                                        rust-windows-x86-64-msvc-0.52.6))
+                                        rust-winapi-util-0.1.11
+                                        rust-windows-link-0.2.1
+                                        rust-windows-sys-0.61.2))
                      (rust-candle-0.9.1.724d75e =>
                                                 (list
                                                  rust-allocator-api2-0.2.21
