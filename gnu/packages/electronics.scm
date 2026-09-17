@@ -3235,7 +3235,7 @@ GUI for sigrok.")
              (variable "FW_OSVVM")
              (separator #f)
              (files (list "share/osvvm")))))
-    (home-page "https://osvvm.github.io/Overview/Osvvm1About.html/")
+    (home-page "https://osvvm.github.io")
     (synopsis "The OSVVM VHDL Verification Libraries and Scripts")
     (description "OSVVM is a verification methodology that defines a VHDL
 verification framework, verification utility library, verification component
