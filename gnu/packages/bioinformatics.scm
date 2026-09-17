@@ -8002,20 +8002,21 @@ and random access tool.")
 (define-public python-modbedtools
   (package
     (name "python-modbedtools")
-    (version "0.1.6")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "modbedtools" version))
        (sha256
-        (base32 "0c2f8fl0mi3wcvv4fygkf6jj1d0zavhc7v9wwbqchpyb7m23cmp9"))))
+        (base32 "1cl8ski098daw85vcygc22c7shpk3z34zs0rpa584w93xspsv10r"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-pysam))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (arguments (list #:tests? #f)) ;No tests
+    (native-inputs (list python-setuptools
+                         python-setuptools-scm))
+    ;; No tests in PyPI archive, git provides no tests scenarios either; there
+    ;; is some test data in "test" directory but no description in README how
+    ;; to use them for testing the module.
+    (arguments (list #:tests? #f))
     (home-page "https://github.com/lidaof/modbedtools")
     (synopsis
      "Generate modbed track files for visualization on WashU Epigenome Browser")
