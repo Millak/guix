@@ -6573,14 +6573,14 @@ other types of unwanted sequence from high-throughput sequencing reads.")
       (version version-tag)
       (source
        (origin
-	 (method git-fetch)
-	 (uri (git-reference
-	       (url "https://github.com/lammps/lammps.git")
-	       (commit commit)))
-	 (file-name (git-file-name name version))
-	 (sha256
-	  (base32
-	   "1ar1qvhziw7bx3az881lfq1a4w3w80x17ri1jiamd6f6ck57gwyz"))))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lammps/lammps.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1ar1qvhziw7bx3az881lfq1a4w3w80x17ri1jiamd6f6ck57gwyz"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -22854,9 +22854,9 @@ international community.")
                                   "16S_rdp_installation.sh")
                      (("wget") (which "wget")))
                    (substitute* '("download_taxonomy.sh"
-			          "download_genomic_library.sh"
-			          "rsync_from_ncbi.pl")
-		     (("rsync -")
+                                  "download_genomic_library.sh"
+                                  "rsync_from_ncbi.pl")
+                     (("rsync -")
                       (string-append (which "rsync") " -")))
                    (substitute* "mask_low_complexity.sh"
                      (("which") (which "which")))
