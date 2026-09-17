@@ -1913,7 +1913,7 @@ functions expected of a Wayland compositor.")
 @end lisp
 
 @code{niri} has Cargo workspace dependencies.  When packaging a Cargo
-workspace dependency, parameter @code{#:cargo-package-crates} is
+workspace dependency, the @code{#:cargo-package-crates} argument is
 required.
 
 @lisp
