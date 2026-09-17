@@ -3507,14 +3507,14 @@ support, watch support (like @command{top}) and a tree view.")
 (define-public rust-bindgen-cli
   (package
     (name "rust-bindgen-cli")
-    (version "0.71.1")
+    (version "0.73.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bindgen-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p2lmkl7vfhpr8gnav11p1jrwrqsmrqwr2fgwp5x1bsn17511vgx"))))
+        (base32 "0z5vbsgnjlmjdvi9v1spwqci8kd4j2b6jlsgr0r1yvavc91y08jn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
