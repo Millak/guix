@@ -945,70 +945,69 @@ SEGGER J-Link and compatible devices.")
   ;; OpenOCD latest release was in 2023 and incompatible with Jim Tcl 0.84.
   (let ((commit "2fe5eaefbd887f03ad30c9ba481ad25d9adf0f37")
         (revision "0"))
-  (package
-    (name "openocd")
-    (version (git-version "0.12.0" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.code.sf.net/p/openocd/code")
-                    (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0rbgkwlwrx3gh1d7q7giqgvg62hki5w03n0ap51mw2avdc6ncbcy"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf
-           automake
-           libtool
-           which
-           pkg-config
-           texinfo))
-    (inputs
-     (list hidapi (@ (gnu packages tcl) jimtcl) libftdi libjaylink openssl))
-    (arguments
-     '(#:configure-flags
-       (append (list "LIBS=-lutil -lcrypto -lssl"
-                     "--disable-werror"
-                     "--enable-sysfsgpio"
-                     "--disable-internal-jimtcl"
-                     "--disable-internal-libjaylink")
-               (map (lambda (programmer)
-                      (string-append "--enable-" programmer))
-                    '("amtjtagaccel" "armjtagew" "buspirate" "ftdi"
-                      "gw16012" "jlink" "opendous" "osbdm"
-                      "parport" "aice" "cmsis-dap" "dummy" "jtag_vpi"
-                      "remote-bitbang" "rlink" "stlink" "ti-icdi" "ulink"
-                      "usbprog" "vsllink" "usb-blaster-2" "usb_blaster"
-                      "presto" "openjtag" "rshim" "ft232r" "xds110"
-                      "cmsis-dap-v2" "nulink" "kitprog" "jtag_dpi"
-                      "bcm2835gpio" "imx_gpio" "ep93xx" "at91rm9200"
-                      "sysfsgpio" "xlnx-pcie-xvc")))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda _
-             ;; Make build reproducible.
-             (substitute* "src/Makefile.am"
-               (("-DPKGBLDDATE=") "-DDISABLED_PKGBLDDATE="))
-             (patch-shebang "bootstrap")
-             (invoke "./bootstrap" "nosubmodule")))
-         (add-after 'unpack 'change-udev-group
-           (lambda _
-             (substitute* "contrib/60-openocd.rules"
-               (("plugdev") "dialout"))))
-         (add-after 'install 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "contrib/60-openocd.rules"
-                           (string-append
-                            (assoc-ref outputs "out")
-                            "/lib/udev/rules.d/")))))))
-    (home-page "https://openocd.org/")
-    (synopsis "On-Chip Debugger")
-    (description "OpenOCD provides on-chip programming and debugging support
+    (package
+      (name "openocd")
+      (version (git-version "0.12.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.code.sf.net/p/openocd/code")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rbgkwlwrx3gh1d7q7giqgvg62hki5w03n0ap51mw2avdc6ncbcy"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(cons* "LIBS=-lutil -lcrypto -lssl"
+                 "--disable-werror"
+                 "--disable-internal-jimtcl"
+                 "--disable-internal-libjaylink"
+                 (map (lambda (programmer)
+                        (string-append "--enable-" programmer))
+                      '("amtjtagaccel" "armjtagew" "buspirate" "ftdi"
+                        "gw16012" "jlink" "opendous" "osbdm"
+                        "parport" "aice" "cmsis-dap" "dummy" "jtag_vpi"
+                        "remote-bitbang" "rlink" "stlink" "ti-icdi" "ulink"
+                        "usbprog" "vsllink" "usb-blaster-2" "usb_blaster"
+                        "presto" "openjtag" "rshim" "ft232r" "xds110"
+                        "cmsis-dap-v2" "nulink" "kitprog" "jtag_dpi"
+                        "bcm2835gpio" "imx_gpio" "ep93xx" "at91rm9200"
+                        "sysfsgpio" "xlnx-pcie-xvc")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                ;; Make build reproducible.
+                (substitute* "src/Makefile.am"
+                  (("-DPKGBLDDATE=") "-DDISABLED_PKGBLDDATE="))
+                (patch-shebang "bootstrap")
+                (invoke "./bootstrap" "nosubmodule")))
+            (add-after 'unpack 'change-udev-group
+              (lambda _
+                (substitute* "contrib/60-openocd.rules"
+                  (("plugdev") "dialout"))))
+            (add-after 'install 'install-udev-rules
+              (lambda _
+                (install-file "contrib/60-openocd.rules"
+                              (string-append
+                               #$output "/lib/udev/rules.d/")))))))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             which
+             pkg-config
+             texinfo))
+      (inputs
+       (list hidapi (@ (gnu packages tcl) jimtcl) libftdi libjaylink openssl))
+      (home-page "https://openocd.org/")
+      (synopsis "On-Chip Debugger")
+      (description "OpenOCD provides on-chip programming and debugging support
 with a layered architecture of JTAG interface and TAP support.")
-    (license license:gpl2+))))
+      (license license:gpl2+))))
 
 ;; The commits for all propeller tools are the stable versions published at
 ;; https://github.com/propellerinc/propgcc in the release_1_0.  According to
