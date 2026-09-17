@@ -11762,7 +11762,7 @@ spherical polygons that represent arbitrary regions of the sky.")
 (define-public python-spinifex
   (package
     (name "python-spinifex")
-    (version "1.4.1")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -11771,23 +11771,41 @@ spherical polygons that represent arbitrary regions of the sky.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bvl0xvldifvrhznbhi51qjc0cax0bk0g24x13dsdyl1cydv95j2"))))
+        (base32 "1lz280ri9dxc9lpxhq5bd3pd500aari2d8db1s4ig48kac231d6i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f       ;14 failed, 35 passed, require network access
+      ;; tests: 58 passed, 1 skipped, 11 deselected
+      #:test-flags
+      ;; Tests requiring remove data from
+      ;; <http://cabrera.upc.es/upc_ionex_GPSonly-RINEXv3>.
+      #~(list #$@(map (lambda (test) (string-append "--deselect=tests/" test))
+                      (list "test_examples.py::test_example_notebook"
+                            "test_fits_tools.py::test_get_integrated_rm_from_fits"
+                            "test_fits_tools.py::test_get_metadata_from_fits"
+                            "test_fits_tools.py::test_get_rm_from_fits"
+                            "test_ionex_download.py::test_chapman_download"
+                            "test_ionospheric.py::test_get_ionosphere"
+                            "test_tomion.py::test_ionosphere_tomion"
+                            "test_tomion.py::test_ionosphere_tomion_dual"
+                            "test_tomion.py::test_ionosphere_tomionmultiple_days")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                ;; Backpoert of typing._eval_type for older Pythons.
-                ((".*eval-type-backport.*") "")))))))
+                ((".*ignore::coverage.exceptions.CoverageWarning.*")
+                 "")))))))
     (native-inputs
      (list python-hatch-vcs
-           python-hatchling))
+           python-hatchling
+           python-nbconvert
+           python-pytest
+           python-pytest-asyncio))
     (propagated-inputs
      (list python-astropy
+           python-eval-type-backport
+           python-fitscube
            python-h5py
            python-nest-asyncio
            python-numpy
@@ -11795,8 +11813,7 @@ spherical polygons that represent arbitrary regions of the sky.")
            python-pydantic
            python-pyiri
            python-requests
-           python-typing-extensions
-           python-unlzw3
+           python-unlzw-cython
            ;; [optional]
            python-casacore))
     (home-page "https://git.astron.nl/RD/spinifex")
