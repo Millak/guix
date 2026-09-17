@@ -3185,6 +3185,45 @@ conversions to and from strings, iteration and related functionality.")
 standards.")
     (license license:bsd-2)))
 
+(define-public merve
+  (package
+    (name "merve")
+    (version "1.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nodejs/merve")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13ck2dd1wykkiskbh4z27mp71jl8v04121cjsxj5yv8l00s51dqa"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DGit_FOUND=TRUE"  ;<https://github.com/nodejs/merve/issues/58>
+              "-DMERVE_USE_SIMDUTF=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The Zip format does not support timestamps before 1980.
+          (add-after 'unpack 'ensure-no-mtimes-pre-1980
+            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980)))))
+    (native-inputs (list googletest pkg-config python))
+    (inputs (list simdutf))
+    (home-page "https://github.com/nodejs/merve")
+    (synopsis "Lexer for extracting named exports from CommonJS modules")
+    (description "Merve is a fast C++ lexer for extracting named exports from
+CommonJS modules.  This library performs static analysis to detect CommonJS
+export patterns without executing the code.")
+    (license (list license:asl2.0 license:expat)))) ;dual-licensed
+
 (define-public cli11
   (package
     (name "cli11")
