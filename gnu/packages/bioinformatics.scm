@@ -22615,62 +22615,36 @@ containing the reference genome as well.")
     ;; See https://github.com/dpryan79/MethylDackel/issues/85
     (license license:expat)))
 
-;; This package bundles PCRE 8.02 and cannot be built with the current
-;; version.
 (define-public phast
   (package
     (name "phast")
-    (version "1.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/CshlSiepelLab/phast")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "10lpbllvny923jjbbyrpxahhd1m5h7sbj9gx7rd123rg10mlidki"))))
-    (build-system gnu-build-system)
+    (version "1.9.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CshlSiepelLab/phast")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j8mgb833i1d0bl5faaxn087z2bjghqvdixwrgjr2hgpcwnd42ki"))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:make-flags
-      #~(list "CC=gcc" (string-append "DESTDIR=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              ;; Fix syntax
-              (substitute* "test/Makefile"
-                (("        ") "	"))
-              (substitute* "Makefile"
-                (("CLAPACKPATH=/usr/lib")
-                 (string-append "CLAPACKPATH="
-                                #$(this-package-input "clapack") "/lib")))
-              ;; Renaming the libraries is not necessary with our version of
-              ;; CLAPACK.
-              (substitute* "src/lib/Makefile"
-                (("ifdef CLAPACKPATH") "ifdef UNNECESSARY"))
-              (substitute* "src/make-include.mk"
-                (("-lblaswr") "-lblas")
-                (("-ltmg") "-ltmglib")
-                (("liblapack.a") "liblapack.so")
-                (("libblas.a") "libblas.so")
-                (("libf2c.a") "libf2c.so"))
-              (substitute* "src/Makefile"
-                (("/opt") "/share")
-                (("/usr/") "/"))))
-          (replace 'check
-            (lambda _
-              (setenv "PATH"
-                      (string-append (getcwd) "/bin:" (getenv "PATH")))
-              ;; Disable broken test
-              (substitute* "test/Makefile"
-                ((".*if.*hmrc_summary" m) (string-append "#" m)))
-              ;; Only run the msa_view tests because the others fail for
-              ;; unknown reasons.
-              (invoke "make" "-C" "test" "msa_view"))))))
+          (delete 'check)
+          (add-after 'install 'post-install-check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (setenv "PATH" (string-append #$output "/bin" ":"
+                                                (getenv "PATH")))
+                  ;; Only run the msa_view tests because the others fail for
+                  ;; unknown reasons.
+                  (invoke "make" "-C" "test" "msa_view"))))))))
     (inputs
-     (list clapack))
+     (list lapack pcre))
     (native-inputs
      (list perl))
     (home-page "http://compgen.cshl.edu/phast/")
