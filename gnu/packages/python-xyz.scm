@@ -1674,6 +1674,32 @@ variables from Python with support for strings, booleans, list, tuples, and
 dicts.")
     (license license:asl2.0)))
 
+(define-public python-eval-type-backport
+  (package
+    (name "python-eval-type-backport")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alexmojaki/eval_type_backport")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygbmsfyxis62xipcag8z2avl0bwpiwy83hbaghl5kq0s1m396la"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://github.com/alexmojaki/eval_type_backport")
+    (synopsis "Letting older Python versions use newer typing features")
+    (description
+     "This package makes runtime typing inspection with the typing module
+possible with newer syntax in older Python versions.  Specifically, this
+transforms @code{X | Y} into @code{typing.Union[X, Y]} and @code{list[X]} into
+@code{typing.List[X]} etc. (for all the types made generic in PEP 585) if the
+original syntax is not supported in the current Python version.")
+    (license license:expat)))
+
 (define-public python-exitcode
   (package
     (name "python-exitcode")
