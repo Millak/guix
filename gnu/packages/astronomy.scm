@@ -3650,7 +3650,7 @@ celestial-to-terrestrial coordinate transformations.")
   (package
     (inherit python-astropy-iers-data-primary)
     (name "python-astropy-iers-data")
-    (version "0.2026.9.7.0.56.14")
+    (version "0.2026.9.14.0.56.43")
     (source
      (origin
        (method git-fetch)
@@ -3659,7 +3659,7 @@ celestial-to-terrestrial coordinate transformations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10ma0dbqjmrrm6jv92yvvgl6hzs4hdvmahxkfp9jv8710fyf3925"))))
+        (base32 "11g5f9vh6gh3xyazxjqn42ji23n9pf7zrj2jhqv64pzy8dvvlqd3"))))
     (properties
      (alist-delete 'hidden?
                    (package-properties python-astropy-iers-data-primary)))))
