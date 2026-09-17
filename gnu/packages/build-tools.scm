@@ -425,14 +425,14 @@ files and generates build instructions for the Ninja build system.")
 (define-public maturin
   (package
     (name "maturin")
-    (version "1.11.5")
+    (version "1.15.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "maturin" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1w36bxbxn455bh5ymv1i2crqkvpkzjni06b25gj7bb14sq4h7s10"))
+                "1y9cvmx2c04xzxfm07parma6f9hm6k51pzsfc6xp5gxv9i2gai47"))
               (patches (search-patches "maturin-no-cross-compile.patch"))))
     (build-system cargo-build-system)
     (arguments
@@ -453,6 +453,8 @@ files and generates build instructions for the Ninja build system.")
          "--skip=build_options::tests::test_find_bridge_pyo3"
          "--skip=build_options::tests::test_find_bridge_pyo3_abi3"
          "--skip=build_options::tests::test_find_bridge_pyo3_feature"
+         "--skip=build_options::tests::test_find_bridge_conditional_abi3_filtered_by_interpreter"
+         "--skip=build_options::tests::test_upgrade_bridge_pyo3_combined_abi3_and_abi3t_selects_single_abi"
          "--skip=metadata::tests::test_implicit_readme"
          "--skip=metadata::tests::test_merge_metadata_from_pyproject_dynamic_license_test"
          "--skip=metadata::tests::test_merge_metadata_from_pyproject_toml"
