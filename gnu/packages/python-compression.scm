@@ -999,6 +999,35 @@ files (.Z), such as the ones created by Unix's shell tool compress.")
 Python.")
     (license license:bsd-3)))
 
+(define-public python-unlzw-cython
+  (package
+    (name "python-unlzw-cython")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AlecThomson/unlzw-cython")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "147j0aixkrd86vb22jppkznyk2qhk2kkzmdz3w2am0gng0g4d41i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython
+           python-hatch-cython
+           python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/AlecThomson/unlzw-cython")
+    (synopsis "Cython unlzw port to open .Z files")
+    (description
+     "This package provides a cython-accelerated decompression module for
+@code{.Z} files compressed using the Unix @code{compress} utility.  This is a
+fork of @url{https://github.com/scivision/unlzw3, unlzw3}.")
+    (license license:zlib)))
+
 (define-public python-unlzw3
   (package
     (name "python-unlzw3")
