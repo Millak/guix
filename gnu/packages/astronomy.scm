@@ -5857,6 +5857,45 @@ well as how the output value will be determined from the set of values from
 all the input image headers.")
     (license license:bsd-3)))
 
+(define-public python-fitscube
+  (package
+    (name "python-fitscube")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AlecThomson/fitscube")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mbjs3zmjfsnjalm4cgfp2qaiyncixhsa8rdb34nw0h7bdk8nr9x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 75 passed, 1 deselected
+      #:test-flags
+      ;; Skip test requuring python-pgzip.
+      #~(list (string-append "--deselect=tests/test_compress.py"
+                             "::test_compress_cube_roundtrip[pgzip]"))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           ;; python-pgzip              ;not packaged yet in Guix
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-radio-beam
+           python-tqdm))
+    (home-page "https://github.com/AlecThomson/fitscube")
+    (synopsis "FITS cubes Python library")
+    (description
+     "This package provides a simple Python script to combine
+(single-frequency) FITS images manually.")
+    (license license:expat)))
+
 (define-public python-fitsio
   (package
     (name "python-fitsio")
