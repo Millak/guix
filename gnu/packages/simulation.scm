@@ -93,7 +93,7 @@
 (define-public openfoam-org
   (package
     (name "openfoam-org")
-    (version "13")
+    (version "14")
     (source
      (origin
        (method git-fetch)
@@ -102,7 +102,7 @@
              (commit (string-append "version-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10s1x82znfnwspq5iif928j1ks4v0slmmycg6py8xw1vvhjp7arh"))))
+        (base32 "11dbxzhnml51vjdq4v91y4vc67hkm84lpj4px8i9nrh3v756z230"))))
     (build-system gnu-build-system)
     (native-inputs (list bison flex git))
     (inputs (list bash-completion
@@ -335,22 +335,6 @@
               ;; Remove spurious files in src tree
               ;; (invoke "bash" "-c" "source ./etc/bashrc && wclean all")
               ))
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              ;; disable failing test
-              (substitute* "test/postProcessing/channel/Allrun"
-                (("^.*foam.*$" all)
-                 (string-append "#" all "\n")))
-              (substitute* "test/Lagrangian/boundaries/system/decomposeParDict"
-                (("numberOfSubdomains  6")
-                 "numberOfSubdomains  4")
-                (("n               \\(3 2 1\\)")
-                 "n               (2 2 1)"))
-              (substitute* "test/Lagrangian/parabolic/system/decomposeParDict"
-                (("numberOfSubdomains  6")
-                 "numberOfSubdomains  4")
-                (("n               \\(3 2 1\\)")
-                 "n               (2 2 1)"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -646,17 +630,6 @@ problems for efficient solution on parallel systems.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0v2dy7zcr1s6jc0z8gx726ljai3jnihzydiisszab8vcq79c19dr"))))
-    (arguments
-     ;; Since 'arguments' is a function of the package's version, define
-     ;; 'parent' such that the 'arguments' thunk gets to see the right
-     ;; version.
-     (let ((parent (package
-                     (inherit openfoam-org)
-                     (version (package-version this-package)))))
-       (substitute-keyword-arguments arguments
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (delete 'disable-failing-tests))))))
     (synopsis
      "Framework for numerical simulation of fluid flow (from openfoam.com)")
     (home-page "https://www.openfoam.com")))
