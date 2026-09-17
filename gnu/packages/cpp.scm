@@ -3224,6 +3224,28 @@ CommonJS modules.  This library performs static analysis to detect CommonJS
 export patterns without executing the code.")
     (license (list license:asl2.0 license:expat)))) ;dual-licensed
 
+(define-public nbytes
+  (package
+    (name "nbytes")
+    (version "0.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nodejs/nbytes")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0022x040hzl98wkwizx7z73xg88gs8g439fjx65x5vm46rd93l3s"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/nodejs/nbytes")
+    (synopsis "C++ library for manipulating bytes")
+    (description "The @code{nbytes} library contains various functions for
+manipulating bytes.  It is extracted from the Node.js core.")
+    (license license:expat)))
+
 (define-public cli11
   (package
     (name "cli11")
