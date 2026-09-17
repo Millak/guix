@@ -371,7 +371,8 @@ FILE-SYSTEMS."
 (define* (base-initrd-modules
           kernel
           #:optional
-          (system (or (%current-target-system)
+          (system (or (and=> (%current-target-system)
+                             gnu-triplet->nix-system)
                       (%current-system))))
   "Return a list of modules tailored to KERNEL for SYSTEM to include in the
 initrd by default."
