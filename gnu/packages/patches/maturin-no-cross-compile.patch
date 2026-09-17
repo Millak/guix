@@ -29,17 +29,17 @@ index 24305db..c7641f9 100644
      "dep:native-tls",
      "ureq?/native-tls",
 -    "cargo-xwin?/native-tls",
-     "dep:rustls-pemfile",
+     "dep:rustls-pki-types",
  ]
  password-storage = [
 @@ -90,7 +84,6 @@
  rustls = [
      "dep:rustls",
-     "ureq?/tls",
+     "ureq?/rustls",
 -    "cargo-xwin?/rustls-tls",
-     "dep:rustls-pemfile",
+     "dep:rustls-pki-types",
  ]
- scaffolding = [
+ sbom = [
 @@ -112,11 +105,6 @@
      "wild",
      "dep:dirs",
@@ -57,12 +57,12 @@ index 24305db..c7641f9 100644
  version = "0.7.2"
  
 -[dependencies.cargo-xwin]
--version = "0.18.6"
+-version = "0.23.1"
 -optional = true
 -default-features = false
 -
 -[dependencies.cargo-zigbuild]
--version = "0.20.0"
+-version = "0.23.1"
 -optional = true
 -default-features = false
 -
