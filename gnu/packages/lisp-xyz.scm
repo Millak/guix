@@ -35015,7 +35015,7 @@ effieiently.")
 (define-public sbcl-yason
   (package
     (name "sbcl-yason")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method git-fetch)
@@ -35024,7 +35024,7 @@ effieiently.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-yason" version))
        (sha256
-        (base32 "0d22sw7nf2ygqm56ilybg7bza63cv43pc4184r8rvsjz2in37n51"))))
+        (base32 "0s2101y2mj075q02hnakp2w8zdakl6jid9y41q3644q6bvwbm9g6"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria sbcl-trivial-gray-streams))
