@@ -821,14 +821,14 @@ in your executable.")
 (define-public cargo-license
   (package
     (name "cargo-license")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-license" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jw9sn91a23ry6sx3337gi6d56vykgar0i9rrrxgxh93mvdw0qgh"))))
+        (base32 "100x3aiyfvsg71wnxnfnsvybzp0yhmazkzzxxqq66gi639cchbb6"))))
     (build-system cargo-build-system)
     (arguments (list #:install-source? #f))
     (inputs (cargo-inputs 'cargo-license))
