@@ -378,9 +378,10 @@ initrd by default."
   (define (modules package)
     (assoc-ref (package-properties package) 'base-initrd-modules))
 
-  (assoc-ref (or (modules kernel)
-                 (modules linux-libre))
-             system))
+  (or (assoc-ref (or (modules kernel) (modules linux-libre))
+                 system)
+      ;; Either SYSTEM is not supported by KERNEL, or KERNEL is the Hurd.
+      '()))
 
 (define* (base-initrd file-systems
                       #:key
