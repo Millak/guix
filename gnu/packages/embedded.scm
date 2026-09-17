@@ -942,18 +942,21 @@ SEGGER J-Link and compatible devices.")
   (@ (gnu packages tcl) jimtcl))
 
 (define-public openocd
+  ;; OpenOCD latest release was in 2023 and incompatible with Jim Tcl 0.84.
+  (let ((commit "2fe5eaefbd887f03ad30c9ba481ad25d9adf0f37")
+        (revision "0"))
   (package
     (name "openocd")
-    (version "0.12.0")
+    (version (git-version "0.12.0" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://git.code.sf.net/p/openocd/code")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+                    (commit commit)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "09wb11zlmrw6rx1bql3kafgi3ilzp9mhvb6j6rql216by06csing"))))
+                "0rbgkwlwrx3gh1d7q7giqgvg62hki5w03n0ap51mw2avdc6ncbcy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1005,7 +1008,7 @@ SEGGER J-Link and compatible devices.")
     (synopsis "On-Chip Debugger")
     (description "OpenOCD provides on-chip programming and debugging support
 with a layered architecture of JTAG interface and TAP support.")
-    (license license:gpl2+)))
+    (license license:gpl2+))))
 
 ;; The commits for all propeller tools are the stable versions published at
 ;; https://github.com/propellerinc/propgcc in the release_1_0.  According to
