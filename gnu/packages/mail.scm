@@ -4294,25 +4294,24 @@ the use of a local MTA such as Sendmail.")
 (define-public afew
   (package
     (name "afew")
-    (version "3.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afew" version))
        (sha256
-        (base32 "0wpfqbqjlfb9z0hafvdhkm7qw56cr9kfy6n8vb0q42dwlghpz1ff"))))
+        (base32 "0kpqpadwc9ibynb2kjrs07pixbcy74h8n32yfzbjbs23hp5fmiw2"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-freezegun
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list notmuch
            python-chardet
            python-dkimpy
-           python-notmuch))
+           python-notmuch2))
     (home-page "https://github.com/afewmail/afew")
     (synopsis "Initial tagging script for notmuch mail")
     (description
