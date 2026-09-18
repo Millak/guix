@@ -5071,7 +5071,7 @@ arising after the discretization of partial differential equations.")
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)))))
+             ,%openmpi-setup)))))
     (inputs
      `(("mpi" ,openmpi)
        ,@(alist-delete "arpack" (package-inputs slepc))))
@@ -5445,7 +5445,7 @@ sparse system of linear equations A x = b using Gaussian elimination.")
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
-	     ,%openmpi-setup)
+             ,%openmpi-setup)
            (replace 'check
              (lambda _
                ((assoc-ref ,phases 'check)
@@ -5625,8 +5625,8 @@ void mc64ad_dist (int *a, int *b, int *c, int *d, int *e, double *f, int *g,
              (substitute* "CMakeLists.txt"
                ;; AWPM headers require C++14
                (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 14"))))
-	 (add-before 'check 'mpi-setup
-	   ,%openmpi-setup)
+         (add-before 'check 'mpi-setup
+           ,%openmpi-setup)
          (add-before 'check 'omp-setup
            (lambda _ (setenv "OMP_NUM_THREADS" "1") #t)))))
     (home-page (package-home-page superlu))
