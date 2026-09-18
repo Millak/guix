@@ -40,6 +40,7 @@
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2025, 2026 zhengjunjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,6 +133,7 @@ the entire document.")
   (package
     (name "expat")
     (version "2.7.1")
+    (replacement expat-2.8.4)
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -166,6 +168,23 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
+
+(define expat-2.8.4
+  (hidden-package
+   (package
+     (inherit expat)
+     (name "expat")
+     (version "2.8.4")
+     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
+               (origin
+                 (method url-fetch)
+                 (uri (string-append
+                       "https://github.com/libexpat/libexpat/releases/download/R_"
+                       (string-map dot->underscore version)
+                       "/expat-" version ".tar.xz"))
+                 (sha256
+                  (base32
+                   "19w5k6q7ccw7v8wn5v60hj096hv27vrm9qml7d8ymd53ip6f2sk5"))))))))
 
 (define-public libebml
   (package
