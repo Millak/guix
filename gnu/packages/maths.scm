@@ -11344,15 +11344,21 @@ the Wolfram language.")
     (license license:gpl3+)))
 
 (define-public python-mathics-pygments
+  ;; TODO: Package name has been changed upstream, as seen in pyproject.toml:
+  ;; name = "Mathics3_pygments"
+  ;; See: <https://codeberg.org/guix/guix/issues/11317>.
   (package
     (name "python-mathics-pygments")
-    (version "1.0.4")
+    (version "10.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mathics_pygments" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Mathics3/Mathics3-pygments")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1iagdic8f0yjx01kdds40jfcxcpdbrd3i0ywydl01dhyyvd2yjk9"))))
+        (base32 "0j290iagz0k17rzjj09wa7jwmkhdqps21z8z8cliy2hnybx4zlkj"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
@@ -11360,9 +11366,10 @@ the Wolfram language.")
     (propagated-inputs
      (list python-mathics-scanner
            python-pygments))
-    (home-page "http://github.com/Mathics3/mathics-pygments/")
+    (home-page "https://mathics.org/")
     (synopsis "Wolfram language lexer for Pygments")
-    (description "This package provides a Wolfram language lexer for Pygments.")
+    (description
+     "This package provides a Wolfram language lexer for Pygments.")
     (license license:expat)))
 
 (define-public python-mathics-core
