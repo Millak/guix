@@ -195,46 +195,21 @@ which in turn is used by Autosetup.")
      (license license:bsd-2))))
 
 (define-public autosetup
-  (package
+  (package/inherit autosetup-boot0
     (name "autosetup")
-    (version "0.7.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/msteveb/autosetup")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256 (base32 "002b380073cpxlqziia2gvngywrb37b08p9k0zk9vlxn2p174hc6"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (delete-file "jimsh0.c")
-            (substitute* "Makefile"
-              (("^.*tclsh8\\..*")       ;tests run with specific Tcl versions
-               ""))))))
-    (build-system gnu-build-system)
     (arguments
-     (list #:test-target "test"
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (delete 'build)
-               (replace 'install
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "sys-find-tclsh"
-                     (("jimsh tclsh")
-                      (search-input-file inputs "bin/tclsh")))
-                   (invoke "tclsh" "autosetup"
-                           (string-append "--sysinstall=" #$output)))))))
-    (inputs (list tcl))
-    (home-page "https://msteveb.github.io/autosetup/")
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #f) #t)
+       ((#:test-target _ "check") "test")))
+    (inputs (modify-inputs inputs
+              (delete 'jimtcl-boot0)
+              (prepend jimtcl)))
     (synopsis "Build environment auto-configurator")
     (description
      "@command{autosetup} is a tool, similar to @command{autoconf},
 to configure a build system for the appropriate environment,
 according to the system capabilities and the user-selected options.")
-    (license license:bsd-2)))
+    (properties (alist-delete 'hidden? (package-properties autosetup-boot0)))))
 
 (define-public bam
   (package
