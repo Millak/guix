@@ -60,7 +60,7 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.4.335.0")
+    (version "1.4.357.0")
     (source
      (origin
        (method git-fetch)
@@ -69,7 +69,7 @@
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "16p1g33hw89hl2ldpqck2fggqxiwfgn735j35pwqpbckx8r66chy"))
+         "1ljkcdxbd7s67vgyxpdax9gl4griblacggqj5hwx79xrgwgkhrml"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
