@@ -36,9 +36,11 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages image)
@@ -48,7 +50,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module ((guix licenses) #:prefix license:))
+  #:use-module (srfi srfi-1))
 
 (define-public tcl
   (package
@@ -210,31 +212,19 @@ which is used in Jim's build configuration.")
      (license license:bsd-2))))
 
 (define-public jimtcl
-  (package
+  (package/inherit jimtcl-boot0
     (name "jimtcl")
-    (version "0.82")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/msteveb/jimtcl")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "01nxqzn41797ypph1vpwjfh3zqgks0l8ihh6932b4kb83apy6f08"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
-                 ;; This package doesn't use autoconf.
                  (lambda _
-                   (invoke "./configure"
+                   (invoke "autosetup"
                            (string-append "--prefix=" #$output))))
                (add-before 'check 'delete-failing-tests
                  (lambda _
-                   ;; XXX All but 1 SSL tests fail (tries connecting to Google
-                   ;; servers).
+                   ;; INFO: tests/ssl.test requires internet access.
                    (delete-file "tests/ssl.test")))
                #$@(if (target-32bit?)
                       #~((add-after 'unpack 'delete-failing-tests/32bit
@@ -243,13 +233,13 @@ which is used in Jim's build configuration.")
                       #~()))))
     (inputs (list openssl))
     (native-inputs
-     ;; For tests.
-     (list inetutils))       ; for hostname
-    (home-page "http://jim.tcl.tk/index.html")
+     (list autosetup-boot0
+           ;; INFO: tests/posix.test require hostname, provided by inetutils.
+           inetutils))
     (synopsis "Small footprint Tcl implementation")
     (description "Jim is a small footprint implementation of the Tcl programming
 language.")
-    (license license:bsd-2)))
+    (properties (alist-delete 'hidden? (package-properties jimtcl-boot0)))))
 
 (define-public expect
   (package
