@@ -3136,8 +3136,8 @@ features, rewinding, and a strict mode for speedrunning.")
     (license license:gpl2+)))
 
 (define-public redeal
-  (let ((commit "e2e81a477fd31ae548a340b5f0f380594d3d0ad6")
-        (revision "1"))
+  (let ((commit "abcf328546b1147525122c5d6660118a70d5c149")
+        (revision "2"))
     (package
       (name "redeal")
       (version (git-version "0.2.0" revision commit))
@@ -3150,7 +3150,7 @@ features, rewinding, and a strict mode for speedrunning.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1vac36bg4ah9gs4hgmp745xq6nnmd7s71vsq99d72ng3sxap0wa3"))))
+           "02rqadv6f9fsrbrh0d8brgjqgym3glm1mhdcjbf91gas1ckmfv9f"))))
       (build-system pyproject-build-system)
       (arguments
        (list
