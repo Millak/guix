@@ -11302,30 +11302,29 @@ architecture.")
     (license license:lgpl3)))
 
 (define-public python-mathics-scanner
+  ;; TODO: Package name has been changed upstream, as seen in pyproject.toml:
+  ;; name = "Mathics3_Scanner"
+  ;; See: <https://codeberg.org/guix/guix/issues/11317>.
   (package
     (name "python-mathics-scanner")
-    (version "2.0.0")
+    (version "10.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Mathics3/mathics-scanner.git")
+             (url "https://github.com/Mathics3/Mathics3-scanner")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1illmj40rynrhqwr5sfh2mkj2wnpvaqrmvlh56h7za3d823pf5jz"))))
+         "1ma9bdla9na2cc8g9b1jsnhnvs6jmai9dwqr4fzk5w3c2ykjd5vd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare
+          (add-after 'unpack 'make-json-tables
             (lambda _
-              ;; They forgot to update the version number.
-              (substitute* "mathics_scanner/version.py"
-               (("__version__=\"[^\"]*\"")
-                (string-append "__version__=\"" #$version "\"")))
               ;; Generate JSON character/operator tables (character-tables.json,
               ;; operators.json) which are pre-generated in the PyPI tarball
               ;; but not in git.  The Makefile runs this script before
@@ -11333,13 +11332,9 @@ architecture.")
               ;; works because it writes to its own source tree being built;
               ;; in mathics-core, the script tries to write to the installed
               ;; python-mathics-scanner package which is not allowed.
-              (invoke "bash" "./admin-tools/make-JSON-tables.sh")
-              ;; Missing installation of "operators.yml".
-              (substitute* "pyproject.toml"
-               (("\"data/named-characters.yml\",")
-                "\"data/named-characters.yml\", \"data/operators.yml\",")))))))
+              (invoke "bash" "./admin-tools/make-JSON-tables.sh"))))))
     (propagated-inputs (list python-chardet python-click python-pyyaml))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://mathics.org/")
     (synopsis
      "Character tables and tokenizer for Mathics and the Wolfram language")
