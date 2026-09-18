@@ -39442,6 +39442,30 @@ to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
 @code{OpenAI's} models.")
     (license license:expat)))
 
+(define-public python-timed-threads
+  (package
+    (name "python-timed-threads")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Mathics3/python-timed-threads/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "062lml0dg13pi7b871q8fql5rff7g7gs6ljbb8rmm0vp98vqc5fp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/Mathics3/python-timed-threads/")
+    (synopsis "Ability to set absolute time deadlines on asynchronous threads")
+    (description
+     "This package adds the ability to set relative elapsed time deadlines on
+asynchronous threads, and allows one thread to stop another by means of
+raising an exception.")
+    (license license:expat)))
+
 (define-public python-timeout-decorator
   ;; TODO: Remove when python-requests-caches releases a fresh version dropping
   ;; it, see, <https://github.com/requests-cache/requests-cache/pull/1111>.
