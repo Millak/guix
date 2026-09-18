@@ -11467,15 +11467,21 @@ Mathics3.")
     (license license:gpl3)))
 
 (define-public python-mathics-django
+  ;; TODO: Package name has been changed upstream, as seen in pyproject.toml:
+  ;; name = "Mathics3-Frontend-django"
+  ;; See: <https://codeberg.org/guix/guix/issues/11317>.
   (package
     (name "python-mathics-django")
-    (version "9.0.0")
+    (version "10.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mathics_django" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Mathics3/Mathics3-Frontend-django")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1lnqqi3ssr2xdss66asvd02b13igy75264yir0w1v6d1gznn93j5"))))
+        (base32 "0320h1cp390gm0gjs3isjkcmksgbjvla9wd0ysmqjx3f106xvr5j"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
