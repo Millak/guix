@@ -38883,26 +38883,18 @@ adding retry behavior to just about anything.")
 (define-public python-term-background
   (package
     (name "python-term-background")
-    (version "1.0.2")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "term_background" version))
        (sha256
-        (base32 "0p674silrwc3jncncmdnj1lr6pl2q5qbx0xi3mzjq9sgcs5vmp4n"))))
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _ (delete-file "setup.py"))))))
+        (base32 "1gcr4aidgsl9kv2m0jw01svcbi3zlx18m2fpdh3yacvapzgjir2h"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wrapper
-           python-wheel))
+           python-setuptools-scm))
     (home-page "http://github.com/rocky/shell-term-background")
     (synopsis "Determine if shell has a light or dark background")
     (description "This package determines if shell has a light or dark
