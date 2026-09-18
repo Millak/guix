@@ -132,34 +132,32 @@ the entire document.")
 (define-public expat
   (package
     (name "expat")
-    (version "2.7.1")
-    (replacement expat-2.8.4)
+    (version "2.8.4")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
-                (uri (list (string-append "mirror://sourceforge/expat/expat/"
-                                          version "/expat-" version ".tar.xz")
-                           (string-append
-                            "https://github.com/libexpat/libexpat/releases/download/R_"
-                            (string-map dot->underscore version)
-                            "/expat-" version ".tar.xz")))
+                (uri (string-append
+                      "https://github.com/libexpat/libexpat/releases/download/R_"
+                      (string-map dot->underscore version)
+                      "/expat-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "0c3w446jrrnss3ccgx9z590lpwbpxiqdbxv2a0p036cg9da54i9m")))))
+                  "19w5k6q7ccw7v8wn5v60hj096hv27vrm9qml7d8ymd53ip6f2sk5")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'install 'move-static-library
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out    (assoc-ref outputs "out"))
-                            (static (assoc-ref outputs "static")))
-                        (mkdir-p (string-append static "/lib"))
-                        (link (string-append out "/lib/libexpat.a")
-                              (string-append static "/lib/libexpat.a"))
-                        (delete-file (string-append out "/lib/libexpat.a"))
-                        (substitute* (string-append out "/lib/libexpat.la")
-                          (("old_library=.*")
-                           "old_library=''"))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'move-static-library
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out    #$output)
+                         (static #$output:static))
+                     (mkdir-p (string-append static "/lib"))
+                     (link (string-append out "/lib/libexpat.a")
+                           (string-append static "/lib/libexpat.a"))
+                     (delete-file (string-append out "/lib/libexpat.a"))
+                     (substitute* (string-append out "/lib/libexpat.la")
+                       (("old_library=.*")
+                        "old_library=''"))))))))
     (outputs '("out" "static"))
     (home-page "https://libexpat.github.io/")
     (synopsis "Stream-oriented XML parser library written in C")
@@ -168,23 +166,6 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
-
-(define expat-2.8.4
-  (hidden-package
-   (package
-     (inherit expat)
-     (name "expat")
-     (version "2.8.4")
-     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
-               (origin
-                 (method url-fetch)
-                 (uri (string-append
-                       "https://github.com/libexpat/libexpat/releases/download/R_"
-                       (string-map dot->underscore version)
-                       "/expat-" version ".tar.xz"))
-                 (sha256
-                  (base32
-                   "19w5k6q7ccw7v8wn5v60hj096hv27vrm9qml7d8ymd53ip6f2sk5"))))))))
 
 (define-public libebml
   (package
