@@ -3579,6 +3579,15 @@ Navigation Satellite System.")
       #:tests? #f ; No test suite
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-macro-names
+            ;; Some macros named c1 and c2 conflict with newer volk.
+            ;; Fixed upstream in what will become version 2.0.0.
+            ;; For now, just rename the macros.
+            (lambda _
+              (substitute* '("src-core/common/calibration.h"
+                             "src-core/common/calibration.cpp")
+                (("c1") "mc1")
+                (("c2") "mc2"))))
           ;; The RUNPATH of this shared library is missing the
           ;; .../lib/satdump/plugins directory, which fails the
           ;; 'validate-runpath' phase.
