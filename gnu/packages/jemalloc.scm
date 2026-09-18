@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +37,7 @@
 (define-public jemalloc
   (package
     (name "jemalloc")
-    (version "5.3.1")
+    (version "5.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -44,7 +45,7 @@
                     version "/jemalloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "14kgf0hs864hp5xxqfqh37l1d8wwg57h7wv28rffs8ig4f0bq9iq"))))
+                "07agxykbz1ia7xiji4wdayzd5v2p4vbddv915xy3w2biqbx7c1r0"))))
     (build-system gnu-build-system)
     (arguments
      (list
