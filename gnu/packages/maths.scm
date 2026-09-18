@@ -11489,34 +11489,35 @@ Mathics3.")
     (license license:gpl3)))
 
 (define-public python-mathics3-notebook-frontends
-  (let ((commit "63b90a07704acab5b04acc7a9335a8a88916c402") ; no releases
-        (revision "0"))
-    (package
-      (name "python-mathics3-notebook-frontends")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/Mathics3/Mathics3-notebook-frontends")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "02smq8w0m3kj1xssbyd7kl17b34mk1jzy9ds7fsqb54qa5pba78q"))))
-      (build-system pyproject-build-system)
-      (propagated-inputs (list python-mathics-core))
-      (arguments
-       (list #:tests? #f)) ; no tests
-      (native-inputs
-       (list python-setuptools
-             python-wheel))
-      (home-page "https://mathics.org/")
-      (synopsis "Mathics frontend for Jupyter Notebook")
-      (description
-       "This package provides a Mathics3 frontend for
-@url{https://jupyter.org/, Jupyter Notebook} and @url{https://marimo.io/,
-Marimo}.")
-      (license license:gpl3+))))
+  (package
+    (name "python-mathics3-notebook-frontends")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Mathics3/Mathics3-notebook-frontends")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16fhjb1kcv9wa3b95zcakrvsr96qw75qikwdcnjiz6jncn9dli2n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-chardet
+           python-charset-normalizer
+           python-mathics-core
+           python-requests
+           python-urllib3))
+    (home-page "https://mathics.org/")
+    (synopsis "Mathics frontend for Jupyter Notebook")
+    (description
+     "This package provides a Mathics3 frontend for @url{https://jupyter.org/,
+Jupyter Notebook} and @url{https://marimo.io/, Marimo}.")
+    (license license:gpl3+)))
 
 (define-public lie
   (package
