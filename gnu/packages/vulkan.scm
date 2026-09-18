@@ -173,7 +173,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 (define-public spirv-cross
   (package
     (name "spirv-cross")
-    (version "1.4.335.0")
+    (version "1.4.357.0")
     (source
      (origin
        (method git-fetch)
@@ -181,7 +181,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
              (url "https://github.com/KhronosGroup/SPIRV-Cross")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
-        (base32 "04z7kcg0z4mfnsvfxw1bxzfyq1678zwf1d79j2hyvhkvd2c8fr86"))
+        (base32 "1rs6m015bmj356il3p1l62z6kv4si9v3n42ly762cywcxhziac0y"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
