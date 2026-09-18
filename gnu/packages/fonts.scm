@@ -1064,7 +1064,9 @@ letters to account for regional differences.")
                            (version-major+minor version)
                            "/terminus-font-" version ".tar.gz"))
        (sha256
-        (base32 "0yggffiplk22lgqklfmd2c0rw8gwchynjh5kz4bz8yv2h6vw2qfr"))))
+        (base32 "0yggffiplk22lgqklfmd2c0rw8gwchynjh5kz4bz8yv2h6vw2qfr"))
+       (patches
+        (search-patches "font-terminus-respect-SOURCE_DATE_EPOCH.patch"))))
     (build-system gnu-build-system)
     (outputs (list "out" "pcf-8bit" "otb"))
     (arguments
