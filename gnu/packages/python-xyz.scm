@@ -38784,6 +38784,32 @@ You can set the following @code{tcolor} arguments:
 @end itemize")
     (license license:expat)))
 
+(define-public python-tdir
+  (package
+    (name "python-tdir")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rec/tdir")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10kl0w40n53ynhxlvkv56gywswnrb2drmrw972k0p66sihlw9y2p"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-dek python-xmod))
+    (home-page "https://rec.github.io/tdir/")
+    (synopsis "Create, fill a temporary directory")
+    (description
+     "This is Python helper module to run code inside a temporary directory
+filled with zero or more files.  @code{tdir()} runs code in a temporary
+directory pre-filled with files: it can either be used as a context manager,
+or a decorator for functions or classes.  @code{tdir.fill()} is a tiny
+function that recursively fills a directory.")
+    (license license:expat)))
+
 (define-public python-telethon
   (package
     (name "python-telethon")
