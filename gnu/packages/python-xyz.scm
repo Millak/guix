@@ -1376,6 +1376,29 @@ syntax tree}, or calculate the differences between two D-Bus APIs.")
 decorators in Python.")
     (license license:bsd-3)))
 
+(define-public python-dek
+  (package
+    (name "python-dek")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rec/dek")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14y4d1vv9w13ng12x0gk1y4gfqn2sqz91r6bf4019gpgr6kvqj8v"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-xmod))
+    (home-page "https://rec.github.io/dek/")
+    (synopsis "The decorator-decorator")
+    (description
+     "This package implements a functionality to write a Python decorator
+which takes no parameters isn't hard.")
+    (license license:expat)))
+
 (define-public python-discovery
   (package
     (name "python-discovery")
