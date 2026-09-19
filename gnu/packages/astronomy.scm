@@ -9474,7 +9474,7 @@ plot a single (or a few) model(s).")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "2.5.0")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -9483,7 +9483,7 @@ plot a single (or a few) model(s).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00shhb22m456j5sq25d3ka9ig1k0ybw869wa3933cm6askbmdag0"))
+        (base32 "0gxgd8yh0dv1zjf43l98m0gis2by21rn2pb2xmx6lija4w7jrcpj"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -9492,7 +9492,7 @@ plot a single (or a few) model(s).")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 92 passed, 6 skipped, 10 deselected
+      ;; tests: 288 passed, 6 skipped, 13 deselected
       #:test-flags
       ;; XXX: testdata is distributed via Zenodo
       ;; <https://zenodo.org/records/17084976> with total size more than 2GiB,
@@ -9539,15 +9539,10 @@ plot a single (or a few) model(s).")
               "--deselect=tests/shape_test.py::test_2D_shape"
               "--deselect=tests/shape_test.py::test_3D_shape"
               "--deselect=tests/shape_test.py::test_halo_shape_wrapper"
+              "--deselect=tests/split_swift_snapshot_test.py::test_split_snapshot"
+              "--deselect=tests/split_swift_snapshot_test.py::test_split_snapshot_with_mask"
               "--deselect=tests/test_profile.py::test_unique_hash_generation"
-              "--deselect=tests/test_profile.py::test_write_profile"
-              ;; DeprecationWarning: backend2gui is deprecated since IPython
-              ;; 8.24, backends are managed in matplotlib and can be
-              ;; externally registered.
-              "--deselect=tests/plot_hist2d_test.py::test_hist2d"
-              "--deselect=tests/plot_hist2d_test.py::test_hist2d_massweight"
-              "--deselect=tests/schmidtlaw_test.py::test_full_disc"
-              "--deselect=tests/schmidtlaw_test.py::test_truncated_disc")
+              "--deselect=tests/test_profile.py::test_write_profile")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -9555,7 +9550,8 @@ plot a single (or a few) model(s).")
               (mkdir-p "testdata/empty_folder_0001")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-cython
+     (list nss-certs-for-test
+           python-cython
            python-ipython-minimal
            python-pandas
            python-pytest
