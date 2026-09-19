@@ -191,11 +191,12 @@
 
                ;; Stage locales.
                (setenv "SKIP_FETCHING_LOCALES" "true")
-               (begin
-                 (substitute* "scripts/librewolf-patches.py"
-                   (("l10n_dir = Path(\"..\", \"l10n\")")
-                    (string-append
-                     "l10n_dir = \"" #+l10n "\""))))
+               (substitute* '("scripts/librewolf-patches.py")
+                 (("^    exec\\('mkdir -p lw'\\)")
+                  (string-append
+                   "    exec('mkdir -p lw')\n    exec(\"cp -r "
+                   #+l10n
+                   " ./lw/l10n && chmod -R +w ./lw/l10n\")")))
 
                ;; Run the build script
                (invoke "make" "all")
