@@ -2679,8 +2679,7 @@ up-front for extensibility.")
      (list python-asdf-bootstrap
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-standard))
     (home-page "https://github.com/asdf-format/asdf-transform-schemas")
@@ -2722,8 +2721,7 @@ implementation package such as asdf-astropy.")
            python-pytest
            python-pytest-openfiles
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-coordinates-schemas
            python-asdf-standard
@@ -3133,10 +3131,7 @@ telescopes, and data generation utilities.")
         (base32 "0pav2rq5q0wyr38g6z8ai4z2iqqc9x04iwll158yvkvgnv352m0i"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-h5py
@@ -3852,9 +3847,7 @@ specifically in the C code.")
       ;; <https://github.com/mhvk/baseband/issues/539>.
       #:tests? #f))
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-astropy))
     (home-page "https://github.com/mhvk/baseband")
@@ -5764,10 +5757,7 @@ files.")
         (base32 "1ba1374axaxh3dzzpii6q05z4jcrfp7yjk1wsfm2gzmxalnp0f6r"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-numpy
@@ -6464,7 +6454,6 @@ across many files.")
            python-pytest
            ;; python-pytest-faulthandler
            python-setuptools
-           python-wheel
            xorg-server-for-tests))
     (propagated-inputs
      (list python-echo
@@ -6695,9 +6684,7 @@ Programmer’s Interface, HAPI} data server API.")
               (substitute* (find-files "." ".\\py$")
                 (("np.trapz\\(") "np.trapezoid(")))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-numpy
@@ -6968,10 +6955,7 @@ observationally-derived galaxy merger catalogs.")
     (arguments
      (list #:tests? #f)) ; Requires HTTP(S) access to api.beta.helioviewer.org
     (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-pytest-astropy python-setuptools))
     (propagated-inputs
      (list python-pydantic
            python-pydantic-settings
@@ -7172,8 +7156,7 @@ etc.).")
     (arguments
      (list #:tests? #f)) ; no tests in PyPI tarball, tests require networking
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-healpy
            python-matplotlib
@@ -7532,8 +7515,7 @@ using template fitting.")
            python-numpy
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list tempo2))
     (propagated-inputs
@@ -7907,8 +7889,7 @@ description of arbitrary sky, time, (or frequency) coverages.")
            python-pytest-doctestplus
            python-pytest-mpl
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
@@ -8864,8 +8845,7 @@ loop physics.")
      (list python-pytest-doctestplus
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list erfa))
     (propagated-inputs
@@ -9682,8 +9662,7 @@ provided.")
     (arguments
      (list #:tests? #f)) ; no tests
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://siril.org/tutorials/pysiril/")
     (synopsis "Python interface to SiriL")
     (description
@@ -10097,10 +10076,7 @@ Grace Roman Space Telescope.")
         (base32 "0i76hj6wyijbpxx7n1sm12f0qqw15srk6ikq2cr589lvrixylpwv"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest-astropy python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
@@ -10832,9 +10808,7 @@ orbit around the Earth.")
      ;; TODO: Tests depend on lenstronomy, not packaged yet.
      (list #:tests? #f))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-configparser
            python-numpy))
@@ -10982,8 +10956,7 @@ undertaken by the developers.")
        (list
         #:tests? #f)) ; no tests
       (native-inputs
-       (list python-setuptools
-             python-wheel))
+       (list python-setuptools))
       (propagated-inputs
        (list python-matplotlib
              python-numpy))
@@ -11945,10 +11918,7 @@ imaging, coronagraphic, and spectroscopic modes.")
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-numpy
            python-scipy))
@@ -12045,10 +12015,7 @@ task}.")
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://stscistimage.readthedocs.io/en/latest/")
@@ -13109,10 +13076,8 @@ for dealing with particle data and a few related utility functions.")
                 "15kq7z30m9i286ncs9xvpaq3dq1p5fa47jz21prq146qwr7j6dm8"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
-    (native-inputs (list python-pytest
-                         python-pytest-doctestplus
-                         python-setuptools-scm
-                         python-wheel))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/wiimatch")
     (synopsis
      "Optimal matching of weighted N-dimensional image intensity data")
@@ -13708,8 +13673,7 @@ Processor (SDP) function library for radio astronomy.")
      (list cmake
            python-pytest
            python-scipy
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-numpy))))
 
