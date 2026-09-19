@@ -1105,7 +1105,12 @@ letters to account for regional differences.")
                           (install-file "README"
                                         (string-append directory "/share/doc/"
                                                        ,name "-" ,version))))
-                       outputs))))))
+                       outputs)))
+         (add-after 'install 'install-fontconfig
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "75-yes-terminus.conf"
+                             (string-append out "/share/fontconfig/conf.avail"))))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
     (home-page "https://terminus-font.sourceforge.net/")
