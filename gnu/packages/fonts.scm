@@ -1641,163 +1641,42 @@ for terminal emulators that require consistent character spacing."))
 (define-public font-nerd-fantasque-sans
   (make-nerd-fonts-package
    "font-nerd-fantasque-sans" "FantasqueSansMono"
-   #:synopsis "Fantasque Sans with an iconic font collection"
+   #:synopsis "Fantasque Sans patched with nerd icons"
    #:description
    "This package provides the Fantasque Sans Mono font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item Fantasque Sans
-@item Fantasque Sans Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing."))
+glyphs from @code{font-nerd-symbols}."))
 
 (define-public font-nerd-fira-code
   (make-nerd-fonts-package
    "font-nerd-fira-code" "FiraCode"
-   #:synopsis "Fira Code with an iconic font collection"
+   #:synopsis "Fira Code patched with nerd icons"
    #:description
    "This package provides the Fira Code font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item Fira Code
-@item Fira Code Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing."))
+glyphs from @code{font-nerd-symbols}."))
 
 (define-public font-nerd-jetbrains-mono
   (make-nerd-fonts-package
    "font-nerd-jetbrains-mono" "JetBrainsMono"
-   #:synopsis "JetBrains Mono with an iconic font collection"
+   #:synopsis "JetBrains Mono patched with nerd icons"
    #:description
    "This package provides the JetBrains Mono font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item JetBrains
-@item JetBrains Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing."))
+glyphs from @code{font-nerd-symbols}."))
 
 (define-public font-nerd-opendyslexic
   (make-nerd-fonts-package
    "font-nerd-opendyslexic" "OpenDyslexic"
-   #:synopsis "OpenDyslexic with an iconic font collection"
+   #:synopsis "OpenDyslexic patched with nerd icons"
    #:description
-   "This package provides the OpenDyslexic font with the extra glyphs from
-Nerd Fonts.  OpenDyslexic is designed to help readability for some of the
-symptoms of dyslexia: letters have heavy weighted bottoms to indicate
-orientation, and their unique shapes help prevent flipping and swapping.
-
-@itemize
-@item OpenDyslexic
-@item OpenDyslexic Alta
-@item OpenDyslexic Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-Only the OpenDyslexic Mono face is monospaced; it is the only one for which a
-Nerd Font Mono variant, with all glyphs of uniform width, is provided.  The
-Propo variants leave the advance width of the added icons unchanged and are
-meant for graphical environments."))
+   "This package provides the OpenDyslexic font with the extra
+glyphs from @code{font-nerd-symbols}."))
 
 (define-public font-nerd-meslo-lg
   (make-nerd-fonts-package
    "font-nerd-meslo-lg" "Meslo"
-   #:synopsis "Meslo LG font with Nerd-Icons"
+   #:synopsis "Meslo LG patched with nerd icons"
    #:description
    "This package provides the Meslo LG font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item Meslo LG
-@item Meslo LG (Dotted zero)
-@item Meslo LG Mono
-@item Meslo LG Mono (Dotted zero)
-@item Meslo LG Propo
-@item Meslo LG Propo (Dotted zero)
-@end itemize
-
-This package also includes bold, italic, and bold/italic versions of the above fonts.
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consisten character spacing."))
+glyphs from @code{font-nerd-symbols}."))
 
 (define-public font-new-computer-modern
   (package
