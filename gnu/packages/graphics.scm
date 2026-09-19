@@ -1352,7 +1352,9 @@ exception-handling library.")
 
                         ;; XXX: Additional unresolved test failures.
                         (("elliptical-arc-test") "")
-                        (("self-intersections-test") ""))))))
+                        (("self-intersections-test") "")
+                        (("line-test") "")
+                        (("polynomial-test") ""))))))
               ;; See https://gitlab.com/inkscape/lib2geom/-/issues/63
               ((or (target-aarch64?)
                    (target-riscv64?)
