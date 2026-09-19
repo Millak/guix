@@ -1539,98 +1539,47 @@ additional characters (mostly accented ones).  This package provides the
 OpenType variant of these fonts.")
     (license license:gfl1.0)))
 
-(define-public font-nerd-opendyslexic
+(define* (make-nerd-fonts-package package-name fonts-directory
+                                  #:key synopsis description)
   (package
-    (name "font-nerd-opendyslexic")
-    (version "3.4.0")
+    (name package-name)
+    (version "3.5.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ryanoasis/nerd-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+              (url "https://github.com/ryanoasis/nerd-fonts")
+              (commit (string-append "v" version))))
+       ;; Use the same source for all font-nerd-* packages to save disk space.
+       (file-name (git-file-name "nerd-fonts" version))
        (sha256
-        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
-       (modules '((srfi srfi-26)
-                  (ice-9 ftw)
-                  (guix build utils)))
+        (base32
+         "0mb5p02g7c49n8fbn67gnadgx5bhnyvshwsyvgk25c6vvv0d0arf"))
+       (modules '((guix build utils)))
        (snippet
-        ;; Remove fonts we don't use to save space and build time.
-        #~(begin
-            (delete-file-recursively "patched-fonts")
-            (with-directory-excursion "src/unpatched-fonts"
-              (let ((keep? (cut member <>
-                                '("." ".." "OpenDyslexic"))))
-                (for-each delete-file-recursively
-                          (scandir "."
-                                   (negate keep?)))))))))
+        #~(delete-file-recursively "patched-fonts"))))
     (build-system font-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "src/unpatched-fonts/OpenDyslexic")))
           (add-before 'install 'build
             (lambda _
-              (let ((patch
-                     (lambda (modes fonts)
-                       (for-each
-                        (lambda (font)
-                          ;; Patch every font variant with the modes upstream
-                          ;; builds for it.
-                          ;; --complete: Include all icon sets.
-                          ;; --configfile: Honour the upstream patch options,
-                          ;; here "--removeligatures", which drops the 'ldot'
-                          ;; ligatures because they map to only one advance
-                          ;; width.
-                          ;; --mono will generate the Mono variants.
-                          ;; --variable-width-glyphs will generate the
-                          ;; Proportional variants (used for graphical
-                          ;; environments).
-                          ;; If no flag is specified, the no-mono
-                          ;; no-proportional font will be built.
-                          ;; No --ext is passed, so the OpenType format of the
-                          ;; source fonts is preserved.
-                          ;; --no-progressbars: Disable progress bars for clean
-                          ;; build output.
-                          (for-each
-                           (lambda (mode)
-                             (apply invoke "fontforge" "-script"
-                                    "../../../font-patcher"
-                                    `("--complete"
-                                      "--configfile"
-                                      "config.cfg"
-                                      ,@(if mode
-                                            (list mode)
-                                            '())
-                                      "--no-progressbars"
-                                      "--outputdir"
-                                      "."
-                                      ,font)))
-                           modes))
-                        fonts))))
-                (patch '(#nil "--variable-width-glyphs")
-                       '("Bold/OpenDyslexic-Bold.otf"
-                         "Bold-Italic/OpenDyslexic-BoldItalic.otf"
-                         "Italic/OpenDyslexic-Italic.otf"
-                         "Regular/OpenDyslexic-Regular.otf"
-                         "Alta-Bold/OpenDyslexicAlta-Bold.otf"
-                         "Alta-Bold-Italic/OpenDyslexicAlta-BoldItalic.otf"
-                         "Alta-Italic/OpenDyslexicAlta-Italic.otf"
-                         "Alta-Regular/OpenDyslexicAlta-Regular.otf"))
-                (patch '(#nil "--mono" "--variable-width-glyphs")
-                       '("Mono-Regular/OpenDyslexicMono-Regular.otf")))))
+              (setenv "NERDFONTS" "--complete")
+              (invoke "./bin/scripts/gotta-patch-em-all-font-patcher!.sh"
+                      #$(string-append "/" fonts-directory))
+              (chdir "patched-fonts")))
           (add-after 'build 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (for-each (lambda (font)
-                            ;; Use Python script with fontforge to validate the font.
-                            (invoke "python3" "-c"
-                                    (format #f
-                                     "import fontforge
+                (let ((patched-fonts (find-files "." "\\.(ttf|otf)$")))
+                  (when (null? patched-fonts)
+                    (error "No patched fonts generated"))
+                  (for-each (lambda (font)
+                              ;; Use a python script to validate the font.
+                              (invoke "python3" "-c"
+                                      (format #f
+                                              "import fontforge
 name = ~s
 font = fontforge.open(name)
 glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
@@ -1638,44 +1587,153 @@ print(f'Font has {glyph_count} glyphs with Unicode mapping')
 if glyph_count < 8000:
     raise ValueError(f'Font has too few glyphs: {glyph_count}')
 print(f'✓ Font validation passed for {name}')
-font.close()~%"
-                                     font)))
-                          '("OpenDyslexicNerdFont-Bold.otf"
-                            "OpenDyslexicNerdFont-BoldItalic.otf"
-                            "OpenDyslexicNerdFont-Italic.otf"
-                            "OpenDyslexicNerdFont-Regular.otf"
-                            "OpenDyslexicNerdFontPropo-Bold.otf"
-                            "OpenDyslexicNerdFontPropo-BoldItalic.otf"
-                            "OpenDyslexicNerdFontPropo-Italic.otf"
-                            "OpenDyslexicNerdFontPropo-Regular.otf"
-                            "OpenDyslexicAltNerdFont-Bold.otf"
-                            "OpenDyslexicAltNerdFont-BoldItalic.otf"
-                            "OpenDyslexicAltNerdFont-Italic.otf"
-                            "OpenDyslexicAltNerdFont-Regular.otf"
-                            "OpenDyslexicAltNerdFontPropo-Bold.otf"
-                            "OpenDyslexicAltNerdFontPropo-BoldItalic.otf"
-                            "OpenDyslexicAltNerdFontPropo-Italic.otf"
-                            "OpenDyslexicAltNerdFontPropo-Regular.otf"
-                            "OpenDyslexicMNerdFont-Regular.otf"
-                            "OpenDyslexicMNerdFontMono-Regular.otf"
-                            "OpenDyslexicMNerdFontPropo-Regular.otf")))))
-          (add-before 'install 'remove-unpatched-fonts
+font.close()~%" font)))
+                            patched-fonts)))))
+          (add-before 'install-license-files 'prepare-license-files
             (lambda _
-              (for-each delete-file-recursively
-                        '("Alta-Bold"
-                          "Alta-Bold-Italic"
-                          "Alta-Italic"
-                          "Alta-Regular"
-                          "Bold"
-                          "Bold-Italic"
-                          "Italic"
-                          "Mono-Regular"
-                          "Regular")))))))
-    (native-inputs (list fontforge python-minimal))
+              (chdir #$(string-append "../src/unpatched-fonts/"
+                                      fonts-directory))
+              (copy-file "../../../LICENSE" "LICENSE.nerd-fonts"))))))
+    (native-inputs
+     (list
+      bash-minimal
+      coreutils
+      findutils
+      fontforge
+      python-minimal))
     (home-page "https://www.nerdfonts.com/")
-    (synopsis "OpenDyslexic with an iconic font collection")
-    (description
-     "This package provides the OpenDyslexic font with the extra glyphs from
+    (synopsis synopsis)
+    (description description)
+    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
+    (license (list license:expat license:cc-by4.0 license:unlicense
+                   license:asl2.0 license:silofl1.1))))
+
+(define-public font-nerd-symbols
+  (make-nerd-fonts-package
+   "font-nerd-symbols" "NerdFontsSymbolsOnly"
+   #:synopsis "Iconic font collection"
+   #:description
+   "This package provides the following iconic fonts suitable for use as
+fallback fonts for icon display in terminal emulators and text editors:
+
+@itemize
+@item Symbols Nerd Font
+@item Symbols Nerd Font Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing."))
+
+(define-public font-nerd-fantasque-sans
+  (make-nerd-fonts-package
+   "font-nerd-fantasque-sans" "FantasqueSansMono"
+   #:synopsis "Fantasque Sans with an iconic font collection"
+   #:description
+   "This package provides the Fantasque Sans Mono font with the extra
+glyphs from Nerd Fonts.
+
+@itemize
+@item Fantasque Sans
+@item Fantasque Sans Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing."))
+
+(define-public font-nerd-fira-code
+  (make-nerd-fonts-package
+   "font-nerd-fira-code" "FiraCode"
+   #:synopsis "Fira Code with an iconic font collection"
+   #:description
+   "This package provides the Fira Code font with the extra
+glyphs from Nerd Fonts.
+
+@itemize
+@item Fira Code
+@item Fira Code Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing."))
+
+(define-public font-nerd-jetbrains-mono
+  (make-nerd-fonts-package
+   "font-nerd-jetbrains-mono" "JetBrainsMono"
+   #:synopsis "JetBrains Mono with an iconic font collection"
+   #:description
+   "This package provides the JetBrains Mono font with the extra
+glyphs from Nerd Fonts.
+
+@itemize
+@item JetBrains
+@item JetBrains Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing."))
+
+(define-public font-nerd-opendyslexic
+  (make-nerd-fonts-package
+   "font-nerd-opendyslexic" "OpenDyslexic"
+   #:synopsis "OpenDyslexic with an iconic font collection"
+   #:description
+   "This package provides the OpenDyslexic font with the extra glyphs from
 Nerd Fonts.  OpenDyslexic is designed to help readability for some of the
 symptoms of dyslexia: letters have heavy weighted bottoms to indicate
 orientation, and their unique shapes help prevent flipping and swapping.
@@ -1703,230 +1761,26 @@ These fonts include glyphs from multiple icon sets:
 Only the OpenDyslexic Mono face is monospaced; it is the only one for which a
 Nerd Font Mono variant, with all glyphs of uniform width, is provided.  The
 Propo variants leave the advance width of the added icons unchanged and are
-meant for graphical environments.")
-    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
-    (license
-     (list
-      license:expat
-      license:cc-by4.0
-      license:unlicense
-      license:asl2.0
-      license:silofl1.1))))
+meant for graphical environments."))
 
-(define-public font-nerd-symbols
-  (package
-    (name "font-nerd-symbols")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanoasis/nerd-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
-       (modules
-        '((srfi srfi-26)
-          (ice-9 ftw)
-          (guix build utils)))
-       (snippet
-        ;; Remove fonts we don't use to save space and build time.
-        #~(begin
-            (delete-file-recursively "patched-fonts")
-            (with-directory-excursion "src/unpatched-fonts"
-              (let ((keep? (cut member <> '("." ".." "NerdFontsSymbolsOnly"))))
-                (for-each delete-file-recursively
-                          (scandir "." (negate keep?)))))))))
-    (build-system font-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "src/unpatched-fonts/NerdFontsSymbolsOnly")))
-          (add-before 'install 'build
-            (lambda _
-              (for-each
-               (lambda (monospaced?)
-                 ;; Patch the blank font to create Symbols Nerd Font.
-                 ;; --complete: Include all icon sets.
-                 ;; --mono: Create monospaced glyphs (fixed width).
-                 ;; --ext ttf: Generate TrueType font.
-                 ;; --no-progressbars: Disable progress bars for clean build
-                 ;; output.
-                 (apply invoke "fontforge" "-script" "../../../font-patcher"
-                        `("--complete"
-                          ,@(if monospaced? '("--mono") '())
-                          "--ext" "ttf"
-                          "--no-progressbars"
-                          "--outputdir" "."
-                          "NerdFontsSymbolsNerdFontBlank.sfd")))
-               '(#f #t))))
-          (add-after 'build 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each
-                 (lambda (font)
-                   ;; Use Python script with fontforge to validate the font.
-                   (invoke "python3" "-c"
-                           (format #f "\
-import fontforge
-name = ~s
-font = fontforge.open(name)
-glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
-print(f'Font has {glyph_count} glyphs with Unicode mapping')
-if glyph_count < 8000:
-    raise ValueError(f'Font has too few glyphs: {glyph_count}')
-print(f'✓ Font validation passed for {name}')
-font.close()~%"
-                                   font)))
-                 '("SymbolsNerdFont-Regular.ttf"
-                   "SymbolsNerdFontMono-Regular.ttf"))))))))
-    (native-inputs (list fontforge python-minimal))
-    (home-page "https://www.nerdfonts.com/")
-    (synopsis "Iconic font collection")
-    (description
-     "This package provides the following iconic fonts suitable for use as
-fallback fonts for icon display in terminal emulators and text editors:
-
-@itemize
-@item Symbols Nerd Font
-@item Symbols Nerd Font Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing.")
-    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
-    (license
-     (list license:expat
-           license:cc-by4.0
-           license:unlicense
-           license:asl2.0
-           license:silofl1.1))))
-
-(define-public font-nerd-fantasque-sans
-  (package
-    (name "font-nerd-fantasque-sans")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanoasis/nerd-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
-       (modules '((srfi srfi-26)
-                  (ice-9 ftw)
-                  (guix build utils)))
-       (snippet
-        ;; Remove fonts we don't use to save space and build time.
-        #~(begin
-            (delete-file-recursively "patched-fonts")
-            (with-directory-excursion "src/unpatched-fonts"
-              (let ((keep? (cut member <>
-                                '("." ".." "FantasqueSansMono"))))
-                (for-each delete-file-recursively
-                          (scandir "."
-                                   (negate keep?)))))))))
-    (build-system font-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "src/unpatched-fonts/FantasqueSansMono")))
-          (add-before 'install 'build
-            (lambda _
-              (for-each (lambda (font)
-                          ;; Patch every font variant with normal, mono and
-                          ;; proportional modes.
-                          ;; --complete: Include all icon sets.
-                          ;; --mono will generate the Mono variants.
-                          ;; --variable-width-glyphs will generate the
-                          ;; Proportional variants (used for graphical
-                          ;; environments).
-                          ;; If no flag is specified, the no-mono no-proportional
-                          ;; font will be built.
-                          ;; --ext ttf: Generate TrueType font.
-                          ;; --no-progressbars: Disable progress bars for clean build
-                          ;; output.
-                          (for-each (lambda (mode)
-                                      (apply invoke "fontforge" "-script"
-                                             "../../../font-patcher"
-                                             `("--complete" ,@(if mode
-                                                                  (list mode)
-                                                                  '())
-                                               "--ext"
-                                               "ttf"
-                                               "--no-progressbars"
-                                               "--outputdir"
-                                               "."
-                                               ,font)))
-                                    '(#nil "--mono" "--variable-width-glyphs")))
-                        '("Bold/FantasqueSansMono-Bold.ttf"
-                          "Regular/FantasqueSansMono-Regular.ttf"
-                          "Italic/FantasqueSansMono-Italic.ttf"
-                          "Bold-Italic/FantasqueSansMono-BoldItalic.ttf"))))
-          (add-after 'build 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each (lambda (font)
-                            ;; Use Python script with fontforge to validate the font.
-                            (invoke "python3" "-c"
-                                    (format #f
-                                     "import fontforge
-name = ~s
-font = fontforge.open(name)
-glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
-print(f'Font has {glyph_count} glyphs with Unicode mapping')
-if glyph_count < 8000:
-    raise ValueError(f'Font has too few glyphs: {glyph_count}')
-print(f'✓ Font validation passed for {name}')
-font.close()~%"
-                                     font)))
-                          '("FantasqueSansMNerdFont-Bold.ttf"
-                            "FantasqueSansMNerdFont-Regular.ttf"
-                            "FantasqueSansMNerdFont-Italic.ttf"
-                            "FantasqueSansMNerdFont-BoldItalic.ttf"
-                            "FantasqueSansMNerdFontMono-Bold.ttf"
-                            "FantasqueSansMNerdFontMono-Regular.ttf"
-                            "FantasqueSansMNerdFontMono-Italic.ttf"
-                            "FantasqueSansMNerdFontMono-BoldItalic.ttf"
-                            "FantasqueSansMNerdFontPropo-Bold.ttf"
-                            "FantasqueSansMNerdFontPropo-Regular.ttf"
-                            "FantasqueSansMNerdFontPropo-Italic.ttf"
-                            "FantasqueSansMNerdFontPropo-BoldItalic.ttf"))))))))
-    (native-inputs (list fontforge python-minimal))
-    (home-page "https://www.nerdfonts.com/")
-    (synopsis "Fantasque Sans with an iconic font collection")
-    (description
-     "This package provides the Fantasque Sans Mono font with the extra
+(define-public font-meslo-lg-nerd
+  (make-nerd-fonts-package
+   "font-meslo-lg-nerd" "Meslo"
+   #:synopsis "Meslo LG font with Nerd-Icons"
+   #:description
+   "This package provides the Meslo LG font with the extra
 glyphs from Nerd Fonts.
 
 @itemize
-@item Fantasque Sans
-@item Fantasque Sans Mono
+@item Meslo LG
+@item Meslo LG (Dotted zero)
+@item Meslo LG Mono
+@item Meslo LG Mono (Dotted zero)
+@item Meslo LG Propo
+@item Meslo LG Propo (Dotted zero)
 @end itemize
+
+This package also includes bold, italic, and bold/italic versions of the above fonts.
 
 These fonts include glyphs from multiple icon sets:
 
@@ -1943,396 +1797,7 @@ These fonts include glyphs from multiple icon sets:
 @end itemize
 
 The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing.")
-    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
-    (license (list license:expat license:cc-by4.0 license:unlicense
-                   license:asl2.0 license:silofl1.1))))
-
-(define-public font-nerd-fira-code
-  (package
-    (name "font-nerd-fira-code")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanoasis/nerd-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
-       (modules '((srfi srfi-26)
-                  (ice-9 ftw)
-                  (guix build utils)))
-       (snippet
-        ;; Remove fonts we don't use to save space and build time.
-        #~(begin
-            (delete-file-recursively "patched-fonts")
-            (with-directory-excursion "src/unpatched-fonts"
-              (let ((keep? (cut member <>
-                                '("." ".." "FiraCode"))))
-                (for-each delete-file-recursively
-                          (scandir "."
-                                   (negate keep?)))))))))
-    (build-system font-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "src/unpatched-fonts/FiraCode")))
-          (add-before 'install 'build
-            (lambda _
-              (for-each (lambda (font)
-                          ;; Patch every font variant with normal, mono and
-                          ;; proportional modes.
-                          ;; --complete: Include all icon sets.
-                          ;; --mono will generate the Mono variants.
-                          ;; --variable-width-glyphs will generate the
-                          ;; Proportional variants (used for graphical
-                          ;; environments).
-                          ;; If no flag is specified, the no-mono no-proportional
-                          ;; font will be built.
-                          ;; --ext ttf: Generate TrueType font.
-                          ;; --no-progressbars: Disable progress bars for clean build
-                          ;; output.
-                          (for-each (lambda (mode)
-                                      (apply invoke "fontforge" "-script"
-                                             "../../../font-patcher"
-                                             `("--complete" ,@(if mode
-                                                                  (list mode)
-                                                                  '())
-                                               "--ext"
-                                               "ttf"
-                                               "--no-progressbars"
-                                               "--outputdir"
-                                               "."
-                                               ,font)))
-                                    '(#nil "--mono" "--variable-width-glyphs")))
-                        '("Bold/FiraCode-Bold.ttf"
-                          "Light/FiraCode-Light.ttf"
-                          "Medium/FiraCode-Medium.ttf"
-                          "Regular/FiraCode-Regular.ttf"
-                          "Retina/FiraCode-Retina.ttf"
-                          "SemiBold/FiraCode-SemiBold.ttf"))))
-          (add-after 'build 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each (lambda (font)
-                            ;; Use Python script with fontforge to validate the font.
-                            (invoke "python3" "-c"
-                                    (format #f
-                                     "import fontforge
-name = ~s
-font = fontforge.open(name)
-glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
-print(f'Font has {glyph_count} glyphs with Unicode mapping')
-if glyph_count < 8000:
-    raise ValueError(f'Font has too few glyphs: {glyph_count}')
-print(f'✓ Font validation passed for {name}')
-font.close()~%"
-                                     font)))
-                          '("FiraCodeNerdFont-Bold.ttf"
-                            "FiraCodeNerdFont-Light.ttf"
-                            "FiraCodeNerdFont-Medium.ttf"
-                            "FiraCodeNerdFont-Regular.ttf"
-                            "FiraCodeNerdFont-Retina.ttf"
-                            "FiraCodeNerdFont-SemiBold.ttf"
-                            "FiraCodeNerdFontMono-Bold.ttf"
-                            "FiraCodeNerdFontMono-Light.ttf"
-                            "FiraCodeNerdFontMono-Medium.ttf"
-                            "FiraCodeNerdFontMono-Regular.ttf"
-                            "FiraCodeNerdFontMono-Retina.ttf"
-                            "FiraCodeNerdFontMono-SemiBold.ttf"
-                            "FiraCodeNerdFontPropo-Bold.ttf"
-                            "FiraCodeNerdFontPropo-Light.ttf"
-                            "FiraCodeNerdFontPropo-Medium.ttf"
-                            "FiraCodeNerdFontPropo-Regular.ttf"
-                            "FiraCodeNerdFontPropo-Retina.ttf"
-                            "FiraCodeNerdFontPropo-SemiBold.ttf"))))))))
-    (native-inputs (list fontforge python-minimal))
-    (home-page "https://www.nerdfonts.com/")
-    (synopsis "Fira Code with an iconic font collection")
-    (description
-     "This package provides the Fira Code font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item Fira Code
-@item Fira Code Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing.")
-    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
-    (license (list license:expat license:cc-by4.0 license:unlicense
-                   license:asl2.0 license:silofl1.1))))
-
-(define-public font-nerd-jetbrains-mono
-  (package
-    (name "font-nerd-jetbrains-mono")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryanoasis/nerd-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
-       (modules '((srfi srfi-26)
-                  (ice-9 ftw)
-                  (guix build utils)))
-       (snippet
-        ;; Remove fonts we don't use to save space and build time.
-        #~(begin
-            (delete-file-recursively "patched-fonts")
-            (with-directory-excursion "src/unpatched-fonts"
-              (let ((keep? (cut member <>
-                                '("." ".." "JetBrainsMono"))))
-                (for-each delete-file-recursively
-                          (scandir "."
-                                   (negate keep?)))))))))
-    (build-system font-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "src/unpatched-fonts/JetBrainsMono")))
-          (add-before 'install 'build
-            (lambda _
-              (for-each (lambda (font)
-                          ;; Patch every font variant with normal, mono and
-                          ;; proportional modes.
-                          ;; --complete: Include all icon sets.
-                          ;; --mono will generate the Mono variants.
-                          ;; --variable-width-glyphs will generate the
-                          ;; Proportional variants (used for graphical
-                          ;; environments).
-                          ;; If no flag is specified, the no-mono no-proportional
-                          ;; font will be built.
-                          ;; --ext ttf: Generate TrueType font.
-                          ;; --no-progressbars: Disable progress bars for clean build
-                          ;; output.
-                          (for-each (lambda (mode)
-                                      (apply invoke "fontforge" "-script"
-                                             "../../../font-patcher"
-                                             `("--complete" ,@(if mode
-                                                                  (list mode)
-                                                                  '())
-                                               "--ext"
-                                               "ttf"
-                                               "--no-progressbars"
-                                               "--outputdir"
-                                               "."
-                                               ,font)))
-                                    '(#nil "--mono" "--variable-width-glyphs")))
-                        `("Ligatures/Bold/JetBrainsMono-Bold.ttf"
-                          "Ligatures/BoldItalic/JetBrainsMono-BoldItalic.ttf"
-                          "Ligatures/ExtraBold/JetBrainsMono-ExtraBold.ttf"
-                          ,(string-append "Ligatures/ExtraBoldItalic/"
-                                          "JetBrainsMono-ExtraBoldItalic.ttf")
-                          "Ligatures/ExtraLight/JetBrainsMono-ExtraLight.ttf"
-                          ,(string-append "Ligatures/ExtraLightItalic/"
-                                          "JetBrainsMono-ExtraLightItalic.ttf")
-                          "Ligatures/Italic/JetBrainsMono-Italic.ttf"
-                          "Ligatures/Light/JetBrainsMono-Light.ttf"
-                          "Ligatures/LightItalic/JetBrainsMono-LightItalic.ttf"
-                          "Ligatures/Medium/JetBrainsMono-Medium.ttf"
-                          ,(string-append "Ligatures/MediumItalic/"
-                                          "JetBrainsMono-MediumItalic.ttf")
-                          "Ligatures/Regular/JetBrainsMono-Regular.ttf"
-                          "Ligatures/SemiBold/JetBrainsMono-SemiBold.ttf"
-                          ,(string-append "Ligatures/SemiBoldItalic/"
-                                          "JetBrainsMono-SemiBoldItalic.ttf")
-                          "Ligatures/Thin/JetBrainsMono-Thin.ttf"
-                          "Ligatures/ThinItalic/JetBrainsMono-ThinItalic.ttf"
-                          "NoLigatures/Bold/JetBrainsMonoNL-Bold.ttf"
-                          ,(string-append "NoLigatures/BoldItalic/"
-                                          "JetBrainsMonoNL-BoldItalic.ttf")
-                          "NoLigatures/ExtraBold/JetBrainsMonoNL-ExtraBold.ttf"
-                          ,(string-append "NoLigatures/ExtraBoldItalic/"
-                                          "JetBrainsMonoNL-ExtraBoldItalic.ttf")
-                          ,(string-append "NoLigatures/ExtraLight/"
-                                          "JetBrainsMonoNL-ExtraLight.ttf")
-                          ,(string-append "NoLigatures/ExtraLightItalic/"
-                                          "JetBrainsMonoNL-ExtraLightItalic.ttf")
-                          "NoLigatures/Italic/JetBrainsMonoNL-Italic.ttf"
-                          "NoLigatures/Light/JetBrainsMonoNL-Light.ttf"
-                          ,(string-append "NoLigatures/LightItalic/"
-                                          "JetBrainsMonoNL-LightItalic.ttf")
-                          "NoLigatures/Medium/JetBrainsMonoNL-Medium.ttf"
-                          ,(string-append "NoLigatures/MediumItalic/"
-                                          "JetBrainsMonoNL-MediumItalic.ttf")
-                          "NoLigatures/Regular/JetBrainsMonoNL-Regular.ttf"
-                          "NoLigatures/SemiBold/JetBrainsMonoNL-SemiBold.ttf"
-                          ,(string-append "NoLigatures/SemiBoldItalic/"
-                                          "JetBrainsMonoNL-SemiBoldItalic.ttf")
-                          "NoLigatures/Thin/JetBrainsMonoNL-Thin.ttf"
-                          ,(string-append "NoLigatures/ThinItalic/"
-                                          "JetBrainsMonoNL-ThinItalic.ttf")))))
-          (add-after 'build 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each (lambda (font)
-                            ;; Use Python script with fontforge to validate the font.
-                            (invoke "python3" "-c"
-                                    (format #f
-                                     "import fontforge
-name = ~s
-font = fontforge.open(name)
-glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
-print(f'Font has {glyph_count} glyphs with Unicode mapping')
-if glyph_count < 8000:
-    raise ValueError(f'Font has too few glyphs: {glyph_count}')
-print(f'✓ Font validation passed for {name}')
-font.close()~%"
-                                     font)))
-                          '("JetBrainsMonoNerdFont-Bold.ttf"
-                            "JetBrainsMonoNerdFont-Bold.ttf"
-                            "JetBrainsMonoNerdFontMono-Bold.ttf"
-                            "JetBrainsMonoNerdFontMono-Bold.ttf"
-                            "JetBrainsMonoNerdFontPropo-Bold.ttf"
-                            "JetBrainsMonoNerdFontPropo-Bold.ttf"
-                            "JetBrainsMonoNerdFont-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-BoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFont-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraBold.ttf"
-                            "JetBrainsMonoNerdFont-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraBoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFont-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraLight.ttf"
-                            "JetBrainsMonoNerdFont-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFont-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ExtraLightItalic.ttf"
-                            "JetBrainsMonoNerdFont-Italic.ttf"
-                            "JetBrainsMonoNerdFont-Italic.ttf"
-                            "JetBrainsMonoNerdFontMono-Italic.ttf"
-                            "JetBrainsMonoNerdFontMono-Italic.ttf"
-                            "JetBrainsMonoNerdFontPropo-Italic.ttf"
-                            "JetBrainsMonoNerdFontPropo-Italic.ttf"
-                            "JetBrainsMonoNerdFont-Light.ttf"
-                            "JetBrainsMonoNerdFont-Light.ttf"
-                            "JetBrainsMonoNerdFontMono-Light.ttf"
-                            "JetBrainsMonoNerdFontMono-Light.ttf"
-                            "JetBrainsMonoNerdFontPropo-Light.ttf"
-                            "JetBrainsMonoNerdFontPropo-Light.ttf"
-                            "JetBrainsMonoNerdFont-LightItalic.ttf"
-                            "JetBrainsMonoNerdFont-LightItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-LightItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-LightItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-LightItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-LightItalic.ttf"
-                            "JetBrainsMonoNerdFont-Medium.ttf"
-                            "JetBrainsMonoNerdFont-Medium.ttf"
-                            "JetBrainsMonoNerdFontMono-Medium.ttf"
-                            "JetBrainsMonoNerdFontMono-Medium.ttf"
-                            "JetBrainsMonoNerdFontPropo-Medium.ttf"
-                            "JetBrainsMonoNerdFontPropo-Medium.ttf"
-                            "JetBrainsMonoNerdFont-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFont-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-MediumItalic.ttf"
-                            "JetBrainsMonoNerdFont-Regular.ttf"
-                            "JetBrainsMonoNerdFont-Regular.ttf"
-                            "JetBrainsMonoNerdFontMono-Regular.ttf"
-                            "JetBrainsMonoNerdFontMono-Regular.ttf"
-                            "JetBrainsMonoNerdFontPropo-Regular.ttf"
-                            "JetBrainsMonoNerdFontPropo-Regular.ttf"
-                            "JetBrainsMonoNerdFont-SemiBold.ttf"
-                            "JetBrainsMonoNerdFont-SemiBold.ttf"
-                            "JetBrainsMonoNerdFontMono-SemiBold.ttf"
-                            "JetBrainsMonoNerdFontMono-SemiBold.ttf"
-                            "JetBrainsMonoNerdFontPropo-SemiBold.ttf"
-                            "JetBrainsMonoNerdFontPropo-SemiBold.ttf"
-                            "JetBrainsMonoNerdFont-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-SemiBoldItalic.ttf"
-                            "JetBrainsMonoNerdFont-Thin.ttf"
-                            "JetBrainsMonoNerdFont-Thin.ttf"
-                            "JetBrainsMonoNerdFontMono-Thin.ttf"
-                            "JetBrainsMonoNerdFontMono-Thin.ttf"
-                            "JetBrainsMonoNerdFontPropo-Thin.ttf"
-                            "JetBrainsMonoNerdFontPropo-Thin.ttf"
-                            "JetBrainsMonoNerdFont-ThinItalic.ttf"
-                            "JetBrainsMonoNerdFont-ThinItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ThinItalic.ttf"
-                            "JetBrainsMonoNerdFontMono-ThinItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ThinItalic.ttf"
-                            "JetBrainsMonoNerdFontPropo-ThinItalic.ttf"))))))))
-    (native-inputs (list fontforge python-minimal))
-    (home-page "https://www.nerdfonts.com/")
-    (synopsis "JetBrains Mono with an iconic font collection")
-    (description
-     "This package provides the JetBrains Mono font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item JetBrains
-@item JetBrains Mono
-@end itemize
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consistent character spacing.")
-    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
-    (license (list license:expat license:cc-by4.0 license:unlicense
-                   license:asl2.0 license:silofl1.1))))
+for terminal emulators that require consisten character spacing."))
 
 (define-public font-new-computer-modern
   (package
@@ -6330,53 +5795,3 @@ Revoy and collaborators for use in the comic strip Pepper&Carrot.")
                    license:gpl2+
                    license:asl2.0
                    license:cc-by3.0))))
-
-(define-public font-meslo-lg-nerd
-  (package
-    (name "font-meslo-lg-nerd")
-    (version "3.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/ryanoasis/nerd-fonts/releases/download/"
-            "v" version "/Meslo.tar.xz"))
-       (sha256
-        (base32 "0f9rl0ihjjr7w88zhv5g55ap017f2112kwv00vzwzdggdbckcyd5"))))
-    (build-system font-build-system)
-    (synopsis "Meslo LG font with Nerd-Icons")
-    (description
-     "This package provides the Meslo LG font with the extra
-glyphs from Nerd Fonts.
-
-@itemize
-@item Meslo LG
-@item Meslo LG (Dotted zero)
-@item Meslo LG Mono
-@item Meslo LG Mono (Dotted zero)
-@item Meslo LG Propo
-@item Meslo LG Propo (Dotted zero)
-@end itemize
-
-This package also includes bold, italic, and bold/italic versions of the above fonts.
-
-These fonts include glyphs from multiple icon sets:
-
-@itemize
-@item Powerline with Extra Symbols
-@item Font Awesome and Font Awesome Extension
-@item Material Design Icons
-@item Weather Icons
-@item Devicons
-@item Octicons
-@item Font Logos (formerly Font Linux)
-@item Pomicons
-@item Codeicons
-@end itemize
-
-The monospaced variant ensures all glyphs have uniform width, which is essential
-for terminal emulators that require consisten character spacing.")
-    (home-page
-     "https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo")
-    (license (list license:expat license:cc-by4.0 license:unlicense
-                   license:asl2.0 license:silofl1.1))))
