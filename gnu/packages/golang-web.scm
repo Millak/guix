@@ -21675,6 +21675,38 @@ side of the connection, using various OS-specific facilities.")
 Tailscale for access control.")
     (license license:bsd-3)))
 
+(define-public go-github-com-tailscale-tscert
+  (package
+    (name "go-github-com-tailscale-tscert")
+    (version "0.0.0-20251216020129-aea342f6d747")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tailscale/tscert")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y1z4xxz9fbhdkw3brsp1xdrn21jyp69bslcs8vmd79f9jr6gwm0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tailscale/tscert"
+      #:test-flags
+      ;; basic_test.go:31: listen unix /tmp/guix-bui...est: bind: invalid argument
+      #~(list "-skip" "TestBasics")))
+    (propagated-inputs
+     (list go-github-com-mitchellh-go-ps
+           ;; go-github-com-tailscale-go-winio ;Windows only
+           go-golang-org-x-sys))
+    (home-page "https://github.com/tailscale/tscert")
+    (synopsis "Minimal Golang package for the HTTPS certificate fetching")
+    (description
+     "This package provides stripped down version of the
+@url{tailscale.com/client/tailscale} Go package but with minimal dependencies
+and supporting older versions of Go.  Meant for use by Caddy.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tailscale-xnet
   (package
     (name "go-github-com-tailscale-xnet")
