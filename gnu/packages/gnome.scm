@@ -5268,7 +5268,7 @@ once.")
 (define-public gnome-sudoku
   (package
     (name "gnome-sudoku")
-    (version "48.1")
+    (version "51.0.1")
     (source
      (origin
        (method url-fetch)
@@ -5277,7 +5277,7 @@ once.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1qy7y84wml7rn51k6y1yizl694zdnrg2a0pzjvb4r42r5bc3lwbr"))))
+         "1j6h8bz2s61pw0d02mhs167hr8llj3271bniqzy55ip4sgymwpv0"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
