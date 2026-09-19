@@ -3742,6 +3742,28 @@ Go blog post.")
 instead of @code{t.Setenv} since Go1.17.")
     (license license:expat)))
 
+(define-public go-github-com-smallstep-assert
+  (package
+    (name "go-github-com-smallstep-assert")
+    (version "0.0.0-20200723003110-82e2b9b3b262")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smallstep/assert")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05zxnirw8lmm314pxwplz391ly4wa4mmlqzjgpy0h8i395011caz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smallstep/assert"))
+    (home-page "https://github.com/smallstep/assert")
+    (synopsis "Assertion framework for Go")
+    (description "This package provides a simple assertion framework for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-smarty-assertions
   (package
     (name "go-github-com-smarty-assertions")
