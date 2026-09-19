@@ -8813,13 +8813,13 @@ ecosystem.")
 (define-public python-poppy
   (package
     (name "python-poppy")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poppy" version))
        (sha256
-        (base32 "0mvnd9rlglb1cqhaavd2lyxnvi4xmc133x50rzzlh00xn0gyxgfq"))))
+        (base32 "0vxz3slinmkyr57bgsk8k94sspl33x2h9afbvji4b355pfg6glir"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8831,8 +8831,7 @@ ecosystem.")
            python-pytest
            python-pytest-astropy
            python-pytest-xdist
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      ;; XXX: With python-synphot (marked as optional) package added to the list
      ;; it tries to download from remote host during tests and fails. Overall
