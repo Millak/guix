@@ -323,7 +323,7 @@ the Hannon Lab.")
 (define-public libxo
   (package
     (name "libxo")
-    (version "2.1.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -332,7 +332,7 @@ the Hannon Lab.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19dmhds6yz8bfdgfbibmzpwn324g0s4f8lca4zm4v9jh6ah8jmwr"))))
+        (base32 "164bp57pjgj58lcy8h5hxv8ir1vrdrk47w68gidr22zylrp6wdvx"))))
     (build-system gnu-build-system)
     (inputs (list perl))
     (native-inputs (list autoconf
