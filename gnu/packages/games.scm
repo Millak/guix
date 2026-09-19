@@ -13977,46 +13977,46 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (sha256
                (base32
                 "1xqvb64fgsq8wahd5ffh8ykkn6sy6z50d4pa4y2s71ga82pvnfpa"))
+              (modules '((guix build utils)))
+              (snippet #~(delete-file-recursively "android")) ;.jar included
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF"
                                      "-DENABLE_INNOEXTRACT=OFF"
                                      "-DENABLE_MMAI=OFF"
                                      "-DENABLE_DISCORD=OFF")
+           #:qtbase qtbase
            ;; Test suites do not seem well supported upstream and are disabled by default.
            ;; Pass -DENABLE_TEST to configure to enable.
            #:tests? #f))
-    (native-inputs
-     (list boost-1.83
+    (inputs
+     (list boost
            ffmpeg
            fmt
            fuzzylite
-           gettext-minimal
-           ;; googletest ; needed for tests, but tests are disabled
-           libxkbcommon
            libsquish
+           libxkbcommon
            luajit
            minizip
-           pkg-config
-           python
-           qtbase
-           qtsvg
-           qttools
-           sdl2
-           sdl2-mixer
-           sdl2-image
-           sdl2-ttf
            onetbb
+           qtsvg
+           (sdl-union (list sdl2 sdl2-mixer sdl2-image sdl2-ttf))
            vulkan-headers
            zlib))
+    (native-inputs
+     (list gettext-minimal
+           ;; googletest ; needed for tests, but tests are disabled
+           pkg-config
+           python-minimal
+           qttools))
     (home-page "https://vcmi.eu/")
     (synopsis "Turn-based strategy game engine")
     (description
      "@code{vcmi} is an implementation of the Heroes of Might and
 Magic III game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/vcmi} folder.")
-    (license license:gpl2)))
+    (license license:gpl2+)))
 
 (define-public apricots
   (package
