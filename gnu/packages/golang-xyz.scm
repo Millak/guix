@@ -5466,6 +5466,28 @@ dates, repeats (aaa), sequences (abcd), and QWERTY patterns. It's an active
 fork of @url{https://github.com/nbutton23/zxcvbn-go}.")
     (license license:expat)))
 
+(define-public go-github-com-ccoveille-go-safecast
+  (package
+    (name "go-github-com-ccoveille-go-safecast")
+    (version "1.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ccoVeille/go-safecast")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1klw3q63zdshcmi649br0vh35pw6vp97i2zdg6f4fwx63rdkyk6s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ccoveille/go-safecast"))
+    (home-page "https://github.com/ccoVeille/go-safecast")
+    (synopsis "Safe numbers conversion for Golang")
+    (description "This package solves the type conversion issues in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-cention-sany-utf7
   (package
     (name "go-github-com-cention-sany-utf7")
