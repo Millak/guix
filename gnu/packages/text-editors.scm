@@ -610,7 +610,7 @@ plugin, though a standalone binary is built also.")
 (define-public rassumfrassum
   (package
     (name "rassumfrassum")
-    (version "0.3.1")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -619,7 +619,7 @@ plugin, though a standalone binary is built also.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jjfx0a4qp2mdvr8ripf44r056fa4spmmhdpvpli89bl5711lm0l"))))
+        (base32 "0wg4vj91wjrfm5y8s8kf9lkv2bcf0s7c6hlwryvk4yll9zwfzhxb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -632,7 +632,7 @@ plugin, though a standalone binary is built also.")
     (native-inputs
      (list python-setuptools))
     (home-page "https://github.com/joaotavora/rassumfrassum")
-    (synopsis "LSP/JSON-RPC multiplexer")
+    (synopsis "Connect an LSP client to multiple LSP servers")
     (description
      "Rassumfrassum is a LSP/JSONRPC multiplexer that allows one LSP client
 (Emacs' @code{eglot}, Neovim, etc.) to connect to multiple language servers
