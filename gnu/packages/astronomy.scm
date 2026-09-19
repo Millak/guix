@@ -6775,13 +6775,13 @@ default) to world coordinates.")
 (define-public python-halo-analysis
   (package
     (name "python-halo-analysis")
-    (version "1.0.5")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "halo_analysis" version))
        (sha256
-        (base32 "1kxhfgbblhx8yhyny6gj11z6518k969lmc4nzidmm7yf7ziv0jfq"))))
+        (base32 "05jcfjsjq9924n0xqaz96i24hczxl2aj2xpd0yiv6mdcqygxap5i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6790,9 +6790,6 @@ default) to world coordinates.")
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
             (lambda _
-              ;; There is a silent error during sanity-check: mkdir -p failed
-              ;; for path /homeless-shelter/.config/matplotlib: [Errno 13]
-              ;; Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-setuptools))
@@ -6802,7 +6799,7 @@ default) to world coordinates.")
            python-numpy
            python-scipy
            python-utilities-awetzel))
-    (home-page "https://bitbucket.org/awetzel/halo_analysis/src/master/" )
+    (home-page "https://bitbucket.org/awetzel/halo_analysis/src/master/")
     (synopsis "Read and analyze halo/galaxy catalogs")
     (description
      "This package implements a functionality to read and analyze halo/galaxy
