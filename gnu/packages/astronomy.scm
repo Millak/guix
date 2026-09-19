@@ -4595,14 +4595,17 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 77 passed, 3 skipped, 94 xfailed, 2 warnings
+      ;; tests: 78 passed, 3 skipped, 94 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--skip-not-installed"
-              ;; cobaya.component.ComponentNotFoundError: 'planckpr4lensing'
-              ;; could not be found. Tried loading internal and external
-              ;; classes. No component path was given.
-              "-k" "not test_planck_NPIPE_p_CamSpec_camb and not test_grid")
+              ;; [1] np.allclose mismatch array for get_Omega_nu_massive =
+              ;; camb.get_Omega_nu_massive
+              ;; [2] cobaya.component.ComponentNotFoundError:
+              ;; 'planckpr4lensing' could not be found. Tried loading internal
+              ;; and external classes. No component path was given.
+              "-k" (string-append "not test_cosmo_omega_camb"
+                                  " and not test_planck_NPIPE_p_CamSpec_camb"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -4610,8 +4613,7 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
               (setenv "HOME" "/tmp")
               (setenv "COBAYA_PACKAGES_PATH" "/tmp"))))))
     (native-inputs
-     (list python-camb
-           python-flaky
+     (list python-flaky
            python-pytest
            python-pytest-xdist
            python-setuptools))
@@ -4630,6 +4632,9 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
            python-tqdm
            python-typing-extensions
            ;; [optional]
+           python-camb
+           ;; python-classy    ;not packaged yet in Guix
+           python-iminuit
            python-matplotlib
            python-mpi4py
            python-numba
