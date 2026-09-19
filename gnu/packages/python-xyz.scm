@@ -22083,25 +22083,26 @@ by providing an implementation of the PEP 3156 event-loop.")
 (define-public python-editor
   (package
     (name "python-editor")
-    (version "1.0.4")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fmoo/python-editor")
-             (commit version)))
+              (url "https://github.com/rec/editor")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hm5gcz5117dsq39bqfxpwazk4khqd272ran0n12x0x84mnqvfxa"))))
+        (base32 "0xc8p92n7lsgaah0xbaxyml2l8mfajb7v8kdiwy5rw6mh3phbwlr"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;XXX: needs a TTY and an editor
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/fmoo/python-editor")
-    (synopsis "Programmatically open an editor, capture the result")
+    (native-inputs (list python-hatchling python-pytest python-tdir))
+    (propagated-inputs (list python-runs python-xmod))
+    (home-page "https://rec.github.io/editor/")
+    (synopsis "Open the default text editor")
     (description
-     "This package provides the editor module for programmatically interfacing
-with your system's $EDITOR.")
-    (license license:asl2.0)))
+     "@code{editor} opens the default text editor to edit an existing file, a
+new file, or a tempfile, blocks while the user edits text, then returns the
+contents of the file.")
+    (license license:expat)))
 
 (define-public python-multiprocessing-logging
   (package
