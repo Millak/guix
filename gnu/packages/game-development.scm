@@ -4252,8 +4252,7 @@ but it can be adapted to other engines/frameworks.")
     (license license:zlib)))
 
 (define-public tic80
-  ;; Use an unreleased version for 'PREFER_SYSTEM_LIBRARIES'.
-  (let ((commit "fcfd7c9862e9157512bcab53affecd592b320131")
+  (let ((commit "v1.2.0")
         ;; These C libraries are used in source form by tic80.
         (3rd/jsmn
          (origin                        ;Expat
@@ -4286,7 +4285,7 @@ but it can be adapted to other engines/frameworks.")
              "1ivjwwqxqjfhm8caz1srkp8wx7fpzvpf7s26ifif7cryvqch8vnf")))))
     (package
       (name "tic80")
-      (version (git-version "1.2.0" "1" commit))
+      (version "1.2.0-2")               ;TODO: drop revision on next release
       (source
        (origin
          (method git-fetch)
@@ -4296,7 +4295,7 @@ but it can be adapted to other engines/frameworks.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "17zxfiji6cb9ad7j3l82bdig0k7bz77bzwg7m0vd9ywrwk0kgxjk"))
+           "1wsyhxkjj89s4855nmampls29ri60zczgdwd68m47p8fq0nms6m3"))
          (modules '((guix build utils)))
          (snippet
           #~(begin
