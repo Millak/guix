@@ -1538,11 +1538,6 @@ the \"texlive\" importer."
                        "Z572")
   core-packages)
 
-(define-member (person "Sughosha"
-                       "sughosha@disroot.org"
-                       "SameExpert")
-  audio kde)
-
 (define-member (person "Jelle Licht"
                        "jlicht@fsfe.org"
                        "jlicht")
