@@ -270,7 +270,8 @@ endif()~%~%"
                                    "cli_pdfinput-font-style_check_output"
                                    "cli_pdfinput-latex_check_output"
                                    "cli_pdfinput-multi-page-sample_check_output"
-                                   "test_lpe")
+                                   "test_lpe"
+                                   "test_geom-pathstroke")
                                  '()))))
                    (invoke "make" "-j" job-count "tests")
                    (invoke "ctest" "-j" job-count
