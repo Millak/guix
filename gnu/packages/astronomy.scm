@@ -13457,13 +13457,13 @@ systems.")
 (define-public python-utilities-awetzel
   (package
     (name "python-utilities-awetzel")
-    (version "1.0.4")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "utilities_awetzel" version))
        (sha256
-        (base32 "11q9kg6yfrkrjxkdw7fmilcfjsrhcdd885sc5z4f8nwy3x7vnrph"))))
+        (base32 "0jblk4afsalnkkwppw2x0yv1s894jkrgwbb0fcv30sy87ppq0h5v"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;no tests
