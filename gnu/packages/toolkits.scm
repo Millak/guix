@@ -350,3 +350,9 @@ requires only minimal code to integrate with existing applications.")
               (sha256
                (base32
                 "1rp4lxgr11yc3z3cmlrpyaf916n74wp7401r21v7xbybfd2cvp0w"))))))
+
+(define-public implot-for-mangohud
+  (package
+    (inherit implot-0)
+    (inputs (modify-inputs inputs
+              (replace "imgui" imgui-for-mangohud)))))

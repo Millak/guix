@@ -1463,6 +1463,8 @@ other vector formats such as:
 distills complex, animated scenes into a set of baked geometric results.")
     (license license:bsd-3)))
 
+;;; This package lacks a proper test suite.  To test manually:
+;;; ./pre-inst-env guix shell mangohud vulkan-tools -- mangohud vkcube
 (define-public mangohud
   (package
     (name "mangohud")
@@ -1542,7 +1544,7 @@ distills complex, animated scenes into a set of baked geometric results.")
            glslang
            hwdata
            imgui-for-mangohud
-           implot-0
+           implot-for-mangohud
            libx11
            libxkbcommon
            mesa
