@@ -3434,6 +3434,36 @@ renderables.")
 well-formed Roman numerals.")
     (license license:expat)))
 
+(define-public python-runs
+  (package
+    (name "python-runs")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rec/runs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0grzfnamxgnpvf3m0c139sknyj31vsvcplvcng6maq60xvnqrbw1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Expecting ".git".
+      #~(list "--deselect=test/test_runs.py::TestRunsActual::test_many")))
+    (native-inputs (list python-pytest python-tdir python-uv-build))
+    (propagated-inputs (list python-xmod))
+    (home-page "https://github.com/rec/runs")
+    (synopsis "Run a block of text as a subprocess")
+    (description
+     "@code{runs} has improved versions of @code{call()}, @code{check_call()},
+@code{check_output()}, and @code{run()} from Python's subprocess module that
+handle multiple commands and blocks of text, fix some defects, and add some
+features.")
+    (license license:expat)))
+
 (define-public python-rush
   (package
     (name "python-rush")
