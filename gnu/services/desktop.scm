@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2017, 2020, 2022, 2023, 2025-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
@@ -1733,9 +1733,16 @@ started~%")
           (define service-directory
             "/share/dbus-1/system-services")
 
+          (define elogind-service-directory
+            (string-append #$elogind service-directory))
+
           (mkdir-p (dirname (string-append #$output service-directory)))
-          (copy-recursively (string-append #$elogind service-directory)
-                            (string-append #$output service-directory))
+
+          ;; TODO: Remove (when (file-exists? elogind-service-directory)
+          ;; conditionals after elogind is ungrafted.
+          (when (file-exists? elogind-service-directory)
+            (copy-recursively elogind-service-directory
+                              (string-append #$output service-directory)))
           (symlink (string-append #$elogind "/etc") ;for etc/dbus-1
                    (string-append #$output "/etc"))
           ;; Also expose the D-Bus policy configurations (.conf) files, now
@@ -1745,11 +1752,12 @@ started~%")
 
           ;; Replace the "Exec=" line of the 'org.freedesktop.login1.service'
           ;; file with one that refers to WRAPPER instead of elogind.
-          (match (find-files #$output "\\.service$")
-            ((file)
-             (substitute* file
-               (("Exec[[:blank:]]*=.*" _)
-                (string-append "Exec=" #$wrapper "\n"))))))))
+          (when (file-exists? elogind-service-directory)
+            (match (find-files #$output "\\.service$")
+              ((file)
+               (substitute* file
+                 (("Exec[[:blank:]]*=.*" _)
+                  (string-append "Exec=" #$wrapper "\n")))))))))
 
   (list (computed-file "elogind-dbus-service-wrapper" build)))
 
