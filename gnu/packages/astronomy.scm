@@ -8575,7 +8575,7 @@ astronomical sources.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.6")
+    (version "1.1.7")
     (source
      (origin
        (method git-fetch)
@@ -8584,7 +8584,7 @@ astronomical sources.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16lmibf2sim9qcqq908x88jsfjq2vm47j119css863b9nx8xsxas"))))
+        (base32 "1w1xrrc2w317zdmdxmcmwp1icm1sl33pq3pbympdx7jsxb1galn1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
