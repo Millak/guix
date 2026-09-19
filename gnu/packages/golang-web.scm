@@ -20995,6 +20995,36 @@ metric formats, it comes with a middleware that can be used for different
 frameworks and also the the main Go net/http handler:.")
     (license license:asl2.0)))
 
+(define-public go-github-com-smallstep-linkedca
+  (package
+    (name "go-github-com-smallstep-linkedca")
+    (version "0.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/linkedca")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sag4ilzss1gb7c2dx2yb130dls59fb16rkv3xw2pm1lcpwhdcw3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smallstep/linkedca"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/smallstep/linkedca")
+    (synopsis "Support for Linked CAs using protocol buffers and @code{gRPC}")
+    (description
+     "This package provides support for Linked CAs using protocol buffers and
+@code{gRPC}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smartystreets-go-aws-auth
   (package
     (name "go-github-com-smartystreets-go-aws-auth")
