@@ -1763,9 +1763,9 @@ Nerd Font Mono variant, with all glyphs of uniform width, is provided.  The
 Propo variants leave the advance width of the added icons unchanged and are
 meant for graphical environments."))
 
-(define-public font-meslo-lg-nerd
+(define-public font-nerd-meslo-lg
   (make-nerd-fonts-package
-   "font-meslo-lg-nerd" "Meslo"
+   "font-nerd-meslo-lg" "Meslo"
    #:synopsis "Meslo LG font with Nerd-Icons"
    #:description
    "This package provides the Meslo LG font with the extra
