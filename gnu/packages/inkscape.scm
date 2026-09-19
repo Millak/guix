@@ -196,7 +196,11 @@ endif()~%~%"
                         (substitute* "testfiles/CMakeLists.txt"
                           (("lpe64-test") "#lpe64-test")
                           (("    lpe-test") "    #lpe-test")
-                          (("add_subdirectory\\(lpe_tests\\)") ""))
+                          (("add_subdirectory\\(lpe_tests\\)") "")
+                          ;; Fails on non-x86_64 architectures due to floating
+                          ;; point precision differences (see:
+                          ;; https://gitlab.com/inkscape/lib2geom/-/work_items/80).
+                          (("    geom-pathstroke-test") ""))
                         ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035539888
                         ;; According to upstream, this is a false positive.
                         (substitute* "testfiles/rendering_tests/CMakeLists.txt"
@@ -379,15 +383,6 @@ as the native format.")
                    ;; Re-instate the tests disabled in inkscape/pinned, now that
                    ;; their ImageMagick requirement is satisfied.
                    #~((replace 'check (assoc-ref gnu:%standard-phases 'check))))
-            #$@(if (or (target-aarch64?)
-                       (target-ppc64le?)
-                       (target-riscv64?))
-                   '((add-after 'unpack 'disable-geom-pathstroke-test
-                       (lambda _
-                         ;; https://gitlab.com/inkscape/lib2geom/-/work_items/80
-                         (substitute* "testfiles/CMakeLists.txt"
-                           (("    geom-pathstroke-test") "")))))
-                   '())
             ;; We now have gtksourceview in deps, so test should pass
             (delete 'disable-svg-parser-test)
             (replace 'wrap-program
