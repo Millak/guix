@@ -6391,13 +6391,13 @@ Python.")
 (define-public python-gizmo-analysis
   (package
     (name "python-gizmo-analysis")
-    (version "1.0.5")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gizmo_analysis" version))
        (sha256
-        (base32 "1pffz3kq9rs5jhqz6j23igl0650xl74hgmh17sll4m0fraq6d4ma"))))
+        (base32 "0ix41ms9fz5sd1v09khd5vcas64r4n48j1w4imblr4s8daxhwhxf"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;no tests
