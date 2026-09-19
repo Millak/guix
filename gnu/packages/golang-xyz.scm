@@ -29867,6 +29867,32 @@ GNU/Linux, this is a proxy for the @command{xdg-open} command.")
 @url{https://github.com/tree-sitter/tree-sitter, tree-sitter} in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-smallstep-truststore
+  (package
+    (name "go-github-com-smallstep-truststore")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smallstep/truststore")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0alnwgg360yhidzklg18l0q4qn3nfggq6kjadpayk92ynq00bkqy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/smallstep/truststore"))
+    (propagated-inputs (list go-howett-net-plist))
+    (home-page "https://github.com/smallstep/truststore")
+    (synopsis "Local development certificates installation for Golang")
+    (description "This package provides means to locally install
+development certificates.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-songgao-packets
   (package
     (name "go-github-com-songgao-packets")
