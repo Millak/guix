@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 
 (define-module (gnu tests desktop)
   #:use-module (gnu tests)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages shells)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -43,6 +45,8 @@
       #~(begin
           (use-modules (gnu build marionette)
                        (guix build syscalls)
+                       (srfi srfi-1)
+                       (srfi srfi-26)
                        (srfi srfi-64))
 
           (define marionette
@@ -53,9 +57,9 @@
 
           ;; Log in as root on tty1, and check what 'loginctl' returns.
           (test-equal "login on tty1"
-            '(("c1" "0" "root" "seat0" "tty1" "active" "no" "-") ;session
-              ("seat0")                                          ;seat
-              ("0" "root" "no" "active"))                        ;user
+            '(("c1" 0 "root" "seat0" "tty1" #false) ;session
+              ("seat0")                               ;seat
+              (0 "root" #false "active"))           ;user
 
             (begin
               ;; Wait for tty1.
@@ -69,23 +73,31 @@
 
               ;; Now we can type.
               (marionette-type "root\n" marionette)
-              (marionette-type "loginctl list-users --no-legend > users\n"
-                               marionette)
-              (marionette-type "loginctl list-seats --no-legend > seats\n"
-                               marionette)
-              (marionette-type "loginctl list-sessions --no-legend > sessions\n"
-                               marionette)
-
+              (marionette-type
+               "loginctl list-users --json=pretty > users.json\n"
+               marionette)
+              (marionette-type
+               "loginctl list-seats --json=pretty > seats.json\n"
+               marionette)
+              (marionette-type
+               "loginctl list-sessions --json=pretty > sessions.json\n"
+               marionette)
 
               ;; Read the three files.
-              (marionette-eval '(use-modules (rnrs io ports)) marionette)
-              (let ((guest-file (lambda (file)
-                                  (string-tokenize
-                                   (wait-for-file file marionette
-                                                  #:read 'get-string-all)))))
-                (list (guest-file "/root/sessions")
-                      (guest-file "/root/seats")
-                      (guest-file "/root/users")))))
+              (marionette-eval '(use-modules (json parser)
+                                             (rnrs io ports))
+                               marionette)
+              (let ((guest-file (lambda (file keys)
+                                  (let ((data (first (vector->list
+                                                      (wait-for-file
+                                                       file marionette
+                                                       #:read 'json->scm)))))
+                                    (map (cut assoc-ref data <>) keys)))))
+                (list (guest-file "/root/sessions.json"
+                                  '("session" "uid" "user" "seat" "tty" "idle"))
+                      (guest-file "/root/seats.json" '("seat"))
+                      (guest-file "/root/users.json"
+                                  '("uid" "user" "linger" "state"))))))
 
           (test-assert "screendump"
             (begin
@@ -111,7 +123,8 @@
                 (service polkit-service-type)
                 (service dbus-root-service-type))
                #:imported-modules '((gnu services herd)
-                                    (guix combinators)))))
+                                    (guix combinators))
+               #:extensions (list guile-json-4))))
       (run-elogind-test (virtual-machine os))))))
 
 
