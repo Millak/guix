@@ -1436,18 +1436,20 @@ tools in a live programming environment.")
     (license license:lgpl3)))
 
 (define-public quickswitch-i3
+  (let ((commit "6b3e1b59d9d9690b19834eca8280f85962b56ad6")
+        (revision "0"))
   (package
     (name "quickswitch-i3")
-    (version "2.8.0")
+    (version (git-version "2.8.1" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tyjak/quickswitch-for-i3")
-             (commit version)))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d28l66j4nb3636j2xqd6gi7q55fy9prn4d1hv6glgykb0x4kw65"))))
+        (base32 "1h75ygjcq3nh8rcxxmg2fapls2c2jjn378ycwwf324v11943iy84"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1466,7 +1468,7 @@ tools in a live programming environment.")
      "This utility for the i3 window manager allows you to quickly switch to
 and locate windows on all your workspaces, using an interactive dmenu
 prompt.")
-    (license license:wtfpl2)))
+    (license license:wtfpl2))))
 
 (define-public quicktile
   ;; Latest release, 0.4.0, is 5 years old and does not use pyproject.toml yet.
