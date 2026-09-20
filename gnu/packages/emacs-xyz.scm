@@ -173,6 +173,7 @@
 ;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;; Copyright © 2026 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2026 Evelynn Straw <evelynn@evelynn.me>
+;;; Copyright © 2026 c4droid <c4droid@foxmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22125,6 +22126,32 @@ extensions.")
 Emacs that Evil does not cover properly by default, such as @code{help-mode},
 @code{M-x calendar}, Eshell and more.")
     (license license:gpl3+)))
+
+(define-public emacs-evil-god-state
+  (let ((commit "3d44197dc0a1fb40e7b7ff8717f8a8c339ce1d40")
+        (revision "1"))
+    (package
+      (name "emacs-evil-god-state")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gridaphobe/evil-god-state")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cv24qnxxf6n1grf4n5969v8y9xll5zb9mbfdnq9iavdvhnndk2h"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; No tests
+      (propagated-inputs (list emacs-evil emacs-god-mode))
+      (home-page "https://github.com/gridaphobe/evil-god-state")
+      (synopsis "Use god-mode keybindings in Evil")
+      (description
+       "This package provides an Evil state for using god-mode.
+It provides a command @code{evil-execute-in-god-state} that switches
+to @code{god-local-mode} for the next command.")
+      (license license:gpl3+))))
 
 (define-public emacs-evil-goggles
   (let ((commit "08a22058fd6a167f9f1b684c649008caef571459")
