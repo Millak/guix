@@ -183,7 +183,7 @@ official project.")
 (define-public qcoro-qt6
   (package
     (name "qcoro-qt6")
-    (version "0.11.0")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -192,7 +192,7 @@ official project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g9laaw1mkp5ynpp3c7aingndcmgncbacslq3p6bzwjisdd6xr5m"))))
+        (base32 "16nh3zmahpd8lrg13pgmc7l2rc1w5lcxgz7kyfpg1arfvhkjpq7s"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
