@@ -1820,6 +1820,15 @@ PDF.  Indeed @command{pdfposter} was inspired by @command{poster}.")
         (base32
          "1jr0qqvkcb3xz0ps111cqwwxp1b5g5rrf75ab5whkvy0whqyaq86"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cpp-paths
+            (lambda _
+              (substitute* (list "src/search.h" "src/pdfgrep.cc"
+                                 "src/search.cc")
+                (("cpp\\/poppler") "poppler")))))))
     (native-inputs
      (list pkg-config))
     (inputs
