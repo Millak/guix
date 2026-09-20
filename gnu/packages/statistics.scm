@@ -216,14 +216,14 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define-public pspp
   (package
     (name "pspp")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/pspp/pspp-" version ".tar.gz"))
        (sha256
         (base32
-         "1hqlxza6cbpvhcnnns047rmydrg8f991jad7dhg6m9nzgf9m1rdm"))))
+         "1gmkxq348q4nl862q8ny196yp4bibw8j9l01gm8spx3rjqkhhbh4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
