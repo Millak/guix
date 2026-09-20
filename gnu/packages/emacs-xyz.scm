@@ -2754,6 +2754,32 @@ called backends, and visually annotates the relevant portions in the buffer.")
 its mode line.")
       (license license:gpl3+))))
 
+(define-public emacs-project-nix-store
+  (package
+    (name "emacs-project-nix-store")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jian-lin/project-nix-store")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kjfqhqiic7sfm9p4ng1igd3hvchm1wyqbg49x7rsdqix79lx5b2"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "ert-runner" "project-nix-store-tests.el")))
+    (native-inputs (list emacs-ert-runner))
+    (home-page "https://github.com/jian-lin/project-nix-store")
+    (synopsis "Project backend for nix store")
+    (description
+     "This package provides a project.el backend for Nix Store.  Each store
+path, if it is a directory, is a project root.")
+    (license license:gpl3+)))
+
 (define-public emacs-project-tab-groups
   (let ((commit "2658405d5f3c539fbd9ccf95297a016a2c91816a")
         (revision "1"))
