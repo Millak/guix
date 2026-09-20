@@ -13432,6 +13432,46 @@ datasets, in particular, catalogs of particles or galaxies/halos from
 cosmological simulations.")
     (license license:expat)))
 
+(define-public python-uvcombine
+  (package
+    (name "python-uvcombine")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uvcombine" version))
+       (sha256
+        (base32 "1fby4gidk4r9h2ivx5vqii6sbvsn4wjw6zv4bqjcqm27d53n6hi9"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; They are not part of the Python package and break tests.
+            (delete-file-recursively "examples")))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-scikit-image
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-packaging
+           python-radio-beam
+           python-reproject
+           python-scipy
+           python-spectral-cube
+           python-tqdm))
+    (home-page "https://uvcombine.readthedocs.io/en/latest/")
+    (synopsis "Combination of high|low resolution radio astronomical data")
+    (description
+     "@code{uvcombine} provides tools for combining high-resolution images
+with missing large angular scales (Fourier-domain short-spacings) with
+low-resolution images containing the short/zero spacing.")
+    (license license:bsd-3)))
+
 (define-public python-velociraptor
   (package
     (name "python-velociraptor")
