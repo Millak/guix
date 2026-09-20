@@ -12307,7 +12307,7 @@ for Flow files.")
 (define-public emacs-flycheck-grammalecte
   (package
     (name "emacs-flycheck-grammalecte")
-    (version "2.6")
+    (version "2.7")
     (source
      (origin
        (method git-fetch)
@@ -12316,7 +12316,7 @@ for Flow files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vbvgh9qkvvylskk292hcgl347ygb744w2jwx8cw41fk30i2v7qc"))))
+        (base32 "1ivdl42g2cd4bmiflrmvh8wc0sgy1yrnxnjx36gx8wvn176hw2f2"))))
     (build-system emacs-build-system)
     (arguments
      (list
