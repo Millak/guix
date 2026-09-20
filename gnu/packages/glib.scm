@@ -246,7 +246,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib-minimal
   (package
     (name "glib")
-    (version "2.86.0")
+    (version "2.86.5")
     (source
      (origin
        (method url-fetch)
@@ -255,7 +255,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0v8db3mgmlg413abicqbfh1jw3k5zqyiczqyzpbb1krpsxr9jwxm"))
+        (base32 "0pwd0cgcf9l7bfx69yzsqrqn7d5w77n9mxzgvc204g4bpd3sk1ff"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
