@@ -1618,7 +1618,9 @@ also includes the druntime and phobos libraries."
       (description "This package provides a DMD-like wrapper for the
 @acronym{GNU D Compiler,GDC}.")
       (license gpl3+)
-      (home-page "https://github.com/D-Programming-GDC/gdmd"))))
+      (home-page "https://github.com/D-Programming-GDC/gdmd")
+      (properties '(;; Some older tags don't follow this format.
+                    (release-tag-prefix . "^script-"))))))
 
 (define-public gdmd-9
   (make-gdmd gdc-9))
