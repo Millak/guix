@@ -14620,7 +14620,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
 (define-public tangos
   (package
     (name "tangos")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -14629,11 +14629,11 @@ any arbitrary astrometric projection defined in the WCS standard.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mvg6qvalm4rf8gwi0d8lbljww51ym2lmc044i28fr1815prdhng"))))
+        (base32 "11ypqxglls9cb80k40h4rwbdgwwsng915rxg0nc6wz89m35r7bfk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 320 passed, 1 skipped, 1 deselected, 120 warnings
+      ;; tests: 512 passed, 1 skipped, 1 deselected, 288 warnings
       #:test-flags
       ;; OSError: File PosixPath('test_simulations/test_tipsy/tiny.000640'):
       ;; format not understood or does not exist
