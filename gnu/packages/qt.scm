@@ -1082,6 +1082,11 @@ tst_qt_cmake_create.cpp"
                    "-j" (if parallel-tests?
                             (number->string (parallel-job-count))
                             "1")
+                   ;; By default, Qt sets the test timeout value to 1500 s,
+                   ;; which is not enough for some slow machines.  Remove the
+                   ;; timeout, leaving it to the responsibility of
+                   ;; guix-daemon.
+                   "--timeout" "0"
                    "-E"                 ;disable problematic tests
                    (string-append
                     "("
