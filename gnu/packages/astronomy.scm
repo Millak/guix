@@ -12424,15 +12424,14 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stsci-tools
   (package
     (name "python-stsci-tools")
-    (version "4.3.0")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stsci_tools" version))
        (sha256
-        (base32 "1vmgznpww0b1v4x6kfdp75q45r0jr0mrpdq3q9jl17idmqsb4jjy"))))
+        (base32 "1274p0vlr24nr2v1mp3fac874pgnda802j1d24hvx9hh8vbbvs33"))))
     (build-system pyproject-build-system)
-    ;; tests: 192 passed, 14 skipped
     (native-inputs
      (list python-pytest
            python-pytest-astropy-header
