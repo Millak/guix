@@ -343,7 +343,7 @@ See also: megacmd, the official tool set by MEGA.")
 (define-public onedrive
   (package
     (name "onedrive")
-    (version "2.5.9")
+    (version "2.5.11")
     (source
       (origin
         (method git-fetch)
@@ -352,7 +352,7 @@ See also: megacmd, the official tool set by MEGA.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "05ygicsfw7g5jmlymiwpv097223qglx5324ycy47yc1j3qlzpfjn"))))
+         (base32 "1d0hzjr40l5y6yrxqyfhcd5x1sal812wp9v3mly2k79iwib64ja9"))))
     (build-system gnu-build-system)
     (arguments
      (list
