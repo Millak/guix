@@ -796,7 +796,7 @@ compiler for the D programming language.")
 (define-public dub
   (package
     (name "dub")
-    (version "1.42.0-beta.1")
+    (version "1.42.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -805,7 +805,7 @@ compiler for the D programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g2v7bf6sjqdwif64lic0l7jd6r0bididyc9balk8xnhiq5q65mz"))))
+                "1qql90zdnizv9jasivya4k8xg75ya9jkbzg5ixm8fmnnqnrfjyqq"))))
     (build-system gnu-build-system)     ; not really, uses a custom build script
     (arguments
      (list
