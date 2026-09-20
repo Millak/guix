@@ -1061,7 +1061,8 @@ from lines)
     (home-page "https://gtkd.org/")
     (synopsis "D binding and OO wrapper of GTK+")
     (description "This package provides bindings to GTK+ for D.")
-    (license license:lgpl2.1)))
+    (license license:lgpl2.1)
+    (properties `((release-monitoring-url . ,home-page)))))
 
 (define-public d-demangler
   (package
