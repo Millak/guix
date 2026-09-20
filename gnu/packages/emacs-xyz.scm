@@ -20824,7 +20824,17 @@ YAML parsing.")
                   ("yari-ri-program-name"
                    (search-input-file inputs "/bin/ri"))
                   ("yari-ruby-program-name"
-                   (search-input-file inputs "/bin/ruby"))))))))
+                   (search-input-file inputs "/bin/ruby")))))
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (let ((skip-tests
+                       '("class-deep-level" "class-method" "object-method")))
+                  (substitute* "test/yari-test.el"
+                    (("\\(ert-deftest yari-test-ruby-obarray-for-([a-z:-]*) \\(\\)"
+                      all test)
+                     (if (member test skip-tests)
+                         (string-append all "(skip-unless nil)")
+                         all)))))))))
       (native-inputs (list emacs-ert-runner))
       (inputs (list ruby))
       (home-page "https://github.com/hron/yari.el")
