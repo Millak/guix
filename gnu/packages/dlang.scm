@@ -892,7 +892,7 @@ needed.")
 (define-public d-tools
   (package
     (name "d-tools")
-    (version "2.112.0")
+    (version "2.113.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -901,7 +901,7 @@ needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z23ivy6nq3q45wgclp5y6cjm8awdamma491818qimgffzgiay2q"))))
+                "1zlhr5r4inrg7l7y0yasxmn025778g7zldnmqgfxs7wcsqcfr1cn"))))
     (outputs '("out" "internal"))
     (build-system gnu-build-system)
     (arguments
