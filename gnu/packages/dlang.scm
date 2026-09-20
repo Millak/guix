@@ -103,7 +103,7 @@
     ;; and their names must have the same length to avoid corrupting the
     ;; binary.
     (name "ldc")
-    (version "1.42.0")
+    (version "1.43.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -116,7 +116,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zrfdhm9yw9bsd55k5x89pyj3zyxyly3hs3mpj3bnvkzvki3bl39"))
+                "0ym3wrvy9vndc23l25aj8a09a6vr7r0n8ljlr4yrsklkfn1h1ik4"))
               (patches (search-patches "ldc-i686-int128-alignment.patch"
                                        "ldc-phobos-support-TZDIR.patch"))))
     (build-system cmake-build-system)
