@@ -3375,7 +3375,7 @@ speedtest.net.")
 (define-public librespeed-cli
   (package
     (name "librespeed-cli")
-    (version "1.0.13")
+    (version "1.0.14")
     (source
      (origin
        (method git-fetch)
@@ -3384,7 +3384,7 @@ speedtest.net.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zgwdz955vlyy1yricgcbdlbxxh1z08xpbhxa8zs64bsg68mv8j3"))))
+        (base32 "1ar0pgazjc0xj1a1v5s2xr2rq7xmzhm7m9qx7mz3n7l563c4ahg5"))))
     (build-system go-build-system)
     (arguments
      (list
