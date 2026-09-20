@@ -458,7 +458,9 @@ This compiler is based on the DMD frontend version 2.112.1.")
      `((hidden? . #t)
        ;; Some of the tests take a very long time on ARMv7.  See
        ;; https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html.
-       ,@(if (target-arm32?) `((max-silent-time . ,(* 3600 3))) '())))))
+       ,@(if (target-arm32?) `((max-silent-time . ,(* 3600 3))) '())
+       ;; This prevents "dmd-rewrite-..." tags from being selected.
+       (release-tag-prefix . "^v")))))
 
 (define-public ldc
   (let ((base ldc-bootstrap))
