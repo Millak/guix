@@ -3850,7 +3850,24 @@ rigid body physics library written in C.")
                    (when tests?
                      (apply (assoc-ref gnu:%standard-phases 'check)
                             #:tests? tests? #:test-target "unit_test" args)
-                     (invoke "bin/unit_test")))))))
+                     (invoke "bin/unit_test"))))
+               (add-after 'install 'generate-pkgconfig
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (pkgconfig-dir (string-append out "/lib/pkgconfig"))
+                          (pc-file (string-append pkgconfig-dir "/box2d.pc")))
+                     (mkdir-p pkgconfig-dir)
+                     (with-output-to-file pc-file
+                       (lambda ()
+                         (format #t "prefix=~a~%" out)
+                         (format #t "exec_prefix=${prefix}~%")
+                         (format #t "libdir=${exec_prefix}/lib~%")
+                         (format #t "includedir=${prefix}/include~%~%")
+                         (format #t "Name: Box2D~%")
+                         (format #t "Description: Box2D physics engine~%")
+                         (format #t "Version: ~a~%" #$version)
+                         (format #t "Libs: -L${libdir} -lbox2d~%")
+                         (format #t "Cflags: -I${includedir}~%")))))))))
     (native-inputs
      (list doctest))                    ;for tests
     (inputs
