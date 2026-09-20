@@ -1665,7 +1665,7 @@ in the terminal or with an external viewer.")
 (define-public giza
   (package
     (name "giza")
-    (version "1.5.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1674,7 +1674,7 @@ in the terminal or with an external viewer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qair5j6rq17hwvyxl6k2n4hkvgjw5wczmfzn7qh7kcv3qpg9p5l"))))
+        (base32 "0c5p7vhbbwmk8cgmnhzpdmpc9b1wdwbi024xdjg8hlm68dbrwrzg"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1685,7 +1685,7 @@ in the terminal or with an external viewer.")
               (system "Xvfb :99 -screen 0 1920x1080x24 &")
               (setenv "DISPLAY" ":99")))
           ;; Tests are interactive, see
-          ;; <https://github.com/danieljprice/giza/blob/v1.5.0/.github/workflows/build.yml#L52>.
+          ;; <https://github.com/danieljprice/giza/blob/v2.0.0/.github/workflows/build.yml#L52>.
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
