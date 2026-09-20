@@ -12392,13 +12392,16 @@ task}.")
 (define-public python-stsci-stimage
   (package
     (name "python-stsci-stimage")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stsci_stimage" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stsci.stimage")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "10vhc2kfryis37k5jkg357z7lhlmyci4makzy50xgh08648ak7cd"))))
+        (base32 "1rm9k14grgcnv6nj5wwqsfxvcylnf35zv547c1n96r6yhd6pkqph"))))
     (build-system pyproject-build-system)
     (arguments
      (list
