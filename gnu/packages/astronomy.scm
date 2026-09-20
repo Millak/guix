@@ -12635,13 +12635,13 @@ measures using multiple methods with a common API.")
 (define-public python-sunkit-magex
   (package
     (name "python-sunkit-magex")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunkit_magex" version))
        (sha256
-        (base32 "16wraf2yrqslik4h3mhj5gcwx7fdg3x9v38swlhcgcyvkcjxbqc2"))))
+        (base32 "0316pqxxsy217wiqwb0k0dpnmmn2847fsyjw8hr4iwxlj8nyk1ja"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -12649,9 +12649,7 @@ measures using multiple methods with a common API.")
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            ;; FileNotFoundError: [Errno 2] No such file or directory:
-            ;; '/homeless-shelter/.config'
+          (add-before 'check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
