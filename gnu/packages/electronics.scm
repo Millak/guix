@@ -3840,7 +3840,7 @@ Standard} data mode.")
 (define-public python-pyuvm
   (package
     (name "python-pyuvm")
-    (version "4.0.1")
+    (version "5.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3849,7 +3849,7 @@ Standard} data mode.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02ldgkc4srw940xrd00r3q7jxvj5w8q5vblp4z17w04ml862inlf"))))
+        (base32 "12xfc9kxr7pw8f9wmk3lblly9hmabpdxlh4228wl1a0i4x4nzf3v"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools))
