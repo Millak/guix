@@ -13006,22 +13006,22 @@ analyze spectrogram data.")
 (define-public python-suntime
   (package
     (name "python-suntime")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/SatAgro/suntime")
-             (commit (string-append "v" version))))
+              (url "https://github.com/SatAgro/suntime")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "145jqwnl8frg49981xcli1l13h73m40gkbnpwa88lhva03j7y1k2"))))
+        (base32 "1rl0bn80z7gbiqan6i45gryxv4xw5kpbzv29hjk8675mmidk516m"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "tests.py")))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-setuptools))
     (propagated-inputs
      (list python-dateutil))
     (home-page "https://github.com/SatAgro/suntime")
