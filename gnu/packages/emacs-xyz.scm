@@ -4920,7 +4920,7 @@ compile}.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1sylnd4hybxnygcgxqw8p7mlp0r000n6f44y5fq3sv9518l5mflz"))))
+           "0n37406p8732ayrqfjflq0aja8fiksa68g6p0ncwh5bma1vxd20q"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f)) ; no tests included
       (native-inputs (list emacs-s))
