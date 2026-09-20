@@ -78,6 +78,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
@@ -936,7 +937,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "25.8.7.3")               ;keep in sync with hunspell dictionaries
+    (version "26.8.0.3")               ;keep in sync with hunspell dictionaries
     (source
      (origin
        (method url-fetch)
@@ -949,7 +950,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
           "https://downloadarchive.documentfoundation.org/libreoffice/old/"
           version "/src/libreoffice-" version ".tar.xz")))
        (sha256
-        (base32 "0bd0zh2pdigqv3ml8mfifnfz579kk4kyyhdndv0nbazcmdyq3xdg"))))
+        (base32 "154gyq3jmbyygn8d19bw9dphkmvw9yhgy874ficmgaikd4jnw4a2"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1150,6 +1151,7 @@ os.putenv('URE_BOOTSTRAP', \
            cups
            dbus-glib
            dragonbox
+           fast-float
            firebird
            fontconfig
            fontforge
@@ -1201,6 +1203,7 @@ os.putenv('URE_BOOTSTRAP', \
            libzmf
            lpsolve
            `(,mariadb "dev")
+           md4c
            mdds
            mythes
            neon
