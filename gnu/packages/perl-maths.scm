@@ -252,7 +252,7 @@ Perl Data Language.")
 (define-public perl-pgplot
   (package
     (name "perl-pgplot")
-    (version "2.35")
+    (version "2.36")
     (source
      (origin
        (method git-fetch)
@@ -261,7 +261,7 @@ Perl Data Language.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i9bi52pwbi3qnalm288ihdlwsvn9wwi5rhmspqbna3pfqjhc29c"))))
+        (base32 "08dx9rbidl6k1xqswk8qgm64mx61cfa359n0y5a45z22cbs8pbnh"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
@@ -269,7 +269,7 @@ Perl Data Language.")
         (add-after 'unpack 'setenv
          (lambda* (#:key inputs #:allow-other-keys)
            (setenv "PGPLOT_DIR" (string-append (assoc-ref inputs "giza") "/lib")))))))
-    (inputs (list giza libx11))
+    (inputs (list giza-1 libx11))
     (native-inputs (list perl-devel-checklib perl-extutils-f77 gfortran perl-pdl))
     (home-page "https://metacpan.org/release/PGPLOT")
     (synopsis "Scientific plotting library (using giza)")
