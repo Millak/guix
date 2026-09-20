@@ -9009,7 +9009,9 @@ evaluations.  The entry point is @code{M-x build-farm} command.")
               (lambda _
                 (with-directory-excursion "tests"
                   (for-each delete-file
-                            '("I0021.d" "fonts.d" "fonts_enums.d"))))))))
+                            '("I0021.d" "fonts.d" "fonts_enums.d"
+                              "I0035.d" "I0039.d" "I0102.d" "I0105.d"
+                              "fonts_types.d" "I0093_546738540.d"))))))))
       (home-page "https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode")
       (synopsis "Emacs major mode for editing D code")
       (description "This package provides an Emacs major mode for highlighting
