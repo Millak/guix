@@ -28,11 +28,11 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages nss)
-  #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
@@ -78,6 +78,7 @@
         (ice-9 regex)
         (ice-9 match)
         ,@%default-gnu-modules)
+       #:make-flags (list (string-append "CC=" ,(cc-for-target)))
        #:phases
        ,#~(modify-phases %standard-phases
              (delete 'configure)          ; no configure script
@@ -199,20 +200,13 @@
                              (with-atomic-file-replacement f fixup-bin-sh-references))
                            (find-files "c_code" "@posproc\\.nim\\.c"))))
              (replace 'build
-               (lambda* (#:key (parallel-build? #t) #:allow-other-keys)
-                 (setenv "XDG_CACHE_HOME" "./cache-home")
-                 (setenv "HOME" "./cache-home")
-                 (setenv "SHELL" (which "sh"))
-                 (mkdir-p "./cache-home")
-                 (invoke "sh" "build.sh"
-                         "--parallel"
-                         (if parallel-build?
-                           (number->string (parallel-job-count))
-                           "1"))
-                 (sleep 5)        ; Wait for the parallel builds to finish.
-                 (invoke "./bin/nim" "c" "-d:release" "koch")
-                 (invoke "./koch" "boot" "-d:release")
-                 (invoke "./koch" "tools")))
+              (lambda args
+                (apply (assoc-ref %standard-phases 'build) args)
+                (setenv "XDG_CACHE_HOME" "./cache-home")
+                (mkdir-p "./cache-home")
+                (invoke "./bin/nim" "c" "-d:release" "koch")
+                (invoke "./koch" "boot" "-d:release")
+                (invoke "./koch" "tools")))
              (replace 'check
                (lambda* (#:key tests? #:allow-other-keys)
                  (when tests?
@@ -241,7 +235,7 @@
                    (copy-file "dist/nimble/nimble.bash-completion"
                               (string-append zsh "/_nimble"))))))))
     (inputs (list atlas libgc openssl pcre sat sqlite))
-    (native-inputs (list nss-certs parallel))
+    (native-inputs (list nss-certs))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
     (description "Nim (formerly known as Nimrod) is a statically-typed,
