@@ -2623,14 +2623,14 @@ some utility functions, and commands using that infrastructure.")
 (define-public emacs-flymake
   (package
     (name "emacs-flymake")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "flymake-" version ".tar"))
        (sha256
-        (base32 "1gnk6md24y82ciz0qljn2xvd96qdp808nwh3q8gm6shc7g4sw024"))))
+        (base32 "11i5v483k70la6v48ljar54n6rhi8p7w2xnci5w5wvn11cmffrwz"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-project))
     (home-page "https://elpa.gnu.org/packages/flymake.html")
