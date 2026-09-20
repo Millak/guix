@@ -1090,6 +1090,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/bmake-run-check-separately.patch	\
   %D%/packages/patches/boolector-find-googletest.patch	\
   %D%/packages/patches/boost-fix-duplicate-definitions-bug.patch	\
+  %D%/packages/patches/box2d-add-pkgconfig.patch	\
   %D%/packages/patches/btanks-scons-python.patch		\
   %D%/packages/patches/btanks-sl08-python.patch			\
   %D%/packages/patches/byobu-writable-status.patch		\

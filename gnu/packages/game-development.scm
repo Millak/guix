@@ -3882,29 +3882,41 @@ physics engine is just a system for procedural animation.")
 
 (define-public box2d-3
   (package
-   (inherit box2d)
-   (name "box2d")
-   (version "3.0.0")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/erincatto/box2d")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "0m01c23mxvg96zypqyi2fpkd1dsvgflafi3ncga6ihdvxbwaybk5"))))
-   (build-system cmake-build-system)
-   (arguments
-    (substitute-keyword-arguments
-        (package-arguments box2d)
-      ((#:configure-flags original-flags)
-       #~(cons* "-DBOX2D_UNIT_TESTS=OFF" ; enkiTS need for all test apps
-                "-DBOX2D_SAMPLES=OFF"
-                (delete "-DBOX2D_BUILD_TESTBED=OFF" #$original-flags)))
-      ((#:phases phases)
-       #~(modify-phases #$phases
-           (delete 'check)))))))        ; no check
+    (inherit box2d)
+    (name "box2d")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/erincatto/box2d")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j4vf19idnimpf8niqiw9dmdm40mvvjrhky63yyv2n0z1zs35912"))
+       ;; TODO: Remove on next update, already merged upstream.
+       (patches (search-patches "box2d-add-pkgconfig.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove bundled code only used for the testbed.
+           (delete-file-recursively "extern")))))
+    (arguments
+     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                 "-DBOX2D_UNIT_TESTS=OFF" ; enkiTS need for all test apps
+                                 "-DBOX2D_SAMPLES=OFF")
+           ;; Tests are disabled because they are not built - enkiTS is not available
+           #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        ;; Relative path doesn't work when package is added to profile,
+                        ;; due to PKG_CONFIG_PATH being something like
+                        ;; ~/.guix-profile/lib/pkgconfig
+                        (add-after 'unpack 'fix-pkgconfig-prefix
+                          (lambda _
+                            (substitute* "src/box2d.pc.in"
+                              (("^prefix=.*")
+                               "prefix=@CMAKE_INSTALL_PREFIX@\n")))))))
+    (native-inputs '())))
 
 (define-public libtcod
   (package

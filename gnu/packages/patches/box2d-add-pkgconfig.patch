@@ -1,0 +1,93 @@
+From 5b5c10b8a75f68c7ba25a1e7c9e4caeccb6bbbfa Mon Sep 17 00:00:00 2001
+From: Rodion Goritskov <rodion@goritskov.com>
+Date: Sun, 20 Sep 2026 21:56:56 +0200
+Subject: [PATCH] box2d-add-pkgconfig.patch
+
+From: Erin Catto <erincatto@users.noreply.github.com>
+
+This patch adds pkgconfig support.
+
+Source: https://github.com/erincatto/box2d/commit/dc67c40ba2ce1ad384b0c985dbc1b539cba9221b.patch
+Upstream-Status: https://github.com/erincatto/box2d/pull/1102
+---
+ src/CMakeLists.txt | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/box2d.pc.in    | 11 +++++++++++
+ 2 files changed, 59 insertions(+)
+ create mode 100644 src/box2d.pc.in
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 8c96462..b61c679 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -222,3 +222,51 @@ install(
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/box2dConfigVersion.cmake"
+   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/box2d"
+ )
++
++# Anchor every path to the .pc file itself so the install tree can be relocated,
++# by cmake --install --prefix or by moving it afterwards
++file(RELATIVE_PATH PKGCONFIG_PREFIX_REL "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig" "${CMAKE_INSTALL_PREFIX}")
++string(REGEX REPLACE "/$" "" PKGCONFIG_PREFIX_REL "${PKGCONFIG_PREFIX_REL}")
++file(RELATIVE_PATH PKGCONFIG_LIBDIR_REL "${CMAKE_INSTALL_PREFIX}" "${CMAKE_INSTALL_FULL_LIBDIR}")
++file(RELATIVE_PATH PKGCONFIG_INCLUDEDIR_REL "${CMAKE_INSTALL_PREFIX}" "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
++
++# The file has to carry every PUBLIC define the exported target carries, or consumers
++# compile against different headers than the library was built with. Keep in sync
++# with the defines above.
++set(PKGCONFIG_CFLAGS "")
++if (BOX2D_DOUBLE_PRECISION)
++	string(APPEND PKGCONFIG_CFLAGS " -DBOX2D_DOUBLE_PRECISION")
++endif()
++if (WIN32 AND BUILD_SHARED_LIBS)
++	# base.h keys the dllimport off _WIN32, so MinGW needs this as much as MSVC
++	string(APPEND PKGCONFIG_CFLAGS " -DBOX2D_DLL")
++endif()
++string(APPEND PKGCONFIG_CFLAGS "$<$<CONFIG:RELWITHDEBINFO>: -DB2_ENABLE_ASSERT>")
++
++set(PKGCONFIG_LIBNAME "box2d$<$<CONFIG:Debug>:${CMAKE_DEBUG_POSTFIX}>")
++
++# Plain pkg-config --libs skips Libs.private, and Box2D builds static by default, so
++# public link deps belong on the main line unless we are actually building a shared lib
++set(PKGCONFIG_LIBS "")
++set(PKGCONFIG_LIBS_PRIVATE "")
++if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
++	if(BUILD_SHARED_LIBS)
++		set(PKGCONFIG_LIBS_PRIVATE "-lm")
++	else()
++		set(PKGCONFIG_LIBS " -lm")
++	endif()
++endif()
++
++configure_file(box2d.pc.in box2d.pc.gen @ONLY)
++
++# The library name and the assert define vary by config, so finish the substitution
++# per config instead of once at configure time
++file(GENERATE
++  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/$<CONFIG>/box2d.pc"
++  INPUT "${CMAKE_CURRENT_BINARY_DIR}/box2d.pc.gen"
++)
++
++install(
++  FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/$<CONFIG>/box2d.pc"
++  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
++)
+diff --git a/src/box2d.pc.in b/src/box2d.pc.in
+new file mode 100644
+index 0000000..01a507b
+--- /dev/null
++++ b/src/box2d.pc.in
+@@ -0,0 +1,11 @@
++prefix=${pcfiledir}/@PKGCONFIG_PREFIX_REL@
++exec_prefix=${prefix}
++libdir=${prefix}/@PKGCONFIG_LIBDIR_REL@
++includedir=${prefix}/@PKGCONFIG_INCLUDEDIR_REL@
++
++Name: @PROJECT_NAME@
++Description: @PROJECT_DESCRIPTION@
++Version: @PROJECT_VERSION@
++Libs: -L${libdir} -l@PKGCONFIG_LIBNAME@@PKGCONFIG_LIBS@
++Libs.private: @PKGCONFIG_LIBS_PRIVATE@
++Cflags: -I${includedir}@PKGCONFIG_CFLAGS@
+-- 
+2.54.0
+
