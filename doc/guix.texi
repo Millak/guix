@@ -29007,6 +29007,22 @@ details.
 
 @end defvar
 
+@subsubheading ALSA Volume Persistence Service
+
+ALSA requires a custom service to persist volume levels across reboots.
+
+@defvar alsa-persistence-service-type
+The @code{alsa-persistence-service-type} service reads
+@file{/var/lib/alsa/asound.state} on boot and writes updated values on shutdown.
+
+This service is only required when using ALSA directly, it is not required
+when using PipeWire or PulseAudio.  The service can be enabled as follows:
+
+@lisp
+(service alsa-persistence-service-type)
+@end lisp
+@end defvar
+
 @subsubheading Speaker Safety Daemon System Service
 
 @uref{https://github.com/AsahiLinux/speakersafetyd, Speaker Safety

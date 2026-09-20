@@ -57,6 +57,8 @@
             alsa-configuration-options
             alsa-service-type
 
+            alsa-persistence-service-type
+
             pulseaudio-configuration
             pulseaudio-configuration?
             pulseaudio-configuration-client-conf
@@ -181,6 +183,52 @@
                  (options options)))))
    (default-value (alsa-configuration))
    (description "Configure low-level Linux sound support, ALSA.")))
+
+
+;;;
+;;; ALSA Persistence
+;;;
+
+(define %alsa-persistence-activation
+  #~(begin
+      (use-modules (guix build utils))
+      (mkdir-p "/var/lib/alsa")))
+
+(define (alsa-persistence-shepherd-service alsactl-args)
+  (list (shepherd-service
+          (provision '(alsa-persistence))
+          (requirement '(user-processes))
+          (documentation "Store and restore ALSA volume levels.")
+          ;; Ideally, we would declare this services to be one-shot as it
+          ;; doesn't start a long-running daemon.  Unfortunately, the stop
+          ;; action cannot be triggered for one-shot services, thus it is
+          ;; unsuitable here and we just prevent respawning of the service.
+          (respawn? #f)
+          (start #~(lambda _
+                     (if (file-exists? "/var/lib/alsa/asound.state")
+                       (invoke
+                         #$(file-append alsa-utils "/sbin/alsactl")
+                         "restore"
+                         #$@alsactl-args)
+                       #t)))
+          (stop #~(lambda _
+                    (invoke
+                      #$(file-append alsa-utils "/sbin/alsactl")
+                      "store"
+                      #$@alsactl-args))))))
+
+(define alsa-persistence-service-type
+  (service-type
+    (name 'alsa-persistence)
+    (extensions
+      (list (service-extension shepherd-root-service-type
+                               alsa-persistence-shepherd-service)
+            (service-extension activation-service-type
+                               (const %alsa-persistence-activation))))
+    (description
+      "One-shot service which stores and restores the ALSA volume
+level using the @command{alsactl} command.")
+    (default-value '())))
 
 
 ;;;
