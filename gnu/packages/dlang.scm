@@ -518,7 +518,7 @@ This compiler is based on the DMD frontend version 2.112.1.")
     ;; and their names must have the same length to avoid corrupting the
     ;; binary.
     (name "dmd")
-    (version "2.112.0")
+    (version "2.113.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -529,7 +529,7 @@ This compiler is based on the DMD frontend version 2.112.1.")
               ;; native-inputs below.
               (sha256
                (base32
-                "0qvg2fb73kyng8k1wj482g07ar2qw5laa5fynwx7pdd610n0pjpc"))))
+                "1b1zf7vck35ab67npjiakpyh60g5dlyl4f7v8chjnc2bwzyyc58a"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -735,7 +735,7 @@ This compiler is based on the DMD frontend version 2.112.1.")
              (file-name (git-file-name "phobos" version))
              (sha256
               (base32
-               "0afi5glnf96242cbnr10ccjvfsgkh4k5y7qnmxv4ph5g0izvi1dc"))
+               "1w2ncn6q2fiq05wsygdfyyb0sbnsiddlnajkmajqcdcxjlih90cp"))
              (patches (search-patches "dmd-phobos-support-TZDIR.patch")))))
     (outputs '("out" "lib" "debug"))
     (home-page "https://github.com/dlang/dmd")
