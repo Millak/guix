@@ -6206,20 +6206,18 @@ policy applications.")
      (base32 "08wvxmk77zrixll8wfhwd7ixvpvj2wbisvq8lqw2b8ym77sbbyz4"))))
 
 (define-public kdsoap
-  (let ((commit "b23dcc1b554d98a4b77fb56fff0d0f0714c8f0bf")
-        (revision "0"))
-    (package
+  (package
       (name "kdsoap")
-      (version (git-version "2.2.0" revision commit))
+      (version "2.3.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/KDAB/KDSoap")
-                (commit commit)))
+                (commit (string-append "kdsoap-" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1invsvadfz3l6cf453j4ad4dkg3gas3h85nxvvlif6h7xfx73qhi"))))
+          (base32 "07lrpp18l40knw19inns1givp0an5wjkd9bcy9l2lslvqmqp3hsk"))))
       (build-system qt-build-system)
       (arguments
        (list #:qtbase qtbase
@@ -6245,7 +6243,7 @@ policy applications.")
       (description "KD SOAP is a tool for creating client applications for web
 services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
-      (license (list license:gpl2 license:gpl3)))))
+      (license (list license:gpl2 license:gpl3))))
 
 (define-public libaccounts-qt6
   (package
