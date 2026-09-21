@@ -17135,6 +17135,28 @@ Selected also provides selected-global-mode, if you want selected-minor-mode
 in every buffer.")
       (license license:expat))))
 
+(define-public emacs-speedrect
+  (package
+    (name "emacs-speedrect")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/speedrect-" version
+                           ".tar"))
+       (sha256
+        (base32 "0nxwwd12qqyxq1fg8n6miyx63fp29cvpfp8w33zmf9dhkcjwyfd1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))          ; no tests
+    (propagated-inputs (list emacs-compat emacs-multiple-cursors))
+    (home-page "https://github.com/jdtsmith/speedrect")
+    (synopsis "Fast modal rectangle commands")
+    (description
+     "This package provides modal keybindings and additional functionality when
+@code{rectangle-mark-mode} is active (typically on @kbd{C-x SPC}).")
+    (license license:gpl3+)))
+
 (define-public emacs-pde
   (package
     (name "emacs-pde")
