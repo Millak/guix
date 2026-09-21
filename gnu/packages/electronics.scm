@@ -1127,7 +1127,7 @@ files.")
 (define-public klayout
   (package
     (name "klayout")
-    (version "0.30.10")
+    (version "0.30.12")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -1136,7 +1136,7 @@ files.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "06y1biswhwfc4ar3xkz6d9pmfkmm8v9wq03kli8r94zll3wkvqxf"))))
+               "05clrr88g3d7rh2m53xv6h384kdif2nfmp0clfy09k7v2m4n7nb4"))))
     (build-system copy-build-system)
     (arguments
      (list
