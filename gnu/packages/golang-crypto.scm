@@ -687,6 +687,48 @@ needing to use secp256k1 elliptic curve cryptography.")
     (description "This package provides Bitcoin hash functionality.")
     (license license:isc)))
 
+(define-public go-github-com-btcsuite-btcd-chainhash-v2
+  (package
+    (name "go-github-com-btcsuite-btcd-chainhash-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/btcsuite/btcd")
+              (commit (go-version->git-ref version #:subdir "chainhash"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04apnqisk42zzi6s2hnv53cqwxv7s7wqsvffd5l00bf1raql1dq2"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "chainhash")
+            ;; This is a workaround to provide a correct import-path.
+            (rename-file "chainhash" "tmp")
+            (mkdir-p "chainhash/v2")
+            (copy-recursively "tmp" "chainhash/v2")
+            (delete-file-recursively "tmp")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/btcsuite/btcd/chainhash/v2"
+      #:unpack-path "github.com/btcsuite/btcd"))
+    (home-page "https://github.com/btcsuite/btcd")
+    (synopsis "Generic hash type and associated functions for Go")
+    (description
+     "Chainhash provides a generic hash type and associated functions that
+allows the specific hash algorithm to be abstracted.")
+    (license license:isc)))
+
 (define-public go-github-com-bwesterb-go-ristretto
   (package
     (name "go-github-com-bwesterb-go-ristretto")
