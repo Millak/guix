@@ -472,6 +472,44 @@ endpoint.  Additionally, it can encode the token in the XOAUTH2 format to be
 used as authentication in IMAP mail servers.")
       (license license:asl2.0))))
 
+(define-public python-a2wsgi
+  (package
+    (name "python-a2wsgi")
+    (version "1.10.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "a2wsgi" version))
+              (sha256
+               (base32
+                "13ikyfmkx7hlrbg5rpcdm6kw4wcsy00giil3f72hpb6sw7vjyinf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_starlette_stream_response"
+                          "test_starlette_base_http_middleware"
+                          "test_baize_stream_response"
+                          ;; Fails because of harmless whitespace differences.
+                          "test_wsgi_post")
+                    " and not "))
+      #:build-backend "pdm.backend"))
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest
+           ;; python-baize ; not packed yet
+           python-httpx-bootstrap
+           ;; Cycle: python-a2wsgi->python-uvicorn->
+           ;; python-httpx->python-starlette->python-a2wsgi
+           ;; python-starlette
+           python-pytest-asyncio))
+    (home-page "https://github.com/abersheeran/a2wsgi")
+    (synopsis "Convert WSGI to ASGI or vice versa")
+    (description
+     "This program converts a WSGI program to an ASGI program or the other
+way around.  It depends only on the Python standard library.")
+    (license license:asl2.0)))
+
 (define-public python-aioboto3
   (package
     (name "python-aioboto3")
@@ -510,6 +548,38 @@ used as authentication in IMAP mail servers.")
     (description
      "This package is mostly just a wrapper combining the great work of boto3
 and aiobotocore.")
+    (license license:asl2.0)))
+
+(define-public python-aiobotocore
+  (package
+    (name "python-aiobotocore")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiobotocore" version))
+       (sha256
+        (base32 "0bcmnbm30hwaks8l895j8xy08cil0dpjcfpidg2qjawbs4a9s0ra"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: Tests need some setupt, see Makefile.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp
+           python-aioitertools
+           python-botocore
+           python-dateutil
+           python-jmespath
+           python-multidict
+           python-typing-extensions
+           python-wrapt))
+    (home-page "https://github.com/aio-libs/aiobotocore")
+    (synopsis "Async client for AWS services using botocore and aiohttp")
+    (description "This package provides an async client for Amazon services
+using botocore and aiohttp/asyncio.  This library is a mostly full featured
+asynchronous version of botocore.")
     (license license:asl2.0)))
 
 (define-public python-aiocoap
@@ -563,6 +633,576 @@ and aiobotocore.")
 Constrained Application Protocol}, http://coap.space/}.  It facilitates
 writing applications that talk to network enabled embedded
 @acronym{IoT,Internet of Things} devices.")
+    (license license:expat)))
+
+(define-public python-aiodns
+  (package
+    (name "python-aiodns")
+    (version "3.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saghul/aiodns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1as7l48962dpk3r4zdsifj761dks5nyr35hxs7m8crvkyb1dg9m9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f))                     ;tests require internet access
+    (native-inputs
+     (list python-pytest python-pytest-asyncio python-setuptools))
+    (propagated-inputs (list python-pycares))
+    (home-page "https://github.com/saghul/aiodns")
+    (synopsis "Simple DNS resolver for asyncio")
+    (description
+     "@code{aiodns} provides a simple way for doing asynchronous DNS
+resolutions with a synchronous looking interface by using
+@url{https://github.com/saghul/pycares,pycares}.")
+    (license license:expat)))
+
+(define-public python-aioftp
+  (package
+    (name "python-aioftp")
+    (version "0.27.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/aioftp")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lshyac5zk1w4x7ygkim3726f8gbkvpvlyiqkn9cs6qjxhxn5bxc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-default-asyncio
+            ;; async_timeout is deprecated, upstream recommends to use
+            ;; asyncio, available since Python 3.11.
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("async_timeout") "asyncio")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-pytest-asyncio
+           python-setuptools
+           python-siosocks
+           python-trustme))
+    (home-page "https://aioftp.readthedocs.io/")
+    (synopsis "FTP client/server for asyncio in Python")
+    (description
+     "FTP client and server for asyncio (Python 3) Library implementing FTP
+protocol, both client and server for Python asyncio module.
+
+ Supported commands as client: USER, PASS, ACCT, PWD, CWD, CDUP, MKD, RMD,
+ MLSD, MLST, RNFR, RNTO, DELE, STOR, APPE, RETR, TYPE, PASV, ABOR, QUIT,
+ REST, LIST (as fallback).
+
+ Supported commands as server: USER, PASS, QUIT, PWD, CWD, CDUP, MKD, RMD,
+ MLSD, LIST (non-standard), MLST, RNFR, RNTO, DELE, STOR, RETR,
+ TYPE (\"I\" and \"A\"), PASV, ABOR, APPE, REST.")
+    (license license:asl2.0)))
+
+(define-public python-aiohappyeyeballs
+  (package
+    (name "python-aiohappyeyeballs")
+    (properties '((commit . "cc53cf8a1d31f7b460a0114214aac66956f0e2ed")
+                  (revision . "0")))
+    (version (git-version "2.6.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aio-libs/aiohappyeyeballs")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nc723f4sxryg5h9z8paysmy9dnqw2jy4srxp9axrxkv9qrawa7n"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://github.com/aio-libs/aiohappyeyeballs")
+    (synopsis "Happy Eyeballs for asyncio")
+    (description "This library exists to allow connecting with Happy
+Eyeballs (RFC 8305) when you already have a list of @code{addrinfo} and not a
+DNS name.")
+    (license license:psfl)))
+
+(define-public python-aiohttp
+  (package
+    (name "python-aiohttp")
+    (version "3.13.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/aiohttp/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l9jcmhqd2v97gy1bxvimwi3aajxhxqn6jkzzgg7cf42mpyza0vc"))
+       (snippet
+        #~(begin
+            (use-modules ((guix build utils)))
+            (delete-file-recursively "vendor")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 4003 passed, 80 skipped, 31 xfailed, 2 subtests passed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; This tests requires the 'proxy.py' module, not yet packaged.
+              "--ignore=tests/test_proxy_functional.py"
+              ;; No benchamrks.
+              "--ignore-glob=tests/test_benchmarks_*"
+              "-k"
+              (string-join
+               ;; Combinatin of tests failing with similar errors:
+               ;; - Cannot connect to host example.com:443 ssl:default [Could
+               ;;   not contact DNS servers].
+               ;; - aiohttp.http_exceptions.ContentEncodingError: 400.
+               ;; - Can not decode content-encoding: br
+               (list "not test_add_static_path_resolution"
+                     "test_empty_header_name"
+                     "test_http_payload_brotli"
+                     "test_http_payload_zstandard"
+                     "test_invalid_header_spacing"
+                     "test_payload_decompress_size_limit_brotli"
+                     "test_reject_obsolete_line_folding"
+                     "test_response_with_precompressed_body_brotli"
+                     "test_static_file_custom_content_type_compress"
+                     "test_static_file_with_encoding_and_enable_compression"
+                     "test_tcp_connector_ssl_shutdown_timeout_nonzero_passed"
+                     "test_tcp_connector_ssl_shutdown_timeout_passed_to_"
+                     "test_tcp_connector_ssl_shutdown_timeout_zero_not_")
+               " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-libllhtp-pkgconfig
+            (lambda _
+              ;; pkg-config can't find the libllhttp library.
+              (if (getenv "PKG_CONFIG_PATH")
+                  (setenv "PKG_CONFIG_PATH"
+                          (string-append
+                           #$(this-package-input "llhttp") "/lib/pkgconfig"
+                           (getenv "PKG_CONFIG_PATH")))
+                  (setenv "PKG_CONFIG_PATH"
+                          (string-append
+                           #$(this-package-input "llhttp") "/lib/pkgconfig")))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--numprocesses=auto") "")
+                (("-p pytest_cov") "")
+                (("--cov=aiohttp") "")
+                (("--cov=tests/") ""))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Make sure the timestamp of this file is > 1990, because a few
+              ;; tests like test_static_file_if_modified_since_past_date
+              ;; depend on it.
+              (let ((late-90s (* 60 60 24 365 30)))
+                (utime "tests/data.unknown_mime_type" late-90s late-90s))))
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "USE_SYSTEM_DEPS" "true")
+              ;; Help setup.py to determine project's root.
+              (with-output-to-file ".git"
+                (lambda () (display "")))
+              (substitute* "Makefile"
+                  (("cythonize: .install-cython") "cythonize:"))
+              (invoke "make" "cythonize")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "aiohttp"))))))
+    (native-inputs
+     (list gunicorn-bootstrap
+           python-freezegun
+           python-cython
+           python-pkgconfig
+           ;; python-proxy-py   ;not packaged yet in Guix
+           python-pytest
+           python-pytest-mock
+           python-pytest-xdist
+           python-re-assert
+           python-setuptools
+           python-zlib-ng))
+    (inputs
+     (list llhttp))
+    (propagated-inputs
+     (list python-aiohappyeyeballs
+           python-aiosignal
+           python-attrs
+           python-frozenlist
+           python-multidict
+           python-propcache
+           python-yarl
+           ;; [optional]
+           python-aiodns
+           python-backports-zstd        ;Python version < 3.14
+           python-brotli))
+    (home-page "https://github.com/aio-libs/aiohttp/")
+    (synopsis "Async HTTP client/server framework (asyncio)")
+    (description "@code{aiohttp} is an asynchronous HTTP client/server
+framework.
+
+Its main features are:
+@itemize
+@item Supports both client and server side of HTTP protocol.
+@item Supports both client and server Web-Sockets out-of-the-box without the
+Callback Hell.
+@item Web-server has middlewares and pluggable routing.
+@end itemize")
+    (license license:asl2.0)))
+
+(define-public python-aiohttp-client-cache
+  (package
+    (name "python-aiohttp-client-cache")
+    (version "0.14.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/requests-cache/aiohttp-client-cache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13xbmjjvcbzh3yh5z92mc0gwicwfjfq2av5jbqv09sbfzhggs92y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore=test/integration/")))
+    (native-inputs
+     (list python-brotli
+           python-faker
+           python-hatchling
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-types-aiofiles))
+    (propagated-inputs
+     (list python-aiohttp
+           python-attrs
+           python-itsdangerous
+           python-url-normalize
+           ;; [optional]
+           python-aioboto3
+           python-aiobotocore
+           python-aiofiles
+           python-aiosqlite
+           python-pymongo
+           python-redis))
+    (home-page "https://github.com/requests-cache/aiohttp-client-cache")
+    (synopsis "Persistent cache for aiohttp requests")
+    (description
+     "This package is an asynchronous persistent caching library specifically
+designed for @samp{aiohttp} requests in Python.  With support for various
+storage backends, it offers flexibility in how and where the cache is stored.
+Please note that MongoDB and DynamoDB backends are not currently supported due
+to the absence of the @samp{motor} and @samp{aioboto3} package dependencies.")
+    (license license:expat)))
+
+(define-public python-aiohttp-cors
+  (package
+    (name "python-aiohttp-cors")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp_cors" version))
+       (sha256
+        (base32 "00qlzc2y65bkl1a5f5v83mmjlrhzmx3a2ngq2pm3jjdnhk5zkb6c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; network access is required to run tests
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-aiohttp))
+    (home-page "https://github.com/aio-libs/aiohttp-cors")
+    (synopsis "CORS support for aiohttp")
+    (description
+     "This library implements @acronym{CORS, Cross Origin Resource Sharing}
+support for aiohttp asyncio-powered asynchronous HTTP server.")
+    (license license:asl2.0)))
+
+(define-public python-aiohttp-oauthlib
+  (package
+    (name "python-aiohttp-oauthlib")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp-oauthlib" version))
+       (sha256
+        (base32 "1dwk0gby27xm7384qyz2p7zw9dqhjx7m8fhfk172w36xknjx2g49"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; none included
+    (propagated-inputs (list python-aiohttp python-oauthlib))
+    (native-inputs (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~whynothugo/aiohttp-oauthlib")
+    (synopsis "OAuthlib authentication support for aiohttp")
+    (description "Aiohttp-oauthlib uses the Python aiohttp and OAuthlib libraries to
+provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
+    (license license:isc)))
+
+(define-public python-aiohttp-retry
+  (package
+    (name "python-aiohttp-retry")
+    (version "2.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/inyutin/aiohttp_retry")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r5lxnxc4s8js7l86pfmdxl455v9lg3m41nz6m1xg4kwwf6j0bpi"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-aiohttp
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp))
+    (home-page "https://github.com/inyutin/aiohttp_retry")
+    (synopsis "Simple retry client for aiohttp")
+    (description
+     "This package implements @code{RetryClient} for @code{aiohttp} to retry
+connection to provided endpoint with timeouts logic or use:
+
+@itemize
+@item @code{ExponentialRetry} with exponential backoff
+@item @code{RandomRetry} for random backoff
+@item @code{ListRetry} with backoff you predefine by list
+@item @code{FibonacciRetry} with backoff that looks like fibonacci sequence
+@item @code{JitterRetry} exponential retry with a bit of randomness
+@end itemize")
+    (license license:expat)))
+
+(define-public python-aiohttp-socks
+  (package
+    (name "python-aiohttp-socks")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp_socks" version))
+       (sha256
+        (base32
+         "0s70jpcr9wc8ld2v1w309cz7r8mm2bipf6zbkdqqaa0z0pwf3wj9"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;none included
+    (propagated-inputs
+     (list python-aiohttp python-socks))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/romis2012/aiohttp-socks")
+    (synopsis "SOCKS proxy connector for aiohttp")
+    (description "This package provides a SOCKS proxy connector for
+aiohttp.  It supports SOCKS4(a) and SOCKS5.")
+    (license license:asl2.0)))
+
+(define-public python-aioitertools
+  (package
+    (name "python-aioitertools")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aioitertools" version))
+       (sha256
+        (base32 "0syxv2r90d6410hc68jxhk610pdgx19n1n5rc7shaxxv9xdhbaf2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "aioitertools.tests")))
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://pypi.org/project/aioitertools/")
+    (synopsis "Itertools and builtins for AsyncIO and mixed iterables")
+    (description
+     "This package provides an implementation of itertools, builtins, and more
+for AsyncIO and mixed-type iterables.")
+    (license license:expat)))
+
+(define-public python-aioquic
+  (package
+    (name "python-aioquic")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aiortc/aioquic")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dyzh8xipxbd7fcykfz8g5bgri38prwg050szqawq2p0pg538dgb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list openssl))
+    (propagated-inputs
+     (list python-certifi
+           python-cryptography
+           python-pylsqpack
+           python-pyopenssl
+           python-service-identity))
+    (home-page "https://github.com/aiortc/aioquic")
+    (synopsis "QUIC and HTTP3 implementation in Python")
+    (description
+     "@code{aioquic} is a library for the QUIC network protocol in Python.
+It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack.")
+    (license license:bsd-3)))
+
+(define-public python-aiorpcx
+  (package
+    (name "python-aiorpcx")
+    (version "0.25.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; PyPI misses the util.py file used for tests.
+       (uri (git-reference
+              (url "https://github.com/kyuupichan/aiorpcX")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0sn4xxlpy0kb5b25bqrjzh2m6bskdyydc6cq8bigb7g5dacksn4q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test opens a remote connection.
+      #~(list "-k" "not test_create_connection_resolve_good")))
+    (native-inputs (list python-pytest
+                         python-pytest-asyncio-0.26
+                         python-setuptools))
+    (propagated-inputs
+     (list python-attrs python-websockets))
+    (home-page "https://github.com/kyuupichan/aiorpcX")
+    (synopsis "Generic asyncio RPC implementation")
+    (description
+     "The aiorpcX library is a generic asyncio implementation of RPC suitable
+for an application that is a client, server or both.
+
+The package includes a module with full coverage of JSON RPC versions 1.0 and
+2.0, JSON RPC protocol auto-detection, and arbitrary message framing.  It also
+comes with a SOCKS proxy client.")
+    (license (list license:expat license:bsd-2))))
+
+(define-public python-aiosignal
+  (package
+    (name "python-aiosignal")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiosignal" version))
+       (sha256
+        (base32 "1isin9bp256scp59lbr35h48nw5p5i84b6f9kh1c50w08vcyqzpl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-pytest-cov-preload
+            (lambda _
+              (substitute* "pytest.ini"
+                (("-p pytest_cov") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-frozenlist))
+    (home-page "https://github.com/aio-libs/aiosignal")
+    (synopsis "Callback manager for Python @code{asyncio} projects")
+    (description "This Python module provides @code{Signal}, an abstraction to
+register asynchronous callbacks.  The @code{Signal} abstraction can be used
+for adding, removing and dropping callbacks.")
+    (license license:asl2.0)))
+
+(define-public python-aiostream
+  (package
+    (name "python-aiostream")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)        ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/vxgmichel/aiostream")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wf89l9f0ivlv796pklpgykx6j6ksfqrmvzikd8w5j6ldln7bv50"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-pytest-asyncio python-setuptools))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/vxgmichel/aiostream")
+    (synopsis "Generator-based operators for asynchronous iteration")
+    (description "@code{aiostream} provides a collection of stream operators that can
+be combined to create asynchronous pipelines of operations.  It can be seen as an
+asynchronous version of @code{itertools}, although some aspects are slightly
+different. All the provided operators return a unified interface called a stream.  A
+stream is an enhanced asynchronous iterable.")
+    (license license:gpl3)))
+
+(define-public python-ajsonrpc
+  (package
+    (name "python-ajsonrpc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pavlov99/ajsonrpc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c7jxfkv5q2m95j54dn650gcvdbpag2qcki7phvmrwsgb36w09kd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "ajsonrpc/__init__.py"
+               (("^__version__ = .*")
+                (string-append "__version__ = \"" #$version "\"\n"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-quart
+           python-sanic
+           python-tornado))
+    (home-page "https://github.com/pavlov99/ajsonrpc")
+    (synopsis "Async JSON-RPC 2.0 protocol and server")
+    (description
+     "This package provides a Python JSON-RPC 2.0 protocol and server powered
+by asyncio.")
     (license license:expat)))
 
 (define-public python-alpaca-py
@@ -653,6 +1293,33 @@ Anaconda Cloud.  Anaconda Cloud is useful for sharing packages, notebooks and
 environments.")
     (license license:bsd-3)))
 
+(define-public python-apiron
+  (package
+    (name "python-apiron")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apiron" version))
+       (sha256
+        (base32 "1qwbqn47sf0aqznj1snbv37v8ijx476qqkjf5l9pac7xjkxsr8qk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags '(list "-k" "not test_call")))
+    (propagated-inputs
+     (list python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ithaka/apiron")
+    (synopsis "Python wrapper for interacting with RESTful APIs")
+    (description
+     "@code{apiron} provides a declarative, structured configuration of
+services and endpoints with a unified interface for interacting with RESTful
+APIs.")
+    (license license:expat)))
+
 (define-public python-apprise
   (package
     (name "python-apprise")
@@ -735,6 +1402,121 @@ SNS, Gotify, etc.")
     (description "Python wrapper for the @code{arXiv} API.")
     (license license:expat)))
 
+(define-public python-asgi-csrf
+  (package
+    (name "python-asgi-csrf")
+    (version "0.11")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/asgi-csrf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dn9v47z2b599cnwahxvzsll2w28940ycgh5skxgq04vcqqssf29"))
+              (patches
+               (search-patches "python-asgi-csrf-fix-formparser.patch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-itsdangerous python-multipart))
+    (native-inputs (list python-asgi-lifespan
+                         python-httpx
+                         python-pytest
+                         python-pytest-asyncio
+                         python-starlette
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/simonw/asgi-csrf")
+    (synopsis "ASGI middleware for protecting against CSRF attacks")
+    (description "This Asynchronous Server Gateway Interface (ASGI)
+middleware protects against Cross-site request forgery (CSRF) attacks.
+It implements the Double Submit Cookie pattern, where a cookie is set
+that is then compared to a @code{csrftoken} hidden form field or a
+@code{x-csrftoken} HTTP header.")
+    (license license:asl2.0)))
+
+(define-public python-asgi-lifespan
+  (package
+    (name "python-asgi-lifespan")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/florimondmanca/asgi-lifespan")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iqa3h61gsq1qd6j9v68k989596m9n9k1dx8zv6135rmhzzrs296"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; XXX: Some tests fail because of "Exceptions from Trio nursery"
+              "not (test_lifespan_manager[trio-None-None-StartupFailed]"
+              " or test_lifespan_manager[trio-None-BodyFailed-None]"
+              " or test_lifespan_manager[trio-None-BodyFailed-StartupFailed]"
+              " or test_lifespan_manager[trio-ShutdownFailed-None-None]"
+              " or test_lifespan_manager[trio-ShutdownFailed-None-StartupFailed]"
+              " or test_lifespan_manager[trio-ShutdownFailed-BodyFailed-StartupFailed]"
+              " or test_lifespan_timeout[trio-slow_shutdown]"
+              " or test_lifespan_not_supported[trio-http_only]"
+              " or test_lifespan_not_supported[trio-http_no_assert]"
+              " or test_lifespan_not_supported[trio-http_no_assert_before_receive_request]"
+              ")"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; httpx version 0.28.0 removed the "app" shortcut.
+             (substitute* "tests/test_manager.py"
+               (("app=manager.app")
+                "transport=httpx.ASGITransport(manager.app)")))))))
+    (native-inputs (list python-httpx
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-trio
+                         python-starlette
+                         python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-sniffio))
+    (home-page "https://github.com/florimondmanca/asgi-lifespan")
+    (synopsis "Programmatic startup/shutdown of ASGI apps")
+    (description "Programmatically send startup/shutdown lifespan events
+into Asynchronous Server Gateway Interface (ASGI) applications.  When
+used in combination with an ASGI-capable HTTP client such as HTTPX, this
+allows mocking or testing ASGI applications without having to spin up an
+ASGI server.")
+    (license license:expat)))
+
+(define-public python-asgiref
+  (package
+    (name "python-asgiref")
+    (version "3.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/django/asgiref/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19l03mx81dqhnnqa98073x1q243ndlknax0kva7azr9g12ixl69j"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (home-page "https://github.com/django/asgiref/")
+    (synopsis "ASGI specs, helper code, and adapters")
+    (description
+     "ASGI is a standard for Python asynchronous web apps and servers to
+communicate with each other, and positioned as an asynchronous successor to
+WSGI.  This package includes libraries for implementing ASGI servers.")
+    (license license:bsd-3)))
+
 (define-public python-asyncer
   (package
     (name "python-asyncer")
@@ -790,6 +1572,477 @@ checking tools like mypy.")
 for asyncio.  Import it alongside asyncio and use its API to send and receive
 UDP packets.")
     (license license:expat)))
+
+(define-public python-authlib
+  (package
+    (name "python-authlib")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "authlib" version))
+       (sha256
+        (base32 "0blpvz2v2r8yvsgm1yr3n61mhwxvh1b0kyf2rp0i4wv6n3n8bg2w"))))
+    (build-system pyproject-build-system)
+    ;; No tests target.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list python-cryptography
+           python-django
+           python-flask
+           python-httpx
+           python-requests
+           python-sqlalchemy-2
+           python-starlette
+           python-werkzeug))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/Authlib/1")
+    (synopsis "Build OAuth and OpenID Connect servers and clients")
+    (description
+     "This is a Python library for building OAuth and OpenID Connect servers
+and clients.")
+    (license license:bsd-3)))
+
+(define-public python-autobahn
+  (package
+    (name "python-autobahn")
+    (version "25.11.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "autobahn" version))
+        (sha256
+         (base32
+          "1w9wyyqzg1dil8jsjm08n2pnk6jws87scli932drhghcr2f2prjj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The tests fail to run:
+      ;; https://github.com/crossbario/autobahn-python/issues/1117
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'relax-zope-interface
+                     (lambda _
+                       ;; python-zope-interface is a world rebuild package
+                       ;; and our one-digit lower minor version seems to be
+                       ;; fine.
+                       (substitute* "setup.py"
+                         (("zope.interface>=5.2.0")
+                          "zope.interface>=5.1.0"))))
+                   (add-after 'unpack 'strip-xbr
+                     (lambda _
+                       ;; Strip new XBR feature which isn't available in Guix.
+                       (setenv "AUTOBAHN_STRIP_XBR" "1"))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-cbor2
+                             python-cryptography
+                             python-hyperlink
+                             python-msgpack
+                             python-py-ubjson
+                             python-twisted
+                             python-txaio
+                             python-ujson))
+    (home-page "https://github.com/crossbario/autobahn-python/")
+    (synopsis "Web Application Messaging Protocol implementation")
+    (description "This package provides an implementation of the @dfn{Web Application
+Messaging Protocol} (WAMP).  WAMP connects components in distributed
+applications using Publish and Subscribe (PubSub) and routed Remote Procedure
+Calls (rRPC).  It is ideal for distributed, multi-client and server applications
+such as IoT applications or multi-user database-driven business applications.")
+    (license license:expat)))
+
+(define-public python-aws-sam-translator
+  (package
+    (name "python-aws-sam-translator")
+    (version "1.107.0")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/aws/serverless-application-model")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bx9ha9k6zx6gl1hsgm6cpq4xrfn604v2g1d5dh2d5zq0463gwfq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=tests/bin/test_public_interface.py"
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "AWS_DEFAULT_REGION" "eu-west-3"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-rerunfailures
+           python-pytest-xdist
+           python-parameterized
+           python-pyyaml
+           python-setuptools))
+    (propagated-inputs
+     (list python-boto3
+           python-jsonschema
+           python-pydantic
+           python-typing-extensions))
+    (home-page "https://github.com/aws/serverless-application-model")
+    (synopsis "Transform AWS SAM templates into AWS CloudFormation templates")
+    (description
+     "AWS SAM Translator is a library that transform @dfn{Serverless Application
+Model} (SAM) templates into AWS CloudFormation templates.")
+    (license license:asl2.0)))
+
+(define-public python-aws-xray-sdk
+  (package
+    (name "python-aws-xray-sdk")
+    (version "2.14.0")
+    (home-page "https://github.com/aws/aws-xray-sdk-python")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0khm86218rfjmgfw0azk7gnq6y9gkj95i0i30wa5v2li1z4z8qxd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list ;; Tries to connect to external network resources
+             "--ignore=tests/ext/aiohttp/test_client.py"
+             "--ignore=tests/ext/httplib/test_httplib.py"
+             "--ignore=tests/ext/httpx"
+             "--ignore=tests/ext/requests/test_requests.py"
+             ;; TODO: How to configure Django for these tests?
+             "--ignore=tests/ext/django"
+             ;; These tests require packages not yet in Guix.
+             "--ignore=tests/ext/aiobotocore/test_aiobotocore.py"
+             "--ignore=tests/ext/aiohttp/test_middleware.py"
+             "--ignore=tests/ext/pg8000/test_pg8000.py"
+             "--ignore=tests/ext/psycopg2/test_psycopg2.py"
+             "--ignore=tests/ext/pymysql/test_pymysql.py"
+             "--ignore=tests/ext/pynamodb/test_pynamodb.py"
+             "--ignore=tests/ext/sqlalchemy_core/test_postgres.py"
+             "--ignore=tests/ext/sqlalchemy_core/test_dburl.py"
+             "--ignore=tests/test_async_recorder.py"
+             ;; FIXME: module 'sqlalchemy.orm' has no attribute 'DeclarativeBase'.
+             "--ignore-glob=tests/ext/sqlalchemy*"
+             "--ignore=tests/ext/flask_sqlalchemy/test_query.py"
+             ;; FIXME: Why is this failing?
+             "--ignore=tests/test_patcher.py"
+             "--ignore=tests/test_lambda_context.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Allow "import tests.utils" to work as expected.
+             (setenv "PYTHONPATH" (getcwd)))))))
+    (native-inputs
+     (list ;; These are required for the test suite.
+           python-aiohttp
+           python-bottle
+           python-flask
+           python-flask-sqlalchemy
+           python-httpx
+           python-mock
+           python-pymysql
+           python-pytest
+           python-pytest-asyncio-0.26
+           python-pytest-benchmark
+           python-setuptools
+           python-sqlalchemy
+           python-webtest))
+    (propagated-inputs
+     (list python-botocore
+           python-jsonpickle
+           python-requests
+           python-wrapt))
+    (synopsis "Profile applications on AWS X-Ray")
+    (description
+     "The AWS X-Ray SDK for Python enables Python developers to record and
+emit information from within their applications to the AWS X-Ray service.")
+    (license license:asl2.0)))
+
+(define-public python-awscrt
+  (package
+    (name "python-awscrt")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "awscrt" version))
+       (sha256
+        (base32 "0jh6niq9kgv0canm11ad8zibywwirdfxg4bqyd8jhaiv3x39h8dd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              ;; Disable broken tests. These tests fail because they depend on
+              ;; specific DNS configuration and/or AWS credentials, which isn't
+              ;; available in this context.
+              (substitute* "test/test_auth.py"
+                (("def test_default_provider")
+                 "def _test_default_provider"))
+              (substitute* "test/test_aiohttp_client.py"
+                (("def test_h2_remote_end_stream_ordering")
+                 "def _test_h2_remote_end_stream_ordering")
+                (("def test_cross_thread_http2_client")
+                 "def _test_cross_thread_http2_client")
+                (("def test_h2_client")
+                 "def _test_h2_client")
+                (("def test_h2_manual_write_exception")
+                 "def _test_h2_manual_write_exception"))
+              (substitute* "test/test_http_client.py"
+                (("def test_h2_client")
+                 "def _test_h2_client")
+                (("def test_h2_remote_end_stream_ordering")
+                 "def _test_h2_remote_end_stream_ordering")
+                (("def test_h2_manual_write_exception")
+                 "def _test_h2_manual_write_exception"))
+              (substitute* "test/test_s3.py"
+                (("def test_sanity")
+                 "def _test_sanity")
+                (("def test_sanity_secure")
+                 "def _test_sanity_secure")
+                (("def test_wait_shutdown")
+                 "def _test_wait_shutdown"))
+              (substitute* "test/test_io.py"
+                ;; This test seems specifically broken. It waits for a shutdown event
+                ;; from a group of singletons that will never occur because several of
+                ;; the singleton references are held beyond the lifetime of this test.
+                (("def test_shutdown_complete_singleton")
+                 "def _test_shutdown_complete_singleton"))))
+          (add-after 'unpack 'override-cert-bundle-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bundle (search-input-file inputs
+                                               "/etc/ssl/certs/ca-certificates.crt")))
+                (setenv "SSL_CERT_FILE" bundle)
+                (substitute* "awscrt/io.py"
+                  (("( +)opt = TlsContextOptions\\(\\)" m indent)
+                   (string-append m "\n"
+                                  indent "import os\n"
+                                  indent "\
+opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if os.getenv('SSL_CERT_FILE') else None\n"))
+                  (("^( +)self\\.no_certificate_revocation = False" all indent)
+                   (string-append all "\n"
+                                  indent "import os as _os\n"
+                                  indent "_ca_file = _os.environ.get('SSL_CERT_FILE')\n"
+                                  indent "if _ca_file:\n"
+                                  indent "    self.override_default_trust_store(_read_binary_file(_ca_file))\n")))
+                (substitute* "test/appexit_http.py"
+                  (("( +)tls_ctx_opt = awscrt.io.TlsContextOptions.*" m indent)
+                   (string-append m indent
+                                  "tls_ctx_opt.override_default_trust_store_from_path(None, '"
+                                  bundle "')\n")))
+                (substitute* "test/test_io.py"
+                  (("( +)opt = TlsContextOptions\\(\\).*" m indent)
+                   (string-append m indent
+                                  "opt.override_default_trust_store_from_path(None, '"
+                                  bundle "')\n"))))))
+          (add-after 'unpack 'use-system-libraries
+            (lambda _
+              (setenv "AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO" "1"))))))
+    (inputs (list openssl))
+    (native-inputs (list cmake-minimal
+                         nss-certs-for-test
+                         python-boto3
+                         python-setuptools
+                         python-websockets
+                         python-h2))
+    (home-page "https://github.com/awslabs/aws-crt-python")
+    (synopsis "Common runtime for AWS Python projects")
+    (description
+     "This package provides a common runtime for AWS Python projects.")
+    (license license:asl2.0)))
+
+(define-public python-azure-common
+  (package
+    (name "python-azure-common")
+    (version "1.1.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-common" version ".zip"))
+       (sha256
+        (base32 "18q4cy1xl2zly3rk7a1sc14w932x59r8c9j4d8dnlsz32hrcvh2a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive
+    (propagated-inputs (list python-azure-nspkg))
+    (native-inputs (list python-setuptools unzip))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure Client library for Python")
+    (description "This package provides the Microsoft Azure Client library for
+Python.")
+    (license license:expat)))
+
+(define-public python-azure-core
+  (package
+    (name "python-azure-core")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure_core" version))
+       (sha256
+        (base32 "1r9hqyqr5fxiiai0irr0n98gwgzj5f8y46vc1yci9bidddfw7cr2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      `(list ;; This fails because devtools_testutils doesn't exist.
+        "--ignore=tests/test_connection_string_parsing.py"
+        ;; These all need network access.
+        "--ignore=samples"
+        "--ignore=tests/async_tests/test_streaming_async.py"
+        "--ignore=tests/test_streaming.py"
+        "-m" "not asyncio and not live_test_only"
+        "-k" ,(string-append
+               "not test_decompress_plain_no_header"
+               " and not test_compress_plain_no_header"
+               " and not test_decompress_compressed_no_header"
+               " and not test_requests_socket_timeout"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'add-test-pythonpath
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHONPATH"
+                        (string-append
+                         (getcwd) "/tests/testserver_tests/coretestserver:"
+                         (getenv "GUIX_PYTHONPATH")))))))))
+    (propagated-inputs
+     (list python-aiohttp
+           python-requests
+           python-six
+           python-typing-extensions))
+    (native-inputs
+     (list python-flask
+           python-pytest-8
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-trio
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure Core library for Python")
+    (description "This package provides the Microsoft Azure Core library for
+Python.")
+    (license license:expat)))
+
+(define-public python-azure-nspkg
+  (package
+    (name "python-azure-nspkg")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-nspkg" version ".zip"))
+       (sha256
+        (base32
+         "1l4xwdh0fcnvrv0mzig4g2kgqkfbsy64zjm1ggc6grk3mykcxlz7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in package
+    (native-inputs (list unzip python-setuptools))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Azure namespace internals")
+    (description
+     "This package is an internal Azure namespace package.")
+    (license license:expat)))
+
+(define-public python-azure-storage-blob
+  (package
+    (name "python-azure-storage-blob")
+    (version "12.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure_storage_blob" version))
+       (sha256
+        (base32 "16nb17f6bi0k53qlxybwqxdld3nj742hmsk4qcq3jwka5b6y5s4r"))))
+    (build-system pyproject-build-system)
+    (arguments
+    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
+    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
+    ;; it hard to package in Guix.
+    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
+    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-azure-core
+           python-cryptography
+           python-isodate
+           python-typing-extensions))
+    (home-page "https://github.com/Azure/azure-sdk-for-python/")
+    (synopsis "Microsoft Azure Blob Storage client library for Python")
+    (description "This package provides the Microsoft Azure Blob Storage
+Client Library for Python.")
+    (license license:expat)))
+
+(define-public python-azure-storage-file-datalake
+  (package
+    (name "python-azure-storage-file-datalake")
+    (version "12.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure_storage_file_datalake" version))
+       (sha256
+        (base32 "0xxg94684b630p8jrz38sg7mdcwp1wa0p5di27mswyrjycshvvcs"))))
+    (build-system pyproject-build-system)
+    (arguments
+    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
+    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
+    ;; it hard to package in Guix.
+    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
+    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-azure-core
+           python-azure-storage-blob
+           python-isodate
+           python-typing-extensions))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure File DataLake Storage Client Library for Python")
+    (description
+     "This package provides the Microsoft Azure File @code{DataLake} Storage
+Client Library for Python.")
+    (license license:expat)))
+
+(define-public python-azure-storage-nspkg
+  (package
+    (name "python-azure-storage-nspkg")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-storage-nspkg" version))
+       (sha256
+        (base32 "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-azure-nspkg))
+    (home-page "https://github.com/Azure/azure-storage-python")
+    (synopsis "Microsoft Azure Storage Namespace package")
+    (description
+     "This project provides a client library in Python that makes it easy to
+communicate with Microsoft Azure Storage services.")
+    (license license:expat)))
+
 
 (define-public python-behave-web-api
   (package
@@ -3011,678 +4264,6 @@ implements @code{collections.abc.MutableSequence}.  It can be made immutable
 by calling @code{FrozenList.freeze}.")
     (license license:asl2.0)))
 
-(define-public python-aiobotocore
-  (package
-    (name "python-aiobotocore")
-    (version "3.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiobotocore" version))
-       (sha256
-        (base32 "0bcmnbm30hwaks8l895j8xy08cil0dpjcfpidg2qjawbs4a9s0ra"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; TODO: Tests need some setupt, see Makefile.
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-aiohttp
-           python-aioitertools
-           python-botocore
-           python-dateutil
-           python-jmespath
-           python-multidict
-           python-typing-extensions
-           python-wrapt))
-    (home-page "https://github.com/aio-libs/aiobotocore")
-    (synopsis "Async client for AWS services using botocore and aiohttp")
-    (description "This package provides an async client for Amazon services
-using botocore and aiohttp/asyncio.  This library is a mostly full featured
-asynchronous version of botocore.")
-    (license license:asl2.0)))
-
-(define-public python-aiohappyeyeballs
-  (package
-    (name "python-aiohappyeyeballs")
-    (properties '((commit . "cc53cf8a1d31f7b460a0114214aac66956f0e2ed")
-                  (revision . "0")))
-    (version (git-version "2.6.1"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aio-libs/aiohappyeyeballs")
-             (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nc723f4sxryg5h9z8paysmy9dnqw2jy4srxp9axrxkv9qrawa7n"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-asyncio))
-    (home-page "https://github.com/aio-libs/aiohappyeyeballs")
-    (synopsis "Happy Eyeballs for asyncio")
-    (description "This library exists to allow connecting with Happy
-Eyeballs (RFC 8305) when you already have a list of @code{addrinfo} and not a
-DNS name.")
-    (license license:psfl)))
-
-(define-public python-aioitertools
-  (package
-    (name "python-aioitertools")
-    (version "0.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioitertools" version))
-       (sha256
-        (base32 "0syxv2r90d6410hc68jxhk610pdgx19n1n5rc7shaxxv9xdhbaf2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "-m" "aioitertools.tests")))
-    (native-inputs
-     (list python-flit-core))
-    (home-page "https://pypi.org/project/aioitertools/")
-    (synopsis "Itertools and builtins for AsyncIO and mixed iterables")
-    (description
-     "This package provides an implementation of itertools, builtins, and more
-for AsyncIO and mixed-type iterables.")
-    (license license:expat)))
-
-(define-public python-aiosignal
-  (package
-    (name "python-aiosignal")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiosignal" version))
-       (sha256
-        (base32 "1isin9bp256scp59lbr35h48nw5p5i84b6f9kh1c50w08vcyqzpl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'avoid-pytest-cov-preload
-            (lambda _
-              (substitute* "pytest.ini"
-                (("-p pytest_cov") "")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-setuptools))
-    (propagated-inputs
-     (list python-frozenlist))
-    (home-page "https://github.com/aio-libs/aiosignal")
-    (synopsis "Callback manager for Python @code{asyncio} projects")
-    (description "This Python module provides @code{Signal}, an abstraction to
-register asynchronous callbacks.  The @code{Signal} abstraction can be used
-for adding, removing and dropping callbacks.")
-    (license license:asl2.0)))
-
-(define-public python-aiohttp
-  (package
-    (name "python-aiohttp")
-    (version "3.13.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aio-libs/aiohttp/")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0l9jcmhqd2v97gy1bxvimwi3aajxhxqn6jkzzgg7cf42mpyza0vc"))
-       (snippet
-        #~(begin
-            (use-modules ((guix build utils)))
-            (delete-file-recursively "vendor")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 4003 passed, 80 skipped, 31 xfailed, 2 subtests passed
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; This tests requires the 'proxy.py' module, not yet packaged.
-              "--ignore=tests/test_proxy_functional.py"
-              ;; No benchamrks.
-              "--ignore-glob=tests/test_benchmarks_*"
-              "-k"
-              (string-join
-               ;; Combinatin of tests failing with similar errors:
-               ;; - Cannot connect to host example.com:443 ssl:default [Could
-               ;;   not contact DNS servers].
-               ;; - aiohttp.http_exceptions.ContentEncodingError: 400.
-               ;; - Can not decode content-encoding: br
-               (list "not test_add_static_path_resolution"
-                     "test_empty_header_name"
-                     "test_http_payload_brotli"
-                     "test_http_payload_zstandard"
-                     "test_invalid_header_spacing"
-                     "test_payload_decompress_size_limit_brotli"
-                     "test_reject_obsolete_line_folding"
-                     "test_response_with_precompressed_body_brotli"
-                     "test_static_file_custom_content_type_compress"
-                     "test_static_file_with_encoding_and_enable_compression"
-                     "test_tcp_connector_ssl_shutdown_timeout_nonzero_passed"
-                     "test_tcp_connector_ssl_shutdown_timeout_passed_to_"
-                     "test_tcp_connector_ssl_shutdown_timeout_zero_not_")
-               " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-libllhtp-pkgconfig
-            (lambda _
-              ;; pkg-config can't find the libllhttp library.
-              (if (getenv "PKG_CONFIG_PATH")
-                  (setenv "PKG_CONFIG_PATH"
-                          (string-append
-                           #$(this-package-input "llhttp") "/lib/pkgconfig"
-                           (getenv "PKG_CONFIG_PATH")))
-                  (setenv "PKG_CONFIG_PATH"
-                          (string-append
-                           #$(this-package-input "llhttp") "/lib/pkgconfig")))))
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("--numprocesses=auto") "")
-                (("-p pytest_cov") "")
-                (("--cov=aiohttp") "")
-                (("--cov=tests/") ""))))
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              ;; Make sure the timestamp of this file is > 1990, because a few
-              ;; tests like test_static_file_if_modified_since_past_date
-              ;; depend on it.
-              (let ((late-90s (* 60 60 24 365 30)))
-                (utime "tests/data.unknown_mime_type" late-90s late-90s))))
-          (add-before 'build 'pre-build
-            (lambda _
-              (setenv "USE_SYSTEM_DEPS" "true")
-              ;; Help setup.py to determine project's root.
-              (with-output-to-file ".git"
-                (lambda () (display "")))
-              (substitute* "Makefile"
-                  (("cythonize: .install-cython") "cythonize:"))
-              (invoke "make" "cythonize")))
-          (add-before 'check 'remove-local-source
-            (lambda _
-              (delete-file-recursively "aiohttp"))))))
-    (native-inputs
-     (list gunicorn-bootstrap
-           python-freezegun
-           python-cython
-           python-pkgconfig
-           ;; python-proxy-py   ;not packaged yet in Guix
-           python-pytest
-           python-pytest-mock
-           python-pytest-xdist
-           python-re-assert
-           python-setuptools
-           python-zlib-ng))
-    (inputs
-     (list llhttp))
-    (propagated-inputs
-     (list python-aiohappyeyeballs
-           python-aiosignal
-           python-attrs
-           python-frozenlist
-           python-multidict
-           python-propcache
-           python-yarl
-           ;; [optional]
-           python-aiodns
-           python-backports-zstd        ;Python version < 3.14
-           python-brotli))
-    (home-page "https://github.com/aio-libs/aiohttp/")
-    (synopsis "Async HTTP client/server framework (asyncio)")
-    (description "@code{aiohttp} is an asynchronous HTTP client/server
-framework.
-
-Its main features are:
-@itemize
-@item Supports both client and server side of HTTP protocol.
-@item Supports both client and server Web-Sockets out-of-the-box without the
-Callback Hell.
-@item Web-server has middlewares and pluggable routing.
-@end itemize")
-    (license license:asl2.0)))
-
-(define-public python-aiohttp-oauthlib
-  (package
-    (name "python-aiohttp-oauthlib")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohttp-oauthlib" version))
-       (sha256
-        (base32 "1dwk0gby27xm7384qyz2p7zw9dqhjx7m8fhfk172w36xknjx2g49"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; none included
-    (propagated-inputs (list python-aiohttp python-oauthlib))
-    (native-inputs (list python-setuptools python-setuptools-scm))
-    (home-page "https://git.sr.ht/~whynothugo/aiohttp-oauthlib")
-    (synopsis "OAuthlib authentication support for aiohttp")
-    (description "Aiohttp-oauthlib uses the Python aiohttp and OAuthlib libraries to
-provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
-    (license license:isc)))
-
-(define-public python-aiohttp-client-cache
-  (package
-    (name "python-aiohttp-client-cache")
-    (version "0.14.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/requests-cache/aiohttp-client-cache")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "13xbmjjvcbzh3yh5z92mc0gwicwfjfq2av5jbqv09sbfzhggs92y"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--ignore=test/integration/")))
-    (native-inputs
-     (list python-brotli
-           python-faker
-           python-hatchling
-           python-pytest
-           python-pytest-aiohttp
-           python-pytest-asyncio
-           python-types-aiofiles))
-    (propagated-inputs
-     (list python-aiohttp
-           python-attrs
-           python-itsdangerous
-           python-url-normalize
-           ;; [optional]
-           python-aioboto3
-           python-aiobotocore
-           python-aiofiles
-           python-aiosqlite
-           python-pymongo
-           python-redis))
-    (home-page "https://github.com/requests-cache/aiohttp-client-cache")
-    (synopsis "Persistent cache for aiohttp requests")
-    (description
-     "This package is an asynchronous persistent caching library specifically
-designed for @samp{aiohttp} requests in Python.  With support for various
-storage backends, it offers flexibility in how and where the cache is stored.
-Please note that MongoDB and DynamoDB backends are not currently supported due
-to the absence of the @samp{motor} and @samp{aioboto3} package dependencies.")
-    (license license:expat)))
-
-(define-public python-aiohttp-cors
-  (package
-    (name "python-aiohttp-cors")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohttp_cors" version))
-       (sha256
-        (base32 "00qlzc2y65bkl1a5f5v83mmjlrhzmx3a2ngq2pm3jjdnhk5zkb6c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f)) ; network access is required to run tests
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-aiohttp))
-    (home-page "https://github.com/aio-libs/aiohttp-cors")
-    (synopsis "CORS support for aiohttp")
-    (description
-     "This library implements @acronym{CORS, Cross Origin Resource Sharing}
-support for aiohttp asyncio-powered asynchronous HTTP server.")
-    (license license:asl2.0)))
-
-(define-public python-aiohttp-retry
-  (package
-    (name "python-aiohttp-retry")
-    (version "2.9.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/inyutin/aiohttp_retry")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0r5lxnxc4s8js7l86pfmdxl455v9lg3m41nz6m1xg4kwwf6j0bpi"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-aiohttp
-           python-setuptools))
-    (propagated-inputs
-     (list python-aiohttp))
-    (home-page "https://github.com/inyutin/aiohttp_retry")
-    (synopsis "Simple retry client for aiohttp")
-    (description
-     "This package implements @code{RetryClient} for @code{aiohttp} to retry
-connection to provided endpoint with timeouts logic or use:
-
-@itemize
-@item @code{ExponentialRetry} with exponential backoff
-@item @code{RandomRetry} for random backoff
-@item @code{ListRetry} with backoff you predefine by list
-@item @code{FibonacciRetry} with backoff that looks like fibonacci sequence
-@item @code{JitterRetry} exponential retry with a bit of randomness
-@end itemize")
-    (license license:expat)))
-
-(define-public python-aiohttp-socks
-  (package
-    (name "python-aiohttp-socks")
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohttp_socks" version))
-       (sha256
-        (base32
-         "0s70jpcr9wc8ld2v1w309cz7r8mm2bipf6zbkdqqaa0z0pwf3wj9"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;none included
-    (propagated-inputs
-     (list python-aiohttp python-socks))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/romis2012/aiohttp-socks")
-    (synopsis "SOCKS proxy connector for aiohttp")
-    (description "This package provides a SOCKS proxy connector for
-aiohttp.  It supports SOCKS4(a) and SOCKS5.")
-    (license license:asl2.0)))
-
-(define-public python-aiodns
-  (package
-    (name "python-aiodns")
-    (version "3.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/saghul/aiodns")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1as7l48962dpk3r4zdsifj761dks5nyr35hxs7m8crvkyb1dg9m9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f))                     ;tests require internet access
-    (native-inputs
-     (list python-pytest python-pytest-asyncio python-setuptools))
-    (propagated-inputs (list python-pycares))
-    (home-page "https://github.com/saghul/aiodns")
-    (synopsis "Simple DNS resolver for asyncio")
-    (description
-     "@code{aiodns} provides a simple way for doing asynchronous DNS
-resolutions with a synchronous looking interface by using
-@url{https://github.com/saghul/pycares,pycares}.")
-    (license license:expat)))
-
-(define-public python-aioquic
-  (package
-    (name "python-aioquic")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aiortc/aioquic")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0dyzh8xipxbd7fcykfz8g5bgri38prwg050szqawq2p0pg538dgb"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list nss-certs-for-test
-           python-pytest
-           python-setuptools))
-    (inputs
-     (list openssl))
-    (propagated-inputs
-     (list python-certifi
-           python-cryptography
-           python-pylsqpack
-           python-pyopenssl
-           python-service-identity))
-    (home-page "https://github.com/aiortc/aioquic")
-    (synopsis "QUIC and HTTP3 implementation in Python")
-    (description
-     "@code{aioquic} is a library for the QUIC network protocol in Python.
-It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack.")
-    (license license:bsd-3)))
-
-(define-public python-aiorpcx
-  (package
-    (name "python-aiorpcx")
-    (version "0.25.0")
-    (source
-     (origin
-       (method git-fetch)
-       ;; PyPI misses the util.py file used for tests.
-       (uri (git-reference
-              (url "https://github.com/kyuupichan/aiorpcX")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0sn4xxlpy0kb5b25bqrjzh2m6bskdyydc6cq8bigb7g5dacksn4q"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; This test opens a remote connection.
-      #~(list "-k" "not test_create_connection_resolve_good")))
-    (native-inputs (list python-pytest
-                         python-pytest-asyncio-0.26
-                         python-setuptools))
-    (propagated-inputs
-     (list python-attrs python-websockets))
-    (home-page "https://github.com/kyuupichan/aiorpcX")
-    (synopsis "Generic asyncio RPC implementation")
-    (description
-     "The aiorpcX library is a generic asyncio implementation of RPC suitable
-for an application that is a client, server or both.
-
-The package includes a module with full coverage of JSON RPC versions 1.0 and
-2.0, JSON RPC protocol auto-detection, and arbitrary message framing.  It also
-comes with a SOCKS proxy client.")
-    (license (list license:expat license:bsd-2))))
-
-(define-public python-aiostream
-  (package
-    (name "python-aiostream")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)        ;no tests in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/vxgmichel/aiostream")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wf89l9f0ivlv796pklpgykx6j6ksfqrmvzikd8w5j6ldln7bv50"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-asyncio python-setuptools))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (home-page "https://github.com/vxgmichel/aiostream")
-    (synopsis "Generator-based operators for asynchronous iteration")
-    (description "@code{aiostream} provides a collection of stream operators that can
-be combined to create asynchronous pipelines of operations.  It can be seen as an
-asynchronous version of @code{itertools}, although some aspects are slightly
-different. All the provided operators return a unified interface called a stream.  A
-stream is an enhanced asynchronous iterable.")
-    (license license:gpl3)))
-
-(define-public python-asgiref
-  (package
-    (name "python-asgiref")
-    (version "3.11.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/django/asgiref/")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19l03mx81dqhnnqa98073x1q243ndlknax0kva7azr9g12ixl69j"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-setuptools))
-    (home-page "https://github.com/django/asgiref/")
-    (synopsis "ASGI specs, helper code, and adapters")
-    (description
-     "ASGI is a standard for Python asynchronous web apps and servers to
-communicate with each other, and positioned as an asynchronous successor to
-WSGI.  This package includes libraries for implementing ASGI servers.")
-    (license license:bsd-3)))
-
-(define-public python-asgi-csrf
-  (package
-    (name "python-asgi-csrf")
-    (version "0.11")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/simonw/asgi-csrf")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dn9v47z2b599cnwahxvzsll2w28940ycgh5skxgq04vcqqssf29"))
-              (patches
-               (search-patches "python-asgi-csrf-fix-formparser.patch"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-itsdangerous python-multipart))
-    (native-inputs (list python-asgi-lifespan
-                         python-httpx
-                         python-pytest
-                         python-pytest-asyncio
-                         python-starlette
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/simonw/asgi-csrf")
-    (synopsis "ASGI middleware for protecting against CSRF attacks")
-    (description "This Asynchronous Server Gateway Interface (ASGI)
-middleware protects against Cross-site request forgery (CSRF) attacks.
-It implements the Double Submit Cookie pattern, where a cookie is set
-that is then compared to a @code{csrftoken} hidden form field or a
-@code{x-csrftoken} HTTP header.")
-    (license license:asl2.0)))
-
-(define-public python-asgi-lifespan
-  (package
-    (name "python-asgi-lifespan")
-    (version "2.1.0")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/florimondmanca/asgi-lifespan")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0iqa3h61gsq1qd6j9v68k989596m9n9k1dx8zv6135rmhzzrs296"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; XXX: Some tests fail because of "Exceptions from Trio nursery"
-              "not (test_lifespan_manager[trio-None-None-StartupFailed]"
-              " or test_lifespan_manager[trio-None-BodyFailed-None]"
-              " or test_lifespan_manager[trio-None-BodyFailed-StartupFailed]"
-              " or test_lifespan_manager[trio-ShutdownFailed-None-None]"
-              " or test_lifespan_manager[trio-ShutdownFailed-None-StartupFailed]"
-              " or test_lifespan_manager[trio-ShutdownFailed-BodyFailed-StartupFailed]"
-              " or test_lifespan_timeout[trio-slow_shutdown]"
-              " or test_lifespan_not_supported[trio-http_only]"
-              " or test_lifespan_not_supported[trio-http_no_assert]"
-              " or test_lifespan_not_supported[trio-http_no_assert_before_receive_request]"
-              ")"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             ;; httpx version 0.28.0 removed the "app" shortcut.
-             (substitute* "tests/test_manager.py"
-               (("app=manager.app")
-                "transport=httpx.ASGITransport(manager.app)")))))))
-    (native-inputs (list python-httpx
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-trio
-                         python-starlette
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-sniffio))
-    (home-page "https://github.com/florimondmanca/asgi-lifespan")
-    (synopsis "Programmatic startup/shutdown of ASGI apps")
-    (description "Programmatically send startup/shutdown lifespan events
-into Asynchronous Server Gateway Interface (ASGI) applications.  When
-used in combination with an ASGI-capable HTTP client such as HTTPX, this
-allows mocking or testing ASGI applications without having to spin up an
-ASGI server.")
-    (license license:expat)))
-
-(define-public python-a2wsgi
-  (package
-    (name "python-a2wsgi")
-    (version "1.10.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "a2wsgi" version))
-              (sha256
-               (base32
-                "13ikyfmkx7hlrbg5rpcdm6kw4wcsy00giil3f72hpb6sw7vjyinf"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    (list "not test_starlette_stream_response"
-                          "test_starlette_base_http_middleware"
-                          "test_baize_stream_response"
-                          ;; Fails because of harmless whitespace differences.
-                          "test_wsgi_post")
-                    " and not "))
-      #:build-backend "pdm.backend"))
-    (native-inputs
-     (list python-pdm-backend
-           python-pytest
-           ;; python-baize ; not packed yet
-           python-httpx-bootstrap
-           ;; Cycle: python-a2wsgi->python-uvicorn->
-           ;; python-httpx->python-starlette->python-a2wsgi
-           ;; python-starlette
-           python-pytest-asyncio))
-    (home-page "https://github.com/abersheeran/a2wsgi")
-    (synopsis "Convert WSGI to ASGI or vice versa")
-    (description
-     "This program converts a WSGI program to an ASGI program or the other
-way around.  It depends only on the Python standard library.")
-    (license license:asl2.0)))
-
 (define-public python-httpauth
   (package
     (name "python-httpauth")
@@ -3734,121 +4315,6 @@ routes using HTTP Digest Authentication.")
       ;; <https://github.com/juancarlospaco/css-html-js-minify/issues/9> it
       ;; looks like the user can choose a license.
       (license (list license:gpl3+ license:lgpl3+ license:expat)))))
-
-(define-public python-aws-sam-translator
-  (package
-    (name "python-aws-sam-translator")
-    (version "1.107.0")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/aws/serverless-application-model")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0bx9ha9k6zx6gl1hsgm6cpq4xrfn604v2g1d5dh2d5zq0463gwfq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "--ignore=tests/bin/test_public_interface.py"
-              "tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "AWS_DEFAULT_REGION" "eu-west-3"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-rerunfailures
-           python-pytest-xdist
-           python-parameterized
-           python-pyyaml
-           python-setuptools))
-    (propagated-inputs
-     (list python-boto3
-           python-jsonschema
-           python-pydantic
-           python-typing-extensions))
-    (home-page "https://github.com/aws/serverless-application-model")
-    (synopsis "Transform AWS SAM templates into AWS CloudFormation templates")
-    (description
-     "AWS SAM Translator is a library that transform @dfn{Serverless Application
-Model} (SAM) templates into AWS CloudFormation templates.")
-    (license license:asl2.0)))
-
-(define-public python-aws-xray-sdk
-  (package
-    (name "python-aws-xray-sdk")
-    (version "2.14.0")
-    (home-page "https://github.com/aws/aws-xray-sdk-python")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0khm86218rfjmgfw0azk7gnq6y9gkj95i0i30wa5v2li1z4z8qxd"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list ;; Tries to connect to external network resources
-             "--ignore=tests/ext/aiohttp/test_client.py"
-             "--ignore=tests/ext/httplib/test_httplib.py"
-             "--ignore=tests/ext/httpx"
-             "--ignore=tests/ext/requests/test_requests.py"
-             ;; TODO: How to configure Django for these tests?
-             "--ignore=tests/ext/django"
-             ;; These tests require packages not yet in Guix.
-             "--ignore=tests/ext/aiobotocore/test_aiobotocore.py"
-             "--ignore=tests/ext/aiohttp/test_middleware.py"
-             "--ignore=tests/ext/pg8000/test_pg8000.py"
-             "--ignore=tests/ext/psycopg2/test_psycopg2.py"
-             "--ignore=tests/ext/pymysql/test_pymysql.py"
-             "--ignore=tests/ext/pynamodb/test_pynamodb.py"
-             "--ignore=tests/ext/sqlalchemy_core/test_postgres.py"
-             "--ignore=tests/ext/sqlalchemy_core/test_dburl.py"
-             "--ignore=tests/test_async_recorder.py"
-             ;; FIXME: module 'sqlalchemy.orm' has no attribute 'DeclarativeBase'.
-             "--ignore-glob=tests/ext/sqlalchemy*"
-             "--ignore=tests/ext/flask_sqlalchemy/test_query.py"
-             ;; FIXME: Why is this failing?
-             "--ignore=tests/test_patcher.py"
-             "--ignore=tests/test_lambda_context.py")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Allow "import tests.utils" to work as expected.
-             (setenv "PYTHONPATH" (getcwd)))))))
-    (native-inputs
-     (list ;; These are required for the test suite.
-           python-aiohttp
-           python-bottle
-           python-flask
-           python-flask-sqlalchemy
-           python-httpx
-           python-mock
-           python-pymysql
-           python-pytest
-           python-pytest-asyncio-0.26
-           python-pytest-benchmark
-           python-setuptools
-           python-sqlalchemy
-           python-webtest))
-    (propagated-inputs
-     (list python-botocore
-           python-jsonpickle
-           python-requests
-           python-wrapt))
-    (synopsis "Profile applications on AWS X-Ray")
-    (description
-     "The AWS X-Ray SDK for Python enables Python developers to record and
-emit information from within their applications to the AWS X-Ray service.")
-    (license license:asl2.0)))
 
 (define-public python-publicsuffixlist
   (package
@@ -7845,33 +8311,6 @@ WebSocket usage in Python programs.")
     (description "Purl is a Python package for handling URLs.")
     (license license:expat)))
 
-(define-public python-apiron
-  (package
-    (name "python-apiron")
-    (version "5.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "apiron" version))
-       (sha256
-        (base32 "1qwbqn47sf0aqznj1snbv37v8ijx476qqkjf5l9pac7xjkxsr8qk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags '(list "-k" "not test_call")))
-    (propagated-inputs
-     (list python-requests))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/ithaka/apiron")
-    (synopsis "Python wrapper for interacting with RESTful APIs")
-    (description
-     "@code{apiron} provides a declarative, structured configuration of
-services and endpoints with a unified interface for interacting with RESTful
-APIs.")
-    (license license:expat)))
-
 (define-public python-beren
   (package
     (name "python-beren")
@@ -8119,52 +8558,6 @@ with python-requests.")
 adapter for use with the Requests library.")
     (license license:asl2.0)))
 
-(define-public python-aioftp
-  (package
-    (name "python-aioftp")
-    (version "0.27.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aio-libs/aioftp")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1lshyac5zk1w4x7ygkim3726f8gbkvpvlyiqkn9cs6qjxhxn5bxc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-default-asyncio
-            ;; async_timeout is deprecated, upstream recommends to use
-            ;; asyncio, available since Python 3.11.
-            (lambda _
-              (substitute* "tests/conftest.py"
-                (("async_timeout") "asyncio")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-mock
-           python-pytest-asyncio
-           python-setuptools
-           python-siosocks
-           python-trustme))
-    (home-page "https://aioftp.readthedocs.io/")
-    (synopsis "FTP client/server for asyncio in Python")
-    (description
-     "FTP client and server for asyncio (Python 3) Library implementing FTP
-protocol, both client and server for Python asyncio module.
-
- Supported commands as client: USER, PASS, ACCT, PWD, CWD, CDUP, MKD, RMD,
- MLSD, MLST, RNFR, RNTO, DELE, STOR, APPE, RETR, TYPE, PASV, ABOR, QUIT,
- REST, LIST (as fallback).
-
- Supported commands as server: USER, PASS, QUIT, PWD, CWD, CDUP, MKD, RMD,
- MLSD, LIST (non-standard), MLST, RNFR, RNTO, DELE, STOR, RETR,
- TYPE (\"I\" and \"A\"), PASV, ABOR, APPE, REST.")
-    (license license:asl2.0)))
-
 (define-public python-mohawk
   (let ((commit "b7899166880e890f01cf2531b5686094ba08df8f")
         (revision "0"))
@@ -8328,103 +8721,6 @@ supports url redirection and retries, and also gzip and deflate decoding.")
     (native-inputs
      (list python-setuptools
            python-wheel))))
-
-(define-public python-awscrt
-  (package
-    (name "python-awscrt")
-    (version "0.36.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "awscrt" version))
-       (sha256
-        (base32 "0jh6niq9kgv0canm11ad8zibywwirdfxg4bqyd8jhaiv3x39h8dd"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:test-flags #~(list "discover" "--verbose")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-broken-tests
-            (lambda _
-              ;; Disable broken tests. These tests fail because they depend on
-              ;; specific DNS configuration and/or AWS credentials, which isn't
-              ;; available in this context.
-              (substitute* "test/test_auth.py"
-                (("def test_default_provider")
-                 "def _test_default_provider"))
-              (substitute* "test/test_aiohttp_client.py"
-                (("def test_h2_remote_end_stream_ordering")
-                 "def _test_h2_remote_end_stream_ordering")
-                (("def test_cross_thread_http2_client")
-                 "def _test_cross_thread_http2_client")
-                (("def test_h2_client")
-                 "def _test_h2_client")
-                (("def test_h2_manual_write_exception")
-                 "def _test_h2_manual_write_exception"))
-              (substitute* "test/test_http_client.py"
-                (("def test_h2_client")
-                 "def _test_h2_client")
-                (("def test_h2_remote_end_stream_ordering")
-                 "def _test_h2_remote_end_stream_ordering")
-                (("def test_h2_manual_write_exception")
-                 "def _test_h2_manual_write_exception"))
-              (substitute* "test/test_s3.py"
-                (("def test_sanity")
-                 "def _test_sanity")
-                (("def test_sanity_secure")
-                 "def _test_sanity_secure")
-                (("def test_wait_shutdown")
-                 "def _test_wait_shutdown"))
-              (substitute* "test/test_io.py"
-                ;; This test seems specifically broken. It waits for a shutdown event
-                ;; from a group of singletons that will never occur because several of
-                ;; the singleton references are held beyond the lifetime of this test.
-                (("def test_shutdown_complete_singleton")
-                 "def _test_shutdown_complete_singleton"))))
-          (add-after 'unpack 'override-cert-bundle-location
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((bundle (search-input-file inputs
-                                               "/etc/ssl/certs/ca-certificates.crt")))
-                (setenv "SSL_CERT_FILE" bundle)
-                (substitute* "awscrt/io.py"
-                  (("( +)opt = TlsContextOptions\\(\\)" m indent)
-                   (string-append m "\n"
-                                  indent "import os\n"
-                                  indent "\
-opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if os.getenv('SSL_CERT_FILE') else None\n"))
-                  (("^( +)self\\.no_certificate_revocation = False" all indent)
-                   (string-append all "\n"
-                                  indent "import os as _os\n"
-                                  indent "_ca_file = _os.environ.get('SSL_CERT_FILE')\n"
-                                  indent "if _ca_file:\n"
-                                  indent "    self.override_default_trust_store(_read_binary_file(_ca_file))\n")))
-                (substitute* "test/appexit_http.py"
-                  (("( +)tls_ctx_opt = awscrt.io.TlsContextOptions.*" m indent)
-                   (string-append m indent
-                                  "tls_ctx_opt.override_default_trust_store_from_path(None, '"
-                                  bundle "')\n")))
-                (substitute* "test/test_io.py"
-                  (("( +)opt = TlsContextOptions\\(\\).*" m indent)
-                   (string-append m indent
-                                  "opt.override_default_trust_store_from_path(None, '"
-                                  bundle "')\n"))))))
-          (add-after 'unpack 'use-system-libraries
-            (lambda _
-              (setenv "AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO" "1"))))))
-    (inputs (list openssl))
-    (native-inputs (list cmake-minimal
-                         nss-certs-for-test
-                         python-boto3
-                         python-setuptools
-                         python-websockets
-                         python-h2))
-    (home-page "https://github.com/awslabs/aws-crt-python")
-    (synopsis "Common runtime for AWS Python projects")
-    (description
-     "This package provides a common runtime for AWS Python projects.")
-    (license license:asl2.0)))
 
 (define-public python-wsgiproxy2
   (package
@@ -9277,36 +9573,6 @@ users' sessions over extended periods of time.")
     (description "@code{python-oauth2client} provides an OAuth 2.0 client
 library for Python")
     (license license:asl2.0)))
-
-(define-public python-authlib
-  (package
-    (name "python-authlib")
-    (version "1.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "authlib" version))
-       (sha256
-        (base32 "0blpvz2v2r8yvsgm1yr3n61mhwxvh1b0kyf2rp0i4wv6n3n8bg2w"))))
-    (build-system pyproject-build-system)
-    ;; No tests target.
-    (arguments (list #:tests? #false))
-    (propagated-inputs
-     (list python-cryptography
-           python-django
-           python-flask
-           python-httpx
-           python-requests
-           python-sqlalchemy-2
-           python-starlette
-           python-werkzeug))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/Authlib/1")
-    (synopsis "Build OAuth and OpenID Connect servers and clients")
-    (description
-     "This is a Python library for building OAuth and OpenID Connect servers
-and clients.")
-    (license license:bsd-3)))
 
 (define-public python-flask-oidc
   (package
@@ -10258,54 +10524,6 @@ correct URLs for Python according to RFCs 3986 and 3987.")
     (description "This package provides an HTTP library inspired by
 @code{requests} but written on top of Twisted's @code{Agents}.  It offers a
 high level API for making HTTP requests when using Twisted.")
-    (license license:expat)))
-
-(define-public python-autobahn
-  (package
-    (name "python-autobahn")
-    (version "25.11.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "autobahn" version))
-        (sha256
-         (base32
-          "1w9wyyqzg1dil8jsjm08n2pnk6jws87scli932drhghcr2f2prjj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; The tests fail to run:
-      ;; https://github.com/crossbario/autobahn-python/issues/1117
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'relax-zope-interface
-                     (lambda _
-                       ;; python-zope-interface is a world rebuild package
-                       ;; and our one-digit lower minor version seems to be
-                       ;; fine.
-                       (substitute* "setup.py"
-                         (("zope.interface>=5.2.0")
-                          "zope.interface>=5.1.0"))))
-                   (add-after 'unpack 'strip-xbr
-                     (lambda _
-                       ;; Strip new XBR feature which isn't available in Guix.
-                       (setenv "AUTOBAHN_STRIP_XBR" "1"))))))
-    (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs (list python-cbor2
-                             python-cryptography
-                             python-hyperlink
-                             python-msgpack
-                             python-py-ubjson
-                             python-twisted
-                             python-txaio
-                             python-ujson))
-    (home-page "https://github.com/crossbario/autobahn-python/")
-    (synopsis "Web Application Messaging Protocol implementation")
-    (description "This package provides an implementation of the @dfn{Web Application
-Messaging Protocol} (WAMP).  WAMP connects components in distributed
-applications using Publish and Subscribe (PubSub) and routed Remote Procedure
-Calls (rRPC).  It is ideal for distributed, multi-client and server applications
-such as IoT applications or multi-user database-driven business applications.")
     (license license:expat)))
 
 (define-public python-ws4py
@@ -12811,186 +13029,6 @@ Features:
 SOCKS5(h), HTTP tunnel).")
     (license license:asl2.0)))
 
-(define-public python-azure-nspkg
-  (package
-    (name "python-azure-nspkg")
-    (version "3.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure-nspkg" version ".zip"))
-       (sha256
-        (base32
-         "1l4xwdh0fcnvrv0mzig4g2kgqkfbsy64zjm1ggc6grk3mykcxlz7"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in package
-    (native-inputs (list unzip python-setuptools))
-    (home-page "https://github.com/Azure/azure-sdk-for-python")
-    (synopsis "Azure namespace internals")
-    (description
-     "This package is an internal Azure namespace package.")
-    (license license:expat)))
-
-(define-public python-azure-storage-nspkg
-  (package
-    (name "python-azure-storage-nspkg")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure-storage-nspkg" version))
-       (sha256
-        (base32 "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-azure-nspkg))
-    (home-page "https://github.com/Azure/azure-storage-python")
-    (synopsis "Microsoft Azure Storage Namespace package")
-    (description
-     "This project provides a client library in Python that makes it easy to
-communicate with Microsoft Azure Storage services.")
-    (license license:expat)))
-
-(define-public python-azure-common
-  (package
-    (name "python-azure-common")
-    (version "1.1.28")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure-common" version ".zip"))
-       (sha256
-        (base32 "18q4cy1xl2zly3rk7a1sc14w932x59r8c9j4d8dnlsz32hrcvh2a"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive
-    (propagated-inputs (list python-azure-nspkg))
-    (native-inputs (list python-setuptools unzip))
-    (home-page "https://github.com/Azure/azure-sdk-for-python")
-    (synopsis "Microsoft Azure Client library for Python")
-    (description "This package provides the Microsoft Azure Client library for
-Python.")
-    (license license:expat)))
-
-(define-public python-azure-core
-  (package
-    (name "python-azure-core")
-    (version "1.32.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure_core" version))
-       (sha256
-        (base32 "1r9hqyqr5fxiiai0irr0n98gwgzj5f8y46vc1yci9bidddfw7cr2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      `(list ;; This fails because devtools_testutils doesn't exist.
-        "--ignore=tests/test_connection_string_parsing.py"
-        ;; These all need network access.
-        "--ignore=samples"
-        "--ignore=tests/async_tests/test_streaming_async.py"
-        "--ignore=tests/test_streaming.py"
-        "-m" "not asyncio and not live_test_only"
-        "-k" ,(string-append
-               "not test_decompress_plain_no_header"
-               " and not test_compress_plain_no_header"
-               " and not test_decompress_compressed_no_header"
-               " and not test_requests_socket_timeout"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'add-test-pythonpath
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "PYTHONPATH"
-                        (string-append
-                         (getcwd) "/tests/testserver_tests/coretestserver:"
-                         (getenv "GUIX_PYTHONPATH")))))))))
-    (propagated-inputs
-     (list python-aiohttp
-           python-requests
-           python-six
-           python-typing-extensions))
-    (native-inputs
-     (list python-flask
-           python-pytest-8
-           python-pytest-aiohttp
-           python-pytest-asyncio
-           python-pytest-trio
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/Azure/azure-sdk-for-python")
-    (synopsis "Microsoft Azure Core library for Python")
-    (description "This package provides the Microsoft Azure Core library for
-Python.")
-    (license license:expat)))
-
-(define-public python-azure-storage-blob
-  (package
-    (name "python-azure-storage-blob")
-    (version "12.27.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure_storage_blob" version))
-       (sha256
-        (base32 "16nb17f6bi0k53qlxybwqxdld3nj742hmsk4qcq3jwka5b6y5s4r"))))
-    (build-system pyproject-build-system)
-    (arguments
-    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
-    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
-    ;; it hard to package in Guix.
-    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
-    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-azure-core
-           python-cryptography
-           python-isodate
-           python-typing-extensions))
-    (home-page "https://github.com/Azure/azure-sdk-for-python/")
-    (synopsis "Microsoft Azure Blob Storage client library for Python")
-    (description "This package provides the Microsoft Azure Blob Storage
-Client Library for Python.")
-    (license license:expat)))
-
-(define-public python-azure-storage-file-datalake
-  (package
-    (name "python-azure-storage-file-datalake")
-    (version "12.22.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "azure_storage_file_datalake" version))
-       (sha256
-        (base32 "0xxg94684b630p8jrz38sg7mdcwp1wa0p5di27mswyrjycshvvcs"))))
-    (build-system pyproject-build-system)
-    (arguments
-    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
-    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
-    ;; it hard to package in Guix.
-    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
-    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-azure-core
-           python-azure-storage-blob
-           python-isodate
-           python-typing-extensions))
-    (home-page "https://github.com/Azure/azure-sdk-for-python")
-    (synopsis "Microsoft Azure File DataLake Storage Client Library for Python")
-    (description
-     "This package provides the Microsoft Azure File @code{DataLake} Storage
-Client Library for Python.")
-    (license license:expat)))
-
 (define-public python-google-auth
   (package
     (name "python-google-auth")
@@ -13637,43 +13675,6 @@ as Flask.")
      "This package provides a Quart extension to provide Trio support.  This
 is an alternative to using the asyncio event loop present in the Python
 standard library and supported by default in Quart.")
-    (license license:expat)))
-
-(define-public python-ajsonrpc
-  (package
-    (name "python-ajsonrpc")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pavlov99/ajsonrpc")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c7jxfkv5q2m95j54dn650gcvdbpag2qcki7phvmrwsgb36w09kd"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (substitute* "ajsonrpc/__init__.py"
-               (("^__version__ = .*")
-                (string-append "__version__ = \"" #$version "\"\n"))))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-quart
-           python-sanic
-           python-tornado))
-    (home-page "https://github.com/pavlov99/ajsonrpc")
-    (synopsis "Async JSON-RPC 2.0 protocol and server")
-    (description
-     "This package provides a Python JSON-RPC 2.0 protocol and server powered
-by asyncio.")
     (license license:expat)))
 
 (define-public python-protego
