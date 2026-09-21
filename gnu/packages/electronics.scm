@@ -3320,7 +3320,7 @@ Numpy arrays for convenience.")
 (define-public python-amaranth
   (package
     (name "python-amaranth")
-    (version "0.5.9")
+    (version "0.5.10")
     (source
      (origin
        (method git-fetch)
@@ -3328,7 +3328,7 @@ Numpy arrays for convenience.")
               (url "https://github.com/amaranth-lang/amaranth/")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "0n7rmppppvhxz17xbwqk517flpyi120adivcfsli5kfkndl6n10p"))
+        (base32 "1zgyvpcbksyhfk9rp04wgkxcja4f1dda8mmcifv0l60k6c29k680"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
