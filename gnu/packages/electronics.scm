@@ -5141,7 +5141,7 @@ using different abstraction levels.")
 (define-public uhdm
   (package
     (name "uhdm")
-    (version "1.86")
+    (version "1.87")
     (source
      (origin
        (method git-fetch)
@@ -5150,7 +5150,7 @@ using different abstraction levels.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nsy385frxz5v7i757h1x59xkl21asz3h2fk1nyvx37z8cj0kd3z"))))
+        (base32 "18lf9mxk41092pimrfad4z2878y0f7sbd063fcqq2rm5axxqs84h"))))
     (build-system cmake-build-system)
     (arguments
      (list
