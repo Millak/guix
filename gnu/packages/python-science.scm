@@ -4749,7 +4749,7 @@ perform these transformations.")
            python-aiohttp
            python-ipython
            python-mypy
-           python-pandas
+           python-pandas-2
            python-pytest-8
            python-pytest-cases
            python-pytest-mock
