@@ -1705,6 +1705,21 @@ in the terminal or with an external viewer.")
 @code{cairo} that provides uniform output to multiple devices.")
     (license license:gpl2+)))
 
+(define-public giza-1
+  (package
+    (inherit giza)
+    (name "giza")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/danieljprice/giza")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qair5j6rq17hwvyxl6k2n4hkvgjw5wczmfzn7qh7kcv3qpg9p5l"))))))
+
 (define-public gnuplot
   (package
     (name "gnuplot")
