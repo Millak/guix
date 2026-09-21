@@ -4845,7 +4845,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 (define-public sby
   (package
     (name "sby")
-    (version "0.68")
+    (version "0.69")
     (source
      (origin
        (method git-fetch)
