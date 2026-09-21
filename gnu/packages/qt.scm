@@ -5758,6 +5758,10 @@ Version: ~a~%"  name #$version)))))))
               (setenv "NM" "llvm-nm")
               (setenv "CC" "clang")
               (setenv "CXX" "clang++"))))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "TYPESYSTEMPATH")
+             (files '("share/PySide6/typesystems")))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis "Generator for Python bindings for C++ libraries")
     (description "This package provides a generator for producing Python
