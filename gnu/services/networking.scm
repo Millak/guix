@@ -2767,7 +2767,8 @@ See @command{yggdrasil -genconf} for config options.")
           (service-extension account-service-type
                              (const %yggdrasil-accounts))
           (service-extension profile-service-type
-                             (compose list yggdrasil-configuration-package))))))
+                             (compose list yggdrasil-configuration-package))))
+   (default-value (yggdrasil-configuration))))
 
 
 ;;;
