@@ -3156,12 +3156,12 @@ object-oriented programming system, GOOPS.")
   (package
     (inherit guile-g-golf)
     (name "g-golf-gtk-4-examples")
-    (version "0.8.3")
+    (version "0.8.7")
     (source
      (g-golf-source #:version version
                     #:hash
                     (content-hash
-                     "1cbvb42dy94612m8040y3km9941jhi17mf78yc4pavlala8x6937")))
+                     "0lwwr78fwdcap7606r5rszw6369lsq876zmr9mdsw37d4nimm7xi")))
     (arguments
      (list
       #:modules `(((guix build guile-build-system)
@@ -3211,7 +3211,7 @@ install:
                     (substitute* "Makefile"
                       (("^CC = gcc$")
                        (string-append "CC = " #$(cc-for-target) "\n"))))
-                  (system* "make"))))
+                  (invoke "make"))))
             ;; There are no tests for examples, but we do an installcheck phase,
             ;; which respects when #:tests? is turned off.  So delete 'check.
             (delete 'check)
@@ -3291,8 +3291,8 @@ share/doc/g-golf/examples/gtk-4/" binary)))
                                      #:search-path? #f)))
                     (sleep 10) ;2s is enough on my machine
                     (display "Taking a screenshot with G-Golf.\n")
-                    (system* "import" "-window" "root"
-                             "drawing-widget.out.png")
+                    (invoke "import" "-window" "root"
+                            "drawing-widget.out.png")
                     (sleep 5) ;1s is enough on my machine
                     (kill pid SIGINT)
                     (waitpid pid))
@@ -3303,8 +3303,8 @@ share/doc/g-golf/examples/gtk-4/" binary)))
                                      #:search-path? #f)))
                     (sleep 5) ;1s is enough on my machine
                     (display "Taking a screenshot with Pygobject.\n")
-                    (system* "import" "-window" "root"
-                             "drawing-widget.ref.png")
+                    (invoke "import" "-window" "root"
+                            "drawing-widget.ref.png")
                     (sleep 5)
                     (kill pid SIGINT)
                     (waitpid pid))
