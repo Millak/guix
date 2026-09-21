@@ -1775,12 +1775,11 @@ exec ~s ~s \"$@\"
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mono/libgdiplus.git")
-             ;; The releases aren't tagged.
-             (commit "94a49875487e296376f209fe64b921c6020f74c0")))
+             (url "https://gitlab.winehq.org/mono/libgdiplus.git")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gwmhrddr8kdlfprjqcd6gqiy8p5v8sl9215dbd949j1l76szl9v"))
+        (base32 "0m3pcl5hx35r7kwrr1hzqdrhw5bw29bl4w5fnsvcynmz4hg9vmd2"))
        (modules '((guix build utils)))
        (snippet #~(substitute* "./Makefile.am"
                     (("\\./update_submodules\\.sh")
@@ -1808,7 +1807,7 @@ exec ~s ~s \"$@\"
     (description "Libgdiplus is the Mono library that provides a
 GDI+-compatible API on non-Windows operating systems.  It uses Cairo to do
 most of the heavy lifting.")
-    (home-page "https://github.com/mono/libgdiplus")
+    (home-page "https://gitlab.winehq.org/mono/libgdiplus")
     (license license:expat)))
 
 (define mono-6.12.0-external-repo-specs
