@@ -290,11 +290,16 @@ pages into HTML format.")
                              (invoke "tar" "--strip-components=1" "-C"
                                      "zstd-src" "-xf" #$(package-source zstd))))
                          (add-before 'configure 'set-prefix
-                           (lambda* (#:key outputs #:allow-other-keys)
+                           (lambda* (#:key inputs outputs #:allow-other-keys)
                              (substitute*
                                "configure"
                                (("^CC=.*")
                                 (string-append "CC=" #$(cc-for-target) "\n"))
+                               (("^BINM_PAGER=.*")
+                                (string-append "BINM_PAGER="
+                                               (search-input-file inputs "/bin/less")
+                                               "\n"))
+                               (("^HAVE_LESS_T=.*") "HAVE_LESS_T=1\n")
                                (("^DEFCFLAGS=\\\\\"")
                                 "DEFCFLAGS=\"-O2 ")
                                (("^UTF8_LOCALE=.*")      ;used for tests
@@ -308,7 +313,7 @@ pages into HTML format.")
                                                (assoc-ref outputs "out")
                                                "\n"))))))))
     (native-inputs (list (libc-utf8-locales-for-target) perl)) ;used to run tests
-    (inputs (list zlib (list zstd "lib")))
+    (inputs (list less zlib (list zstd "lib")))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
