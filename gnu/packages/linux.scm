@@ -3608,7 +3608,15 @@ block devices, UUIDs, TTYs, and many other tools.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f)) ;no test suite
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              ;; In the mv meson configuration, chimerautils refers
+              ;; to it's own cp (_PATH_CP) and mv (_PATH_MV) by path.
+              (substitute* "src.freebsd/coreutils/mv/meson.build"
+                (("/bin/") (string-append #$output "/bin/"))))))))
     (inputs (list acl
                   libedit
                   libxo
