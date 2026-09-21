@@ -4932,7 +4932,7 @@ code{yosys}-based formal hardware verification flows.")
 (define-public surelog
   (package
     (name "surelog")
-    (version "1.86")
+    (version "1.87")
     (source
      (origin
        (method git-fetch)
@@ -4956,7 +4956,7 @@ code{yosys}-based formal hardware verification flows.")
             (delete-all-but "third_party"
                             "antlr4" "antlr4_bin" "tests" "UVM")))
        (sha256
-        (base32 "0pj84bb3iyhrq09ggwfbhdhzb5c3d9ifga87pn0rjw9ym17ns1vh"))))
+        (base32 "0hgapp33jv4i08x8n436fhkgk1f4fwzbd3cfb03fbv2y4c717nx0"))))
     (build-system cmake-build-system)
     (arguments
      (list
