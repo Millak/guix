@@ -39220,6 +39220,24 @@ correctly.")))
      (string-append (package-description go-zgo-at-jfmt)
                     "  This package provides a command line interface (CLI) tool."))))
 
+(define-public go-magic
+  (package/inherit go-github-com-liamg-magic
+    (name "go-magic")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _ ) "github.com/liamg/magic/cmd/magic")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _  "") "github.com/liamg/magic")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-liamg-magic))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides @command{magic}, a @acronym{Comman Line Interface,
+CLI} tool to detect and verify file type using magic bytes.")))
+
 (define-public go-md2man
   (package/inherit go-github-com-cpuguy83-go-md2man-v2
     (name "go-md2man")
