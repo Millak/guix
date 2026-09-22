@@ -980,6 +980,38 @@ balance windows (keeping them roughly the same size) whenever the window
 configuration changes, e.g. after splitting or deleting a window.")
     (license license:bsd-3)))
 
+(define-public emacs-theme-batppuccin
+  (package
+    (name "emacs-theme-batppuccin")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch) 
+       (uri (git-reference
+              (url "https://github.com/bbatsov/batppuccin-emacs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18dnn3qpwck0i089gkmyh2600qfqgd15hz0811214crk9xxbcans"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                   ; No tests.
+    (home-page "https://github.com/bbatsov/batppuccin-emacs")
+    (synopsis "Catppuccin color scheme for Emacs")
+    (description
+     "Batppuccin is an opinionated Emacs port of the Catppuccin color
+scheme. It aims to follow the official Catppuccin style guide closely while
+being structured idiomatically for Emacs.
+
+It comes with the following flavors:
+@itemize
+@item batppuccin-mocha;
+@item batppuccin-macchiato;
+@item batppuccin-frappe;
+@item batppuccin-latte.
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public emacs-ben
   (package
     (name "emacs-ben")
