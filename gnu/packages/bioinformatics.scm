@@ -7970,22 +7970,24 @@ multiple DJU methods.")
 (define-public python-bamnostic
   (package
     (name "python-bamnostic")
-    (version "1.1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "bamnostic" version))
-              (sha256
-               (base32
-                "0cjpzyqz6r4lmiwry2gcxdczwpkhl3lyyjg4s8addln17691ysxk"))))
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/betteridiot/bamnostic/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rlr46zcb0hzi9lj9naf3gkqqqxhzbwd84zxyjsaa8dvcdm23x14"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pytest python-setuptools))
-    (native-inputs (list python-wheel))
-    (home-page "https://github.com/betteridiot/bamnostic/")
-    (synopsis "Tool for binary alignment map, random access and parsing")
-    (description
-     "Bamnostic is a pure Python @dfn{Binary Alignment Map} (BAM) file parser
+    (native-inputs (list python-pytest python-setuptools))
+  (home-page "https://github.com/betteridiot/bamnostic/")
+  (synopsis "Tool for binary alignment map, random access and parsing")
+  (description
+   "Bamnostic is a pure Python @dfn{Binary Alignment Map} (BAM) file parser
 and random access tool.")
-    (license license:bsd-3)))
+  (license license:bsd-3)))
 
 (define-public python-modbedtools
   (package
