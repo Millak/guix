@@ -2498,66 +2498,47 @@ to explore and analyze bulk RNA-seq data.")
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
-    (version "0.8.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/earmingol/cell2cell")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0z5dcm9i74c5iaqq92y25khg7i2smrfj8jb1g26iwzwf1cqxghmn"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; We remove the dependency on statannotations because it
-                  ;; will not work with the current version of seaborn.  See
-                  ;; https://github.com/trevismd/statannotations/issues/122
-                  (substitute* "cell2cell/plotting/factor_plot.py"
-                    (("from statannotations.Annotator import Annotator")
-                     "")
-                    (("if statistical_test is not None")
-                     "if False"))
-                  (substitute* "setup.py"
-                    (("'statannotations',") "")
-                    ;; We provide version 1.0.4, which should be fine.
-                    (("'gseapy == 1.0.3'") "'gseapy'")
-                    ;; We provide version 0.9.0, which should be fine.
-                    (("'tensorly == 0.8.1'") "'tensorly'")
-                    ;; Using matplotlib 3.5.2 leads to this bug:
-                    ;; https://github.com/earmingol/cell2cell/issues/19 but we
-                    ;; can't package a different minor version of matplotlib
-                    ;; and limit its use to just this package.
-                    (("matplotlib >= 3.2.0,<=3.5.1") ""))))))
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/earmingol/cell2cell")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wsjamldi059wdrqdpyn3c3s0xsn0dxwrnr64bf7mwgcd37g0h58"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                  ;There are no tests
+      #:test-flags
+      #~(list "-m" "not network")
       #:phases
-      '(modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'build 'set-numba-cache-dir
-           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-gseapy
            python-kneed
            python-matplotlib
+           python-natsort
            python-networkx
            python-numpy
            python-openpyxl
            python-pandas
-           python-scikit-learn
-           python-scipy
-           python-seaborn
-           python-statsmodels
            python-scanpy
+           python-scikit-learn
            python-seaborn
+           python-statannotations
+           python-statsmodels
            python-tensorly
            python-tqdm
            python-umap-learn
            python-xlrd))
-    (native-inputs (list python-wheel))
+    (native-inputs
+     (list python-pygad python-pytest python-setuptools))
     (home-page "https://github.com/earmingol/cell2cell")
     (synopsis "Python library for cell communication analysis")
     (description
