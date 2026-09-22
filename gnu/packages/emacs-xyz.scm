@@ -172,6 +172,7 @@
 ;;; Copyright © 2026 John Haman <mail@johnhaman.org>
 ;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;; Copyright © 2026 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2026 Evelynn Straw <evelynn@evelynn.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43693,8 +43694,8 @@ contrast and few colors.")
       (license license:gpl3+))))
 
 (define-public emacs-doom-themes
-  (let ((commit "188ab05eefe2bdc46b4464aadb4a52ff9cb42f7f")
-        (revision "0"))
+  (let ((commit "a59202912ad55014e53a685eee6cd94130bdd4fd")
+        (revision "1"))
     (package
       (name "emacs-doom-themes")
       (version (git-version "2.3.0" revision commit))
@@ -43705,12 +43706,13 @@ contrast and few colors.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "08avm5jfp887r2l77s6i0zn72wlv4kp47b2vzv3kywf3d0gkpgp8"))))
+                 (base32 "1lhhcbfqbpm623h9w2p1j2dg6vxg0nkgljaqn5i4wgxwmai371z4"))))
       (build-system emacs-build-system)
       (native-inputs
        (list emacs-ert-runner))
       (arguments
-       (list #:modules '((guix build emacs-build-system)
+       (list #:test-command #~(list "make" "test")
+             #:modules '((guix build emacs-build-system)
                          (guix build utils)
                          (guix build emacs-utils)
                          (srfi srfi-1))
@@ -43724,7 +43726,20 @@ contrast and few colors.")
                                  (rename-file f (basename f)))
                                (append
                                 (find-files "./themes" ".*\\.el$")
-                                (find-files "./extensions" ".*\\.el$"))))))))
+                                (find-files "./extensions" ".*\\.el$")))))
+                 ;; XXX: Tests assume themes are located under the "themes"
+                 ;; directory; however, the previous phase moved them to the
+                 ;; top level. As such, we need to remove the "themes/" path
+                 ;; from test files as well as add the top level to the theme
+                 ;; load path.
+                 (add-after 'move-themes 'fix-test-paths
+                   (lambda _
+                     (substitute* "test/doom-themes-test.el"
+                       (("\\(expand-file-name \"themes/")
+                        "(expand-file-name \"")
+                       (("\\(mapc")
+                        "(add-to-list 'custom-theme-load-path doom-themes-dir)
+(mapc")))))))
       (synopsis "Wide collection of color themes for Emacs")
       (description "Emacs-doom-themes contains numerous popular color themes for
 Emacs that integrate with major modes like Org-mode.")
