@@ -36678,16 +36678,24 @@ files.")
 (define-public python-musical-scales
   (package
     (name "python-musical-scales")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "musical-scales" version))
-              (sha256
-               (base32
-                "1ckn8n37i7b65h0i385ycn0w8sg9na0iabz0kmhxxc1wj0hddkw9"))))
+    ;; PyPI has no tests, git has no tags, use the latest commit corresponding
+    ;; to v2.0.0.
+    (properties '((commit . "bdc35b360edda7583806fd6037bef2716f08fc85")
+                  (revision . "0")))
+    (version (git-version "2.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hmillerbakewell/musical-scales")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0znkiq6r61h1sj5r24kah6h94c5agfpq4ypadn4i73hry0fkl9fd"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/hmillerbakewell/musical-scales")
     (synopsis "Retrieve a scale based on a given mode and starting note")
     (description
