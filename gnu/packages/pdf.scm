@@ -1265,7 +1265,9 @@ program capable of converting PDF into other formats.")
                (replace 'configure
                  (lambda _
                    (substitute* "qpdfview.pri"
-                     (("/usr") #$output))
+                     (("/usr") #$output)
+                     ;; Poppler >= 23.06.0 uses C++17 in its public headers.
+                     (("c\\+\\+11") "c++17"))
                    (invoke "qmake" "qpdfview.pro")))
                (replace 'build (assoc-ref gnu:%standard-phases 'build))
                (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
