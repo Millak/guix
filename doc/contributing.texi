@@ -2112,6 +2112,19 @@ style used for copyright notices in source file headers:
 The above example means there were copyright-able changes made for the
 years 2019, 2020, 2021, 2022, 2023 and 2025.
 
+@subsection Coding Assistants (LLM) Policy
+@cindex LLM, policy
+@cindex coding assistants policy
+@cindex policy, coding assistants
+@cindex policy, LLM
+
+We do not accept contributions that were written by, or based on code
+written by, a @acronym{LLM, Large Language Model} coding assistant.
+This is due to the uncertain copyright status of the outputs generated
+by an LLM, which could be incompatible with and undermine the
+@url{https://www.gnu.org/licenses/gpl-3.0.html, license} used by the GNU
+Guix project.
+
 @node Submitting Patches
 @section Submitting Patches
 
