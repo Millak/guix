@@ -3094,7 +3094,7 @@ servers supporting the protocol.")
 (define-public python-liana-py
   (package
     (name "python-liana-py")
-    (version "1.8.1")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -3103,27 +3103,19 @@ servers supporting the protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ff6y0lkmh4arlrir2c6957dlj6sa1aixwx36322gh827bbjl80i"))))
+        (base32 "0bdbrk0cr4m6br664gs1ixvchyd9hnwjmbnzxkx0gbj5967i1lw3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 165 passed, 11 deselected, 714 warnings
+      ;; tests: 218 passed, 13 deselected, 755 warnings
       #:test-flags
-      ;; Network access is required for these tests.
-      #~(list "--deselect=tests/test_generate_lr.py::test_generate_lr_resource"
-              (string-append "--deselect=tests/test_generate_lr.py"
-                             "::test_generate_nondefault_lr_resource")
-              "--deselect=tests/test_metalinksdb.py::test_get_metalinks"
-              "--deselect=tests/test_metalinksdb.py::test_get_metalinks_values"
-              "--deselect=tests/test_metalinksdb.py::test_describe_metalinks"
-              "--deselect=tests/test_orthology.py::test_translate_resource"
-              "--deselect=tests/test_orthology.py::test_get_hcop"
+      #~(list "-m" "not network"
               ;; Tests depending on python-corneto.
-              "--deselect=tests/test_causalnet.py::test_build_prior_network"
-              "--deselect=tests/test_causalnet.py::test_caulsalnet"
-              "--deselect=tests/test_causalnet.py::test_causalnet_noweights"
+              "--deselect=tests/method/test_causalnet.py::test_build_prior_network"
+              "--deselect=tests/method/test_causalnet.py::test_caulsalnet"
+              "--deselect=tests/method/test_causalnet.py::test_causalnet_noweights"
               ;; A task has failed to un-serialize.
-              "--deselect=tests/test_sc_methods.py::test_geometric_mean")
+              "--deselect=tests/method/sc/test_methods.py::test_geometric_mean")
       #:phases
       #~(modify-phases %standard-phases
           ;; Numba needs a writable directory to cache functions.
