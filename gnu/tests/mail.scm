@@ -43,7 +43,9 @@
             %test-dovecot
             %test-getmail
             %test-rspamd
-            %test-radicale))
+
+            %test-radicale
+            %test-radicale-htpasswd-bcrypt))
 
 (define %qemu-static-networking-no-nameserver
   ;; Networking configuration for QEMU without nameserver.
@@ -723,12 +725,32 @@ Subject: Hello Nice to meet you!")
    (description "Basic rspamd service test.")
    (value (run-rspamd-test))))
 
-(define %radicale-os
+(define %radicale-create-bcrypt-htpasswd
+  #~(begin
+      (call-with-output-file "/etc/radicale/htpasswd"
+        (lambda (port)
+          ;; guix shell httpd -- htpasswd -Bnb test test
+          (display "test:$2y$05$B1FUMJ7W3FhAqjHZV2OiD.yOpZ5X2kRxQGbFG2o0V6.1O/7164mpC" port)))))
+
+(define %radicale-os-with-bcrypt-htpasswd
+  (simple-operating-system
+      (simple-service 'create-htpasswd
+                   activation-service-type
+                   %radicale-create-bcrypt-htpasswd)
+   (service dhcpcd-service-type)
+   (service radicale-service-type
+            (radicale-configuration
+              (auth (radicale-auth-configuration
+		      (type 'htpasswd)
+		      (htpasswd-encryption 'bcrypt)
+		      (htpasswd-filename "/etc/radicale/htpasswd")))))))
+
+(define %radicale-os-default
   (simple-operating-system
    (service dhcpcd-service-type)
    (service radicale-service-type)))
 
-(define (run-radicale-test)
+(define (run-radicale-test name os)
   "Return a test of an OS running Radicale service."
 
   (define forwarded-port 5232)
@@ -737,7 +759,7 @@ Subject: Hello Nice to meet you!")
     (virtual-machine
       (operating-system
         (marionette-operating-system
-         %radicale-os
+         os
          #:imported-modules '((gnu services herd))))
       (port-forwardings `((5232 . ,forwarded-port)))))
 
@@ -780,10 +802,16 @@ Subject: Hello Nice to meet you!")
 
           (test-end))))
 
-  (gexp->derivation "radicale-test" test))
+  (gexp->derivation name test))
 
 (define %test-radicale
   (system-test
    (name "radicale")
-   (description "Basic radicale service test.")
-   (value (run-radicale-test))))
+   (description "Service starts with default configuration.")
+   (value (run-radicale-test name %radicale-os-default))))
+
+(define %test-radicale-htpasswd-bcrypt
+  (system-test
+   (name "radicale-htpasswd-bcrypt")
+   (description "Service starts with bcrypt htpasswd authentication.")
+   (value (run-radicale-test name %radicale-os-with-bcrypt-htpasswd))))
