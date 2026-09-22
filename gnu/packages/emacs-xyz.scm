@@ -3048,7 +3048,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
     (native-inputs
      (list texinfo))
     (propagated-inputs
-     (list emacs-async emacs-compat emacs-cond-let emacs-llama))
+     (list emacs-compat emacs-cond-let emacs-llama))
     (home-page "https://github.com/magit/with-editor")
     (synopsis "Emacs library for using Emacsclient as EDITOR")
     (description
