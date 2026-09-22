@@ -281,7 +281,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.32")
+    (version "0.7.33")
     (source
      (origin
        (method git-fetch)
@@ -290,7 +290,7 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z67291rv9ii3llv2hwz9ak99818fwkxcqibb5zk8qkamh4y2bww"))))
+        (base32 "0c87axs4zc392f7h6xrx7vdz62yp6n53hcp1djbzl6c6ax5mrx05"))))
     (build-system pyproject-build-system)
     (arguments
      (list
