@@ -10711,7 +10711,7 @@ as horizontal rules.")
 (define-public emacs-simple-httpd
   (package
     (name "emacs-simple-httpd")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -10720,8 +10720,15 @@ as horizontal rules.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cbidjfrrwwpj73248bw8mb1fbhh4md9awhq4x6wmjl6lkfwr8pj"))))
+        (base32 "1s00xpp0gqnyiaq22ybixf59gy71fma774nvkh6ad4v40bdvhh4c"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "--batch"
+              "-l" "simple-httpd-test.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/skeeto/emacs-web-server")
     (synopsis "HTTP server in pure Emacs Lisp")
     (description
