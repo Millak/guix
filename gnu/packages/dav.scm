@@ -133,24 +133,28 @@ CardDAV server with a local folder or file.")
 (define-public radicale
   (package
     (name "radicale")
-    (version "3.7.8")
+    (version "3.8.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Kozea/Radicale")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Kozea/Radicale")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k0qssq74md7lc48jwk4hff1gpbmw369flzidziph3gmf3cl40y8"))))
+        (base32 "0c521jjgymydx4l6091ljrswzdjjvkfamaw85ddrxyx3wrgfz7p3"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
            python-waitress))
     (propagated-inputs
-     (list python-defusedxml
+     (list python-argon2-cffi
+           python-bcrypt
+           python-defusedxml
+           python-ldap3
            python-libpass
+           python-pam
            python-pika
            python-requests
            python-vobject))
