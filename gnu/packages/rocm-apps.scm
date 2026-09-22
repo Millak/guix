@@ -23,6 +23,7 @@
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages rocm)
@@ -69,13 +70,18 @@
               (substitute* "CMakeLists.txt"
                 (("-march=native")
                  ""))))
-          (add-after 'unpack 'set-default-data-file-name
-            (lambda _
-              ;; Set the default 'HPL.dat' file name in 'run_rochpl' & co.
+          (add-after 'unpack 'record-file-names-in-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (find-files "scripts" "\\.in")
+                ;; Set the default 'HPL.dat' file name in 'run_rochpl' & co.
                 (("filename=HPL\\.dat")
                  (string-append "filename=" #$output
-                                "/share/rochpl/HPL.dat")))))
+                                "/share/rochpl/HPL.dat"))
+                ;; Record command names too.
+                (("\\$\\{rocm_dir\\}/bin/rocm-smi")
+                 (search-input-file inputs "/bin/rocm-smi"))
+                (("lscpu")
+                 (search-input-file inputs "/bin/lscpu")))))
           (add-after 'install 'move-files-where-they-belong
             (lambda _
               ;; Move files from the top level to the relevant directories.
@@ -95,6 +101,8 @@
     (inputs
      (list rocm-hip-runtime
            rocblas
+           (list rocm-smi-lib "bin")              ;for 'rocm-smi'
+           util-linux                             ;for 'lscpu'
            libomp-rocm
            openmpi-rocm))
     (synopsis "Linear algebra benchmark for AMD GPUs")
