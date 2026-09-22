@@ -17754,10 +17754,10 @@ hydras with one column per group of heads.")))
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/ivy-" version ".tar"))
        (sha256
-        (base32 "12ni3n8h7316hv4nrx4kbjah58n8zdxkf1v8fi0w39da1aqn3r0p"))))
+        (base32 "12ni3n8h7316hv4nrx4kbjah58n8zdxkf1v8fi0w39da1aqn3r0p"))
+       (patches
+        (search-patches "emacs-ivy-avoid-nil-predicate.patch"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list))
     (home-page "https://github.com/abo-abo/swiper")
     (synopsis "Incremental vertical completion for Emacs")
     (description

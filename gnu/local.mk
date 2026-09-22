@@ -1687,6 +1687,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
   %D%/packages/patches/jami-avutil-link.patch   		\
+  %D%/packages/patches/emacs-ivy-avoid-nil-predicate.patch      \
   %D%/packages/patches/jami-libjami-cmake.patch			\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\

@@ -1,0 +1,31 @@
+From 631df3f68c79cca2a26bc8ea1a98a332ef53751e Mon Sep 17 00:00:00 2001
+Message-ID: <631df3f68c79cca2a26bc8ea1a98a332ef53751e.1790072851.git.csantosb@disroot.org>
+From: "Basil L. Contovounesios" <basil@contovou.net>
+Date: Mon, 9 Mar 2026 22:02:11 +0100
+Subject: [PATCH] Avoid nil predicate with cl-remove-if-not
+
+Emacs 31 no longer silently accepts a nil predicate.
+
+* ivy.el (ivy--reset-state): Skip alist filtering in the absence of
+a predicate.
+---
+ ivy.el | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/ivy.el b/ivy.el
+index a6aca7a..9d5f805 100644
+--- a/ivy.el
++++ b/ivy.el
+@@ -2497,7 +2497,8 @@ This is useful for recursive `ivy-read'."
+                             ivy--all-candidates
+                           (ivy--dynamic-collection-cands (or initial-input "")))))
+             ((consp (car-safe collection))
+-             (setq collection (cl-remove-if-not predicate collection))
++             (when predicate
++               (setq collection (cl-remove-if-not predicate collection)))
+              (when (and sort (setq sort-fn (ivy--sort-function caller)))
+                (setq collection (sort (copy-sequence collection) sort-fn))
+                (setq sort nil))
+--
+2.54.0
+
