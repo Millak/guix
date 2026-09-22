@@ -356,3 +356,9 @@ System Interface} system call API, so that WebAssembly runtimes can easily
 implement WASI calls.  Under the hood, @code{uvwasi} leverages @code{libuv}
 where possible for maximum portability.")
     (license license:expat)))
+
+(define-public uvwasi-for-node-lts
+  (hidden-package
+   (package/inherit uvwasi
+     (inputs (modify-inputs inputs
+               (replace "libuv" libuv-for-node-lts))))))
