@@ -7777,7 +7777,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-ellama
   (package
     (name "emacs-ellama")
-    (version "1.29.0")
+    (version "1.32.2")
     (source
      (origin
        (method git-fetch)
@@ -7787,19 +7787,10 @@ that the binary uses instead of the actual binary contents.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00iwn1r717y7x49g9vncghiyi5ffp7y1ig2bghnaqchs5d8rv5g3"))))
+         "1sl824krdj6gvsfh4azr6x6fnkqhmll6gy8xh4m2blnlgdypmy30"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* (find-files "tests/" "\\.el$")
-                (((string-append
-                   "\\(ert-deftest "
-                   "test-ellama-context-element-extract-info-node .*") all)
-                 (string-append all "(skip-unless nil)\n"))))))
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-l" "ellama.el"
                              "-l" "tests/test-ellama.el"
