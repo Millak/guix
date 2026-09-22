@@ -1128,21 +1128,21 @@ needed is to review and apply the patch.
 
 
 @menu
-* Software Freedom::                 What may go into the distribution.
+* Software Freedom::            What may go into the distribution.
 * Extracting Bundled Dependencies::  Why do we unbundle dependencies.
-* Package Naming::                   What's in a name?
-* Version Numbers::                  When the name is not enough.
-* Synopses and Descriptions::        Helping users find the right package.
-* Snippets versus Phases::           Whether to use a snippet, or a build phase.
-* Cyclic Module Dependencies::       Going full circle.
-* Bulk Updates::                     This Little Maneuver's Gonna Cost Us 51 Years.
-* Emacs Packages::                   Your Elisp fix.
-* Python Modules::                   A touch of British comedy.
-* Perl Modules::                     Little pearls.
-* Java Packages::                    Coffee break.
-* Rust Crates::                      Beware of oxidation.
-* Elm Packages::                     Trees of browser code
-* Fonts::                            Fond of fonts.
+* Package Naming::              What's in a name?
+* Version Numbers::             When the name is not enough.
+* Synopses and Descriptions::   Helping users find the right package.
+* Snippets versus Phases::      Whether to use a snippet, or a build phase.
+* Cyclic Module Dependencies::  Going full circle.
+* Bulk Updates::                This Little Maneuver's Gonna Cost Us 51 Years.
+* Emacs Packages::              Your Elisp fix.
+* Python Modules::              A touch of British comedy.
+* Perl Modules::                Little pearls.
+* Java Packages::               Coffee break.
+* Rust Crates::                 Beware of oxidation.
+* Elm Packages::                Trees of browser code
+* Fonts::                       Fond of fonts.
 @end menu
 
 @node Software Freedom
