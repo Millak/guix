@@ -28,6 +28,7 @@ choice.
 * Source Tree Structure::       Source code guided tour.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
+* Copyright Matters::           Because copyleft matters.
 * Submitting Patches::          Share your work.
 * Tracking Bugs and Changes::   Keeping it all organized.
 * Teams::                       Coordinating efforts.
@@ -2086,6 +2087,30 @@ requirement can be relaxed for simple private procedures in the
 Procedures should not have more than four positional parameters.  Use
 keyword parameters for procedures that take more than four parameters.
 
+@node Copyright Matters
+@section Copyright Matters
+
+@cindex project license, GNU GPL version 3 or later
+GNU Guix is made available under the
+@url{https://www.gnu.org/licenses/gpl-3.0.html, GNU GPL version 3 or
+later} license, and authors retain their copyright.  Below are some
+copyright-related project policies.
+
+@subsection Copyright Notices
+
+@cindex copyright notices, usage in Guix
+The copyright notices in Guix follow the guidance provided by the GNU
+Project (@pxref{Copyright Notices,,,maintain,Information for Maintainers
+of GNU Software}.  Using ranges for adjacent years is preferred to
+listing each individual years.  Below is an example of the preferred
+style used for copyright notices in source file headers:
+
+@lisp
+;;; Copyright © 2019-2023, 2025 Your Name <email@@example.org>
+@end lisp
+
+The above example means there were copyright-able changes made for the
+years 2019, 2020, 2021, 2022, 2023 and 2025.
 
 @node Submitting Patches
 @section Submitting Patches

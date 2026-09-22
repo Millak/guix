@@ -109,17 +109,12 @@ but exposes all the API as Scheme.
     distribution; unlike Guix, it relies on core tools available on the
     host system
 
-* Copyright Notices
+* Copyright
 
-GNU Guix is made available under the GNU GPL version 3 or later license, and
-authors retain their copyright.  For copyright notices, we adhere to the
-guidance documented in (info "(maintain) Copyright Notices"), and explicitly
-allow ranges instead of individual years.  Here's an example of the preferred
-style used for copyright notices in source file headers:
+GNU Guix is made available under the [[https://www.gnu.org/licenses/gpl-3.0.html][GNU GPL version 3 or later license]], and
+authors retain their copyright.  For more information, consult the manual,
+either by running
 
-#+begin_comment
-Copyright © 2019-2023, 2025 Your Name <your@email.com>
-#+end_comment
+  info -f doc/guix.info -n "Copyright Matters"
 
-Meaning there were copyright-able changes made for the years 2019, 2020, 2021,
-2022, 2023 and 2025.
+or by checking the [[https://guix.gnu.org/manual/devel/en/html_node/Copyright-Matters.html][web copy of the manual]].
