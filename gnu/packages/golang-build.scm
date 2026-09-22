@@ -886,6 +886,35 @@ language.")
      (native-inputs '())
      (propagated-inputs '()))))
 
+(define-public go-golang-org-x-crypto-x509roots-fallback
+  (package
+    (name "go-golang-org-x-crypto-x509roots-fallback")
+    (version "0.0.0-20260921070245-7a4a4d6beae2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/crypto")
+             (commit (go-version->git-ref version
+                                          #:subdir "x509roots/fallback"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bs3pnbi6vbs3xn9qf7j1fmwrybrkx7yr8ghdpzr5v0dg5bj6052"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/crypto/x509roots/fallback"
+      #:unpack-path "golang.org/x/crypto"))
+    (home-page "https://go.googlesource.com/crypto")
+    (synopsis "Fallback X.509 trusted roots")
+    (description
+     "Package fallback embeds a set of fallback X.509 trusted roots in the
+application by automatically invoking
+@url{https://pkg.go.dev/crypto/x509#SetFallbackRoots, x509.SetFallbackRoots}}.
+This allows the application to work correctly even if the operating system
+does not provide a verifier or system roots pool.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
