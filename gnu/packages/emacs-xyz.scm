@@ -2193,14 +2193,14 @@ uploading PlatformIO projects.")
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
-    (version "9.0.1")
+    (version "9.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "hyperbole-" version ".tar"))
        (sha256
-        (base32 "0a7py2dvszh0rf2smbmm8msjrc8vbbvlqnsqw0m2l12v8vllmxnb"))))
+        (base32 "080s9132mdpvb750pg34fwbr4rs717jddi96jkppzkbzlj35yrkx"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "DEMO"
@@ -2216,6 +2216,8 @@ uploading PlatformIO projects.")
            #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'build 'set-home
+                 (lambda _ (setenv "HOME" (getenv  "TMPDIR"))))
                ;; Fix build issues about missing "domainname" and
                ;; "hpmap:dir-user" parent dir, and missing require in
                ;; "hgnus.el" (void-function: var-append).
