@@ -237,7 +237,7 @@ the real span of the lattice.")
         (base32
          "1k9fcfcf0p0z0szd1f5973mg9ixl51vmhifc684l2sm4mpc607bi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs
      (list fplll gmp mpfr pari-gp))
     (propagated-inputs
@@ -670,7 +670,7 @@ geometry and singularity theory.")
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     ;; XXX: GMP failed to be loaded from Singular.  Pass it here for now.
     (inputs (list gmp singular))
     (home-page "https://github.com/sebasguts/PySingular")
@@ -1314,7 +1314,7 @@ algebraic extensions of QQ.")
                      (lambda* (#:key tests? #:allow-other-keys)
                        (if tests?
                            (invoke "python" "tests/runtests.py")))))))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (inputs (list flint gmp normaliz))
     (home-page "https://github.com/Normaliz/PyNormaliz")
     (synopsis "Python interface to Normaliz")
@@ -1989,7 +1989,7 @@ structure constants of Schubert polynomials.")
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
-    (native-inputs (list python-cython python-setuptools python-wheel))
+    (native-inputs (list python-cython python-setuptools))
     (inputs (list lrcalc))
     (home-page "https://math.rutgers.edu/~asbuch/lrcalc")
     (synopsis "Python bindings for the Littlewood-Richardson Calculator")
