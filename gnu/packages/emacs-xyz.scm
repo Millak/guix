@@ -49411,7 +49411,7 @@ projects.")
 (define-public emacs-vui
   (package
     (name "emacs-vui")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -49420,7 +49420,7 @@ projects.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xlnp9myjw4p90lir78p0kwl0shfglwm6wb3afd2wk1l3bf8882b"))))
+        (base32 "15hmhryz7fhbnsy1p1fwvb4yp94mhrzml574hl45aflfab42r5jj"))))
     (build-system emacs-build-system)
     (arguments
      (list
