@@ -805,6 +805,42 @@ sequencing data, each a faithful, independent port of the standard reference
 tool, with the performance-critical inner loops accelerated in Cython.")
     (license license:expat)))
 
+(define-public python-pygad
+  (package
+    (name "python-pygad")
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ahmedfgad/GeneticAlgorithmPython")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "079f7g96pvr1jxa6fd5v0x2w0qm05xykwms00rh9hvnh71qj4yrd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_kerasga.py")))
+    (propagated-inputs
+     (list python-cloudpickle
+           python-numpy
+           ;; [optional]
+           ;; python-keras            ;not packaged yet in Guix
+           python-matplotlib
+           python-pytorch
+           python-reportlab
+           #;python-tensorflow))      ;not packaged yet in Guix
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/ahmedfgad/GeneticAlgorithmPython")
+    (synopsis "Genetic algorithm and training machine learning algorithms")
+    (description
+     "PyGAD is a Python library for building the genetic algorithm and
+optimizing machine learning algorithms.  It supports Keras and PyTorch, and it
+can optimize both single-objective and multi-objective problems.")
+    (license license:bsd-3)))
+
 (define-public r-anglemania
   (let ((commit "f27399fb947adfa0de6134493e737658ca591af5")
         (revision "1"))
