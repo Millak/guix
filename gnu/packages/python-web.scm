@@ -2043,7 +2043,6 @@ Client Library for Python.")
 communicate with Microsoft Azure Storage services.")
     (license license:expat)))
 
-
 (define-public python-behave-web-api
   (package
     (name "python-behave-web-api")
@@ -2069,6 +2068,123 @@ communicate with Microsoft Azure Storage services.")
     (description "This package provides testing utility modules for testing
 JSON APIs with Behave.")
     (license license:expat)))
+
+(define-public python-beren
+  (package
+    (name "python-beren")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/teffalump/beren")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19nnvbjx2wypslqklqi0j9fiwypk1a5qwfw1jcabjw03awm1yyrx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; The test tries to open a connection to a remote server.
+     `(#:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-apiron))
+    (home-page "https://github.com/teffalump/beren")
+    (synopsis "REST client for Orthanc DICOM servers")
+    (description
+     "@code{beren} provides a REST client for Orthanc, a DICOM server.")
+    (license license:gpl3+)))
+
+(define-public python-betamax
+  (package
+    (name "python-betamax")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "betamax" version))
+       (sha256
+        (base32
+         "152zil1j4gl1whnldi08zwjr4z2bnlbd061kr3ipjs5wg4b6wcc2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests require network access to http://httpbin.org/get.
+                    (list "not test_creates_new_cassettes"
+                          "test_placeholders_work"
+                          "test_post_start_hook"
+                          "test_pre_stop_hook"
+                          "test_preplayback_hook"
+                          "test_prerecord_hook"
+                          "test_prerecord_ignoring_hook"
+                          "test_records_new_events_with_existing_cassette"
+                          "test_records_new_interaction"
+                          "test_records_new_interactions"
+                          "test_replaces_old_interactions"
+                          "test_replays_response_from_cassette"
+                          "test_requests_with_json_body"
+                          "test_saves_content_as_gzip"
+                          "test_unicode_is_saved_properly")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/sigmavirus24/betamax")
+    (synopsis "Record HTTP interactions with python-requests")
+    (description
+     "Betamax will record your test suite's HTTP interactions and replay them
+during future tests.  It is designed to work with python-requests.")
+    (license license:expat)))
+
+(define-public python-betamax-matchers
+  (package
+    (name "python-betamax-matchers")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sigmavirus24/betamax_matchers")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lyg3r91hwfvavyi5k6sddcla37igigycfv1mx40c32byqwl6pq5"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-betamax python-requests-toolbelt))
+    (home-page "https://github.com/sigmavirus24/betamax_matchers")
+    (synopsis "VCR imitation for python-requests")
+    (description "@code{betamax-matchers} provides a set of Matchers for
+Betamax.")
+    (license license:asl2.0)))
+
+(define-public python-betamax-serializers
+  (package
+    (name "python-betamax-serializers")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/betamax/serializers")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p2l5w3vwvjacs2ndahgcjq55qb53i37p8mz1zh85pjxyszdyw2l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-betamax python-pyyaml))
+    (synopsis "Set of third-party serializers for Betamax")
+    (description
+     "Betamax-Serializers are an experimental set of Serializers for Betamax
+that may possibly end up in the main package.")
+    (home-page "https://gitlab.com/betamax/serializers")
+    (license license:asl2.0)))
 
 (define-public python-blacksheep
   (package
@@ -2183,6 +2299,90 @@ and JSON.
     (synopsis "Whitelist-based HTML-sanitizing tool")
     (description "Bleach is an easy whitelist-based HTML-sanitizing tool.")
     (license license:asl2.0)))
+
+(define-public python-bottle
+  (package
+    (name "python-bottle")
+    (version "0.13.4")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (pypi-uri "bottle" version))
+      (sha256
+        (base32 "0irz5i3h73pqz0ssgp3yk12zx33q7lrlh8p0in9jgchjgqr7hzkq"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://bottlepy.org/")
+    (synopsis "WSGI framework for small web-applications")
+    (description "@code{python-bottle} is a WSGI framework for small web-applications.")
+    (license license:expat)))
+
+(define-public python-branca
+  (package
+    (name "python-branca")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/python-visualization/branca")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vs94nqa7r6iwm8mj3m29hg090gmgz4ywnayxh8qiz9ij8jv96wa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This file requires Selenium.
+     (list #:test-flags #~(list "--ignore" "tests/test_iframe.py"
+                                ;; This test passes but is very slow.
+                                "-k" "not test_color_brewer_extendability")))
+    (propagated-inputs (list python-jinja2))
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/python-visualization/branca")
+    (synopsis "Generate complex HTML+JS pages with Python")
+    (description "This library is a spinoff from @code{folium} that would host
+the non-map-specific features.  It can be used to generate HTML + JS.")
+    (license license:expat)))
+
+(define-public python-btrees
+  (package
+    (name "python-btrees")
+    (version "6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/BTrees")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vcibmd725ddgsl5yzmi8d403day3796h82xlq84w91xbdrbd5d5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-persistent python-zope-interface))
+    (native-inputs (list python-persistent python-transaction
+                         python-zope-testrunner python-setuptools))
+    (home-page "https://github.com/zopefoundation/BTrees")
+    (synopsis "Scalable persistent object containers")
+    (description
+     "This package contains a set of persistent object containers built around a
+modified BTree data structure.  The trees are optimized for use inside ZODB's
+\"optimistic concurrency\" paradigm, and include explicit resolution of
+conflicts detected by that mechanism.")
+    (license license:zpl2.1)))
 
 (define-public python-cloudpathlib
   (package
@@ -8311,31 +8511,6 @@ WebSocket usage in Python programs.")
     (description "Purl is a Python package for handling URLs.")
     (license license:expat)))
 
-(define-public python-beren
-  (package
-    (name "python-beren")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/teffalump/beren")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19nnvbjx2wypslqklqi0j9fiwypk1a5qwfw1jcabjw03awm1yyrx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; The test tries to open a connection to a remote server.
-     `(#:tests? #f))
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-apiron))
-    (home-page "https://github.com/teffalump/beren")
-    (synopsis "REST client for Orthanc DICOM servers")
-    (description
-     "@code{beren} provides a REST client for Orthanc, a DICOM server.")
-    (license license:gpl3+)))
-
 (define-public python-requests
   (package
     (name "python-requests")
@@ -9181,98 +9356,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 @code{httplib2} for use with @code{requests} session objects.")
     (license license:asl2.0)))
 
-(define-public python-betamax
-  (package
-    (name "python-betamax")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "betamax" version))
-       (sha256
-        (base32
-         "152zil1j4gl1whnldi08zwjr4z2bnlbd061kr3ipjs5wg4b6wcc2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; Tests require network access to http://httpbin.org/get.
-                    (list "not test_creates_new_cassettes"
-                          "test_placeholders_work"
-                          "test_post_start_hook"
-                          "test_pre_stop_hook"
-                          "test_preplayback_hook"
-                          "test_prerecord_hook"
-                          "test_prerecord_ignoring_hook"
-                          "test_records_new_events_with_existing_cassette"
-                          "test_records_new_interaction"
-                          "test_records_new_interactions"
-                          "test_replaces_old_interactions"
-                          "test_replays_response_from_cassette"
-                          "test_requests_with_json_body"
-                          "test_saves_content_as_gzip"
-                          "test_unicode_is_saved_properly")
-                    " and not "))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-requests))
-    (home-page "https://github.com/sigmavirus24/betamax")
-    (synopsis "Record HTTP interactions with python-requests")
-    (description
-     "Betamax will record your test suite's HTTP interactions and replay them
-during future tests.  It is designed to work with python-requests.")
-    (license license:expat)))
-
-(define-public python-betamax-matchers
-  (package
-    (name "python-betamax-matchers")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sigmavirus24/betamax_matchers")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lyg3r91hwfvavyi5k6sddcla37igigycfv1mx40c32byqwl6pq5"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-betamax python-requests-toolbelt))
-    (home-page "https://github.com/sigmavirus24/betamax_matchers")
-    (synopsis "VCR imitation for python-requests")
-    (description "@code{betamax-matchers} provides a set of Matchers for
-Betamax.")
-    (license license:asl2.0)))
-
-(define-public python-betamax-serializers
-  (package
-    (name "python-betamax-serializers")
-    (version "0.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/betamax/serializers")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1p2l5w3vwvjacs2ndahgcjq55qb53i37p8mz1zh85pjxyszdyw2l"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))  ; No tests.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-betamax python-pyyaml))
-    (synopsis "Set of third-party serializers for Betamax")
-    (description
-     "Betamax-Serializers are an experimental set of Serializers for Betamax
-that may possibly end up in the main package.")
-    (home-page "https://gitlab.com/betamax/serializers")
-    (license license:asl2.0)))
-
 (define-public python-s3fs
   (package
     (name "python-s3fs")
@@ -10011,23 +10094,6 @@ addon modules.")
      (list python-pytest python-pytest-timeout python-setuptools
            python-wheel))))
 
-(define-public python-bottle
-  (package
-    (name "python-bottle")
-    (version "0.13.4")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "bottle" version))
-      (sha256
-        (base32 "0irz5i3h73pqz0ssgp3yk12zx33q7lrlh8p0in9jgchjgqr7hzkq"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://bottlepy.org/")
-    (synopsis "WSGI framework for small web-applications")
-    (description "@code{python-bottle} is a WSGI framework for small web-applications.")
-    (license license:expat)))
-
 (define-public python-wtforms
   (package
     (name "python-wtforms")
@@ -10614,38 +10680,6 @@ Fastapi.")
     (synopsis "Python Slugify application that handles Unicode")
     (description "This package provides a @command{slufigy} command and
 library to create slugs from unicode strings while keeping it DRY.")
-    (license license:expat)))
-
-(define-public python-branca
-  (package
-    (name "python-branca")
-    (version "0.7.2")
-    (source
-     (origin
-       (method git-fetch) ; no tests in PyPI
-       (uri (git-reference
-             (url "https://github.com/python-visualization/branca")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vs94nqa7r6iwm8mj3m29hg090gmgz4ywnayxh8qiz9ij8jv96wa"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; This file requires Selenium.
-     (list #:test-flags #~(list "--ignore" "tests/test_iframe.py"
-                                ;; This test passes but is very slow.
-                                "-k" "not test_color_brewer_extendability")))
-    (propagated-inputs (list python-jinja2))
-    (native-inputs
-     (list python-numpy
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/python-visualization/branca")
-    (synopsis "Generate complex HTML+JS pages with Python")
-    (description "This library is a spinoff from @code{folium} that would host
-the non-map-specific features.  It can be used to generate HTML + JS.")
     (license license:expat)))
 
 (define-public python-tinycss2
@@ -12208,41 +12242,6 @@ framework, designed to be lean and fast, with few dependencies.")
      "This package contains a generic persistence implementation for Python.
 It forms the core protocol for making objects interact \"transparently\" with
 a database such as the ZODB.")
-    (license license:zpl2.1)))
-
-(define-public python-btrees
-  (package
-    (name "python-btrees")
-    (version "6.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/zopefoundation/BTrees")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vcibmd725ddgsl5yzmi8d403day3796h82xlq84w91xbdrbd5d5"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  (invoke "zope-testrunner" "--test-path=src")
-                  (format #t "test suite not run~%")))))))
-    (propagated-inputs (list python-persistent python-zope-interface))
-    (native-inputs (list python-persistent python-transaction
-                         python-zope-testrunner python-setuptools))
-    (home-page "https://github.com/zopefoundation/BTrees")
-    (synopsis "Scalable persistent object containers")
-    (description
-     "This package contains a set of persistent object containers built around a
-modified BTree data structure.  The trees are optimized for use inside ZODB's
-\"optimistic concurrency\" paradigm, and include explicit resolution of
-conflicts detected by that mechanism.")
     (license license:zpl2.1)))
 
 (define-public python-transaction
