@@ -851,7 +851,15 @@ scatter operations.")
               ;; output in the store, such as `#$output:bin'.
               (substitute* "rocm_smi/CMakeLists.txt"
                 (("../(\\$\\{CMAKE_INSTALL_LIBEXECDIR\\}/\\$\\{ROCM_SMI\\}/rocm_smi.py)" _ suffix)
-                 suffix)))))))
+                 suffix))
+
+              ;; The 'rocm-smi' binary dlopens 'librocm_smi64.so' from Python
+              ;; but gets the file name wrong.  Fix that.
+              (substitute* '("python_smi_tools/rsmiBindings.py.in"
+                             "python_smi_tools/rsmiBindingsInit.py.in")
+                (("rocm_smi_lib_path = .*")
+                 (string-append "rocm_smi_lib_path = '" #$output
+                                "/lib/librocm_smi64.so.@VERSION_MAJOR@'\n"))))))))
     (native-inputs (list pkg-config))
     (inputs (list libdrm python))
     (propagated-inputs (list grep coreutils))
