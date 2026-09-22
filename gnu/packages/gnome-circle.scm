@@ -689,7 +689,7 @@ and a high score table.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "50.11.0")
+    (version "51.0.1")
     (source
      (origin
        (method git-fetch)
@@ -699,7 +699,7 @@ and a high score table.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "062ibm23i5i4m2f8g8knxgcg83dmbj16xa0xxhgb5sjg6sl31vaq"))))
+         "0l1zfqrzrldn8c5flsm9240d1d22li07vznb8bz32p4h9i68x24r"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -739,6 +739,7 @@ and a high score table.")
      (list bash-minimal
            font-0xpropo
            gtk
+           gtksourceview
            libadwaita
            libnotify
            libsecret
@@ -757,6 +758,7 @@ and a high score table.")
            python-natsort
            python-piexif
            python-pillow
+           python-pycairo
            python-pygobject
            python-pyjwt
            python-pypdf
