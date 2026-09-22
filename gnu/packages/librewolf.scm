@@ -623,7 +623,6 @@
                   gdk-pixbuf
                   glib
                   gtk+
-                  gtk+-2
                   hunspell
                   icu4c-78
                   jemalloc
