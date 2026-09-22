@@ -650,43 +650,6 @@ been designed so it can be used as a standalone package for any projects
 needing to use secp256k1 elliptic curve cryptography.")
       (license license:isc))))
 
-(define-public go-github-com-btcsuite-btcd-chaincfg-chainhash
-  (package
-    (name "go-github-com-btcsuite-btcd-chaincfg-chainhash")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/btcsuite/btcd")
-             (commit (go-version->git-ref version
-                                          #:subdir "chaincfg/chainhash"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "007gkn1xwpicdj77kk42ij9sd7r21bcvgiri3yw6xnkdlnsg3bkq"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "chaincfg" "chainhash")
-            (delete-all-but "." "chaincfg")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/btcsuite/btcd/chaincfg/chainhash"
-      #:unpack-path "github.com/btcsuite/btcd"))
-    (home-page "https://github.com/btcsuite/btcd")
-    (synopsis "Bitcoin hash functionality in Go")
-    (description "This package provides Bitcoin hash functionality.")
-    (license license:isc)))
-
 (define-public go-github-com-btcsuite-btcd-btcec-v2
   (package
     (name "go-github-com-btcsuite-btcd-btcec-v2")
@@ -732,6 +695,43 @@ needing to use secp256k1 elliptic curve cryptography.")
     (synopsis "Elliptic curves for Bitcoin")
     (description
      "This package implements elliptic curves needed for Bitcoin.")
+    (license license:isc)))
+
+(define-public go-github-com-btcsuite-btcd-chaincfg-chainhash
+  (package
+    (name "go-github-com-btcsuite-btcd-chaincfg-chainhash")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/btcsuite/btcd")
+             (commit (go-version->git-ref version
+                                          #:subdir "chaincfg/chainhash"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "007gkn1xwpicdj77kk42ij9sd7r21bcvgiri3yw6xnkdlnsg3bkq"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "chaincfg" "chainhash")
+            (delete-all-but "." "chaincfg")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/btcsuite/btcd/chaincfg/chainhash"
+      #:unpack-path "github.com/btcsuite/btcd"))
+    (home-page "https://github.com/btcsuite/btcd")
+    (synopsis "Bitcoin hash functionality in Go")
+    (description "This package provides Bitcoin hash functionality.")
     (license license:isc)))
 
 (define-public go-github-com-btcsuite-btcd-chainhash-v2
