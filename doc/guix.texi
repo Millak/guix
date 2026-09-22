@@ -51769,46 +51769,32 @@ connect pass the @command{-spice port=5930,disable-ticketing=on} flag to
 Spice also allows you to do some nice stuff like share your clipboard with your
 VM@.  To enable that you'll also have to pass the following flags to @command{qemu}:
 
+@macro spice-options-for-qemu
+-device virtio-serial \\
+-chardev spicevmc,name=vdagent,id=vdagent \\
+-device virtserialport,chardev=vdagent,name=com.redhat.spice.0 \\
+-display spice-app,gl=on -device virtio-gpu-gl -vga none
+@end macro
 @example
--device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5
--chardev spicevmc,name=vdagent,id=vdagent
--device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\
-name=com.redhat.spice.0
+@spice-options-for-qemu{}
 @end example
 
 You'll also need to add the @code{(spice-vdagent-service-type)} to your
 system definition (@pxref{Miscellaneous Services, Spice service}).
 
-Here is a working example with QEMU @samp{10.0.8}:
+Here is a working example with QEMU @samp{10.2.1}:
 
 @example
 qemu-system-x86_64 -nic user,model=virtio-net-pci -enable-kvm -m 2048 \
-  -device virtio-blk,drive=myhd \
-  -device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5 \
-  -device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,name=com.redhat.spice.0 \
-  -chardev spicevmc,name=vdagent,id=vdagent \
-  -spice addr=::1,port=5930,disable-ticketing=on \
-  -drive if=none,file=guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2,id=myhd
+-device virtio-blk,drive=myhd \
+-drive if=none,file=guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2,id=myhd \
+@spice-options-for-qemu{}
 @end example
-
-@quotation Note
-Without the @samp{addr=::1} of the @samp{-spice} option, it will listen
-on any IPv4 address (that is @samp{0.0.0.0}) on your host. And one might
-be able to connect to the guix VM from other host on your network.
-@end quotation
 
 @quotation Note
 QEMU will modify the .qcow2 image file while running. Back up the image
 file beforehand if you want to keep it untouched.
 @end quotation
-
-After running the above command, the terminal will stay in a blocking
-state, and to connect to the virtual machine, you can run the following
-command on a different terminal:
-
-@example
-remote-viewer spice://[::1]:5930
-@end example
 
 @node Defining Services
 @section Defining Services
