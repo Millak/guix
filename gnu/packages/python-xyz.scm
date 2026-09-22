@@ -36675,6 +36675,46 @@ colors.")
 files.")
     (license license:expat)))
 
+(define-public python-pretty-midi
+  (package
+    (name "python-pretty-midi")
+    (version "0.2.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/craffel/pretty-midi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ksxf4pvqn0qdhq56zbsjqwl1a47xfnqnmj83i65anfb6j36sj46"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-six
+            (lambda _
+              (substitute* "pretty_midi/pretty_midi.py"
+                ((".*import six.*")
+                 "")
+                (("six\\.string_types")
+                 "str"))
+              (substitute* "setup.py"
+                (("'six.*',")
+                 "")))))))
+    (propagated-inputs
+     (list python-importlib-resources python-mido python-numpy))
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/craffel/pretty-midi")
+    (synopsis "Functions and classes for handling MIDI data conveniently")
+    (description
+     "@code{pretty_midi} contains utility function/classes for handling MIDI
+data, so that it's in a format which is easy to modify and extract information
+from.")
+    (license license:expat)))
+
 (define-public python-musical-scales
   (package
     (name "python-musical-scales")
