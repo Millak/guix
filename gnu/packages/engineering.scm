@@ -4472,7 +4472,7 @@ G-codes to binary and vice versa.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.9.5")
+    (version "2.9.6")
     (source
      (origin
        (method git-fetch)
@@ -4481,7 +4481,7 @@ G-codes to binary and vice versa.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "08kqfr3dfj0y1fzvpq2ri5b09996bn3hgq6ifgjlg0x4ij2byl5m"))
+       (sha256 (base32 "1gi0pqdk9xrjaig3ylpx1030ysyz9jczwg57clxgb76w1744hws9"))
        (patches (search-patches "prusa-slicer-add-cmake-module.patch"
                                 "prusa-slicer-boost-1.87.patch"
                                 "prusa-slicer-boost-1.88.patch"
