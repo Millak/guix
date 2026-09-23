@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2020, 2022, 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;; Copyright © 2024 Runciter <runciter@whispers-vpn.org>
 ;;;
@@ -249,6 +249,12 @@ database {
   (apply mixed-text-file "dicod.conf" (configuration->text config)))
 
 (define (dicod-shepherd-service config)
+  (define dict-port
+    ;; The default 'dict' port.  This is normally specified in /etc/services
+    ;; but provide it here in case /etc/services is missing as is the case in
+    ;; a build environment where we'd run 'shepherd --dry-run'.
+    2628)
+
   (let* ((dicod.conf (dicod-configuration-file config))
          (interfaces (dicod-configuration-interfaces config))
          (home-service? (dicod-configuration-home-service? config))
@@ -278,7 +284,9 @@ database {
                      (map (lambda (interface)
                             (endpoint
                              (addrinfo:addr
-                              (car (getaddrinfo interface "dict")))))
+                              (car (getaddrinfo interface
+                                                #$(number->string dict-port)
+                                                AI_NUMERICSERV)))))
                           '#$interfaces)
                      #:requirements '#$requirement
                      #:user #$(and (not home-service?) "dicod")
