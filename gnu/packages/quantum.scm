@@ -63,6 +63,33 @@
     (sha256
      (base32 "1bd8bsigfq9f00420bxj4snpcp4kr8x54y8kjx62a5q46diq231q"))))
 
+(define-public python-cirq-aqt
+  (package
+    (name "python-cirq-aqt")
+    (version %cirq-version)
+    (source %cirq-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f     ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "cirq-aqt"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-cirq-core
+           python-requests))
+    (home-page %cirq-home-page)
+    (synopsis "Cirq-AQT integration module")
+    (description
+     "This package provides an interface that allows Cirq quantum algorithms
+to run on quantum computers made by @url{https://www.aqt.eu/, Alpine Quantum
+Technologies GmbH}.")
+    (license %cirq-license)))
+
 (define-public python-cirq-core
   (package
     (name "python-cirq-core")
