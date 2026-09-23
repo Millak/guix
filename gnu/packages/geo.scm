@@ -1380,24 +1380,25 @@ require a spatial database such as PostGIS.")
 (define-public python-overpass
   (package
     (name "python-overpass")
-    (version "0.7")
+    (version "0.8.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "overpass" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/mvexel/overpass-api-python-wrapper")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0l2n01j0vslag8cf3sp7jif0d4ql6i99fvfv2mgc3ajws69aqzr6"))))
+        (base32 "03by3g4y3idsyky90cnm47a85n8ysjv1rd5y5p053iyfdir48xlg"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; tests disabled, as they require network
-     (list #:tests? #f))
-    (propagated-inputs (list python-geojson
-                             python-requests
-                             python-shapely))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/mvexel/overpass-api-python-wrapper")
+    (propagated-inputs (list python-osm2geojson python-requests))
+    (native-inputs
+     (list python-deepdiff
+           python-geojson
+           python-pytest
+           python-requests-mock
+           python-setuptools))
+    (home-page "https://codeberg.org/mvexel/overpass-api-python-wrapper")
     (synopsis "Python wrapper for the OpenStreetMap Overpass API")
     (description "This package provides python-overpass, a Python wrapper
 for the @code{OpenStreetMap} Overpass API.")
