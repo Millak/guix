@@ -153,7 +153,6 @@
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-xyz)
-  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)

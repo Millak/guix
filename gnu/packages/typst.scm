@@ -34,7 +34,6 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
-  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages tls))
 
 (define-public prettypst
