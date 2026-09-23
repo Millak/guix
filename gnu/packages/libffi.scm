@@ -96,6 +96,21 @@ conversions for values passed between the two languages.")
         ((#:configure-flags flags #~'())
          #~(append #$flags '("--disable-exec-static-tramp"))))))))
 
+(define-public libffi-next
+  (package
+    (inherit libffi)
+    (name "libffi")
+    (version "3.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/libffi/libffi/releases"
+                              "/download/v" version "/"
+                              name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d0d1i1z835d54xppn4n6h7mbcibzz9wlbjriw1hmsvil7cy58vx"))))))
+
 (define-public python-cffi
   (package
     (name "python-cffi")
