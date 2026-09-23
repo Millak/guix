@@ -1000,7 +1000,8 @@ extensions that it uses."
            (start #~(make-forkexec-constructor
                      (list (string-append #$cups "/sbin/cupsd")
                            "-f" "-c" #$cupsd.conf "-s" #$cups-files.conf)))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action cupsd.conf)))))))
 
 (define (cups-pam-service config)
   (let ((allow-empty-password?
