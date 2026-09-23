@@ -1939,13 +1939,19 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/simdutf/simdutf")
-             (commit (string-append "v" version))))
+              (url "https://github.com/simdutf/simdutf")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0f5ccvqj7pfa69m9y1kxp2v1lybx6x8i9pykdqfkr7dydqbhrhx6"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (arguments (list #:configure-flags
+                     #~(list "-DBUILD_SHARED_LIBS=ON"
+                             "-DSIMDUTF_ATOMIC_REF=ON"
+                             "-DSIMDUTF_ATOMIC_BASE64_TESTS=ON"
+                             ;; Using the C++20 standard is required to get
+                             ;; atomic ref features used in latest Node.
+                             "-DSIMDUTF_CXX_STANDARD=20")))
     (synopsis "SIMD Unicode validation and transcoding")
     (description
      "simdutf is a C++ library providing Unicode routines (UTF8, UTF16,
