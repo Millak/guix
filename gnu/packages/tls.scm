@@ -1098,7 +1098,7 @@ number generator")
     (arguments
      (list #:parallel-tests? #f
            #:configure-flags
-           #~(list "-DCMAKE_C_FLAGS=-Wno-error=calloc-transposed-args"
+           #~(list "-DMBEDTLS_FATAL_WARNINGS=OFF"
                    "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
                    "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
            #:phases
