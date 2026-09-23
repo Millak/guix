@@ -3558,7 +3558,13 @@ patch associated with a particular revision of an RCS file.")
        #:configure-flags
          #~(list
              "--with-external-zlib"
-             "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+             "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+             #$@(if (%current-target-system)
+                    '("cvs_cv_func_printf_ptr=yes"
+                      (string-append "EDITOR="
+                                     (search-input-file %build-inputs
+                                                        "bin/nano")))
+                    '()))
        #:phases
          #~(modify-phases %standard-phases
            (add-after 'unpack 'fix-include
