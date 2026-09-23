@@ -135,7 +135,17 @@ is in the public domain.")
                      (string-append flag
                                     ;; needed by fossil
                                     " -DSQLITE_ENABLE_FTS4"
-                                    " -DSQLITE_ENABLE_FTS5")
+                                    " -DSQLITE_ENABLE_FTS5"
+                                    ;; Needed by node (see
+                                    ;; deps/sqlite/sqlite.gyp).
+                                    " -DSQLITE_ENABLE_FTS3_PARENTHESIS"
+                                    " -DSQLITE_ENABLE_GEOPOLY"
+                                    " -DSQLITE_ENABLE_MATH_FUNCTIONS"
+                                    " -DSQLITE_ENABLE_PERCENTILE"
+                                    " -DSQLITE_ENABLE_PREUPDATE_HOOK"
+                                    " -DSQLITE_ENABLE_RBU"
+                                    " -DSQLITE_ENABLE_RTREE"
+                                    " -DSQLITE_ENABLE_SESSION")
                      flag))
                ;; sqlite's configure script does not like
                ;;    --enable-fast-install
