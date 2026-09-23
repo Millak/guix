@@ -685,7 +685,28 @@ devices.")
               "PREFIX=")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'configure #$set-node-path-phase))))
+          (replace 'configure #$set-node-path-phase)
+          (add-after 'install 'install-pkg-config-file
+            (lambda _
+              ;; This is an issue upstream (in llhttp) when using the
+              ;; Make-based build system (see:
+              ;; <https://github.com/nodejs/llhttp/issues/883>).
+              (let ((dest (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p dest)
+                (with-directory-excursion dest
+                  (call-with-output-file "libllhttp.pc"
+                    (lambda (port)
+                      (format port "\
+prefix=~a
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libllhttp
+Description: Node.js llhttp Library
+Version: ~a
+Libs: -L${libdir} -lllhttp
+Cflags: -I${includedir}~%" #$output #$version))))))))))
     (native-inputs
      (list esbuild
            quickjs
