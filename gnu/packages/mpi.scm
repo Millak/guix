@@ -79,7 +79,7 @@
 (define-public hwloc
   (package
     (name "hwloc")
-    (version "2.14.0")
+    (version "2.15.0")
     (source
      (origin
        (method git-fetch)
@@ -88,7 +88,7 @@
               (commit (string-append "hwloc-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09j3d997qqpmwp10l1p4d34iq5s2hwxzbsmzdgnw2lcy8av7rf4m"))))
+        (base32 "0zcxfpvcbq0awa39hl982lc91mij9pr6yfsz905hbpr9ln6d7591"))))
     (build-system gnu-build-system)
     (outputs '("out"           ;'lstopo' & co., depends on Cairo, libx11, etc.
                "lib"           ;small closure
