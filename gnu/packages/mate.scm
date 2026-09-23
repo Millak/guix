@@ -111,6 +111,48 @@
 MATE applications.")
     (license license:gpl3+)))
 
+(define-public libegg-for-mate
+  ; Upstream never published a release tag for this package,
+  ; we use the latest stable commit on the repository.
+  (let ((commit "4074560e3642a53ace07b31baaf3f04c060dcd0b")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "libegg")
+       (version (git-version "0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/mate-desktop/mate-submodules")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "05qhga1k9mglkaa5ps6s9igb09avk5v4f42ja6yq61clrbagqlxy"))))
+       (build-system gnu-build-system)
+       (arguments
+        (list
+         #:tests? #f))  ;no test suite
+       (native-inputs
+        (list autoconf
+              autoconf-archive
+              automake
+              libtool
+              mate-common
+              pkg-config))
+       (inputs
+        (list glib
+              gtk+
+              libice
+              libsm))
+       (home-page "https://github.com/mate-desktop/mate-submodules")
+       (synopsis "Convenience library from MATE's mate-submodules")
+       (description
+        "This package provides the @code{libegg} convenience library from
+MATE's @file{mate-submodules} repository, used by MATE packages for X session
+management and tree view drag-and-drop.")
+       (license license:lgpl2.0+)))))
+
 (define-public mate-power-manager
   (package
     (name "mate-power-manager")
