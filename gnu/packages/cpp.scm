@@ -5235,8 +5235,8 @@ system to prevent more bugs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ada-url/ada")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ada-url/ada")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1hlhga3dz4hdaj0n8jdz6cnw3skg9c4wm9ar9chfdnwf88nyiy2f"))))
@@ -5244,7 +5244,10 @@ system to prevent more bugs.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-DADA_TESTING=ON"
+      #~(list (string-append "-DADA_TESTING="
+                             #$(if (%current-target-system)
+                                   "OFF"
+                                   "ON"))
               "-DCPM_LOCAL_PACKAGES_ONLY=ON")
       #:phases
       #~(modify-phases %standard-phases
