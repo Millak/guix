@@ -1309,15 +1309,11 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2021 passed, 400 skipped, 25 xfailed, 2 xpassed, 174 warnings
+      ;; tests: 2022 passed, 400 skipped, 25 xfailed, 2 xpassed, 167 warnings
       #:test-flags
       ;; Disable tests that require internet access.
       #~(list "-m" "not web"
-              "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; AttributeError: Can only use .dt accessor with datetimelike
-              ;; values.
-              (string-append "--deselect=geopandas/io/tests/test_file.py"
-                             "::test_read_file_datetime_mixed_offsets"))
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
