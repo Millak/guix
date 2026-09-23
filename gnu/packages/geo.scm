@@ -1055,37 +1055,44 @@ magnetic field that is updated every 5 years.")
 (define-public python-pyogrio
   (package
     (name "python-pyogrio")
-    (version "0.10.0")
+    (version "0.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyogrio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/geopandas/pyogrio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g5j3a2n5hdnmi45261y84rqk1bikcvrdblgh9wfhk9jd2siq1gc"))))
+        (base32 "16y27sl01dksg32gfc9kq05kjd54l9q3qznigckiscn28kbyq4xw"))))
     (properties
      `((updater-extra-inputs . ("gdal"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 308 passed, 70 skipped, 7 deselected, 1 warning
       #:test-flags
-      ;; These tests need Internet access.
-      '(list "-k" (string-append "not test_url"
-                                 " and not test_url_with_zip"
-                                 " and not test_uri_s3"))
+      #~(list "--pyargs" "pyogrio"
+              ;; These tests need Internet access.
+              (string-append "--deselect=tests/test_core.py"
+                             "::test_list_drivers_details_help_topic_url")
+              "--deselect=tests/test_path.py::test_url"
+              "--deselect=tests/test_path.py::test_url_with_zip"
+              "--deselect=tests/test_path.py::test_uri_s3")
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'build-extensions
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "pyogrio"))))))
     (propagated-inputs (list python-certifi python-numpy python-packaging))
     (inputs (list gdal))
-    (native-inputs (list python-cython
-                         python-pytest
-                         python-setuptools
-                         python-tomli
-                         python-versioneer
-                         python-wheel))
-    (home-page "https://pypi.org/project/pyogrio/")
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-tomli
+           python-versioneer))
+    (home-page "https://pyogrio.readthedocs.io/en/latest/")
     (synopsis "Vectorized spatial vector file format I/O using GDAL/OGR")
     (description "Pyogrio provides a GeoPandas-oriented API to OGR vector data
 sources, such as ESRI Shapefile, GeoPackage, and GeoJSON.  Vector data sources
