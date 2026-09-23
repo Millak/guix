@@ -7,6 +7,7 @@
 ;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2367,6 +2368,9 @@ types.")
     (arguments
      (list
       #:go go-1.26
+      #:modules '((guix build go-build-system)
+                  (guix build utils)
+                  (ice-9 match))
       #:install-source? #f
       #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"
@@ -2376,112 +2380,121 @@ types.")
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
-          (add-after 'install 'install-bashcompletion
-            (lambda _
-              (let ((completiondir (string-append #$output
-                                                  "/etc/bash_completion.d")))
-                (mkdir-p completiondir)
-                (with-output-to-file (string-append completiondir "/ipfs")
-                  (lambda _
-                    (invoke #$(if (%current-target-system)
-                                  "ipfs"
-                                  #~(string-append #$output "/bin/ipfs"))
-                            "commands" "completion" "bash")))))))))
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                           (if #$(%current-target-system)
+                               (search-input-file native-inputs "bin/ipfs")
+                               (in-vicinity #$output "bin/ipfs"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "commands" "completion" shell))))))
+                '(("bash" . "etc/bash_completion.d/ipfs")
+                  ("fish" . "share/fish/vendor_completions.d/ipfs.fish")
+                  ("zsh" . "share/zsh/site-functions/_ipfs"))))))))
     (native-inputs
-     (list go-contrib-go-opencensus-io-exporter-prometheus
-           go-github-com-anmitsu-go-shlex
-           go-github-com-blang-semver-v4
-           go-github-com-caddyserver-certmagic
-           go-github-com-cenkalti-backoff-v4
-           go-github-com-ceramicnetwork-go-dag-jose
-           go-github-com-cheggaaa-pb-v3
-           go-github-com-cockroachdb-pebble-v2
-           go-github-com-coreos-go-systemd-v22
-           go-github-com-dustin-go-humanize
-           go-github-com-elgris-jsondiff
-           go-github-com-facebookgo-atomicfile
-           go-github-com-fsnotify-fsnotify
-           go-github-com-google-uuid
-           go-github-com-hanwen-go-fuse-v2
-           go-github-com-hashicorp-go-version
-           go-github-com-ipfs-shipyard-nopfs
-           go-github-com-ipfs-shipyard-nopfs-ipfs
-           go-github-com-ipfs-boxo
-           go-github-com-ipfs-go-block-format
-           go-github-com-ipfs-go-cid
-           go-github-com-ipfs-go-cidutil
-           go-github-com-ipfs-go-datastore
-           go-github-com-ipfs-go-detect-race
-           go-github-com-ipfs-go-ds-badger
-           go-github-com-ipfs-go-ds-flatfs
-           go-github-com-ipfs-go-ds-leveldb
-           go-github-com-ipfs-go-ds-measure
-           go-github-com-ipfs-go-ds-pebble
-           go-github-com-ipfs-go-fs-lock
-           go-github-com-ipfs-go-ipfs-cmds
-           go-github-com-ipfs-go-ipld-cbor
-           go-github-com-ipfs-go-ipld-format
-           go-github-com-ipfs-go-ipld-git
-           go-github-com-ipfs-go-ipld-legacy
-           go-github-com-ipfs-go-log-v2
-           go-github-com-ipfs-go-metrics-interface
-           go-github-com-ipfs-go-metrics-prometheus
-           go-github-com-ipfs-go-test
-           go-github-com-ipfs-go-unixfsnode
-           go-github-com-ipld-go-car-v2
-           go-github-com-ipld-go-codec-dagpb
-           go-github-com-ipld-go-ipld-prime
-           go-github-com-ipshipyard-p2p-forge
-           go-github-com-jbenet-go-temp-err-catcher
-           go-github-com-julienschmidt-httprouter
-           go-github-com-libp2p-go-doh-resolver
-           go-github-com-libp2p-go-libp2p
-           go-github-com-libp2p-go-libp2p-http
-           go-github-com-libp2p-go-libp2p-kad-dht
-           go-github-com-libp2p-go-libp2p-kbucket
-           go-github-com-libp2p-go-libp2p-pubsub
-           go-github-com-libp2p-go-libp2p-pubsub-router
-           go-github-com-libp2p-go-libp2p-record
-           go-github-com-libp2p-go-libp2p-routing-helpers
-           go-github-com-libp2p-go-libp2p-testing
-           go-github-com-libp2p-go-socket-activation
-           go-github-com-mattn-go-isatty
-           go-github-com-miekg-dns
-           go-github-com-multiformats-go-multiaddr
-           go-github-com-multiformats-go-multiaddr-dns
-           go-github-com-multiformats-go-multibase
-           go-github-com-multiformats-go-multicodec
-           go-github-com-multiformats-go-multihash
-           go-github-com-opentracing-opentracing-go
-           go-github-com-pbnjay-memory
-           go-github-com-probe-lab-go-libdht
-           go-github-com-prometheus-client-golang
-           go-github-com-stretchr-testify
-           go-github-com-syndtr-goleveldb
-           go-github-com-tidwall-gjson
-           go-github-com-tidwall-sjson
-           go-github-com-whyrusleeping-go-sysinfo
-           go-github-com-whyrusleeping-multiaddr-filter
-           go-go-opencensus-io
-           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
-           go-go-opentelemetry-io-contrib-propagators-autoprop
-           go-go-opentelemetry-io-otel
-           go-go-opentelemetry-io-otel-exporters-prometheus
-           go-go-opentelemetry-io-otel-sdk
-           go-go-opentelemetry-io-otel-sdk-metric
-           go-go-opentelemetry-io-otel-trace
-           go-go-uber-org-dig
-           go-go-uber-org-fx
-           go-go-uber-org-zap
-           go-golang-org-x-crypto
-           go-golang-org-x-exp
-           go-golang-org-x-mod
-           go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-golang-org-x-term
-           go-google-golang-org-protobuf
-           python-minimal-wrapper
-           zsh))
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list go-contrib-go-opencensus-io-exporter-prometheus
+             go-github-com-anmitsu-go-shlex
+             go-github-com-blang-semver-v4
+             go-github-com-caddyserver-certmagic
+             go-github-com-cenkalti-backoff-v4
+             go-github-com-ceramicnetwork-go-dag-jose
+             go-github-com-cheggaaa-pb-v3
+             go-github-com-cockroachdb-pebble-v2
+             go-github-com-coreos-go-systemd-v22
+             go-github-com-dustin-go-humanize
+             go-github-com-elgris-jsondiff
+             go-github-com-facebookgo-atomicfile
+             go-github-com-fsnotify-fsnotify
+             go-github-com-google-uuid
+             go-github-com-hanwen-go-fuse-v2
+             go-github-com-hashicorp-go-version
+             go-github-com-ipfs-shipyard-nopfs
+             go-github-com-ipfs-shipyard-nopfs-ipfs
+             go-github-com-ipfs-boxo
+             go-github-com-ipfs-go-block-format
+             go-github-com-ipfs-go-cid
+             go-github-com-ipfs-go-cidutil
+             go-github-com-ipfs-go-datastore
+             go-github-com-ipfs-go-detect-race
+             go-github-com-ipfs-go-ds-badger
+             go-github-com-ipfs-go-ds-flatfs
+             go-github-com-ipfs-go-ds-leveldb
+             go-github-com-ipfs-go-ds-measure
+             go-github-com-ipfs-go-ds-pebble
+             go-github-com-ipfs-go-fs-lock
+             go-github-com-ipfs-go-ipfs-cmds
+             go-github-com-ipfs-go-ipld-cbor
+             go-github-com-ipfs-go-ipld-format
+             go-github-com-ipfs-go-ipld-git
+             go-github-com-ipfs-go-ipld-legacy
+             go-github-com-ipfs-go-log-v2
+             go-github-com-ipfs-go-metrics-interface
+             go-github-com-ipfs-go-metrics-prometheus
+             go-github-com-ipfs-go-test
+             go-github-com-ipfs-go-unixfsnode
+             go-github-com-ipld-go-car-v2
+             go-github-com-ipld-go-codec-dagpb
+             go-github-com-ipld-go-ipld-prime
+             go-github-com-ipshipyard-p2p-forge
+             go-github-com-jbenet-go-temp-err-catcher
+             go-github-com-julienschmidt-httprouter
+             go-github-com-libp2p-go-doh-resolver
+             go-github-com-libp2p-go-libp2p
+             go-github-com-libp2p-go-libp2p-http
+             go-github-com-libp2p-go-libp2p-kad-dht
+             go-github-com-libp2p-go-libp2p-kbucket
+             go-github-com-libp2p-go-libp2p-pubsub
+             go-github-com-libp2p-go-libp2p-pubsub-router
+             go-github-com-libp2p-go-libp2p-record
+             go-github-com-libp2p-go-libp2p-routing-helpers
+             go-github-com-libp2p-go-libp2p-testing
+             go-github-com-libp2p-go-socket-activation
+             go-github-com-mattn-go-isatty
+             go-github-com-miekg-dns
+             go-github-com-multiformats-go-multiaddr
+             go-github-com-multiformats-go-multiaddr-dns
+             go-github-com-multiformats-go-multibase
+             go-github-com-multiformats-go-multicodec
+             go-github-com-multiformats-go-multihash
+             go-github-com-opentracing-opentracing-go
+             go-github-com-pbnjay-memory
+             go-github-com-probe-lab-go-libdht
+             go-github-com-prometheus-client-golang
+             go-github-com-stretchr-testify
+             go-github-com-syndtr-goleveldb
+             go-github-com-tidwall-gjson
+             go-github-com-tidwall-sjson
+             go-github-com-whyrusleeping-go-sysinfo
+             go-github-com-whyrusleeping-multiaddr-filter
+             go-go-opencensus-io
+             go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+             go-go-opentelemetry-io-contrib-propagators-autoprop
+             go-go-opentelemetry-io-otel
+             go-go-opentelemetry-io-otel-exporters-prometheus
+             go-go-opentelemetry-io-otel-sdk
+             go-go-opentelemetry-io-otel-sdk-metric
+             go-go-opentelemetry-io-otel-trace
+             go-go-uber-org-dig
+             go-go-uber-org-fx
+             go-go-uber-org-zap
+             go-golang-org-x-crypto
+             go-golang-org-x-exp
+             go-golang-org-x-mod
+             go-golang-org-x-sync
+             go-golang-org-x-sys
+             go-golang-org-x-term
+             go-google-golang-org-protobuf
+             python-minimal-wrapper
+             zsh)))
     (home-page "https://ipfs.tech")
     (synopsis "Go implementation of IPFS, a peer-to-peer hypermedia protocol")
     (description "IPFS is a global, versioned, peer-to-peer file system.  It
