@@ -245,16 +245,16 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-wot-tools
   (package
     (name "sequoia-wot-tools")
-    (version "0.15.2")
+    (version "0.15.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://gitlab.com/sequoia-pgp/sequoia-wot.git/")
-              (commit (string-append "sequoia-wot/v" version))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18v713n36sq5pvd1pbs34v7dly1bi614kwra09qxpsxk0ffp225z"))))
+        (base32 "12jf356rsaw01w371667dzd6rizl3p4qy2isv4wvdjs00yvjfkcw"))))
     (build-system cargo-build-system)
     (arguments
      (list
