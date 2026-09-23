@@ -1019,6 +1019,41 @@ The goal of the ObsPy project is to facilitate rapid application development
 for seismology.")
     (license license:lgpl3)))
 
+(define-public python-osm2geojson
+  (package
+    (name "python-osm2geojson")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aspectumapp/osm2geojson")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kxam3701hc26ij9lzl34dk0jqvvzwplqfj4x4acqv02hw4r25ql"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-script-load
+            ;; XXX: It's fixed the same way in upcoming release.
+            (lambda _
+                (substitute* "osm2geojson/__main__.py"
+                  (("exit\\(main\\(sys.argv\\[1:\\]\\)\\)")
+                   "if __name__ == '__main__':
+    exit(main(sys.argv[1:]))")))))))
+    (propagated-inputs (list python-requests python-shapely))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/aspectumapp/osm2geojson")
+    (synopsis "Parse OSM and Overpass JSON")
+    (description
+     "This package implements functions to convert OpenStreetMap and Overpass
+API data (JSON or XML) to GeoJSON or @url{https://shapely.readthedocs.io/,
+Shapely} geometries.")
+    (license license:expat)))
+
 (define-public python-ppigrf
   (package
     (name "python-ppigrf")
