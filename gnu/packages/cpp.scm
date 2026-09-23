@@ -4957,7 +4957,7 @@ meta data function.")
              (substitute* (find-files "." "\\.cpp$")
                (("\"catch\\.hpp\"") "<catch.hpp>"))))))
       (build-system cmake-build-system)
-      (native-inputs (list catch-framework))
+      (inputs (list catch-framework))   ;in inputs for cross-compilation
       (arguments
        (list
         #:phases
