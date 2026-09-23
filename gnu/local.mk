@@ -2060,6 +2060,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/nlopt_CMake-Assume-working-c-compiler-597.patch \
   %D%/packages/patches/nnpack-system-libraries.patch		\
   %D%/packages/patches/noctalia-shell-system-libraries.patch	\
+  %D%/packages/patches/node-latest-i686.patch                   \
+  %D%/packages/patches/node-latest-lief-1.0.0.patch             \
   %D%/packages/patches/nsis-env-passthru.patch			\
   %D%/packages/patches/nss-getcwd-nonnull.patch			\
   %D%/packages/patches/nss-increase-test-timeout.patch		\

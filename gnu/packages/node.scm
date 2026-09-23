@@ -704,6 +704,89 @@ devices.")
                    . ,(format #f "https://nodejs.org/dist/latest-v~a.x/"
                               %current-node-lts-major-version))))))
 
+(define-public node-latest
+  (package
+    (inherit node-lts)
+    (version "26.10.0")
+    (source (origin
+              (inherit (package-source node-lts))
+              (uri (string-append "https://nodejs.org/dist/v" version
+                                  "/node-v" version ".tar.xz"))
+              (sha256
+               (base32
+                "1i90pbq6cgh3430y9rjkqpzxapsxpvh5fynx7fj1aznb6dnm8fkv"))
+              (patches (search-patches "node-latest-i686.patch"
+                                       "node-latest-lief-1.0.0.patch"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags ''())
+        #~(cons* "--shared-ffi"
+                 "--shared-lief"
+                 #$@(if (this-package-input "temporal-capi")
+                        #~("--shared-temporal_capi")
+                        #~("--v8-disable-temporal-support"))
+                 #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-bootstrap-host-rpath
+              (lambda* (#:key native-inputs #:allow-other-keys)
+                (when native-inputs
+                  (let* ((safe-lookup (lambda (label)
+                                        (or (assoc-ref native-inputs label)
+                                            (error "could not find native input"
+                                                   label))))
+                         (host-inputs (map safe-lookup
+                                           '("brotli"
+                                             "c-ares"
+                                             "cpp-ada-url-parser"
+                                             "googletest"
+                                             "hdrhistogram-c"
+                                             "icu4c"
+                                             "libffi"
+                                             "libuv"
+                                             "lief"
+                                             "llhttpish"
+                                             "merve"
+                                             "nbytes"
+                                             "nghttp2"
+                                             "nghttp3"
+                                             "ngtcp2"
+                                             "openssl"
+                                             "simdjson"
+                                             "simdutf"
+                                             "sqlite"
+                                             "temporal-capi"
+                                             "uvwasi"
+                                             "zlib"
+                                             "zstd")))
+                         (host-binaries '("torque"
+                                          "bytecode_builtins_list_generator"
+                                          "gen-regexp-special-case"
+                                          "node_mksnapshot"
+                                          "mksnapshot"
+                                          "node_js2c")))
+                    (substitute* '("node.gyp" "tools/v8_gypfiles/v8.gyp")
+                      (((string-append "'target_name': '("
+                                       (string-join host-binaries "|")
+                                       ")',")
+                        target)
+                       (format #f "~a 'ldflags': ['-Wl,-rpath=~{~a/lib~^:~}'],"
+                               target host-inputs)))))))))))
+    (native-inputs
+     (append (if (supported-package? temporal-capi)
+                 (list `("temporal-capi" ,temporal-capi))
+                 '())
+             (modify-inputs native-inputs
+               (append libffi-next lief))))
+    (inputs
+     (append (if (supported-package? temporal-capi)
+                 (list `("temporal-capi" ,temporal-capi))
+                 '())
+             (modify-inputs inputs
+               (append libffi-next lief))))
+    (properties (alist-delete 'release-monitoring-url
+                              (package-properties node-lts)))))
+
 (define-public node node-lts)
 
 (define-deprecated-package libnode node-lts)
