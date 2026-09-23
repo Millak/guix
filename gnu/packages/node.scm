@@ -375,6 +375,7 @@ parser definition into a C output.")
               ;; Needed for correct snapshot checksums
               "--v8-enable-snapshot-compression"
               "--with-intl=system-icu")
+      #:make-flags #~(list "V=1")       ;to see build commands
       #:test-target "test-ci-js"
       #:modules `(,@%default-gnu-modules
                   (srfi srfi-1)
