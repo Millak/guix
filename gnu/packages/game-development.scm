@@ -1714,7 +1714,7 @@ etc.")
 (define-public libresprite
   (package
     (name "libresprite")
-    (version "1.1")
+    (version "1.2")
     ;; TODO: Unbundle third party software.
     ;; - duktape is bundled inside the project but it's hard to unbundle:
     ;;   there are many differences from a version to the next and it is not
@@ -1728,17 +1728,47 @@ etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i1g730khnb8xj56c07x0b0ni6sx4n8vp3w13yazqx9anj23y856"))))
+                "0vvrvqxrb1i306jj3vqi4mc4ps0bfnk8nsly18x1x1bxrq1yny4d"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DWITH_WEBP_SUPPORT=1"
                    "-DWITH_DESKTOP_INTEGRATION=1")
            ;; Tests are unmaintained
-           #:tests? #f))
+           #:tests? #f
+           #:modules `((ice-9 match)
+                       (guix build cmake-build-system)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'replace-bundled-fonts
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (with-directory-excursion
+                       (string-append (assoc-ref outputs "out")
+                                      "/share/libresprite/data/fonts")
+                     (for-each
+                      (match-lambda
+                        ((font replacement)
+                         (delete-file font)
+                         (symlink
+                          (search-input-file
+                           inputs
+                           (string-append
+                            "share/fonts/opentype/" replacement))
+                          font)))
+                      ;; NotoSans-Regular needs to be 'full' for Hindi support.
+                      '(("font.ttf" "NotoSans-Regular.otf")
+                        ("font-ar.ttf" "NotoKufiArabic-Regular.otf")
+                        ("font-zh.ttf" "SourceHanSansCN-Regular.otf")
+                        ("font-jp.ttf" "SourceHanSansJP-Regular.otf")
+                        ("font-kr.ttf" "SourceHanSansKR-Regular.otf")))))))))
     (native-inputs (list pkg-config))
     (inputs
      (list curl
+           font-google-noto
+           (list font-adobe-source-han-sans "cn")
+           (list font-adobe-source-han-sans "jp")
+           (list font-adobe-source-han-sans "kr")
            freetype
            giflib
            googletest
@@ -1748,6 +1778,7 @@ etc.")
            libwebp
            libx11
            libxext
+           libxi
            libxxf86dga
            libxxf86vm
            lua  ;optional
