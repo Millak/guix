@@ -820,7 +820,7 @@ OpenGeoSys")
 (define-public ogs-serial
   (package
     (name "ogs-serial")
-    (version "6.5.8")
+    (version "6.5.9")
     (source
      (origin
        (method git-fetch)
@@ -829,7 +829,7 @@ OpenGeoSys")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "037il6jw2j1g7bvrwvbp20yf0cnz7c7f3wmszxfv5ay7l54sffqg"))))
+        (base32 "157abg8fw7kgv7banvsl74q8wa9a7xmcqrndiklmzjaqhg8wk8nh"))))
     (build-system cmake-build-system)
     (arguments
      (list
