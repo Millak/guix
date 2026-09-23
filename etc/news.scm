@@ -93,6 +93,7 @@ https://www.kernel.org/category/releases.html
 
 A última versão suportada é a 7.1.13.  Por favor cogite mudar para a versão
 7.2 do Linux-libre, ou para um lançamento de suporte estandido como o 6.18.")))
+
  (entry (commit "e27f3d9d92115a1805b306f7555acfac36be660a")
         (title
          (en "GNOME 49 is now available")
@@ -306,11 +307,16 @@ contém plugins dependentes do OpenCV.")))
 
  (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
         (title
-         (en "New @option{--spice} flag for emitting Spice configured VMs"))
+         (en "New @option{--spice} flag for emitting Spice configured VMs")
+         (pt "Nova opção @option{--spice} para a emissão de máquinas virtuais com configuração Spice"))
         (body
          (en "The @command{guix system vm} command now accepts the
 @option{--spice} flag to set up a virtual machine that communicates with the
-host enabling clipboard sharing and automatic screen resolution adjustments.")))
+host enabling clipboard sharing and automatic screen resolution adjustments.")
+         (pt "O comando @command{guix system vm} agora aceita a opção
+@option{--spice} para estabelecer uma máquina virtual que se comunica com o
+hospedeiro habilitando compartilhamento de clipboard e ajustes automáticos de
+resolução.")))
 
  (entry (commit "7a9d01dce758b0916bf8b0ac8a972f849f4bf31d")
         (title
