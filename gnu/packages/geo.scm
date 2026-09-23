@@ -795,7 +795,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public iphreeqc
   (package
     (name "iphreeqc")
-    (version "3.5.0-3")
+    (version "3.5.0-4")
     (source
      (origin
        (method git-fetch)
@@ -804,7 +804,7 @@ fully fledged Spatial SQL capabilities.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12wiqyzpzx89k9c7q07w4ypnppvi6s88k6jjsnlnvaxfafyvrbw3"))))
+        (base32 "16yrq7sd8065nz477kmgpcwwry8dqcshbkn5b77hqv56yqgd00h2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
