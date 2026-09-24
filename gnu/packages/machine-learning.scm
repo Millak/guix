@@ -213,7 +213,7 @@ representations and sentence classification.")
 (define-public ggml
   (package
     (name "ggml")
-    (version "0.24.0")                  ;sync with llama.cpp
+    (version "0.25.2")                  ;sync with llama.cpp
     (source
      (origin
        (method git-fetch)
@@ -222,7 +222,7 @@ representations and sentence classification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jjxpmnbc7kfq00f5z8j49lqhdj7aklsvj7c5a0wr845fhd388n1"))))
+        (base32 "0ww5wk2d6ldy2l5fxh4nr259mnwdpypp316h383as46cbvywyh60"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -981,10 +981,10 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
   ;; "nightly-tag.txt" pointing at the "b<N>"-tagged nightly build they
   ;; correspond to, which is where the prebuilt web UI tarball (below)
   ;; actually lives.
-  (let ((ui-build "10964"))            ;from that tag's nightly-tag.txt
+  (let ((ui-build "11146"))            ;from that tag's nightly-tag.txt
     (package
       (name "llama-cpp")
-      (version "0.4.1")
+      (version "0.5.0")
       (source
        (origin
          (method git-fetch)
@@ -993,7 +993,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1csl0f5gp87kbd3x0wifkpmpih545dx9ramzbaqk6cs92zawmvxa"))))
+          (base32 "0q13scf0ygxrj4zjwcdcpi1j2ncxzqzcbmfcg068vw4c9avrbm1j"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -1034,7 +1034,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                         ui-build ui-build))
                (file-name "ui.tar.gz")
                (sha256
-                (base32 "1lxa5r0gk6qwz8aiqagsjwalad0h4mq1rjichbvkk7d7c24kcjkk")))))
+                (base32 "1wm69rrlhr505q1ww0vs01y9y8lai8pj3lnx8yq80y873lxyfaw3")))))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggml-org/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
