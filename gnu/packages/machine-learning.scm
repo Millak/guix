@@ -749,7 +749,7 @@ classification.")
 (define-public python-gpy
   (package
     (name "python-gpy")
-    (version "1.14.1")
+    (version "1.14.2")
     (source
      (origin
        (method git-fetch)
@@ -758,7 +758,7 @@ classification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16n03rljpqrhlfapcs7nqca1yrw69484fjp84skg5628jp3fwxfr"))))
+        (base32 "1l0yxidhsf9s87fcc7v1l38dywq9ps6nr1d84r1nmblp9dgmibr2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
