@@ -2699,52 +2699,6 @@ performance computing environments.")
 data analysis.")
     (license license:bsd-3)))
 
-;; 1.7 intorduced breaking changes in API.
-(define-public python-scikit-learn-1.6
-  (package
-    (inherit python-scikit-learn)
-    (name "python-scikit-learn")
-    (version "1.6.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/scikit-learn/scikit-learn")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08z1b58n31grfvl42wi6rdwrfhrdhnzkkxhg19iag3zkvkcvxqjl"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:test-flags flags)
-        #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-                "-m" "not network"
-                "-k" (string-join
-                      (list "not test_ard_accuracy_on_easy_problem"
-                            "test_check_inplace_ensure_writeable"
-                            "test_check_is_fitted_with_attributes"
-                            "test_covariance"
-                            "test_estimators"
-                            "test_newton_cholesky_fallback_to_lbfgs[42]"
-                            "test_logistic_regression_path_convergence_fail"
-                            "test_linalg_warning_with_newton_solver[42]"
-                            "test_ledoit_wolf"
-                            "test_mcd"
-                            "test_mcd_issue1127"
-                            "test_mcd_support_covariance_is_zero"
-                            "test_oas"
-                            "test_shrunk_covariance"
-                            "test_toy_ard_object")
-                      " and not ")))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'remove-broken-tests
-              (lambda _
-                ;; ImportError: cannot import name 'ColMajor' from
-                ;; 'sklearn.utils._cython_blas'
-                ;; (<...>/_cython_blas.cpython-311-x86_64-linux-gnu.so)
-                (delete-file-recursively "sklearn/utils/tests/test_cython_blas.py")))))))))
-
 (define-public python-mord
   (package
     (name "python-mord")
