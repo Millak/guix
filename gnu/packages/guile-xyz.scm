@@ -6960,7 +6960,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
@@ -6968,14 +6968,15 @@ over, or update a value in arbitrary data structures.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1szjwha8rin65mdm0dviha4pybiij89pq1wfjmrir1js4w5mk1hr"))))
+         "1rmsffcscmi6zpm0ha3qmpqvvkar0zppggiwmfg4lks1m9wgblqh"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
     (inputs
      (list guile-3.0 xapian-1.4 zlib))
     (native-inputs
-     (list pkg-config
+     (list guile-run64
+           pkg-config
            lzip
            swig-4.0))
     (propagated-inputs
@@ -6996,6 +6997,9 @@ models and also supports a rich set of boolean query operators.")
     (inputs
      (modify-inputs inputs
        (replace "guile" guile-2.2)))
+    (native-inputs
+     (modify-inputs native-inputs
+       (replace "guile-run64" guile2.2-run64)))
     (propagated-inputs
      (modify-inputs propagated-inputs
        (replace "guile-lib" guile2.2-lib)))))
