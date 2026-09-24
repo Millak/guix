@@ -43,6 +43,19 @@
 
 (channel-news
  (version 0)
+ (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
+        (title
+         (en "New @option{--spice} flag for emitting Spice configured VMs")
+         (pt "Nova opção @option{--spice} para a emissão de máquinas virtuais com configuração Spice"))
+        (body
+         (en "The @command{guix system vm} command now accepts the
+@option{--spice} flag to set up a virtual machine that communicates with the
+host enabling clipboard sharing and automatic screen resolution adjustments.")
+         (pt "O comando @command{guix system vm} agora aceita a opção
+@option{--spice} para estabelecer uma máquina virtual que se comunica com o
+hospedeiro habilitando compartilhamento de clipboard e ajustes automáticos de
+resolução.")))
+
  (entry (commit "e788997691c524755f64fa853abf6ac2c36d8107")
         (title
          (en "Deprecation changes in ``mpd-configuration''")
@@ -304,19 +317,6 @@ não são mais instalados automaticamente.  Se eles forem requeridos, o pacote
 @code{frei0r} pode ser adicionado ao perfil.  Isto permite às aplicações
 detectar e utilizar os plugins em tempo de execução.  @code{frei0r} agora
 contém plugins dependentes do OpenCV.")))
-
- (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
-        (title
-         (en "New @option{--spice} flag for emitting Spice configured VMs")
-         (pt "Nova opção @option{--spice} para a emissão de máquinas virtuais com configuração Spice"))
-        (body
-         (en "The @command{guix system vm} command now accepts the
-@option{--spice} flag to set up a virtual machine that communicates with the
-host enabling clipboard sharing and automatic screen resolution adjustments.")
-         (pt "O comando @command{guix system vm} agora aceita a opção
-@option{--spice} para estabelecer uma máquina virtual que se comunica com o
-hospedeiro habilitando compartilhamento de clipboard e ajustes automáticos de
-resolução.")))
 
  (entry (commit "7a9d01dce758b0916bf8b0ac8a972f849f4bf31d")
         (title
