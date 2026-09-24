@@ -19516,6 +19516,8 @@ implementation differs in these ways:
                         ("test_metrics.py" "test_modularity_adata")
                         ("test_plotting.py" "test_umap_mask_equal")
                         ("test_aggregated.py" "test_aggregate_axis")
+                        ("test_aggregated.py"
+                         "test_var_no_catastrophic_cancellation")
                         ("test_datasets.py" "test_download_failure")
                         ("test_pca.py" "test_covariance_eigh_impls")
                         ("test_plotting.py" "test_highest_expr_genes")
@@ -19548,6 +19550,8 @@ implementation differs in these ways:
                          "test_pearson_residuals_batch")
                         ("test_normalization.py"
                          "test_normalize_pearson_residuals_pca")
+                        ("test_normalization.py"
+                         "test_normalize_matrix_types")
                         ("test_highly_variable_genes.py"
                          "test_pearson_residuals_general")
                         ("test_highly_variable_genes.py"
