@@ -237,7 +237,7 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "3.10.42")
+    (version "3.11.1")
     (source
      (origin
        (method git-fetch)
@@ -246,7 +246,7 @@ it.")
           (url "https://github.com/trealla-prolog/trealla")
           (commit (string-append "v" version))))
        (sha256
-        (base32 "0dkgcbp8xdpkq325kk0w5plkpl9fm9ps3156161hldqd3h3cj7g0"))
+        (base32 "161mp5px8mvljry3nrsx5dnild23h2jg69s9ggpp8phbpfizp0cr"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
