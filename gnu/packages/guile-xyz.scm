@@ -6252,6 +6252,13 @@ run64 is meant to work with an SRFI-64 implementation, and is not an SRFI-64
 implementation in itself.")
     (license license:gpl3+)))
 
+(define-public guile2.2-run64
+  (package
+    (inherit guile-run64)
+    (name "guile2.2-run64")
+    (inputs (modify-inputs inputs
+              (replace "guile" guile-2.2)))))
+
 (define-public guile-uuid
   (package
     (name "guile-uuid")
