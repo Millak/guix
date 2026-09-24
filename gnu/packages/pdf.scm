@@ -1251,12 +1251,12 @@ program capable of converting PDF into other formats.")
      (list cups
            djvulibre
            libspectre
-           poppler-qt5
-           qtbase-5
-           qtsvg-5
-           qtwayland-5))
+           poppler-qt6
+           qtsvg
+           qtwayland))
     (arguments
-     (list #:tests? #f ; no tests
+     (list #:qtbase qtbase
+           #:tests? #f ; no tests
            #:modules '((guix build qt-build-system)
                        ((guix build gnu-build-system) #:prefix gnu:)
                        (guix build utils))
