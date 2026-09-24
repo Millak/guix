@@ -469,7 +469,9 @@ programming languages.")
              (commit (string-append "cvc5-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lpma6kfr5x1qk5yc227m98fvabn4c755y28gwd538cgc4cww420"))))
+        (base32 "0lpma6kfr5x1qk5yc227m98fvabn4c755y28gwd538cgc4cww420"))
+       (patches
+        (search-patches "cvc5-fix-test-failure.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -484,8 +486,6 @@ programming languages.")
               "-DUSE_POLY=ON"
               "-DENABLE_IPO=ON"
               "-DUSE_CRYPTOMINISAT=ON")
-      ;; TODO: The reduce_constant_dup test fails, needs investigation.
-      #:test-exclude "reduce_constants_dup\\.smt2"
       #:phases
       #~(modify-phases %standard-phases
           ;; Guix's libedit package does not require -ltinfo.

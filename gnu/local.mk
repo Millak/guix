@@ -1184,6 +1184,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/curlftpfs-fix-memory-leak.patch		\
   %D%/packages/patches/curlftpfs-fix-no_verify_hostname.patch	\
   %D%/packages/patches/cursynth-wave-rand.patch			\
+  %D%/packages/patches/cvc5-fix-test-failure.patch		\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
   %D%/packages/patches/cyrus-sasl-fix-time-h.patch              \
   %D%/packages/patches/daemontools-gcc14.patch                  \

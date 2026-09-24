@@ -1,0 +1,78 @@
+Fix for failing test in Guix, see <https://github.com/cvc5/cvc5/issues/12952>.
+
+Taken from: <https://github.com/cvc5/cvc5/commit/47f43bd012a227fb91743b8362170d4444dd270e>
+
+diff --git a/src/theory/bags/inference_generator.cpp b/src/theory/bags/inference_generator.cpp
+index bcf97cc531..c207ba8270 100644
+--- a/src/theory/bags/inference_generator.cpp
++++ b/src/theory/bags/inference_generator.cpp
+@@ -487,12 +487,14 @@ InferInfo InferenceGenerator::mapDownInjective(Node n, Node y)
+ 
+   Node f_x = d_nm->mkNode(Kind::APPLY_UF, f, x);
+   Node y_equals_f_x = y.eqNode(f_x);
+-  Node member = d_nm->mkNode(Kind::GEQ, countY, d_one);
+-  inferInfo.d_premises.push_back(member);
+ 
+-  Node count_x_equals_count_y = countX.eqNode(countY);
+-  Node conclusion = y_equals_f_x.andNode(count_x_equals_count_y);
+-  inferInfo.d_conclusion = conclusion;
++  // Since f is injective, x is the only candidate preimage of y. So the
++  // multiplicity of y in (bag.map f A) is the multiplicity of x in A when x is
++  // a preimage of y, and zero otherwise. Stating this as an equality, rather
++  // than only constraining the case (>= (bag.count y skolem) 1), lets the
++  // multiplicity of y be propagated directly.
++  Node ite = d_nm->mkNode(Kind::ITE, y_equals_f_x, countX, d_zero);
++  inferInfo.d_conclusion = countY.eqNode(ite);
+ 
+   Trace("bags::InferenceGenerator::mapDown")
+       << "conclusion: " << inferInfo.d_conclusion << std::endl;
+diff --git a/src/theory/bags/inference_generator.h b/src/theory/bags/inference_generator.h
+index 444ec04d34..7de982e2a1 100644
+--- a/src/theory/bags/inference_generator.h
++++ b/src/theory/bags/inference_generator.h
+@@ -265,11 +265,11 @@ class InferenceGenerator
+    * @param n is (bag.map f A) where f is a function (-> E T), A a bag of type
+    * (Bag E)
+    * @param y is a node of Type T
+-   * @return an inference that represents the following conjunction
+-   * (=> (>= (bag.count y skolem) 1)
+-   *   (and
+-   *     (= (f x) y)
+-   *     (= (bag.count x A) (bag.count y skolem))
++   * @return an inference that represents the following equality
++   * (= (bag.count y skolem)
++   *   (ite (= y (f x))
++   *     (bag.count x A)
++   *     0
+    *   )
+    * )
+    * where skolem is a fresh variable equals (bag.map f A))
+diff --git a/test/regress/cli/CMakeLists.txt b/test/regress/cli/CMakeLists.txt
+index bcf3d93d9a..a687e4339d 100644
+--- a/test/regress/cli/CMakeLists.txt
++++ b/test/regress/cli/CMakeLists.txt
+@@ -2746,6 +2746,7 @@ set(regress_1_tests
+   regress1/bug694-Unapply1.scala-0.smt2
+   regress1/bug800.smt2
+   regress1/bags/all1.smt2
++  regress1/bags/all2.smt2
+   regress1/bags/all3.smt2
+   regress1/bags/bag_member.smt2
+   regress1/bags/bag_partition1.smt2
+@@ -4416,7 +4417,6 @@ set(regression_disabled_tests
+   # demonstrates instance where RE inference in necessary, times out
+   regress1/strings/re-uf.smt2
+   ###
+-  regress1/bags/all2.smt2
+   regress1/bags/card3.smt2
+   regress1/bags/fol_0000119.smt2
+   regress1/bags/murxla6.smt2
+diff --git a/test/regress/cli/regress1/bags/all2.smt2 b/test/regress/cli/regress1/bags/all2.smt2
+index a197ed64da..575c16304e 100644
+--- a/test/regress/cli/regress1/bags/all2.smt2
++++ b/test/regress/cli/regress1/bags/all2.smt2
+@@ -1,3 +1,4 @@
++; REQUIRES: unrestricted-mode
+ (set-logic HO_ALL)
+ (set-info :status sat)
+ (define-fun map_fun ((i Int)) Int (+ i 1))
