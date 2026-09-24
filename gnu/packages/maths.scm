@@ -6478,14 +6478,14 @@ applications to toric geometry.")
 (define-public blis
   (package
     (name "blis")
-    (version "0.9.0")
+    (version "2.1")
     (home-page "https://github.com/flame/blis")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (sha256
                (base32
-                "14v2awhxma6nzas42hq97702672f2njrskqhsv9kl23hvrvci8fm"))
+                "0383zkzy5rcq18n8c9va8q6zkdzm6qcgl85al2sgj2gyxlrjlk3q"))
               (file-name (git-file-name "blis" version))))
     (native-inputs
      (list python perl))
@@ -6493,6 +6493,7 @@ applications to toric geometry.")
     (arguments
      (list
       #:configure-flags #~'("--enable-cblas")
+      #:make-flags #~'("T=1")            ; echo testsuit output to the screen
       #:modules
       '((guix build gnu-build-system)
         (guix build utils)
@@ -6553,11 +6554,7 @@ applications to toric geometry.")
                 (format #t "configure args: ~s~%" configure-args)
                 (apply invoke
                        "./configure"
-                       configure-args))))
-          (add-before 'check 'show-test-output
-            (lambda _
-              ;; By default "make check" is silent.  Make it verbose.
-              (system "tail -F output.testsuite &"))))))
+                       configure-args)))))))
     (synopsis "High-performance basic linear algebra (BLAS) routines")
     (description
      "BLIS is a portable software framework for instantiating high-performance
