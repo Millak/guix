@@ -132,7 +132,7 @@ the entire document.")
 (define-public expat
   (package
     (name "expat")
-    (version "2.8.4")
+    (version "2.8.5")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -142,7 +142,7 @@ the entire document.")
                       "/expat-" version ".tar.xz"))
                 (sha256
                  (base32
-                  "19w5k6q7ccw7v8wn5v60hj096hv27vrm9qml7d8ymd53ip6f2sk5")))))
+                  "10iif1pf6grrnxmf64vwj1fy9g48wvwgr6lxk9xaflgc6f4pnwhy")))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
