@@ -2976,13 +2976,13 @@ can be used to build complete interfaces in Qt Quick.")))
   (package
     (inherit qtsvg-5)
     (name "qtquickcontrols2")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0v7mwzhc42cwf12z11g9qmysqhsqcvfk4pghh9n2p2kbrz6xdnd0"))))
+                "0yv8jlxbgxrld34i4rwm9mrlbl4p7cbxqa03r1nfj4gqnp9pd3pb"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
