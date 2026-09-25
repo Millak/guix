@@ -2554,13 +2554,13 @@ interacting with serial ports from within Qt.")
 (define-public qtwebchannel-5
   (package (inherit qtsvg-5)
     (name "qtwebchannel")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "157nabb3g7i8damk10i1axmbbzxzh4hd45j0z3kzjj0cywf3rzgc"))))
+               "1zpikpz0yq8wjgp0x7cwqpczglqyz7mfhhc5wkqwpqffzpb6h92b"))))
     (native-inputs (list perl qtdeclarative-5 qtwebsockets-5))
     (inputs (list qtbase-5))
     (synopsis "Web communication library for Qt")
