@@ -14848,12 +14848,6 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-before 'build 'prune-gems.rb
-                 (lambda _
-                   (substitute* "gems.rb"
-                     (("gem \"bake-modernize\"") "")
-                     (("gem \"bake-gem\"") "")
-                     (("gem \"utopia-project\"") ""))))
                (add-before 'build 'remove-missing-signing-key
                  (lambda _
                    ;; Otherwise, the build fails with ENOENT.
@@ -14865,10 +14859,8 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
                    (when tests?
                      (setenv "CONSOLE_LEVEL" "debug")
                      (setenv "HOME" "/tmp")
-                     ;; 'bundle exec' must be used to workaround a problem
-                     ;; when using bake test and GEM_PATH (see:
-                     ;; https://github.com/ioquatix/bake/issues/11).
-                     (invoke "bundle" "exec" "bake" "test"))))
+                     (delete-file "config/sus.rb") ;remove covored gem
+                     (invoke "sus"))))
                (add-before 'check 'set-paths
                  (lambda _
                    (setenv "PATH" (string-append (getenv "PATH") ":"
@@ -14876,7 +14868,6 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
                    (setenv "GEM_PATH" (string-append
                                        (getenv "GEM_PATH") ":"
                                        #$output "/lib/ruby/vendor_ruby")))))))
-    (native-inputs (list ruby-bake-test ruby-bake-test-external ruby-covered))
     (synopsis "Fast and scalable test runner for Ruby")
     (description "This package provides a fast and scalable test runner for Ruby.")
     (home-page "https://github.com/ioquatix/sus")
