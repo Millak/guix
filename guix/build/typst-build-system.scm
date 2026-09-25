@@ -132,7 +132,7 @@ locally.  Raise an error if the namespace directory can not be found."
   "Perform a sanity check to prove that installed packages can be loaded."
   (for-each
    (lambda (file)
-     (let* ((toml (parse-toml-file "typst.toml"))
+     (let* ((toml (parse-toml-file file))
             (name (recursive-assoc-ref toml '("package" "name")))
             (version (recursive-assoc-ref toml '("package" "version"))))
        (invoke "typst" "eval"
