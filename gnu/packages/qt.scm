@@ -3507,14 +3507,14 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
-    (version "5.15.17")
+    (version "5.15.19")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "11hir1dwsfy96jxmsmadcr46m034dpjlnpqw60nqk6wk0qscxvg8"))
+         "0avcsfcri43jpiaimjhlb4jzqjhvqsk8hzianhjnrq0hdy67sqh6"))
        (patches (search-patches "qtwebengine5-python312-six-compat.patch"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
@@ -3826,9 +3826,11 @@ linux/libcurl_wrapper.h")
                         "QT_BUILD_PARTS = libs tools" "--"
                         "--webengine-printing-and-pdf=no"
                         "--webengine-ffmpeg=system"
-                       ;; FIXME: Building qtwebengine-5 5.12.2 with
-                       ;; icu4c >= 68 fails.
-                       ;;"--webengine-icu=system"
+                        ;; FIXME: Building qtwebengine-5 5.15.19 with icu4c >= 68
+                        ;; fails; if providing it an icu4c-67, linking fails
+                        ;; with qtbase-5 due to collision with the newer icu4c
+                        ;; used by it.
+                        ;;"--webengine-icu=system"
                         "--webengine-pepper-plugins=no"
                         "-webengine-proprietary-codecs")))))
        ;; Tests are disabled due to "Could not find QtWebEngineProcess error"
