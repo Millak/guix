@@ -922,6 +922,33 @@ configurable through a set of options.")
 UPC++) libraries for CPUs and GPUs.")
     (license license:bsd-3)))
 
+(define-public osu-micro-benchmarks-rocm
+  (package/inherit osu-micro-benchmarks
+    (name "osu-micro-benchmarks-rocm")
+    (inputs (modify-inputs inputs
+              (replace "openmpi" openmpi-rocm)
+
+              ;; The HIP/ROCm-enabled benchmarks use functions from
+              ;; <hip/hip_runtime_api.h>.
+              (append rocm-hip-runtime)))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags #~'())
+        #~(append (list "--enable-rocm") #$flags))))
+    (synopsis "Benchmarking suite from the MVAPICH project (with HIP/ROCm support)")
+    (description
+     "This package provides a microbenchmark suite to evaluate MPI libraries
+for CPUs and GPUs; this variant includes HIP/ROCm support for AMD GPUs.
+
+As an example, to benchmark device-to-device bandwidth, run:
+
+@example
+mpirun -n 2 osu_bw D D
+@end example
+
+You may need to pass @code{--mca pml ucx} to @command{mpirun} to ensure that
+GPU transfers are taken care of by the UCX communication library.")))
+
 (define-public babelstream-hip
   (package
     (name "babelstream-hip")
