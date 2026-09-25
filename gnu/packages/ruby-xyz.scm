@@ -5272,7 +5272,7 @@ standard libraries.")
 (define-public ruby-mapping
   (package
     (name "ruby-mapping")
-    (version "1.1.1")
+    (version "1.1.3")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -5281,19 +5281,22 @@ standard libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhmqp8mprjqf9m7wzc4hhi50qbfax86r89w852csns0ijaffjjs"))))
+                "0ydvn5lfyhzc4qbcyag0vx6ah8zl99h2ailj3025wgj5pz4cfmnb"))))
     (build-system ruby-build-system)
     (arguments
      (list
-      #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
+          (add-before 'extract-gemspec 'remove-certs
             (lambda _
-              (substitute* "spec/mapping/model_spec.rb"
-                ;; From https://github.com/ioquatix/mapping/pull/2
-                (("offset:") "offset =")))))))
-    (native-inputs (list ruby-rspec))
+              (substitute* "mapping.gemspec"
+                (("spec\\.signing_key .*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (delete-file "config/sus.rb") ;remove covored gem
+              (invoke "sus"))))))
+    (native-inputs (list ruby-sus))
     (synopsis "Map model objects based on their class to a given output model")
     (description "The @code{mapping} gem maps model objects based on their
 class to a given output model.  It is useful for versioning external
