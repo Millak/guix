@@ -21,7 +21,7 @@
 ;;; This manifest can be used to update the Qt 5 packages collection, via
 ;;; e.g.:
 ;;;
-;;; ./pre-inst-env guix refresh -u -m etc/teams/qt/qt5-manifest.scm --target-version=5.15.10
+;;; ./pre-inst-env guix refresh -u -m etc/teams/qt/qt5-manifest.scm --target-version=5.15.19
 ;;;
 ;;; Code:
 
