@@ -1054,6 +1054,33 @@ clone.")
     ;; under BSD-2.
     (license license:gpl2+)))
 
+(define-public trizbort-qt
+  (package
+    (name "trizbort-qt")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/trizbort-qt.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1nb0361snbj73kkh82y239vdja2w0rpcc2mnnndyykq26q212pm6"))
+       (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (inputs (list qtsvg))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f)) ; no tests
+    (home-page "https://jxself.org/trizbort-qt.shtml")
+    (synopsis "Visual mapping tool for interactive fiction")
+    (description "Trizbort-qt is a Qt port of Trizbort, a mapper for interactive fiction.
+It draws rooms and the connections between them, annotates them with descriptions
+and objects, and exports the map as source code for many interactive fiction systems
+or as a PDF or image.")
+    (license (list license:gpl3+
+                   license:expat)))) ; from original Trizbort
+
 (define-public trenchbroom
   (package
     (name "trenchbroom")
