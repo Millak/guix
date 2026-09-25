@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
+;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages vulkan)
   #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -228,6 +230,80 @@ and more.")
         (base32
          "0ibwr5cw0zw5dfcdhavr5zbmwqqf7vnsai0gh4mqw475l7lcb08w"))
        (patches (search-patches "onetbb-other-arches.patch"))))))
+
+;; Built against LLVM 17 (Guix's prebuilt), matching IGC v2.40.13's
+;; own dependency table -- see intel-graphics-compiler for why LLVM 17.
+(define-public opencl-clang
+  (package
+    (name "opencl-clang")
+    (version "17.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/opencl-clang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03z2nb9gndpxb60rx1bk6q1w6mkak7729z0rm66slzxfmhbfqira"))
+       (patches (search-patches
+                 "opencl-clang-separate-llvm-clang-prefix.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DPREFERRED_LLVM_VERSION="
+                             #$(package-version llvm-17))
+              (string-append "-DLLVM_DIR="
+                             #$(this-package-input "llvm") "/lib/cmake/llvm")
+              (string-append "-DClang_DIR="
+                             #$(this-package-input "clang") "/lib/cmake/clang")
+              "-DLLVMSPIRV_INCLUDED_IN_LLVM=OFF"
+              (string-append "-DSPIRV_TRANSLATOR_DIR="
+                             #$(this-package-input "spirv-llvm-translator"))
+              ;; intel does not run tests against a plain llvm/clang;
+              ;; substitutes needed, see below
+              "-DLLVM_INCLUDE_TESTS=ON"
+              (string-append "-DLLVM_EXTERNAL_LIT="
+                             #$(this-package-native-input "python-lit")
+                             "/bin/lit")
+              ;; tests/lit.site.cfg.py.in assumes an in-tree build; point it
+              ;; at clang-17 package instead
+              (string-append "-DCLANG_TOOLS_DIR="
+                             #$(this-package-input "clang") "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-occ-cli-tools-dir
+            (lambda _
+              ;; replace the tools dir of the non existent in-tree build
+              ;; against our own one
+              (substitute* "tests/lit.site.cfg.py.in"
+                (((string-append "opencl_clang_tools_dir = "
+                                "lit_config\\.substitute\\(path\\("
+                                "r\"@LLVM_TOOLS_DIR@"))
+                 (string-append "opencl_clang_tools_dir = "
+                                "lit_config.substitute(path("
+                                "r\"@CMAKE_CURRENT_BINARY_DIR@/occ-cli")))
+              ;; cl-ext-option.cl exercises "-cl-std=CL3.1", which no
+              ;; stock LLVM/Clang 17 release accepts
+              (substitute* "tests/lit.cfg.py"
+                (("\"Conformance\"\\]")
+                 "\"Conformance\", \"cl-ext-option.cl\"]"))))
+          ;; llvm does not register tests via CTest
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "cmake" "--build" "."
+                        "--target" "check-opencl-clang")))))))
+    (native-inputs (list pkg-config python-lit))
+    (inputs (list llvm-17 clang-17 spirv-llvm-translator-17))
+    (home-page "https://github.com/intel/opencl-clang")
+    (synopsis "Clang-based compiler for OpenCL targeting SPIR-V, for LLVM 17")
+    (description
+     "A standalone build of Intel's opencl-clang (libopencl-clang)
+against a prebuilt LLVM/Clang 17, as used by Intel Graphics Compiler in
+Prebuilds mode.")
+    (license license:asl2.0))) ;with LLVM exceptions
 
 (define-public python-onetbb
   (package

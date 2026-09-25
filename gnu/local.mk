@@ -77,6 +77,7 @@
 # Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 # Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 # Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
+# Copyright © 2026 Goran Vukoman <g@odyss3us.net>
 #
 # This file is part of GNU Guix.
 #
@@ -2101,6 +2102,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-add-fix-for-glib2-exposed-segfault.patch \
   %D%/packages/patches/openbox-python3.patch			\
+  %D%/packages/patches/opencl-clang-separate-llvm-clang-prefix.patch	\
   %D%/packages/patches/openexr-2-gcc-14.patch			\
   %D%/packages/patches/openfst-for-vosk-fix-unique-ptr.patch	\
   %D%/packages/patches/openjdk-currency-time-bomb.patch		\

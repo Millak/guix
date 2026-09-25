@@ -1,0 +1,64 @@
+Allow LLVM and Clang to live in separate installation prefixes, as in
+Guix, where each package gets its own store path (opencl-clang
+assumes both share LLVM_TOOLS_BINARY_DIR). Not submitted upstream.
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -54,18 +54,26 @@
+     endif(NOT PREFERRED_LLVM_VERSION)
+     message(STATUS "[OPENCL-CLANG] Looking for LLVM version ${PREFERRED_LLVM_VERSION}")
+     find_package(LLVM ${PREFERRED_LLVM_VERSION} REQUIRED)
++    find_package(Clang ${PREFERRED_LLVM_VERSION} REQUIRED)
+ 
+     message(STATUS "[OPENCL-CLANG] Using LLVMConfig.cmake in: ${LLVM_DIR}")
+     message(STATUS "[OPENCL-CLANG] Found LLVM ${LLVM_PACKAGE_VERSION}")
++    message(STATUS "[OPENCL-CLANG] Using ClangConfig.cmake in: ${Clang_DIR}")
+ 
+     set(CMAKE_MODULE_PATH
+       ${CMAKE_MODULE_PATH}
+       ${LLVM_CMAKE_DIR})
+ 
++    # Clang may live in a prefix separate from LLVM's (e.g. Guix, where
++    # every package gets its own store path); derive its bin/ from
++    # Clang_DIR (<prefix>/lib/cmake/clang) so the probe below can still
++    # find it even when it isn't under LLVM_TOOLS_BINARY_DIR.
++    get_filename_component(CLANG_INSTALL_PREFIX "${Clang_DIR}/../../.." ABSOLUTE)
++
+     # A prebuilt clang may predate the CL3.1 patches carried in patches/clang
+     # (only applied when building clang from source, see below). Probe it so
+     # we don't try to generate a PCM with a -cl-std value the compiler rejects.
+-    find_program(OPENCL_CLANG_PROBE_CLANG clang PATHS ${LLVM_TOOLS_BINARY_DIR} NO_DEFAULT_PATH)
++    find_program(OPENCL_CLANG_PROBE_CLANG clang PATHS ${LLVM_TOOLS_BINARY_DIR} ${CLANG_INSTALL_PREFIX}/bin NO_DEFAULT_PATH)
+     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/cl31_check.cl" "")
+     execute_process(
+         COMMAND ${OPENCL_CLANG_PROBE_CLANG} -cl-std=CL3.1 -x cl -fsyntax-only "${CMAKE_CURRENT_BINARY_DIR}/cl31_check.cl"
+--- a/cl_headers/CMakeLists.txt
++++ b/cl_headers/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ set(CL_HEADERS_LIB cl_headers)
+ if(USE_PREBUILT_LLVM)
+-    find_program(CLANG_COMMAND clang PATHS ${LLVM_TOOLS_BINARY_DIR} NO_DEFAULT_PATH)
++    find_program(CLANG_COMMAND clang PATHS ${LLVM_TOOLS_BINARY_DIR} ${CLANG_INSTALL_PREFIX}/bin NO_DEFAULT_PATH)
+ else()
+     set(CLANG_COMMAND $<TARGET_FILE:clang>)
+ endif()
+@@ -19,7 +19,18 @@
+ endfunction(copy_file)
+ 
+ if(USE_PREBUILT_LLVM)
+-    if(EXISTS "${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/")
++    # Clang's own resource headers (opencl-c.h) ship under Clang's
++    # install prefix, not LLVM's -- only the same when both come from
++    # one shared prefix. Try Clang's own prefix (CLANG_INSTALL_PREFIX,
++    # set in the top-level CMakeLists.txt) first, then fall back to
++    # LLVM_LIBRARY_DIRS for the co-located case.
++    if(EXISTS "${CLANG_INSTALL_PREFIX}/lib/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include/opencl-c-base.h")
++        set(OPENCL_HEADERS_DIR
++        "${CLANG_INSTALL_PREFIX}/lib/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include/")
++    elseif(EXISTS "${CLANG_INSTALL_PREFIX}/lib/clang/${LLVM_VERSION_MAJOR}/include/opencl-c-base.h")
++        set(OPENCL_HEADERS_DIR
++            "${CLANG_INSTALL_PREFIX}/lib/clang/${LLVM_VERSION_MAJOR}/include/")
++    elseif(EXISTS "${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/")
+         set(OPENCL_HEADERS_DIR
+         "${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/include/")
+     elseif(EXISTS "${LLVM_LIBRARY_DIRS}/clang/${LLVM_VERSION_MAJOR}/")
