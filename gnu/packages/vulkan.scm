@@ -12,6 +12,7 @@
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -254,6 +255,35 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
      "The LLVM/SPIR-V Bi-Directional Translator is a library and tool for
 translation between LLVM IR and SPIR-V.")
     (license license:asl2.0)))
+
+;; Needed by Intel Graphics Compiler, which requires this exact major version
+(define-public spirv-llvm-translator-17
+  (package
+    (inherit spirv-llvm-translator)
+    (version "17.0.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "spirv-llvm-translator" version))
+       (sha256
+        (base32 "1ghrq5w5mayd3v7c7wzzrjcbs7apnbiai3ic8k1kh733h6pm8ys3"))))
+    (inputs (modify-inputs inputs
+              (replace "llvm" llvm-17)))
+    (native-inputs (modify-inputs native-inputs
+                     (replace "clang" clang-17)
+                     (replace "llvm" llvm-17)
+                     ;; Must be this newer package, not plain spirv-headers
+                     ;; -- inherited configure-flags look it up by input name
+                     ;; ("spirv-headers"), so using the older one here would
+                     ;; silently reintroduce a bug.
+                     (replace "spirv-headers" spirv-headers-1.4.357.0)
+                     ;; test/zero-length-array.ll needs `spirv-dis` from
+                     ;; spirv-tools -- not spirv-tools-for-igc, whose newer
+                     ;; spirv-val breaks 4 of the LLVM_SPIRV tests.
+                     (append spirv-tools)))))
 
 (define-public glslang
   (package
