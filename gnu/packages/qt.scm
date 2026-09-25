@@ -2764,13 +2764,13 @@ plugin for Adobe After Effects.")
   (package
     (inherit qtsvg-5)
     (name "qttools")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1imzr7gxbbl1m05g6a4ji0pxvabp0j4x3q33dxa7zfrjczmhcc23"))))
+                "19hs5wsxl03kz20nglgbff111n2z0gs3ildw8a53pmihc64az516"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)           ; TODO: Enable the tests
