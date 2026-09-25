@@ -3430,7 +3430,11 @@ avoid classpath scanning at runtime.")
            java-sonatype-aether-api
            java-eclipse-aether-api
            java-eclipse-aether-util
-           java-eclipse-aether-impl))
+           java-eclipse-aether-impl
+           ;; Provides the maven-shared-components:34 parent pom (via its
+           ;; install-shared phase), required to read this artifact's
+           ;; descriptor.
+           maven-parent-pom-34))
     (native-inputs
      (list unzip java-plexus-component-metadata))
     (home-page "https://maven.apache.org/shared/maven-artifact-transfer")
