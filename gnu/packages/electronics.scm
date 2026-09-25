@@ -3132,7 +3132,7 @@ GUI for sigrok.")
 (define-public osvvm
   (package
     (name "osvvm")
-    (version "2026.05")
+    (version "2026.08")
     (source
      (origin
        (method git-fetch)
@@ -3144,7 +3144,7 @@ GUI for sigrok.")
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ga5ly71cgmfibl7636y3c9zm36fw77x78cgb78mh5bv1r10f3kq"))))
+        (base32 "03nsdb5h6qsjq9lr0nsyv9yn4y6cd8435rgsacdqp0flbz9lbjwz"))))
     (outputs
      '("out" "osvvm"))
     (properties
@@ -3192,13 +3192,7 @@ GUI for sigrok.")
            #:output "osvvm"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'fix-scripts
-            (lambda _
-              ;; Default conflicts with read-only /gnu/store.
-              (substitute* "osvvm/OsvvmVhdlSettings.pro"
-                (("\\[FindOsvvmSettingsDirectory\\]")
-                 " \"\" "))))
-          (add-after 'fix-scripts 'check
+          (add-before 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "OSVVM_DIR" (getcwd))
@@ -3208,7 +3202,7 @@ GUI for sigrok.")
                                        "/test/test-osvvm.tcl")))))
           (add-after 'install 'build
             (lambda _
-              (define (_build dir)
+              (define (build dir)
                 (chdir dir)
                 (call-with-output-file "build.tcl"
                   (lambda (port)
@@ -3225,8 +3219,8 @@ GUI for sigrok.")
                  "Compiled")
                 (for-each delete-file-recursively
                           (list "OsvvmTemp_NVC" "VHDL_LIBS")))
-              (_build (string-append #$output "/share/osvvm/work"))
-              (_build (string-append #$output:osvvm "/share/osvvm/osvvm")))))))
+              (build (string-append #$output "/share/osvvm/work"))
+              (build (string-append #$output:osvvm "/share/osvvm/osvvm")))))))
     (native-inputs
      (list nvc tcl tcllib which))
     (native-search-paths
