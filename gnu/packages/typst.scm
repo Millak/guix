@@ -285,6 +285,27 @@ used by the actual CeTZ package.")
                          just
                          perl))))
 
+(define-public typst-larrow
+  (package
+    (name "typst-larrow")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Mambouna/larrow")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1q7w5giivxh3bk03pp2v6z6mpgv9415s284m7di7blz1jnv6hxsc"))))
+    (build-system typst-build-system)
+    (arguments (list #:tests? #f))      ; no tests
+    (propagated-inputs (list typst-cetz))
+    (home-page "https://github.com/Mambouna/larrow")
+    (synopsis "Draw and style arrows between labels")
+    (description "This package provides functions to draw arrows between
+labels.")
+    (license license:mpl2.0)))
+
 (define-public typst-oxifmt
   (package
     (name "typst-oxifmt")
