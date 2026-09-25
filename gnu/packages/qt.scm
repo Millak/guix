@@ -2956,13 +2956,13 @@ body can have its own physical properties like mass, density and friction.")
   (package
     (inherit qtsvg-5)
     (name "qtquickcontrols")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0d22z6a1l7iv1xmzgsf7inpgi857mg1ffv327wv7q2iapg2fsiw3"))))
+                "1indmznnap9qln16rg2cdfa7invl9ckbpriiz19wc376s522n66i"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
