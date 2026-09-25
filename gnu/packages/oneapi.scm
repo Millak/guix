@@ -36,6 +36,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
   #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
@@ -43,6 +44,94 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+;; This exact version's own release notes list the tested gmmlib,
+;; level-zero, and intel-graphics-compiler versions used elsewhere.
+(define-public intel-compute-runtime
+  (package
+    (name "intel-compute-runtime")
+    (version "26.31.39395.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/compute-runtime")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gnlvg6q04gr0618krqdix9yp6dmw7kfv8bdg5j5h41r88y6zdpy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(let ((igc #$(this-package-input "intel-graphics-compiler")))
+          (list "-DBUILD_WITH_L0=ON"
+                "-DBUILD_WITH_OCL=ON"
+                ;; #:tests? #f above only skips *running* the test suite;
+                ;; without this, the build still compiles dozens of LTO
+                ;; unit-test binaries, which is slow and can exhaust the
+                ;; build machine's scratch space.
+                "-DSKIP_UNIT_TESTS=1"
+                ;; Enables NEO_* debug/override env vars (e.g.
+                ;; NEO_OverridePreemptionSurfaceSizeInMb, needed on very
+                ;; new hardware whose kernel driver's topology query can
+                ;; come back incomplete) without leaving Release mode --
+                ;; see RELEASE_WITH_REGKEYS in CMakeLists.txt.
+                "-DRELEASE_WITH_REGKEYS=TRUE"
+                ;; Without an explicit IGC_DIR, find_igc.cmake finds IGC
+                ;; fine via pkg-config for headers/linking, but never sets
+                ;; NEO__IGC_LIBRARY_PATH, so ocloc can't dlopen
+                ;; libigdfcl.so.2 while compiling its builtin kernels at
+                ;; build time.
+                (string-append "-DIGC_DIR=" igc)
+                ;; Defaults to /etc/OpenCL/vendors, unwritable in the
+                ;; sandbox and wrong for Guix regardless; install under
+                ;; this package's own output, matching opencl-icd-loader's
+                ;; OCL_ICD_VENDORS search-path convention.
+                (string-append "-DOCL_ICD_VENDORDIR="
+                               #$output "/etc/OpenCL/vendors")
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+                "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON"
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
+                ;; $out/lib: bin/ocloc needs its own libocloc.so, installed
+                ;; via plain install(FILES ...) which skips CMake's normal
+                ;; RPATH rewrite (see allow-rpath below for why this flag
+                ;; even takes effect).
+                ;; IGC's lib dir: libigdrcl.so dlopen()s libigdfcl.so.2 (and
+                ;; libigc.so) by bare name at runtime rather than linking
+                ;; it -- without this, any real clBuildProgram() call fails
+                ;; with error -6 and an empty build log, even though device
+                ;; enumeration (which never touches IGC) looks fine.
+                (string-append "-DCMAKE_INSTALL_RPATH="
+                               #$output "/lib;"
+                               igc "/lib")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'allow-rpath
+            (lambda _
+              ;; CMakeLists.txt force-sets CMAKE_SKIP_RPATH to YES,
+              ;; overriding every RPATH flag above -- confirmed by
+              ;; rebuilds showing only glibc/gcc's implicit defaults
+              ;; in RUNPATH. Upstream relies on system ldconfig
+              ;; instead, which doesn't apply to Guix's store layout.
+              (substitute* "CMakeLists.txt"
+                (("set\\(CMAKE_SKIP_RPATH YES CACHE BOOL \"\" FORCE\\)")
+                 "set(CMAKE_SKIP_RPATH NO CACHE BOOL \"\" FORCE)")))))))
+    (inputs (list gmmlib intel-graphics-compiler libva zlib))
+    (native-inputs (list level-zero-1.32.0 pkg-config))
+    (home-page "https://github.com/intel/compute-runtime")
+    (synopsis
+     "Intel Graphics Compute Runtime for oneAPI Level Zero and OpenCL")
+    (description
+     "NEO (intel-compute-runtime) implements the OpenCL 3.0
+and oneAPI Level Zero APIs for Intel GPUs, from integrated graphics
+(Tiger Lake through Panther Lake) through discrete cards (DG1, Arc
+Alchemist, Arc Battlemage).  It loads the Intel Graphics Compiler at
+runtime to JIT-compile OpenCL C/SPIR-V kernels submitted by
+applications into Intel GPU machine code.")
+    ;; MIT, per LICENSE.md in the compute-runtime repository.
+    (license license:expat)))
 
 ;; Built against LLVM 17, not 22 -- IGC's bf16 support probes for
 ;; and no-ops against LLVM 17, which Intel's own docs mark Production.
