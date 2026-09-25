@@ -6292,7 +6292,16 @@ parts of it.")
                        "-L"
                        (dirname
                         (search-input-file inputs
-                                           "/lib/libgfortran.so")))))))))
+                                           "/lib/libgfortran.so"))))))
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'do-not-use-syscall-on-hurd
+                      (lambda _
+                        (let ((patch
+                               #$(local-file
+                                  (search-patch
+                                   "openblas-do-not-use-syscall-on-hurd.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch)))))
+                 '()))))
     (inputs
      (list `(,gfortran "lib")))
     (native-inputs
