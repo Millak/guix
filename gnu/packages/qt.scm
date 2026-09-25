@@ -1655,13 +1655,13 @@ support for MNG, TGA, TIFF and WBMP image formats.")
 (define-public qtx11extras
   (package (inherit qtsvg-5)
     (name "qtx11extras")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "145hbdaj4r3lljgiasx404c12dl5sk4nghc1pc7w5xy1m8gppcgf"))))
+               "0p57h0a42r9acv6bdwnh2xvpkzhb6nr729zqwk1zfhqlq34dwz26"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
