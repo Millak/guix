@@ -249,21 +249,36 @@ used by the actual CeTZ package.")
   (package
     (inherit cetz-core-wasm)
     (name "typst-cetz")
+    (version (package-version cetz-core-wasm)) ; to bind in arguments
     (build-system typst-build-system)
     (arguments
-     (list #:tests? #f                  ; tt not yet packaged
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-build
-                 (lambda _
-                   (substitute* "justfile"
-                     ((": build") ":"))))
-               (add-after 'unpack 'unpack-scripts
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (mkdir-p "common")
-                   (copy-recursively (dirname
-                                      (search-input-file inputs "/scripts/package"))
-                                     "common/scripts"))))))
+     (list
+      #:tests? #f                  ; tt not yet packaged
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-build
+            (lambda _
+              (substitute* "justfile"
+                ((": build") ":"))))
+          (add-after 'unpack 'unpack-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "common")
+              (copy-recursively (dirname
+                                 (search-input-file inputs "/scripts/package"))
+                                "common/scripts")))
+          (add-after 'install 'symlink-wasm
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((dir (car (find-files #$output "cetz-core"
+                                           #:directories? #t)))
+                     (module
+                      (search-path
+                       (search-path-as-string->list
+                        (getenv "GUIX_TYPST_PACKAGE_PATH"))
+                       (string-append
+                        "preview/cetz/" #$version "/cetz-core/"
+                        "cetz_core.wasm"))))
+                (symlink module
+                         (string-append dir "/cetz_core.wasm"))))))))
     (propagated-inputs (list cetz-core-wasm typst-oxifmt))
     (native-inputs (list bash-minimal
                          cetz-common
