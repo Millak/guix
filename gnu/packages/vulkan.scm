@@ -88,6 +88,27 @@ and for the GLSL.std.450 extended instruction set.
               (string-append "https://github.com/KhronosGroup/SPIRV-Headers/blob/"
                              version "/LICENSE")))))
 
+;; needed by spirv-llvm-translator-17 due to SPIR-V opcodes/capabilities
+;; added to the standard after this package's own pinned tag
+(define-public spirv-headers-1.4.357.0
+  (package
+    (inherit spirv-headers)
+    (version "1.4.357.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/SPIRV-Headers")
+             (commit (string-append "vulkan-sdk-" version))))
+       (file-name (git-file-name "spirv-headers" version))
+       (sha256
+        (base32 "1ljkcdxbd7s67vgyxpdax9gl4griblacggqj5hwx79xrgwgkhrml"))))
+    (license
+      (license:x11-style
+        (string-append
+          "https://github.com/KhronosGroup/SPIRV-Headers/blob/vulkan-sdk-"
+          version "/LICENSE")))))
+
 (define-public spirv-tools
   (package
     (name "spirv-tools")
