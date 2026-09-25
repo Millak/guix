@@ -5109,7 +5109,7 @@ This package provides the Python bindings.")))
 (define-public qtkeychain
   (package
     (name "qtkeychain")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -5119,7 +5119,7 @@ This package provides the Python bindings.")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j1mn6vl0zc54b0pcffr20sqa5lbiwyi0l6vfa1ad3av0b66h1zy"))))
+         "0zhxyvwakvk4mqijmkp4hr9vxzb27ifwwlw18fjigbmbclscjbwd"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config qttools-5))
