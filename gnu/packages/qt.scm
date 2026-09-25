@@ -2664,13 +2664,13 @@ Server Protocol (LSP) for Qt.")
   (package
     (inherit qtsvg-5)
     (name "qtlocation")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1kqljk3ax2dfib4g0nh9zwdabiv8lyr7hxbj9qh05lrhcyshkrpk"))
+                "1n2zyhk1xypawbz9y8jlrb8ix1if16jbzz0987yfnqg041if68fm"))
               (patches
                (search-patches "qtlocation-5.15.8-mapboxgl-gcc13.patch"))
               (modules '((guix build utils)))
