@@ -5463,6 +5463,29 @@ Content System specification.")
                                   "-p1" "--input" patch)))
                       (find-files patchdir "\\.patch$")))))))))))))
 
+(define-public gmmlib
+  (package
+    (name "gmmlib")
+    (version "22.10.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/intel/gmmlib")
+              (commit (string-append "intel-gmmlib-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yyykcmsd8n4wyj8g750rhygkgrbxjkirf3lzknkac5gdsavs59y"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/intel/gmmlib")
+    (synopsis "Intel Graphics Memory Management Library")
+    (description
+     "GmmLib provides device-specific and buffer management for the Intel
+Graphics Compute Runtime for OpenCL and the Intel Media Driver for +VAAPI.  It
+is used by Intel's OpenCL and oneAPI Level Zero compute runtime
+(intel-compute-runtime/NEO) as well as its media and 3D drivers.")
+    (license license:expat)))
+
 (define-public handbrake
   (package
     (name "handbrake")
