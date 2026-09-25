@@ -2022,13 +2022,13 @@ with Bluetooth and NFC.")
 (define-public qtwebsockets-5
   (package (inherit qtsvg-5)
     (name "qtwebsockets")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "11fb6bvabkdhjlwyd3q0nmzhaildv9dnda78j9sphfdd5c0x1i6c"))))
+               "1rjkbcy02c286jgygn5lhw0bzp2syykvwki0s7r0jd1fics7ja7j"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
