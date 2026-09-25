@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
@@ -2346,33 +2346,30 @@ popular stats packages like SAS, Stata and SPSS.")
 (define-public ruby-enumerable-statistics
   (package
     (name "ruby-enumerable-statistics")
-    (version "2.0.7")
+    (version "2.0.9")
     ;; Source at RubyGems.org doesn't have tests.
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mrkn/enumerable-statistics.git")
+                    (url "https://github.com/mrkn/enumerable-statistics")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a8k2dvm1v0g6hcrbnzy0f7d63hdmpmldfdkl8wr32nbl05xnifa"))
-              (modules '((guix build utils)))
-              (snippet `(begin
-                          (substitute* "enumerable-statistics.gemspec"
-                            ;; benchmark-driver gem is used for
-                            ;; performance benchmarking, and isn't
-                            ;; needed for tests.
-                            (("spec.add_development_dependency \"benchmark-driver\"\n")
-                             ""))))))
+                "11gbx0lkcbiq4cyq95480nkklivzy71vdczwpix58gkxwyazsz63"))))
     (build-system ruby-build-system)
-    (native-inputs (list bundler
-                         ruby-rake
-                         ruby-rake-compiler
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rake" "test" "spec")))))))
+    (native-inputs (list ruby-rake-compiler
                          ruby-rspec
                          ruby-test-unit
-                         ruby-fuubar
-                         ruby-yard))
+                         ruby-fuubar))
     (synopsis "Library which provides statistics features for Enumerable")
     (description
      "@code{Enumerable::Statistics} provides some methods to calculate
