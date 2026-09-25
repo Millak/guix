@@ -1722,6 +1722,12 @@ from within Qt 5.")))
               (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-qt-private-components
+            (lambda _
+              ;; Qt 6.10 and later require explicitly finding private modules.
+              (substitute* "QXlsx/CMakeLists.txt"
+                (("COMPONENTS Core Gui REQUIRED")
+                 "COMPONENTS Core Gui GuiPrivate REQUIRED"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
