@@ -4749,6 +4749,8 @@ fiber, and defaults to a shared thread-local state.")
                  (replace 'check
                    (lambda* (#:key tests? #:allow-other-keys)
                      (when tests?
+                       ;; Requires SSL connections.
+                       (delete-file "spec/flores/pki_integration_spec.rb")
                        (invoke "ruby" (which "rspec"))))))))
       (native-inputs (list ruby-rspec ruby-simplecov))
       (synopsis "Fuzzing, randomization, and stress testing library")
