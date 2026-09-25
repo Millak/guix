@@ -2477,13 +2477,13 @@ compositor libraries.")
   (package
     (inherit qtsvg-5)
     (name "qtserialport")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1r5avi20fyxcnh27lcd78fmm9mqm67yydmq87p624qmqii8bdi12"))))
+                "1igh2vc0kzddfiqrvqcqr10rfn61sz5psv8yg4w8krp1a1r1ckgm"))))
     (native-inputs (list perl))
     (inputs (list qtbase-5 eudev))
     (arguments
