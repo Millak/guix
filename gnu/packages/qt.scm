@@ -3020,13 +3020,13 @@ coloring, and many more.")))
   (package
     (inherit qtsvg-5)
     (name "qtgamepad")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1d05pl7391vp3s7h52aihka2aildzn3ifnmmvsrhn0g2689q6l95"))))
+                "0b7fxpxx6q0y3wxlv94bz0gp94smg295v5hwsbfbn4bcml07misf"))))
     (native-inputs (list perl pkg-config))
     (inputs
      (list fontconfig
