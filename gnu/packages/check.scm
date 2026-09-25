@@ -1038,11 +1038,12 @@ has been designed to be fast, light and unintrusive.")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'install 'check
-                 (lambda _
-                   (with-directory-excursion "tests"
-                     (invoke "cmake" ".")
-                     (invoke "make")
-                     (invoke "ctest")))))))
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "tests"
+                       (invoke "cmake" ".")
+                       (invoke "make")
+                       (invoke "ctest"))))))))
     (native-inputs (list cmake-minimal))
     (home-page "https://github.com/nemtrif/ftest")
     (synopsis "C++ testing framework")
