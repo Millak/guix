@@ -3127,13 +3127,13 @@ information and perform area based monitoring.")
   (package
     (inherit qtsvg-5)
     (name "qtcharts")
-    (version "5.15.17")
+    (version "5.15.19")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0csimm84df9f70irp8di8r208jpiv6hhfbxdi4sxh9935ygpqgc4"))))
+                "1wa3m5hc2d20avd210yw9d4a3jg7d3a5q19a5h4vdxi764x0bgkc"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)
