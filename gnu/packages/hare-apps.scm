@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2025, 2026 jgart <jgart@dismail.de>
 ;;; Copyright © 2026 Nemin <bergengocia@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,6 +22,7 @@
   #:use-module (gnu packages man)
   #:use-module (guix build-system hare)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
@@ -61,6 +62,40 @@ accepted event is received while waiting
 The state will transition following every accepted transition.  If there is no
 more available transition, the state goes back to the initial position.")
     (license license:agpl3+)))
+
+(define-public harebrew
+  (package
+    (name "harebrew")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~empathy_monster/harebrew")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fipxgp4jk57ww4pii6dkw3zl6aqnhab7881prxp2d8q1krvyhvk"))))
+    (build-system hare-build-system)
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-data-dir
+            (lambda _
+              (substitute* "strutils/data_dir.ha"
+                (("/usr/local/share/harebrew/licenses")
+                 (string-append #$output "/share/harebrew/licenses")))))
+          (add-before 'install 'create-bin-directory
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
+    (supported-systems %hare-supported-systems)
+    (native-inputs (list scdoc))
+    (home-page "https://sr.ht/~empathy_monster/harebrew")
+    (synopsis "Command-line utility to bootstrap Hare files and projects")
+    (description "Harebrew is a command-line utility for initiating Hare projects.")
+    (license license:gpl3+)))
 
 (define-public hare-lsp
   (package
