@@ -10055,6 +10055,7 @@ input list.  You will still need to manually add a phase or tweak the
 
 @end defvar
 
+@anchor{ant-build-system}
 @defvar ant-build-system
 This variable is exported by @code{(guix build-system ant)}.  It
 implements the build procedure for Java packages that can be built with
@@ -10656,6 +10657,7 @@ arguments @code{#:julia-package-name} and @code{#:julia-package-uuid}
 are provided.
 @end defvar
 
+@anchor{maven-build-system}
 @defvar maven-build-system
 This variable is exported by @code{(guix build-system maven)}.  It implements
 a build procedure for @uref{https://maven.apache.org, Maven} packages.  Maven
