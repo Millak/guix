@@ -10070,7 +10070,9 @@ When the original package does not provide a suitable Ant build file,
 the parameter @code{#:jar-name} can be used to generate a minimal Ant
 build file @file{build.xml} with tasks to build the specified jar
 archive.  In this case the parameter @code{#:source-dir} can be used to
-specify the source sub-directory, defaulting to ``src''.
+specify the source sub-directory, defaulting to ``src'', and the
+parameter @code{#:test-dir} can be used to specify the test
+sub-directory, defaulting to ``src/test''.
 
 The @code{#:main-class} parameter can be used with the minimal ant
 buildfile to specify the main class of the resulting jar.  This makes the
@@ -10078,11 +10080,27 @@ jar file executable.  The @code{#:test-include} parameter can be used to
 specify the list of junit tests to run.  It defaults to
 @code{(list "**/*Test.java")}.  The @code{#:test-exclude} can be used to
 disable some tests.  It defaults to @code{(list "**/Abstract*.java")},
-because abstract classes cannot be run as tests.
+because abstract classes cannot be run as tests.  When the
+@code{#:use-java-modules?} parameter is true, the minimal build file
+passes dependencies on the Java module path in addition to the class
+path.
 
 The parameter @code{#:build-target} can be used to specify the Ant task
 that should be run during the @code{build} phase.  By default the
-``jar'' task will be run.
+``jar'' task will be run.  Likewise, the parameter @code{#:test-target}
+specifies the Ant task run during the @code{check} phase; it defaults to
+``check''.
+
+The minimal build file has no installation task, so packages using
+@code{#:jar-name} usually replace the @code{install} phase with one of
+the procedures provided by the @code{(guix build java-utils)} module:
+@code{install-jars} copies the jar files from a directory to
+@file{share/java}, while @code{install-from-pom} also installs the jar
+and its @file{pom.xml} into the Maven repository layout under
+@file{lib/m2}, so that packages built with @code{maven-build-system} can
+find them.  When upstream provides no @file{pom.xml}, one can be created
+with @code{generate-pom.xml}; a POM-only artifact, such as a parent POM,
+can be installed with @code{install-pom-file}.
 
 @end defvar
 
