@@ -7,7 +7,7 @@
 ;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,16 +68,14 @@
 (define-public php-8.5
   (package
     (name "php")
-    (version "8.5.9")
+    (version "8.5.11")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "1x08nwwwqr73488n4vqgmv9abxnnhki3bnrcb4fspl5w4mgqbdqd"))
-       (patches
-        (search-patches "php-03-fix-ftp-certificate.patch"))
+        (base32 "0q03h3mvwah8fbzf7m6rlvv1a2kmw7xxi521ix66yccciv07bgnr"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -246,6 +244,7 @@
                '("ext/posix/tests/posix_getgrgid.phpt" ;Requires /etc/group.
                  "ext/posix/tests/posix_getgrnam_basic.phpt" ;Requires /etc/group.
                  "ext/sockets/tests/bug63000.phpt" ;Fails to detect OS.
+                 "ext/sockets/tests/socket_tcp_congestion.phpt" ;Needs kernel support
                  ;; These need exotic locales.
                  "ext/standard/tests/strings/setlocale_basic1.phpt"
                  "ext/standard/tests/strings/setlocale_basic2.phpt"
