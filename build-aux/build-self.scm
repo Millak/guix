@@ -148,7 +148,7 @@ build daemon, from within the generated build program."
 
                       (match (command-line)
                         ((_ source system version protocol-version
-                            build-output)
+                            build-output graft?)
                          ;; The current input port normally wraps a file
                          ;; descriptor connected to the daemon, or it is
                          ;; connected to /dev/null.  In the former case, reuse
@@ -167,7 +167,8 @@ build daemon, from within the generated build program."
                                            (open-connection
                                             #:built-in-builders
                                             '#$built-in-builders)))
-                                (sock  (socket AF_UNIX SOCK_STREAM 0)))
+                                (sock  (socket AF_UNIX SOCK_STREAM 0))
+                                (graft? (not (zero? (string->number graft?)))))
                            ;; Connect to BUILD-OUTPUT and send it the raw
                            ;; build output.
                            (connect sock AF_UNIX build-output)
@@ -184,7 +185,8 @@ build daemon, from within the generated build program."
                              ;; Silence autoload warnings and the likes.
                              (parameterize ((current-warning-port
                                              (%make-void-port "w"))
-                                            (current-build-output-port sock))
+                                            (current-build-output-port sock)
+                                            (%graft? graft?))
                                (run-with-store store
                                  (guix-derivation source version
                                                   #$guile-version
@@ -245,6 +247,7 @@ Display a spinner when nothing happens."
                                    "3.0"
                                    (effective-version)))
                 built-in-builders
+                (graft? (%graft?))
                 #:allow-other-keys
                 #:rest rest)
   "Return a derivation that unpacks SOURCE into STORE and compiles Scheme
@@ -303,7 +306,8 @@ files."
                                           (number->string
                                            (logior major minor))
                                           "none")
-                                      node))))))
+                                      node
+                                      (if graft? "1" "0")))))))
         (format (current-error-port) "Computing Guix derivation for '~a'...  "
                 system)
 
