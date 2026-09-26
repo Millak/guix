@@ -5488,6 +5488,24 @@ fork of @url{https://github.com/nbutton23/zxcvbn-go}.")
     (description "This package solves the type conversion issues in Go.")
     (license license:expat)))
 
+(define-public go-github-com-ccoveille-go-safecast-v2
+  (package
+    (inherit go-github-com-ccoveille-go-safecast)
+    (name "go-github-com-ccoveille-go-safecast-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ccoVeille/go-safecast")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "191ff66ry9ksy2ibf0h3c1dwx06jvlnimj4p9wwwh9297xrjra9x"))))
+    (arguments
+     (list
+      #:import-path "github.com/ccoveille/go-safecast"))))
+
 (define-public go-github-com-cention-sany-utf7
   (package
     (name "go-github-com-cention-sany-utf7")
