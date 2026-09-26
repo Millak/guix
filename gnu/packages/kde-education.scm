@@ -300,27 +300,31 @@ adjust the level of difficulty.")
                    "-DENABLE_READSTAT=OFF"
                    ;; This is a bundled library that is not packaged.
                    "-DENABLE_LIBORIGIN=ON")
-           #:test-exclude
-           (string-append "("
-                          (string-join '("ParserTest"
-                                         "ReadStatFilterTest"
-                                         "WorksheetElementTest")
-                                       "|")
-                          ")")
+           ;; ParserTest requires the de_DE locale from glibc-locales.
+           #:test-exclude "^ParserTest$"
            #:phases
            #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" (getcwd))
-                     ;; This test fails, I don't know why.
-                     (invoke "ctest" "-E" test-exclude)))))))
-    (native-inputs (list bison
-                         extra-cmake-modules
-                         kdoctools
-                         pkg-config
-                         python-wrapper
-                         qttools))
+               (add-after 'unpack 'fix-qt-includes
+                 (lambda _
+                   ;; Qt no longer includes QElapsedTimer transitively.
+                   (substitute*
+                       "src/backend/worksheet/plots/cartesian/XYFourierFilterCurve.cpp"
+                     (("#include <QIcon>")
+                      "#include <QIcon>\n#include <QElapsedTimer>"))))
+               (add-before 'check 'prepare-test-home
+                 (lambda _
+                   ;; SQL import tests persist their connection settings here.
+                   ;; Fontconfig also needs a writable cache directory.
+                   (let ((home (string-append (getenv "TMPDIR") "/home")))
+                     (mkdir-p home)
+                     (setenv "HOME" home)))))))
+    (native-inputs
+     (list bison
+           extra-cmake-modules
+           kdoctools
+           pkg-config
+           python-wrapper
+           qttools))
     (inputs
      (list breeze ;for dark themes
            breeze-icons ;for icons
