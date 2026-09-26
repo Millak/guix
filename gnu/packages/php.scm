@@ -396,15 +396,13 @@ systems, web content management systems and web frameworks.")
   (package
     (inherit php-8.5)
     (home-page "https://www.php.net/")
-    (version "8.4.24")
+    (version "8.4.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "0c87q01ll6q1w1f23v448iqi1lh09dhqm9ygqlkl6vshm04vw9z1"))
-       (patches
-        (search-patches "php-03-fix-ftp-certificate.patch"))
+        (base32 "1wb90ns46i4s8hax5kjdwxqw4l0v9z748lh0lpa4xm1ahr9xx8ij"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"

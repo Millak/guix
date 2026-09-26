@@ -66,7 +66,7 @@
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 # Copyright © 2024-2026 David Elsing <david.elsing@posteo.net>
-# Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+# Copyright © 2024, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
 # Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
@@ -2239,7 +2239,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
   %D%/packages/patches/perl-xml-libxml-fix-function-prototypes.patch	\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
-  %D%/packages/patches/php-03-fix-ftp-certificate.patch	\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
   %D%/packages/patches/pinball-system-ltdl.patch		\
