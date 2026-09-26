@@ -3900,6 +3900,36 @@ Syntax (@url{https://www.rfc-editor.org/rfc/rfc2315, RFC 2315},
 @url{https://www.rfc-editor.org/rfc/rfc5652, RFC 5652}).")
     (license license:expat)))
 
+(define-public go-github-com-smallstep-scep
+  (package
+    (name "go-github-com-smallstep-scep")
+    (version "0.0.0-20260331191114-261f960a40d1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/scep")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "137qdg5frnf9zcrrccvwfnwgyslhdjl6fbpx3l3wrg8y1m9r5jyb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smallstep/scep"
+      ;; scep_test.go:247: pkcs7: signing time "2026-09-26T08:59:16Z" is
+      ;; outside of certificate validity "2016-05-29T13:47:05Z" to
+      ;; "2026-05-29T13:47:08Z"
+      #:test-flags #~(list "-skip" "TestSignCSR")))
+    (propagated-inputs (list go-github-com-smallstep-pkcs7))
+    (home-page "https://github.com/smallstep/scep")
+    (synopsis "Go Simple Certificate Enrollment Protocol (SCEP) server")
+    (description
+     "Package scep provides common functionality for encoding and decoding
+@acronym{Simple Certificate Enrolment Protocol, SCEP} PKI messages as defined
+by @url{https://tools.ietf.org/html/draft-gutmann-scep-02}.")
+    (license license:expat)))
+
 (define-public go-github-com-spaolacci-murmur3
   (package
     (name "go-github-com-spaolacci-murmur3")
