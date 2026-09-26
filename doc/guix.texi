@@ -10676,9 +10676,6 @@ symlinked into a proper repository before maven is run.  Maven is instructed
 to use that repository for the build and installs built artifacts there.
 Changed files are copied to the @file{lib/m2} directory of the package output.
 
-You can specify a @file{pom.xml} file with the @code{#:pom-file} argument,
-or let the build system use the default @file{pom.xml} file in the sources.
-
 In case you need to specify a dependency's version manually, you can use the
 @code{#:local-packages} argument.  It takes an association list where the key
 is the groupId of the package and its value is an association list where the
@@ -10689,7 +10686,10 @@ Some packages use dependencies or plugins that are not useful at runtime nor
 at build time in Guix.  You can alter the @file{pom.xml} file to remove them
 using the @code{#:exclude} argument.  Its value is an association list where
 the key is the groupId of the plugin or dependency you want to remove, and
-the value is a list of artifactId you want to remove.
+the value is a list of artifactId you want to remove.  It defaults to
+removing the @code{maven-release-plugin} and @code{maven-site-plugin}
+plugins of the @code{org.apache.maven.plugins} group; when overriding
+it, you may want to keep these entries.
 
 You can override the default @code{jdk} and @code{maven} packages with the
 corresponding argument, @code{#:jdk} and @code{#:maven}.
