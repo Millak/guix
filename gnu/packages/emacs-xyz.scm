@@ -50675,6 +50675,29 @@ specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
 variations, including non-standard base32 encodings.")
       (license license:gpl3+))))
 
+(define-public emacs-typewriter
+  (package
+    (name "emacs-typewriter")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/enricoflor/typewriter.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xza82hi5smg8dzfgc1ninpdpdhv01l8zhbr3lwws345d6h110fj"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))    ;no tests
+    (home-page "https://github.com/enricoflor/typewriter.el")
+    (synopsis "Turns Emacs into a Text Adder")
+    (description "This package provides typewriter-mode, a small minor mode
+that deliberately handicaps Emacs to an extreme degree in order to provide
+something as close as possible to the strict forward-only typewriter
+experience.")
+    (license license:gpl3+)))
+
 (define-public emacs-back-button
   (package
     (name "emacs-back-button")
