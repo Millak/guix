@@ -29920,6 +29920,48 @@ GNU/Linux, this is a proxy for the @command{xdg-open} command.")
 @url{https://github.com/tree-sitter/tree-sitter, tree-sitter} in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-smallstep-cli-utils
+  (package
+    (name "go-github-com-smallstep-cli-utils")
+    (version "0.12.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/cli-utils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kfwmps4ckzbpkv1qysagr0jiiv06igc6airhk6wi3h8yxa88kln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/smallstep/cli-utils"
+      ;; token_test.go:133: Claims.Sign() error = <nil>, wantErr true
+      #:test-flags #~(list "-skip" "TestClaims_Sign/fail_on_sign")))
+    (native-inputs
+     (list go-github-com-smallstep-assert
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline
+           go-github-com-manifoldco-promptui
+           go-github-com-mgutz-ansi
+           go-github-com-pkg-errors
+           go-github-com-shurcool-sanitized-anchor-name
+           go-github-com-urfave-cli
+           go-go-step-sm-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/smallstep/cli-utils")
+    (synopsis "Common code between step and step-ca")
+    (description
+     "Cli-utils is a collection of packages used in
+@url{https://smallstep.com, Smallstep} projects
+@url{https://github.com/smallstep/cli, step} and
+@url{https://github.com/smallstep/certificates, step-ca}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smallstep-truststore
   (package
     (name "go-github-com-smallstep-truststore")
