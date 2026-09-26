@@ -1369,7 +1369,7 @@ configure network interfaces in Linux containers.")
 (define-public crun
   (package
     (name "crun")
-    (version "1.29.1")
+    (version "1.30.1")
     (source
      (origin
        (method git-fetch)
@@ -1379,7 +1379,7 @@ configure network interfaces in Linux containers.")
               (recursive? #t)))
        (sha256
         (base32
-         "02dlw47mydpwridbaqgdwm0l6wl54qngqbg9526ib6hcj347mj96"))
+         "0xcplka3n3blj7yycdxc0v9231fbcpbhn2kx9vdysa5p13bv1hvh"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
