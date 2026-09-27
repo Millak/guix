@@ -7040,19 +7040,25 @@ options.")
 
 (define-public python-css-parser
   (package
-    (inherit python-cssutils)
     (name "python-css-parser")
-    (version "1.0.10")
+    (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "css-parser" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ebook-utils/css-parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qs375slcwqd7slizh6hzkwxx7cdj36v8kwn0qrfji1kscm9f7mz"))))
+        (base32 "0514g5a0r972lm883b3aja3b8jsxywmhxn4xpx7ksjpqmx38wga4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/ebook-utils/css-parser")
-    (synopsis "Fork of cssutils modified for parsing ebooks")
+    (synopsis "CSS related utilities for Python")
     (description
-      "Css-parser is a Python package for parsing and building CSS
+     "Css-parser is a Python package for parsing and building CSS
 Cascading Style Sheets.  Currently it provides a DOM only and no rendering
 options.
 
