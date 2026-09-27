@@ -7002,40 +7002,32 @@ for clients and servers.")
 (define-public python-cssutils
   (package
     (name "python-cssutils")
-    (version "2.11.1")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cssutils" version))
        (sha256
-        (base32
-         "1qpq7xvzqp4cfcb8837rnd30x4hws3rkp33qpvmnxbxn2djsfqq5"))))
+        (base32 "08fhyw7x88xzhphm6jc6v72kw3i8iysw91x7rgd3fl4iycvr4wz9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda _
-              (invoke "pytest" "-vv" "-k"
-                      (string-append "not encutils "
-                                     "and not website.logging")))))))
+      ;; tests: 399 passed, 2 skipped, 43 xfailed
+      #:test-flags
+      ;; Examples try to access http://cthedot.de/not-present.css.
+      #~(list "--ignore=examples/")))
     (native-inputs
      (list python-cssselect
            python-jaraco-test
-           python-lxml
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-more-itertools))
+     (list python-encutils python-more-itertools))
     (home-page "https://github.com/jaraco/cssutils")
-    (synopsis
-      "CSS Cascading Style Sheets library for Python")
+    (synopsis "CSS Cascading Style Sheets library for Python")
     (description
-      "Cssutils is a Python package for parsing and building CSS
-Cascading Style Sheets.  Currently it provides a DOM only and no rendering
-options.")
+     "Cssutils is a Python package for parsing and building CSS Cascading
+Style Sheets.  Currently it provides a DOM only and no rendering options.")
     (license license:lgpl3+)))
 
 (define-public python-css-parser
