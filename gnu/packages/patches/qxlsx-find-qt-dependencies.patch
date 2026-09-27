@@ -1,0 +1,23 @@
+Discover exported Qt dependencies before importing QXlsx targets.
+
+Without these lookups, downstream CMake projects fail because QXlsx::QXlsx
+references Qt targets that have not been declared. Qt 6.10 and later
+require finding the private GUI module explicitly.
+
+Upstream status: Not submitted.
+
+--- a/QXlsx/cmake/modules/qxlsx-config.cmake.in
++++ b/QXlsx/cmake/modules/qxlsx-config.cmake.in
+@@ -13,6 +13,12 @@
+ set_and_check(@EXPORT_NAME@_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+ set_and_check(@EXPORT_NAME@_LIBRARY_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+ 
++include(CMakeFindDependencyMacro)
++find_dependency(Qt@QT_VERSION_MAJOR@ COMPONENTS Core Gui)
++if(@QT_VERSION_MAJOR@ EQUAL 6 AND Qt6_VERSION VERSION_GREATER_EQUAL 6.10)
++    find_dependency(Qt6 COMPONENTS GuiPrivate)
++endif()
++
+ include("${CMAKE_CURRENT_LIST_DIR}/@EXPORT_NAME@Targets.cmake")
+ 
+ set(@EXPORT_NAME@_LIBRARIES "@EXPORT_NAME@")

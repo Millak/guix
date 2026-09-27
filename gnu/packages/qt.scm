@@ -1702,7 +1702,7 @@ from within Qt 5.")))
 (define-public qxlsx
   (package
     (name "qxlsx")
-    (version "1.4.6")
+    (version "1.5.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1711,8 +1711,9 @@ from within Qt 5.")))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xbpajvwkv09h2fang200nsanv5gl1alsdd725gh9cgq4szng6gj"))
-       (patches (search-patches "qxlsx-fix-include-directory.patch"))))
+        (base32 "1nrfwsbrvdy61bw66k1909gw6qq7pm3h3gd8f4ydf14vzqix254f"))
+       (patches (search-patches "qxlsx-find-qt-dependencies.patch"
+                                "qxlsx-install-sax-header.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1722,12 +1723,6 @@ from within Qt 5.")))
               (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'find-qt-private-components
-            (lambda _
-              ;; Qt 6.10 and later require explicitly finding private modules.
-              (substitute* "QXlsx/CMakeLists.txt"
-                (("COMPONENTS Core Gui REQUIRED")
-                 "COMPONENTS Core Gui GuiPrivate REQUIRED"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?

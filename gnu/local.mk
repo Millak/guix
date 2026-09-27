@@ -2220,7 +2220,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/qttools-clang-22.patch                   \
   %D%/packages/patches/qtwebengine5-python312-six-compat.patch	\
   %D%/packages/patches/quodlibet-disable-bundled-packages.patch	\
-  %D%/packages/patches/qxlsx-fix-include-directory.patch	\
+  %D%/packages/patches/qxlsx-find-qt-dependencies.patch	\
+  %D%/packages/patches/qxlsx-install-sax-header.patch	\
   %D%/packages/patches/schiffbruch-fix-build-for-gcc-13.patch	\
   %D%/packages/patches/scn-fast-float-compat.patch		\
   %D%/packages/patches/sdcc-disable-non-free-code.patch		\
