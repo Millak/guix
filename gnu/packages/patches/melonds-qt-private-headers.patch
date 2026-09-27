@@ -1,0 +1,22 @@
+Request the private GUI module explicitly with Qt 6.10 and later.
+The private include directories are no longer populated by finding Gui alone.
+Keep the existing lookup for older Qt versions.
+
+Upstream status: Not submitted.
+
+--- a/src/frontend/qt_sdl/CMakeLists.txt
++++ b/src/frontend/qt_sdl/CMakeLists.txt
+@@ -175,7 +175,12 @@
+     "${CMAKE_CURRENT_SOURCE_DIR}/..")
+ 
+ if (USE_QT6)
+-    target_include_directories(melonDS PUBLIC ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
++    if(Qt6_VERSION VERSION_GREATER_EQUAL 6.10)
++        find_package(Qt6 REQUIRED COMPONENTS GuiPrivate)
++        target_link_libraries(melonDS PRIVATE Qt6::GuiPrivate)
++    else()
++        target_include_directories(melonDS PUBLIC ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
++    endif()
+ else()
+     target_include_directories(melonDS PUBLIC ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+ endif()
