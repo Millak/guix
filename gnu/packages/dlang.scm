@@ -588,6 +588,10 @@ This compiler is based on the DMD frontend version 2.112.1.")
                   (for-each (lambda (f)
                               (false-if-exception (make-file-writable f)))
                             (find-files ".")))))
+            (add-after 'unpack 'use-gcc-by-default
+              (lambda _
+                (substitute* "dmd/compiler/src/dmd/link.d"
+                  (("\"cc\"") "\"gcc\""))))
             (add-after 'unpack 'patch-git-ls-tree
               ;; The druntime Makefile tries to use git ls-tree to get all
               ;; source files in dmd/druntime/. We replace the command with a
