@@ -4374,29 +4374,39 @@ compagnies.")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.13.7")
+    (version "0.14.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyqtgraph" version))
+       ;; PyPI provides only a wheel, not a source archive, for this release.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyqtgraph/pyqtgraph")
+             (commit (string-append "pyqtgraph-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qyr461hcvhgy02slfkgrbip2xwa8zz6dvmi1476v6f66lclzy34"))))
+        (base32 "17943ph3bna6gj9iabi2v6v4ch27339n19ihcbngya2w3dlf36jg"))
+       (patches (search-patches "python-pyqtgraph-svg-closepath.patch"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; tests: 949 passed, 1356 skipped, 2 deselected, 8 xfailed, 130 warnings
      (list #:test-flags
            ;; Failed: CALL ERROR: Exceptions caught in Qt event loop.
            #~(list "--deselect=tests/exporters/test_svg.py::test_plotscene"
                    ;; The test_reload test fails.  It suggests to disable
                    ;; assert rewriting in Pytest, but it still doesn't pass.
                    "-k" "not test_reload"
-                   ;; Run unit tets only.
+                   ;; Run unit tests only.
                    "tests")
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'check 'set-qpa
+               (add-before 'check 'prepare-test-environment
                  (lambda _
-                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+                   ;; The offscreen plugin lacks window operations tested here.
+                   (system "Xvfb :99 -screen 0 1920x1080x24 &")
+                   (setenv "DISPLAY" ":99")
+                   (setenv "QT_QPA_PLATFORM" "xcb")
+                   (setenv "TZDIR"
+                           (string-append #$tzdata-for-tests
+                                          "/share/zoneinfo")))))))
     (native-inputs
      (list python-pytest
            ;; Do not propagate Qt5/Qt6 let the user of the package to select
@@ -4405,9 +4415,12 @@ compagnies.")
            ;; </getting_started/how_to_use.html#pyqt-and-pyside>.
            python-pyqt-6
            python-pytest-qt
-           python-setuptools))
+           python-setuptools
+           tzdata-for-tests
+           xorg-server-for-tests))
     (propagated-inputs
-     (list python-h5py
+     (list python-colorama
+           python-h5py
            python-numpy
            python-pyopengl
            python-scipy))

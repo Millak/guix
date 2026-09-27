@@ -2202,6 +2202,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pydemumble-system-nanobind.patch	\
   %D%/packages/patches/python-pydocstyle-add-support-for-pep701.patch	\
   %D%/packages/patches/python-pynvim-fix-test-command-error.patch	\
+  %D%/packages/patches/python-pyqtgraph-svg-closepath.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-scikit-build-setuptools-compat.patch	\
   %D%/packages/patches/python-scikit-image-fix-python-pillow.patch	\

@@ -1,0 +1,49 @@
+From 1b84c2b2d5b6f22b41c91733bc4ace808d14998c Mon Sep 17 00:00:00 2001
+From: KIU Shueng Chuan <nixchuan@gmail.com>
+Date: Fri, 27 Feb 2026 18:52:53 +0800
+Subject: [PATCH] svg path: support Z closepath command
+
+Upstream: https://github.com/pyqtgraph/pyqtgraph/commit/1b84c2b2d5b6f22b41c91733bc4ace808d14998c
+
+---
+ pyqtgraph/exporters/SVGExporter.py | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/pyqtgraph/exporters/SVGExporter.py b/pyqtgraph/exporters/SVGExporter.py
+index af07a16ee4..8f7aacb180 100644
+--- a/pyqtgraph/exporters/SVGExporter.py
++++ b/pyqtgraph/exporters/SVGExporter.py
+@@ -419,19 +419,25 @@ def correctCoordinates(node, defs, item, options):
+                 ch.setAttribute('points', ' '.join([','.join([str(a) for a in c]) for c in coords]))
+             elif ch.tagName == 'path':
+                 removeTransform = True
+-                newCoords = ''
+                 oldCoords = ch.getAttribute('d').strip()
+                 if oldCoords == '':
+                     continue
++                newCoords = []
+                 for c in oldCoords.split(' '):
+-                    x,y = c.split(',')
+-                    if x[0].isalpha():
+-                        t = x[0]
+-                        x = x[1:]
++                    tokens = c.split(',')
++                    if len(tokens) == 1:
++                        # this might be a Z
++                        newCoords.append(tokens[0])
+                     else:
+-                        t = ''
+-                    nc = fn.transformCoordinates(tr, np.array([[float(x),float(y)]]), transpose=True)
+-                    newCoords += t+str(nc[0,0])+','+str(nc[0,1])+' '
++                        x, y = tokens
++                        if x[0].isalpha():
++                            t = x[0]
++                            x = x[1:]
++                        else:
++                            t = ''
++                        nc = fn.transformCoordinates(tr, np.array([[float(x),float(y)]]), transpose=True)
++                        newCoords.append(t+str(nc[0,0])+','+str(nc[0,1]))
++                newCoords = ' '.join(newCoords)
+                 # If coords start with L instead of M, then the entire path will not be rendered.
+                 # (This can happen if the first point had nan values in it--Qt will skip it on export)
+                 if newCoords[0] != 'M':
