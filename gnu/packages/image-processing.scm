@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2020, 2026 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
 ;;; Copyright © 2021, 2022, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -1028,7 +1028,7 @@ recalculates.")
 (define-public paraview
   (package
     (name "paraview")
-    (version "6.0.0")
+    (version "6.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1038,7 +1038,7 @@ recalculates.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m1c7vngrpaqdqvnjx4wj0va20hih5rb7rf0a44mp3wqgp4wgy0f"))
+        (base32 "04kj7x45666q79iy6695qalx1kzisjzzhnaplc9zgnxkjrxj1gyl"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Also remove unused bundled libraries and plugins?
@@ -1059,13 +1059,14 @@ recalculates.")
             ;; Remove undesired ParaView plugins.
             (delete-file-recursively "Plugins/pvNVIDIAIndeX")
             ;; Remove bundled VTK libraries which are available in Guix.
+            ;; for VTK its self, upstream advises against unbundling
+            ;; Perhaps a vtk-for-paraview would work?
             (for-each (lambda (dir)
                         (delete-file-recursively
                          (string-append "VTK/ThirdParty/" dir "/vtk" dir)))
                       '("cgns"
                         "cli11"
                         ;;"diy2"
-                        "doubleconversion"
                         "eigen"
                         ;;"exodusII"
                         "expat"
@@ -1213,6 +1214,13 @@ recalculates.")
            "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-xcursor-library-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; VTK loads Xcursor with dlopen, so merely adding it to inputs
+              ;; does not make it available on the runtime library search path.
+              (substitute* "VTK/Utilities/X11/vtkX11Functions.cxx"
+                (("libXcursor\\.so(\\.1)?")
+                 (search-input-file inputs "lib/libXcursor.so.1")))))
           (add-after 'set-paths 'hide-gfortran
             (lambda _
               (setenv "CPLUS_INCLUDE_PATH"
