@@ -2148,6 +2148,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/pasystray-check-x11.patch		\
   %D%/packages/patches/pciutils-hurd64.patch			\
+  %D%/packages/patches/pcsx2-qt-private-headers.patch	\
   %D%/packages/patches/pcsxr-find-harfbuzz.patch			\
   %D%/packages/patches/pcsxr-fix-definitions.patch			\
   %D%/packages/patches/pdl-2.019-glut-bitmap-fonts.patch	\

@@ -1,0 +1,23 @@
+Find and link the private GUI module with Qt 6.10 and later.
+Adapted from the private-module lookup in PCSX2 2.8.2:
+https://github.com/PCSX2/pcsx2/blob/v2.8.2/cmake/SearchForStuff.cmake
+
+--- a/pcsx2-qt/CMakeLists.txt
++++ b/pcsx2-qt/CMakeLists.txt
+@@ -253,8 +253,15 @@
+ target_precompile_headers(pcsx2-qt PRIVATE PrecompiledHeader.h)
+ set_source_files_properties(PrecompiledHeader.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+ 
++# Qt 6.10 requires private modules to be requested explicitly.
++if(Qt6_VERSION VERSION_GREATER_EQUAL 6.10)
++    find_package(Qt6 REQUIRED COMPONENTS GuiPrivate)
++    target_link_libraries(pcsx2-qt PRIVATE Qt6::GuiPrivate)
++else()
++    target_include_directories(pcsx2-qt PRIVATE ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
++endif()
++
+ target_include_directories(pcsx2-qt PRIVATE
+-	${Qt6Gui_PRIVATE_INCLUDE_DIRS}
+ 	"${CMAKE_BINARY_DIR}/common/include"
+ 	"${CMAKE_SOURCE_DIR}/pcsx2"
+ 	"${CMAKE_SOURCE_DIR}/pcsx2-qt"

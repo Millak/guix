@@ -3818,6 +3818,7 @@ de-interlacing patches for use with PCSX2.")
              (url "https://github.com/PCSX2/pcsx2")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "pcsx2-qt-private-headers.patch"))
        (sha256
         (base32 "0nr53cjifqwnz3icxsj01yd3aw1vfsfxga4zz5zi8aqr175mvq27"))
        (modules '((guix build utils)))
