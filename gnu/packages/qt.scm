@@ -6088,7 +6088,8 @@ of the InventorXt GUI component toolkit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09q8nacsxfih2px78bnallxvgr7g2z4b2dhy090sbah5siv1wdkd"))))
+                "09q8nacsxfih2px78bnallxvgr7g2z4b2dhy090sbah5siv1wdkd"))
+              (patches (search-patches "hyprland-qtutils-qt6.10.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;There are no tests.
