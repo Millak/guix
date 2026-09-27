@@ -1595,6 +1595,59 @@ a way to run async/await coroutines around those @code{Future}s.  Unlike most
 async libraries, duet is re-entrant.")
     (license license:asl2.0)))
 
+(define-public python-encutils
+  (package
+    (name "python-encutils")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coherent-oss/encutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09q2rnlnkfw0pjg95can05xf8z4x5ighbckxnzkccz1f0z2y8xrc"))
+       (snippet
+        #~(begin
+            ;; Upstream is badly packaged, prepare to use Flit-core build
+            ;; backend.
+            (use-modules (guix build utils))
+            (mkdir "encutils")
+            (rename-file "__init__.py" "encutils/__init__.py")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-python-module-with-flit
+            (lambda _
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "[build-system]
+requires = ['flit_core']
+build-backend = 'flit_core.buildapi'
+[project]
+name = ~s
+version = ~s
+description = ~s
+[tool.flit.module]
+name = ~s~%"
+                          "encutils"
+                          #$version
+                          #$(package-description this-package)
+                          "encutils"))))))))
+    (propagated-inputs (list python-chardet))
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/coherent-oss/encutils")
+    (synopsis "Encoding detection collection for Python")
+    (description
+     "This package provides a collection of helper functions to detect
+encodings of text files (like HTML, XHTML, XML, CSS, etc.) retrieved via HTTP,
+file or string.")
+    ;; See: <https://github.com/coherent-oss/encutils/issues/1>.
+    (license license:lgpl3+)))
+
 (define-public python-envs
   (package
     (name "python-envs")
