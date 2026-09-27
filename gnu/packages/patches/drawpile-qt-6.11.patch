@@ -1,0 +1,231 @@
+Fix compilation with Qt 6.11.
+
+Pass an integer to QString::arg instead of relying on QFlags conversion.
+The explicit cast also works with Qt 5. Upstream addresses this with its
+COMPAT_FLAGS_ARG helper in commit:
+https://github.com/drawpile/Drawpile/commit/c4f69f79b1cb0d25e68b49e807ce6773ddb9dd3c
+
+Include QTest directly instead of the QtTest module umbrella, which pulls
+in all of QtCore and triggers a GCC 14 template substitution crash in
+Qt 6.11's QRangeModel. Tests do not use QRangeModel.
+
+Upstream status: Partial backport; test include changes not submitted.
+
+--- a/src/desktop/widgets/tablettest.cpp
++++ b/src/desktop/widgets/tablettest.cpp
+@@ -66,7 +66,7 @@
+ 	emit eventReport(QString("Mouse move X=%1 Y=%2 B=%3")
+ 						 .arg(mousePos.x())
+ 						 .arg(mousePos.y())
+-						 .arg(e->buttons()));
++						 .arg(static_cast<int>(e->buttons())));
+ 	m_mousePath << e->pos();
+ 	update();
+ }
+@@ -118,7 +118,7 @@
+ 	msg += QString(" X=%1 Y=%2 B=%3 P=%4% XT=%5° YT=%6° R=%7° %8")
+ 			   .arg(posF.x(), 0, 'f', 2)
+ 			   .arg(posF.y(), 0, 'f', 2)
+-			   .arg(e->buttons())
++			   .arg(static_cast<int>(e->buttons()))
+ 			   .arg(e->pressure() * 100, 0, 'f', 1)
+ 			   .arg(e->xTilt())
+ 			   .arg(e->yTilt())
+--- a/src/libclient/tests/html.cpp
++++ b/src/libclient/tests/html.cpp
+@@ -2,7 +2,7 @@
+ 
+ #include "libclient/utils/html.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ class TestHtmlUtils final : public QObject
+ {
+--- a/src/libclient/tests/listingfiltering.cpp
++++ b/src/libclient/tests/listingfiltering.cpp
+@@ -4,7 +4,8 @@
+ #include "libclient/net/loginsessions.h"
+ #include "libclient/utils/sessionfilterproxymodel.h"
+ 
+-#include <QtTest/QtTest>
++#include <QDateTime>
++#include <QtTest/QTest>
+ 
+ class TestListingFiltering final : public QObject
+ {
+--- a/src/libclient/tests/news.cpp
++++ b/src/libclient/tests/news.cpp
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "libclient/utils/news.h"
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ class TestNews final : public QObject {
+ 	Q_OBJECT
+--- a/src/libserver/tests/filedhistory.cpp
++++ b/src/libserver/tests/filedhistory.cpp
+@@ -5,7 +5,10 @@
+ #include "libshared/util/ulid.h"
+ #include <QDir>
+ #include <QTemporaryDir>
+-#include <QtTest/QtTest>
++#include <QJsonArray>
++#include <QJsonObject>
++#include <QFile>
++#include <QtTest/QTest>
+ #include <memory>
+ 
+ using namespace server;
+--- a/src/libserver/tests/filename.cpp
++++ b/src/libserver/tests/filename.cpp
+@@ -2,7 +2,8 @@
+ 
+ #include "libserver/util/filename.h"
+ #include <dpcommon/platform_qt.h>
+-#include <QtTest/QtTest>
++#include <QFile>
++#include <QtTest/QTest>
+ #include <QTemporaryDir>
+ #include <QDir>
+ 
+--- a/src/libserver/tests/idqueue.cpp
++++ b/src/libserver/tests/idqueue.cpp
+@@ -2,7 +2,7 @@
+ 
+ #include "libserver/idqueue.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ using server::IdQueue;
+ 
+--- a/src/libserver/tests/serverlog.cpp
++++ b/src/libserver/tests/serverlog.cpp
+@@ -2,7 +2,7 @@
+ 
+ #include "libserver/serverlog.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ using server::Log;
+ using server::ServerLog;
+--- a/src/libserver/tests/sessionban.cpp
++++ b/src/libserver/tests/sessionban.cpp
+@@ -5,7 +5,7 @@
+ #include <QHostAddress>
+ #include <QJsonArray>
+ #include <QJsonObject>
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ using server::SessionBanList;
+ 
+--- a/src/libshared/tests/authtoken.cpp
++++ b/src/libshared/tests/authtoken.cpp
+@@ -2,7 +2,8 @@
+ 
+ #include "libshared/util/authtoken.h"
+ 
+-#include <QtTest/QtTest>
++#include <QJsonObject>
++#include <QtTest/QTest>
+ 
+ static const char *SAT_SAMPLE =
+ 	"1.eyJ1c2VybmFtZSI6ICJib2IiLCAiZmxhZ3MiOiBbIm1vZCIsICJob3N0Il0sICJub25jZSI6ICIwMTAyMDMwNDA1MDYwNzA4In0=.700X+2Jy0Cor6M08Qd+ZGXcWdfjo1ZHzhldlhGbtJOwv7ZSHy7ykmtr2BiOOt+j4XFGRTT9ebA7F5/+h4osrCg";
+--- a/src/libshared/tests/filename.cpp
++++ b/src/libshared/tests/filename.cpp
+@@ -2,7 +2,8 @@
+ 
+ #include "libshared/util/filename.h"
+ #include <dpcommon/platform_qt.h>
+-#include <QtTest/QtTest>
++#include <QFile>
++#include <QtTest/QTest>
+ #include <QTemporaryDir>
+ #include <QDir>
+ 
+--- a/src/libshared/tests/listings.cpp
++++ b/src/libshared/tests/listings.cpp
+@@ -2,7 +2,7 @@
+ 
+ #include "libshared/listings/listserverfinder.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ #include <QBuffer>
+ 
+ class TestListings final : public QObject
+--- a/src/libshared/tests/messagequeue.cpp
++++ b/src/libshared/tests/messagequeue.cpp
+@@ -6,7 +6,7 @@
+ #include <QTcpServer>
+ #include <QTcpSocket>
+ #include <QThread>
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ #include <memory>
+ 
+ // A simple TCP server that echoes back whatever is written to it.
+--- a/src/libshared/tests/passwordhash.cpp
++++ b/src/libshared/tests/passwordhash.cpp
+@@ -3,7 +3,7 @@
+ #include "libshared/util/passwordhash.h"
+ #include "libshared/util/qtcompat.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ 
+ class TestPasswordHash final : public QObject
+ {
+--- a/src/libshared/tests/ulid.cpp
++++ b/src/libshared/tests/ulid.cpp
+@@ -2,7 +2,7 @@
+ 
+ #include "libshared/util/ulid.h"
+ 
+-#include <QtTest/QtTest>
++#include <QtTest/QTest>
+ #include <QDateTime>
+ 
+ class TestUlid final : public QObject
+--- a/src/thinsrv/tests/dblog.cpp
++++ b/src/thinsrv/tests/dblog.cpp
+@@ -3,7 +3,9 @@
+ #include "thinsrv/database.h"
+ #include "thinsrv/dblog.h"
+ 
+-#include <QtTest/QtTest>
++#include <QDateTime>
++#include <QScopedPointer>
++#include <QtTest/QTest>
+ 
+ using server::Database;
+ using server::DbLog;
+--- a/src/thinsrv/tests/serverconfig.cpp
++++ b/src/thinsrv/tests/serverconfig.cpp
+@@ -4,7 +4,9 @@
+ #include "thinsrv/database.h"
+ #include "thinsrv/headless/configfile.h"
+ 
+-#include <QtTest/QtTest>
++#include <QHostAddress>
++#include <QUrl>
++#include <QtTest/QTest>
+ 
+ using server::ServerConfig;
+ using server::InMemoryConfig;
+--- a/src/thinsrv/tests/templates.cpp
++++ b/src/thinsrv/tests/templates.cpp
+@@ -8,7 +8,8 @@
+ #include <QDir>
+ #include <QFile>
+ #include <QTemporaryDir>
+-#include <QtTest/QtTest>
++#include <QJsonObject>
++#include <QtTest/QTest>
+ #include <dpcommon/platform_qt.h>
+ 
+ using namespace server;

@@ -3059,6 +3059,7 @@ Automated palette selection is supported.")
                     (url "https://github.com/drawpile/Drawpile")
                     (commit version)))
               (file-name (git-file-name name version))
+              (patches (search-patches "drawpile-qt-6.11.patch"))
               (sha256
                (base32
                 "1w6vfdm6rmnpn6s8kzm8blbaidlsg8q6spv95m7fnwr3984hf6hb"))))
