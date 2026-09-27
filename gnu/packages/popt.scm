@@ -122,7 +122,7 @@ appropriately.")
 (define-public gengetopt
   (package
     (name "gengetopt")
-    (version "2.23")
+    (version "2.23.1")
     (source
      (origin
        (method url-fetch)
@@ -130,11 +130,8 @@ appropriately.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1b44fn0apsgawyqa4alx2qj5hls334mhbszxsy6rfr0q074swhdr"))))
+         "1diajbs11zj2gj8c8xnvldlp6a7rnw0654wmmxw5zm1b894fz79v"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-build? #f             ; not supported
-       #:parallel-tests? #f))           ; likewise
     (native-inputs
      (list texinfo))
     (synopsis "Create parsers for command line options")
