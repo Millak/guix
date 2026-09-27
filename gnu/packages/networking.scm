@@ -3630,29 +3630,29 @@ newer and only works on Ethernet network interfaces.")
 (define-public bmon
   (package
     (name "bmon")
-    (version "4.0")
+    (version "5.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/tgraf/bmon/releases/download/v"
+       (uri (string-append "https://github.com/Jafaral/bmon/releases/download/v"
                            version "/bmon-" version ".tar.gz"))
        (sha256
         (base32
-         "0ylzriv4pwh76344abzl1w219x188gshbycbna35gsyfp09c7z82"))))
+         "1h3kmmcm8mcagb4h9yfdbarw6ly4l00wc2lsn236n5m9vlgy85k0"))))
     (build-system gnu-build-system)
     (inputs
      (list libconfuse libnl ncurses))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake pkg-config))
     (synopsis "Bandwidth monitor")
     (description "bmon is a monitoring and debugging tool to capture
 networking-related statistics and prepare them visually in a human-friendly
 way.  It features various output methods including an interactive curses user
 interface and a programmable text output for scripting.")
-    (home-page "https://github.com/tgraf/bmon")
+    (home-page "https://github.com/Jafaral/bmon")
     ;; README.md mentions both the 2-clause BSD and expat licenses, but all
     ;; the source files only have expat license headers. Upstream has been
-    ;; contacted for clarification: https://github.com/tgraf/bmon/issues/59
+    ;; contacted for clarification: https://github.com/Jafaral/bmon/issues/59
     ;; Update the license field when upstream responds.
     (license (list license:bsd-2
                    license:expat))))
