@@ -3992,6 +3992,7 @@ your PC, with many additional features and benefits.")
               (url "https://github.com/RPCS3/rpcs3")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "rpcs3-qt-private-headers.patch"))
        (sha256
         (base32 "0dwrfjs9b3ldwyn68nmyf0qip4hm1w8c3picdl3zk7z76j7rrhal"))))
     (build-system qt-build-system)
