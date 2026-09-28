@@ -3160,6 +3160,18 @@ by AOM, including with alpha.")
        (sha256
         (base32 "0kl7zmyzj4rm2k3yqzkpw5kakaig6l2dym6yw0ihjmi50whd8yps"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/heif-thumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/heif.thumbnailer")
+                (("TryExec=heif-thumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=heif-thumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
