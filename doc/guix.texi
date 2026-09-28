@@ -488,26 +488,26 @@ Home Configuration
 Home Services
 
 * Essential Home Services::     Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
-* Power Management: Power Management Home Services.  Services for battery power.
-* Shepherd: Shepherd Home Service.  Managing User's Daemons.
-* SSH: Secure Shell.            Setting up the secure shell client.
-* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
-* Desktop: Desktop Home Services.  Services for graphical environments.
-* Guix: Guix Home Services.     Services for Guix.
-* Backup: Backup Home Services.  Services for backing up User's files.
-* Fonts: Fonts Home Services.   Services for managing User's fonts.
-* Sound: Sound Home Services.   Dealing with audio.
-* Mail: Mail Home Services.     Services for managing mail.
-* Messaging: Messaging Home Services.  Services for managing messaging.
-* Media: Media Home Services.   Services for managing media.
+* Shells Home Services::  POSIX shells, Bash, Zsh.
+* Mcron Home Service::    Scheduled User's Job Execution.
+* Power Management Home Services::  Services for battery power.
+* Shepherd Home Service::  Managing User's Daemons.
+* Secure Shell::            Setting up the secure shell client.
+* GNU Privacy Guard::       Setting up GPG and related tools.
+* Desktop Home Services::  Services for graphical environments.
+* Guix Home Services::     Services for Guix.
+* Backup Home Services::  Services for backing up User's files.
+* Fonts Home Services::   Services for managing User's fonts.
+* Sound Home Services::   Dealing with audio.
+* Mail Home Services::     Services for managing mail.
+* Messaging Home Services::  Services for managing messaging.
+* Media Home Services::   Services for managing media.
 * mpv Media Player::
-* Niri: Niri window manager.    Setting up the Niri.
-* Sway: Sway window manager.    Setting up the Sway configuration.
-* Networking: Networking Home Services.  Networking services.
-* Secrets: Secrets Home Services.  Services for storing secrets.
-* Miscellaneous: Miscellaneous Home Services.  More services.
+* Niri window manager::    Setting up the Niri.
+* Sway window manager::    Setting up the Sway configuration.
+* Networking Home Services::  Networking services.
+* Secrets Home Services::  Services for storing secrets.
+* Miscellaneous Home Services::  More services.
 
 Platforms
 
@@ -53866,26 +53866,26 @@ services)}.
 
 @menu
 * Essential Home Services::     Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
-* Power Management: Power Management Home Services.  Services for battery power.
-* Shepherd: Shepherd Home Service.  Managing User's Daemons.
-* SSH: Secure Shell.            Setting up the secure shell client.
-* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
-* Desktop: Desktop Home Services.  Services for graphical environments.
-* Guix: Guix Home Services.     Services for Guix.
-* Backup: Backup Home Services.  Services for backing up User's files.
-* Fonts: Fonts Home Services.   Services for managing User's fonts.
-* Sound: Sound Home Services.   Dealing with audio.
-* Mail: Mail Home Services.     Services for managing mail.
-* Messaging: Messaging Home Services.  Services for managing messaging.
-* Media: Media Home Services.   Services for managing media.
+* Shells Home Services::  POSIX shells, Bash, Zsh.
+* Mcron Home Service::    Scheduled User's Job Execution.
+* Power Management Home Services::  Services for battery power.
+* Shepherd Home Service::  Managing User's Daemons.
+* Secure Shell::            Setting up the secure shell client.
+* GNU Privacy Guard::       Setting up GPG and related tools.
+* Desktop Home Services::  Services for graphical environments.
+* Guix Home Services::     Services for Guix.
+* Backup Home Services::  Services for backing up User's files.
+* Fonts Home Services::   Services for managing User's fonts.
+* Sound Home Services::   Dealing with audio.
+* Mail Home Services::     Services for managing mail.
+* Messaging Home Services::  Services for managing messaging.
+* Media Home Services::   Services for managing media.
 * mpv Media Player::
-* Niri: Niri window manager.    Setting up the Niri.
-* Sway: Sway window manager.    Setting up the Sway configuration.
-* Networking: Networking Home Services.  Networking services.
-* Secrets: Secrets Home Services.  Services for storing secrets.
-* Miscellaneous: Miscellaneous Home Services.  More services.
+* Niri window manager::    Setting up the Niri.
+* Sway window manager::    Setting up the Sway configuration.
+* Networking Home Services::  Networking services.
+* Secrets Home Services::  Services for storing secrets.
+* Miscellaneous Home Services::  More services.
 @end menu
 @c In addition to that Home Services can provide
 
