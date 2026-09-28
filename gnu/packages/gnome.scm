@@ -2690,7 +2690,15 @@ on the GNOME Desktop with a single simple application.")
               (setenv "RUSTFLAGS"
                       (string-append (or (getenv "RUSTFLAGS") "")
                                      " -C link-arg=-Wl,-rpath,"
-                                     #$output "/lib")))))))
+                                     #$output "/lib"))))
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/papers-thumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/papers.thumbnailer")
+                (("TryExec=papers-thumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=papers-thumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (native-inputs
      (cons* blueprint-compiler
             gettext-minimal
