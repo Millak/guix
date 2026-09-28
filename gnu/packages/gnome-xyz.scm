@@ -2374,9 +2374,6 @@ report line and column locations for detected issues.")
        (sha256
         (base32 "1ih2if52gqjh5fa9ckzabxspgis5ydn8lrfyx20w5851v7ymby7y"))))
     (build-system meson-build-system)
-    (native-inputs (list python sassc pkg-config
-                         `(,glib "bin")
-                         `(,gtk+ "bin")))
     (arguments
      (list #:configure-flags #~'("-Dmate=true"
                                  "-Dmate-dark=true"
@@ -2390,6 +2387,9 @@ report line and column locations for detected issues.")
                    (substitute* "meson.build"
                      (("glib_compile_schemas: true")
                       "glib_compile_schemas: false")))))))
+    (native-inputs (list python sassc pkg-config
+                         `(,glib "bin")
+                         `(,gtk+ "bin")))
     (home-page "https://github.com/ubuntu/yaru")
     (synopsis "Ubuntu community theme yaru")
     (description "Yaru is the default theme for Ubuntu.
