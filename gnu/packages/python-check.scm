@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019, 2021, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
@@ -598,6 +598,51 @@ and is tested only with CPython.")
 code is covered by them.  This tool is part of the Codacy suite for analysing
 code quality.")
     (license license:expat)))
+
+(define-public python-concurrencytest
+  (package
+    (name "python-concurrencytest")
+    (version "0.1.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/cgoldberg/concurrencytest")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qwxai2kwcgsj0yz2bgwpq38vifsy2j19xay40ncghrgi0d8hbz9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         ;; We cannot simply use unittest discovery because it
+                         ;; would run other test definitions meant to be used
+                         ;; internally, producing test failures.
+                         (invoke "python" "concurrencytest_tests.py")))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-subunit python-testtools))
+    (home-page "https://github.com/cgoldberg/concurrencytest")
+    (synopsis "Run unittest test suites concurrently")
+    (description "@code{concurrencytest} is a @code{unittest} loader for
+running unittest test suites concurrently.  It includes the following components:
+@table @code
+@item ConcurrentTestSuite
+unittest-compatible TestSuite class for running parallel tests
+
+@item fork_for_tests
+fork-based @code{make_tests} function implementation
+
+@item partition_tests
+function for round-robin test distribution
+
+@item partition_tests_by_class
+class-local test distribution.
+@end table")
+    (license license:gpl2+)))
 
 (define-public python-covdefaults
   (package
