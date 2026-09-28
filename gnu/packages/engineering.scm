@@ -3199,7 +3199,7 @@ models in the STL and OFF file formats.")
   (package
     (inherit openscad)
     (name "pythonscad")
-    (version "0.8.4")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -3211,7 +3211,7 @@ models in the STL and OFF file formats.")
              ;; deleted in the patch-source build phase.
              (recursive? #t)))
        (sha256
-        (base32 "0gnifi8is0dl00vir5nd1k76kkcavb62v115g34198lzqnwiy0fc"))
+        (base32 "13qyz7136mzd37p2jgz2qp7cxgl4fdi2n08jklrxy3a5vm3dc8bd"))
        (modules '((guix build utils)))
        (snippet #~(begin
                     ;; Delete all unbundled libraries to replace them with
