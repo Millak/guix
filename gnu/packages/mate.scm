@@ -873,7 +873,15 @@ infamous 'Wanda the Fish'.")
             (lambda _
               (substitute* "data/Makefile"
                 (("gtk-update-icon-cache")
-                 "true")) #t)))))
+                 "true")) #t))
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/atril-thumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/atril.thumbnailer")
+                (("TryExec=atril-thumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=atril-thumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (native-inputs
      (list pkg-config
            intltool
