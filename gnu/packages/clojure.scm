@@ -386,9 +386,9 @@ designs.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download.clojure.org/install/clojure-tools-"
-                           version
-                           ".tar.gz"))
+       (uri (string-append "https://github.com/clojure/brew-install"
+                           "/releases/download/" version
+                           "/clojure-tools-" version ".tar.gz"))
        (sha256 (base32 "08fy3k248sbsrbgl0lq3q4d23vp4chdawy230ardx61sssk9sxhk"))
        ;; Remove AOT compiled JAR.  The other JAR only contains uncompiled
        ;; Clojure source code.
