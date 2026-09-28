@@ -534,11 +534,14 @@ the system in terms of memory pools and their agents.")
                                    #$%e-smi-version-for-rocm)))))
                     (add-after 'add-e-smi 'patch-dlopen
                       (lambda* (#:key inputs #:allow-other-keys)
-                        (substitute* (find-files "src" "\\.cc$")
-                          (("libdrm.so.2")
-                           (search-input-file inputs "/lib/libdrm.so.2"))
-                          (("libdrm_amdgpu.so")
-                           (search-input-file inputs "/lib/libdrm_amdgpu.so")))))
+                        (substitute* "CMakeLists.txt"
+                          (("get_imported_soname\\(PkgConfig::DRM_AMDGPU \
+LIBDRM_AMDGPU_SONAME\\)")
+                           (string-append
+                            "set(LIBDRM_AMDGPU_SONAME \""
+                            (search-input-file inputs
+                                               "/lib/libdrm_amdgpu.so.1")
+                            "\")")))))
                     (add-after 'add-e-smi 'patch-python
                       (lambda* _
                         (substitute* (find-files "py-interface" "\\.py$")
