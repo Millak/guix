@@ -6243,7 +6243,7 @@ be blown away by a SQL-DB or an external database server.")
 (define-public sdb
   (package
     (name "sdb")
-    (version "2.5.0")
+    (version "2.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6252,7 +6252,7 @@ be blown away by a SQL-DB or an external database server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fci72hcm2a0k9rnsfkcr2qsfprzxfycghpr4i3wargj781lc9jd"))))
+                "19305r481nfhyy6pixgxhpw0wsv5s4h42z7pdvgdyhbcbimnm5x9"))))
     (build-system meson-build-system)
     (arguments
      (list
