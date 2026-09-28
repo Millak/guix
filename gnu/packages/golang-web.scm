@@ -20471,24 +20471,16 @@ and consumers to transparently record signed metadata to a ledger.")
      (list
       #:skip-build? #t
       #:import-path "github.com/sigstore/rekor-tiles/v2"
-      ;; XXX: Remove when all inputs are packaged.
-      #:test-subdirs
-      #~(list "internal/algorithmregistry"
-              "internal/safeint"
-              "pkg/client/read"
-              "pkg/client/write"
-              "pkg/types/dsse"
-              "pkg/types/hashedrekord"
-              "pkg/types/verifier"
-              "pkg/verifier/certificate"
-              "pkg/verifier/publickey"
-              "pkg/verify")))
+      #:embed-files #~(list ".*\\.json")))
     (native-inputs
      (list go-github-com-go-test-deep
+           go-github-com-sigstore-sigstore-go-bootstrap ;cycles
            go-github-com-spf13-cobra
            go-github-com-spf13-viper
            go-github-com-stretchr-testify
-           go-sigs-k8s-io-release-utils))
+           go-sigs-k8s-io-release-utils
+           ;; XXX: To fix: warning: collision encountered.
+           go-github-com-hashicorp-hcl-vault-7))
     (propagated-inputs
      (list go-cloud-google-com-go-spanner
            go-cloud-google-com-go-storage
@@ -20506,9 +20498,8 @@ and consumers to transparently record signed metadata to a ledger.")
            go-github-com-secure-systems-lab-go-securesystemslib
            go-github-com-sigstore-protobuf-specs
            go-github-com-sigstore-sigstore
-           ;; go-github-com-sigstore-sigstore-go                 ;cycles
-           go-github-com-sigstore-sigstore-pkg-signature-kms-aws
            go-github-com-chainguard-dev-clog
+           go-github-com-sigstore-sigstore-pkg-signature-kms-aws
            go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
            go-github-com-tink-crypto-tink-go-awskms-v2
            go-github-com-tink-crypto-tink-go-gcpkms-v2
@@ -20519,6 +20510,7 @@ and consumers to transparently record signed metadata to a ledger.")
            go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-exporters-prometheus
            go-go-opentelemetry-io-otel-sdk-metric
+           go-go-step-sm-crypto
            go-golang-org-x-exp
            go-golang-org-x-mod
            go-golang-org-x-sync
@@ -20526,10 +20518,7 @@ and consumers to transparently record signed metadata to a ledger.")
            go-google-golang-org-genproto-googleapis-api
            go-google-golang-org-grpc
            go-google-golang-org-protobuf
-           go-k8s-io-klog-v2
-
-           ;; TODO: Complete packaging.
-           #;go-go-step-sm-crypto))
+           go-k8s-io-klog-v2))
     (home-page "https://github.com/sigstore/rekor-tiles")
     (synopsis "Tile-based transparency log for Sigstore")
     (description
