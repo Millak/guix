@@ -4938,6 +4938,98 @@ purpose of improving obfs4proxy's meek_lite transport.")
 Protocol.")
     (license license:gpl3)))
 
+(define-public go-go-step-sm-crypto
+  (package
+    (name "go-go-step-sm-crypto")
+    (version "0.91.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/crypto")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12fq0zqhkp5wlmj762mq1afq6q9d6bp5v0j1rs32n0ywcda16fpd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.step.sm/crypto"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "nssdb" "minica" "x25519" "keyutil" "kms/uri" "pemutil"
+              "sshutil" "tlsutil" "fipsutil" "randutil" "tpm/tss2"
+              "x509util" "kms/apiv1" "fingerprint" "kms/softkms"
+              "tpm/algorithm" "internal/emoji" "kms/sshagentkms"
+              "tpm/manufacturer" "internal/templates" "internal/utils/asn1"
+              "internal/utils/file" "internal/bcrypt_pbkdf"
+              "internal/utils/utfbom"
+              "internal/utils/convert")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-mock))
+    (propagated-inputs
+     (list go-cloud-google-com-go-kms
+           go-filippo-io-edwards25519
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-kms
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys
+           go-github-com-go-jose-go-jose-v3
+           go-github-com-google-go-tpm
+           go-github-com-googleapis-gax-go-v2
+           go-github-com-masterminds-sprig-v3
+           go-github-com-pkg-errors
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-google-golang-org-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-modernc-org-sqlite
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-go-piv-piv-go-v2
+           ;; go-github-com-google-go-tpm-tools
+           ;; go-github-com-peterbourgon-diskv-v3
+           ;; go-github-com-schollz-jsonstore
+           ;; go-github-com-smallstep-go-attestation
+           #;go-github-com-thalesgroup-crypto11))
+    (home-page "https://github.com/smallstep/crypto")
+    (synopsis "Collection of miscellaneous Go crypto packages")
+    (description
+     "This package provides various cryptography Go packages.
+@itemize
+@item @code{x509util} - utilities to build X.509 certificates based on JSON
+templates
+@item @code{sshutil} - utilities to build SSH certificates based on JSON
+templates
+@item @code{keyutil} - utilities to generate cryptographic keys
+@item @code{pemutil} - utilities to parse keys and certificates
+@item @code{randutil} - methods to generate random strings and salts
+@item @code{tlsutil} - utilities to configure tls client and servers
+@item @code{jose} - is a wrapper for @code{github.com/go-jose/go-jose/v3} and
+implements utilities to parse and generate JWT, JWK and JWKSets
+@item @code{x25519} - adds support for X25519 keys and the XEdDSA signature
+scheme
+@item @code{minica} - implements a simple certificate authority
+@item @code{kms} - implements interfaces to perform cryptographic operations
+like signing certificates using cloud-based key management systems, PKCS #11
+modules, or just a YubiKey or an ssh-agent
+@item @code{fingerprint} - provides methods for creating and encoding X.509
+certificate, SSH certificate and SSH key fingerprints
+@item @code{tpm} - provides an abstraction over and utilities for interacting
+with TPMs
+@item @code{fipsutil} - reports whether the cryptography libraries are
+operating in FIPS 140-3 mode
+@end itemize")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-lukechampine-com-blake3
   (package
     (name "go-lukechampine-com-blake3")
