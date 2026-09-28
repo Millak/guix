@@ -2363,7 +2363,7 @@ report line and column locations for detected issues.")
 (define-public yaru-theme
   (package
     (name "yaru-theme")
-    (version "22.10.3")
+    (version "26.10.3")
     (source
      (origin
        (method git-fetch)
@@ -2372,17 +2372,24 @@ report line and column locations for detected issues.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f052a5cyf4lijyrdp4kjvxrx6d5fbj7109pi2bhxs9lk5jy8z86"))))
+        (base32 "1ih2if52gqjh5fa9ckzabxspgis5ydn8lrfyx20w5851v7ymby7y"))))
     (build-system meson-build-system)
-    (native-inputs
-     (list python sassc pkg-config `(,glib "bin") `(,gtk+ "bin")))
+    (native-inputs (list python sassc pkg-config
+                         `(,glib "bin")
+                         `(,gtk+ "bin")))
     (arguments
      (list #:configure-flags #~'("-Dmate=true"
                                  "-Dmate-dark=true"
                                  "-Dxfwm4=true"
                                  "-Dmetacity=true"
-                                 "-Dsessions=false")))
+                                 "-Dsessions=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-schema-compile
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("glib_compile_schemas: true")
+                      "glib_compile_schemas: false")))))))
     (home-page "https://github.com/ubuntu/yaru")
     (synopsis "Ubuntu community theme yaru")
     (description "Yaru is the default theme for Ubuntu.
