@@ -2154,7 +2154,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
 (define-public radare2
   (package
     (name "radare2")
-    (version "6.2.0")                   ;keep in sync with iaito,r2ghidra
+    (version "6.2.2")                   ;keep in sync with iaito,r2ghidra
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2162,7 +2162,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
                     (commit version)))
               (sha256
                (base32
-                "1vzlxn0xdgm8ijaj5nz9l3j52a48g93canzvalp3bcmkyms8s47c"))
+                "129fys295677w3nxwirc3qgqvm97y6bc94s1wv8yw1kpg4slk17x"))
               (file-name (git-file-name name version))
               (patches
                (search-patches "radare2-fix-meson-build-to-use-sys-sdb.patch"
@@ -2183,7 +2183,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
               "-Duse_sys_zydis=true")
       #:phases
       #~(modify-phases %standard-phases
-          ;; CHECK LATER: This patches an incorrect relative include.
+          ;; CHECK LATER: See https://github.com/radareorg/radare2/pull/26838.
           (add-before 'build 'fix-relative-include
             (lambda _
               (substitute* "../source/libr/arch/p/java/plugin.c"
@@ -2192,15 +2192,17 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
           ;; These tests require sample binaries from an external repository.
           (add-before 'check 'skip-tests
             (lambda _
-              (substitute* '("../source/test/unit/test_bin.c"
-                             "../source/test/unit/test_dwarf.c"
-                             "../source/test/unit/test_dwarf_info.c"
-                             "../source/test/unit/test_dwarf_integration.c"
-                             "../source/test/unit/test_pdb.c"
-                             ;; TODO: add r2pipe and enable this test.
-                             "../source/test/unit/test_r2pipe.c")
-                (("(^| )main *\\(.*" all)
-                 (string-append all " exit (77);\n")))))
+              (with-directory-excursion "../source/test/unit"
+                (substitute* '("test_bin.c"
+                               "test_dwarf.c"
+                               "test_dwarf_info.c"
+                               "test_dwarf_integration.c"
+                               "test_pdb.c"
+                               "test_anal_function.c"
+                               ;; TODO: add r2pipe and enable this test.
+                               "test_r2pipe.c")
+                  (("(^| )main *\\(.*" all)
+                   (string-append all " exit (77);\n"))))))
           (add-after 'install 'fixup-pc-files
             (lambda _
               (with-directory-excursion (in-vicinity #$output "lib/pkgconfig")
