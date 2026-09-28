@@ -1407,7 +1407,15 @@ using a stylus.")
                 (wrap-program (string-append #$output "/bin/xournalpp")
                   `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file))
                   `("XDG_DATA_DIRS" ":" prefix
-                    (,gtksourceview-4-resources)))))))))
+                    (,gtksourceview-4-resources))))))
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/xournalpp-thumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/com.github.xournalpp.xournalpp.thumbnailer")
+                (("TryExec=xournalpp-thumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=xournalpp-thumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (native-inputs
      (list cppunit
            gettext-minimal
