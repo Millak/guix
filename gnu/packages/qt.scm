@@ -5482,17 +5482,17 @@ a binding language:
 (define-public qt-advanced-docking-system
   (package
     (name "qt-advanced-docking-system")
-    (version "4.4.1")
+    (version "5.1.1")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
           (url "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System")
-          (commit version)))
+          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07qhvhz4cmkrpxpfmybva57ddshkwf993jiryxg3lkj24p1rlh7d"))))
+        (base32 "0argmzdsw4g5ylhs0nnm9z6grwx9av3yafxmqxghficjysi2i52v"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
