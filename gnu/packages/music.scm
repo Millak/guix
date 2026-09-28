@@ -6708,7 +6708,14 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
               (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
-        (delete 'configure))))
+          (delete 'configure)
+          ;; Disable x86 flags on other architectures
+          #$@(if (target-x86?)
+                 #~()
+                 #~((add-after 'unpack 'fix-x86-flags
+                      (lambda* _
+                        (substitute* (find-files "." "Makefile")
+                          (("-msse -msse2 -mfpmath=sse") "")))))))))
     (inputs
      (list cairo
            fftwf
