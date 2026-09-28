@@ -399,10 +399,6 @@ CurrencyData.properties"
                 (setenv "ALT_FREETYPE_LIB_PATH"
                         (string-append #$(this-package-input "freetype")
                                        "/lib"))))
-            (add-before 'build 'reduce-optimizations
-              (lambda _
-                ;; Needed for gcc-14
-                (setenv "EXTRA_CFLAGS" "-O1")))
             (add-before 'build 'disable-os-version-check
               ;; allow build on linux major version change
               (lambda _
@@ -602,7 +598,14 @@ CurrencyData.properties"
                                 (string-append #$output:jdk
                                                "/jre/lib/security"))))))))
       (native-inputs
-       `(("openjdk-src"
+       ;; XXX: Compiling with gcc-14 will encounter the following error:
+       ;; BUILD FAILED:
+       ;; /tmp/guix-build-icedtea-2.6.13.drv-0/icedtea-2.6.13/openjdk/langtools/
+       ;; make/build.xml:452: The following error occurred while executing this
+       ;; line:
+       ;; java.lang.AbstractMethodError: java.lang.Throwable.toString()Ljava/lang/String;
+       `(("gcc" ,gcc-13)
+         ("openjdk-src"
           ,(drop "openjdk"
                  "0l34ikyf62hbzlf9032alzkkqvf7bpmckz4gvirvph755w7gka8l"))
          ("corba-drop"
@@ -767,7 +770,6 @@ IcedTea build harness.")
               (delete 'patch-patches)
               (delete 'patch-bitrot)
               (delete 'use-classpath)
-              (delete 'reduce-optimizations)
               (replace 'build
                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
                   ;; Prevent passing -j (parallel-job-count) to make, which
