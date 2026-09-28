@@ -2401,7 +2401,18 @@ audio/video codec library.")
     (inputs
      (list ffmpeg-4 libjpeg-turbo libpng gvfs))
     (arguments
-     `(#:configure-flags (list "-DENABLE_GIO=ON" "-DENABLE_THUMBNAILER=ON")))
+     (list
+      #:configure-flags ''("-DENABLE_GIO=ON" "-DENABLE_THUMBNAILER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/ffmpegthumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/ffmpegthumbnailer.thumbnailer")
+                (("TryExec=ffmpegthumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=ffmpegthumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (home-page "https://github.com/dirkvdb/ffmpegthumbnailer")
     (synopsis "Create thumbnails from video files")
     (description "FFmpegthumbnailer is a lightweight video thumbnailer that
