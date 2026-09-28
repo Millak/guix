@@ -251,6 +251,7 @@ gnu/packages/oneapi\.scm                           @guix/hpc
 gnu/packages/opencl\.scm                           @guix/hpc
 gnu/packages/parallel\.scm                         @guix/hpc
 gnu/packages/rocm\.scm                             @guix/hpc
+gnu/packages/rocm-apps\.scm                        @guix/hpc
 gnu/packages/rocm-tools\.scm                       @guix/hpc
 gnu/packages/rocm-libs\.scm                        @guix/hpc
 gnu/packages/sycl\.scm                             @guix/hpc
