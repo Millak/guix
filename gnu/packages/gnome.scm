@@ -2572,19 +2572,28 @@ forgotten when the session ends.")
         (base32 "0s46prlb55ghnz136ra8whmrirydmz08lzjrrpa3arl8cb3cb5pj"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:build-type "release"
-       #:configure-flags '("-Dnautilus=false"
+     (list
+      #:glib-or-gtk? #t
+      #:build-type "release"
+      #:configure-flags ''("-Dnautilus=false"
                            "-Dps=enabled")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson.build"
-               (("(glib_compile_schemas|gtk_update_icon_cache|\
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("(glib_compile_schemas|gtk_update_icon_cache|\
 update_desktop_database): true" _ tool)
-                (string-append tool ": false"))))))))
+                 (string-append tool ": false")))))
+          (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+            (lambda _
+              (define abs-path (string-append #$output "/bin/evince-thumbnailer"))
+              (substitute* (string-append #$output "/share/thumbnailers/evince.thumbnailer")
+                (("TryExec=evince-thumbnailer")
+                 (format #f "TryExec=~a" abs-path))
+                (("Exec=evince-thumbnailer")
+                 (format #f "Exec=~a" abs-path))))))))
     (inputs
      (list libarchive
            libgxps
