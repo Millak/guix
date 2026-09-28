@@ -800,7 +800,13 @@ pattern.")
       #:configure-flags
       #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
               "-DCATCH_ENABLE_WERROR=OFF"
-              "-DBUILD_SHARED_LIBS=ON")))
+              "-DBUILD_SHARED_LIBS=ON"
+              #$@(if (target-x86-32?)
+                     ;; Lower precision to the regular 64-bit IEEE
+                     ;; floats, to avoid failures in the control_value
+                     ;; and histogram tests that compare floats.
+                     #~("-DCMAKE_CXX_FLAGS=-msse2 -mfpmath=sse")
+                     #~()))))
     (inputs (list python-wrapper))
     (home-page "https://github.com/catchorg/Catch2")
     (synopsis "Automated test framework for C++ and Objective-C")
