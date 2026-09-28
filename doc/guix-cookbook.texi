@@ -194,7 +194,7 @@ Virtual Machines
 * Network bridge for QEMU::
 * Routed network for libvirt::
 * Custom NAT-based network for libvirt::
-* References: VM References.    Further reading on virtual machines.
+* VM References::    Further reading on virtual machines.
 
 Advanced package management
 
