@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -178,6 +178,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages sync)
   #:use-module (gnu packages tcl)
@@ -4005,6 +4006,48 @@ based on a manifest file published by servers.")
 of patches sent via mail.  It does so by adapting the DKIM email signature
 standard to include cryptographic signatures via the X-Developer-Signature
 email header.")
+    (license license:expat-0)))
+
+(define-public python-patatt
+  (package
+    (name "python-patatt")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.kernel.org/pub/scm/utils/patatt/patatt.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p1ncw7v8m9l5hfjxl06wyfbsrjy98wicw49jl0y3yi2k1lk1pxq"))))
+    (build-system pyproject-build-system)
+    ;; The tests currently fail due to missing sample filessuch as
+    ;; "samples/openssh-signed.txt".
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/patatt/__init__.py"
+                (("'git'")
+                 (format #f "'~a'" (search-input-file inputs "bin/git")))
+                (("GPGBIN = 'gpg'")
+                 (format #f "GPGBIN = '~a'"
+                         (search-input-file inputs "bin/gpg")))
+                (("SSHKBIN = 'ssh-keygen'")
+                 (format #f "SSHKBIN = '~a'"
+                         (search-input-file inputs "bin/ssh-keygen")))))))))
+    (inputs (list git gnupg openssh))
+    (propagated-inputs (list python-pynacl))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://git.kernel.org/pub/scm/utils/patatt/patatt.git/about/")
+    (synopsis "Python library and CLI for cryptographic patch attestation")
+    (description "Patatt is a Python library and @acronym{CLI, command-line
+interface} for adding end-to-end cryptographic attestation to patches sent via
+email.  It adapts the DKIM email signature standard to include cryptographic
+signatures via the X-Developer-Signature header.")
     (license license:expat-0)))
 
 (define-public b4
