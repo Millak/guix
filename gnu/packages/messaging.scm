@@ -3205,8 +3205,17 @@ as phones, embedded computers or microcontrollers.")
           (add-after 'unpack 'patch-tests
             (lambda* _
               (substitute* "tests/lib/conftest.py"
-                (("raise RuntimeError") "pass;")))))))
-    (native-inputs (list python-hatchling python-pytest))
+                (("raise RuntimeError") "pass;"))))
+          (add-before 'check 'regenerate-test-certificates
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The bundled certificates expire.  Generate fresh fixtures
+                ;; while retaining the deliberately expired and invalid ones.
+                (with-directory-excursion "tests/ssl"
+                  (substitute* "openssl.cnf"
+                    (("\\$ENV::HOME/\\.rnd") ".rnd"))
+                  (invoke "sh" "gen.sh"))))))))
+    (native-inputs (list openssl perl python-hatchling python-pytest))
     (home-page "https://www.eclipse.org/paho/")
     (synopsis "Python implementation of an MQTT client class")
     (description "MQTT and MQTT-SN are lightweight publish/subscribe messaging
