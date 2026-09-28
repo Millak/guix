@@ -6295,7 +6295,7 @@ credentials and service-specific settings.")
 (define-public packagekit-qt6
   (package
     (name "packagekit-qt6")
-    (version "1.1.2")
+    (version "1.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6304,7 +6304,7 @@ credentials and service-specific settings.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nx8xfhz9v4pc0mz1ir0pq47skpc3w3yj8wqa4m5yky87ib5xcxc"))))
+                "0hwrr14p9cy24q73hy87k8v3ljr8yvcl765ra0s51sjwmh8yqlhg"))))
     (build-system cmake-build-system)
     (arguments
       (list
