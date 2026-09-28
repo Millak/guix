@@ -20269,6 +20269,8 @@ provided @code{http.FileSystem}.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; TODO: Generate source, see
+      ;; <https://github.com/sigstore/fulcio/blob/v1.8.5/Makefile>.
       #:skip-build? #t
       #:import-path "github.com/sigstore/fulcio"
       #:test-subdirs
@@ -20284,7 +20286,8 @@ provided @code{http.FileSystem}.")
            go-github-com-spf13-pflag
            go-github-com-spf13-viper))
     (propagated-inputs
-     (list go-github-com-asaskevich-govalidator
+     (list go-cloud-google-com-go-security
+           go-github-com-asaskevich-govalidator
            go-github-com-coreos-go-oidc-v3
            go-github-com-fsnotify-fsnotify
            go-github-com-go-jose-go-jose-v4
@@ -20303,6 +20306,7 @@ provided @code{http.FileSystem}.")
            go-github-com-sigstore-sigstore
            go-github-com-spiffe-go-spiffe-v2
            go-github-com-tink-crypto-tink-go-v2
+           go-go-step-sm-crypto
            go-go-uber-org-zap
            go-go-yaml-in-yaml-v3
            go-google-golang-org-api
@@ -20314,7 +20318,6 @@ provided @code{http.FileSystem}.")
            ;; TODO: Complete packaging
            ;; go-chainguard-dev-go-grpc-kit
            ;; go-chainguard-dev-sdk
-           ;; go-cloud-google-com-go-security
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
@@ -20322,7 +20325,6 @@ provided @code{http.FileSystem}.")
            ;; go-github-com-thalesignite-crypto11
            ;; go-github-com-tink-crypto-tink-go-awskms-v2
            ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
-           ;; go-go-step-sm-crypto
            #;go-goa-design-goa-v3))
     (home-page "https://github.com/sigstore/fulcio")
     (synopsis "Sigstore certificate authority for code signing")
@@ -20333,7 +20335,6 @@ It is part of the Sigstore project for software supply chain security.")
     (license license:asl2.0)
     ;; XXX: Don't expose since it's a partial package.
     (properties '((hidden? . #t)))))
-
 
 (define-public go-github-com-sigstore-rekor
   (package
