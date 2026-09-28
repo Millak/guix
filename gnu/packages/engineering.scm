@@ -2256,7 +2256,7 @@ it suitable for security research and analysis.")
 (define-public r2ghidra
   (package
     (name "r2ghidra")
-    (version "6.2.0")
+    (version "6.2.2")
     (source
      (origin
        (method git-fetch)
@@ -2265,7 +2265,7 @@ it suitable for security research and analysis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090alws82nx48r1gj003d865g87x7nc8cp0famqmpfy51ajcj8gs"))
+        (base32 "1csb7zzh991pi29mh53k7dy17j0afx338vczh88r4bn4awbqv63b"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled libs and remove their references.
