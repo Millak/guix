@@ -51778,14 +51778,14 @@ connect pass the @command{-spice port=5930,disable-ticketing=on} flag to
 Spice also allows you to do some nice stuff like share your clipboard with your
 VM@.  To enable that you'll also have to pass the following flags to @command{qemu}:
 
-@macro spice-options-for-qemu
+@macro guixspiceoptionsforqemu
 -device virtio-serial \\
 -chardev spicevmc,name=vdagent,id=vdagent \\
 -device virtserialport,chardev=vdagent,name=com.redhat.spice.0 \\
 -display spice-app,gl=on -device virtio-gpu-gl -vga none
 @end macro
 @example
-@spice-options-for-qemu{}
+@guixspiceoptionsforqemu{}
 @end example
 
 You'll also need to add the @code{(spice-vdagent-service-type)} to your
@@ -51797,7 +51797,7 @@ Here is a working example with QEMU @samp{10.2.1}:
 qemu-system-x86_64 -nic user,model=virtio-net-pci -enable-kvm -m 2048 \
 -device virtio-blk,drive=myhd \
 -drive if=none,file=guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2,id=myhd \
-@spice-options-for-qemu{}
+@guixspiceoptionsforqemu{}
 @end example
 
 @quotation Note
