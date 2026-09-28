@@ -3517,7 +3517,17 @@ XML/CSS rendering engine.")
               (string-append "--with-html-dir=" #$output
                              "/share/gtk-doc/html")
               "--with-zlib"
-              "--with-bz2")))
+              "--with-bz2")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-dot-desktop-files 'patch-dot-thumbnailer-files
+                 (lambda _
+                   (define abs-path (string-append #$output "/bin/gsf-office-thumbnailer"))
+                   (substitute* (string-append #$output "/share/thumbnailers/gsf-office.thumbnailer")
+                     (("TryExec=gsf-office-thumbnailer")
+                      (format #f "TryExec=~a" abs-path))
+                     (("Exec=gsf-office-thumbnailer")
+                      (format #f "Exec=~a" abs-path))))))))
     (native-inputs
      (list docbook-xml
            gettext-minimal
