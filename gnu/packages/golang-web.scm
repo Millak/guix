@@ -20944,7 +20944,7 @@ service.")
            go-github-com-tink-crypto-tink-go-gcpkms-v2
            go-github-com-tink-crypto-tink-go-hcvault-v2
            go-github-com-urfave-negroni
-           ;; go-go-step-sm-crypto      ;not packaged yet in Guix
+           go-go-step-sm-crypto
            go-sigs-k8s-io-yaml))
     (home-page "https://github.com/sigstore/timestamp-authority")
     (synopsis "RFC 3161 timestamp verification for Sigstore")
