@@ -2927,7 +2927,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.11.2")
+    (version "0.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2935,8 +2935,7 @@ virtual machines.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1ccrg1ixv1ydbq3n2dlrqj65isrjvyy07ai18ccdnhvw28rcjj1i"))
+               (base32 "1wh50rvd7pymsbnms4jd6s3ryz4hr5b84ndlnfzrrhp1f25n47wm"))
               (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -2950,6 +2949,16 @@ virtual machines.")
                    ;; the only possibility is the output directory.
                    (let ((tmp-dir (string-append (assoc-ref outputs "out") "/tmp")))
                      (mkdir-p tmp-dir)
+                     ;; Make sure Python tempfile functions have a writable temp dir.
+                     ;; This avoids errors about no usable temp directory when
+                     ;; test-sandbox.py calls ctypes.util.find_library().
+                     (setenv "TMPDIR" tmp-dir)
+                     ;; Override the usage of /tmp in two test files, since those
+                     ;; tests remounting /tmp leads to errors when the source tree is
+                     ;; suddenly no longer available.
+                     (substitute* '("tests/test-helper.py"
+                                    "tests/test-sandbox.py")
+                       (("/tmp") tmp-dir))
                      (substitute* "tests/test-run.sh"
                        (("/var/tmp") tmp-dir)
                        ;; Tests create a temporary python script, so fix its shebang.
@@ -2974,7 +2983,10 @@ virtual machines.")
                ;; Remove the directory we gave to tests to have a clean package.
                (add-after 'check 'remove-tmp-dir
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (delete-file-recursively (string-append (assoc-ref outputs "out") "/tmp")))))))
+                   (delete-file-recursively (string-append (assoc-ref outputs "out") "/tmp"))
+                   ;; Clean up the TMPDIR variable once the tests are finished, to
+                   ;; avoid breaking subsequent phases.
+                   (unsetenv "TMPDIR"))))))
     (inputs (list libcap))
     (native-inputs (list python-wrapper util-linux pkg-config))
     (home-page "https://github.com/containers/bubblewrap")
@@ -2985,7 +2997,7 @@ the home directory.  Bubblewrap always creates a new mount namespace, and the
 user can specify exactly what parts of the file system should be made visible
 in the sandbox.  These directories are mounted with the @code{nodev} option
 by default and can be made read-only.")
-    (license license:lgpl2.0+)))
+    (license license:lgpl2.1+)))
 
 (define-public bochs
   (package
