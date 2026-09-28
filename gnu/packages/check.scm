@@ -783,7 +783,7 @@ pattern.")
 (define-public catch2
   (package
     (name "catch2")
-    (version "3.15.1")
+    (version "3.16.0")
     (source
      (origin
        (method git-fetch)
@@ -793,7 +793,7 @@ pattern.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1sswpsa8v3nx9ydyzj867y9514sgfzhmvi8vqvrz576sh2a008r5"))))
+         "13z43pniw76w5iv2j52anz6g22xi796a7vinfhf64d6b1i6xkwxy"))))
     (build-system cmake-build-system)
     (arguments
      (list
