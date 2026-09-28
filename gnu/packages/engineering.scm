@@ -2329,8 +2329,8 @@ it suitable for security research and analysis.")
 
 (define-public ghidra-native
   ;; Latest commit; last release (8/2025) incompatible with current r2ghidra.
-  (let ((commit "df065bad0f9e7cea233479048681f811c4f640a2")
-        (revision "1"))
+  (let ((commit "483ae94bcbc661a77667e52f1eff75928cb6aa2e")
+        (revision "2"))
     (package
       (name "ghidra-native")
       (version (git-version "0.6.2" revision commit))
@@ -2342,7 +2342,7 @@ it suitable for security research and analysis.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14bzrl856x3bsqjpks85rzxcxncfmnjwc5knv2h4lybfz4bxcn39"))))
+          (base32 "099k0drjrgyf72cgzn29gyvrgcc4zssjm20cpa1lia97dkcs1j6x"))))
       (build-system gnu-build-system)
       (arguments
        (list
