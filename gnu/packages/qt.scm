@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2021, 2022, 2025 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022, 2025, 2026 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -472,7 +472,7 @@ Qt.  Some of its features include:
 (define-public kvantum
   (package
     (name "kvantum")
-    (version "1.1.5")
+    (version "1.1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -481,7 +481,7 @@ Qt.  Some of its features include:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17fjhnc8dpxb27dmv1c8mkcy2jwdny06zzqgd9zpamlqi97alp0v"))
+                "1bl2myzzpi1lbqj8892gwfi5yqh3675r1yki8m0g7f4aq80w0b9a"))
               (patches
                (search-patches "kvantum-1.1.5-xdg-dirs-support.patch"))))
     (build-system qt-build-system)
