@@ -196,7 +196,7 @@ for unprivileged applications.")
 (define-public polkit-qt
   (package
     (name "polkit-qt")
-    (version "0.200.0")
+    (version "0.201.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -204,7 +204,7 @@ for unprivileged applications.")
                     name "-1-" version ".tar.xz"))
               (sha256
                (base32
-                "1yvp2s72fgpn5kf1a2ldy0givlmz0z4i1fsh6ylpcard0qf62fsx"))))
+                "0mpj6wv19p30536755qg5xbqv8xyl6wdwnbl8gcldi9hwp5f5n4m"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5 polkit))
