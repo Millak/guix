@@ -4415,7 +4415,7 @@ Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.10") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.13") ;v4.7.0 dates back from 2023.
     (source
      (origin
        (method git-fetch)
@@ -4424,7 +4424,7 @@ Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gr9ghwgqly9zf0sf15ai20sac520rs84b9i5qjxdqpj26ayyl1q"))))
+        (base32 "0jsx593qp16a76k5aydp47p9704w4crhh389g6qba310xzrl8ph6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4439,7 +4439,7 @@ Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
               ;; Guix uses ghdl 6.0.0.
               (substitute* "tests/unit/test_ghdl_interface.py"
                 (("GHDL 5\\.0\\.1") "GHDL 6.0.0")
-                (("GNAT Version: 14\\.2\\.0") "GNAT Version: 15.2.0"))))
+                (("GNAT Version: 14\\.2\\.0") "GNAT Version: 16.1.0"))))
           (add-after 'install 'unbundle
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((site-packages
