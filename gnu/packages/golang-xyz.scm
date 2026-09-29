@@ -27396,6 +27396,37 @@ defined, its value may be empty or non-empty.  You can find more details here:
 https://en.wikipedia.org/wiki/Extended_file_attributes}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-pkoukk-tiktoken-go
+  (package
+    (name "go-github-com-pkoukk-tiktoken-go")
+    (version "0.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pkoukk/tiktoken-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xvs1s2h1pjs15k5hcmcgmy7ph1sdv84g749qf44d0lnljxl9r7s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests try to access https://openaipublic.blob.core.windows.net.
+      #:tests? #f
+      #:import-path "github.com/pkoukk/tiktoken-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2
+           go-github-com-google-uuid))
+    (home-page "https://github.com/pkoukk/tiktoken-go")
+    (synopsis "Go version of tiktoken")
+    (description
+     "Tiktoken is a fast @acronym{Byte-Pair Encoding, BPE} tokeniser and a
+port of the original @url{https://github.com/openai/tiktoken, tiktoken}.")
+    (license license:expat)))
+
 (define-public go-github-com-pmezard-go-difflib
   ;; TODO: Move to (gnu packages golang-check).
   (package
