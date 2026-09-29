@@ -5412,6 +5412,35 @@ Generators, DRBG}s as recommended by NIST SP-800-90A specified in
 @url{http://csrc.nist.gov/publications/nistpubs/800-90A/SP800-90A.pdf}.")
     (license license:lgpl3)))
 
+(define-public go-github-com-caspr-io-yamlpath
+  (package
+    (name "go-github-com-caspr-io-yamlpath")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/caspr-io/yamlpath")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mp03b55q218zmq41ssdd5dxvz3zyy674qfbpfg63dkins428hyh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/caspr-io/yamlpath"
+      #:test-flags
+      ;; yamlpath_test.go:70: assertion failed: error is not nil: Could not
+      ;; traverse path 'aliases[.=~/^(\b[Ss][a-z]+\s){2}[a-z]+$/]' in Yaml:
+      ;; Cause: part '[.=~/^(\b[Ss]' not supported for array.
+      #~(list "-skip" "TestYamlPath/ValueRegex")))
+    (native-inputs (list go-gotest-tools-v3))
+    (propagated-inputs (list go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/caspr-io/yamlpath")
+    (synopsis "Golang YAML Path implementation")
+    (description "This package provides a Go YAML Path implementation.")
+    (license license:expat)))
+
 (define-public go-github-com-catppuccin-go
   (package
     (name "go-github-com-catppuccin-go")
