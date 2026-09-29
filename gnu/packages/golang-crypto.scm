@@ -4230,6 +4230,34 @@ was selected as the winner of the Password Hashing Competition and can be used
 to derive cryptographic keys from passwords.")
     (license license:bsd-3)))
 
+(define-public go-github-com-tobischo-gokeepasslib-v3
+  (package
+    (name "go-github-com-tobischo-gokeepasslib-v3")
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tobischo/gokeepasslib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1408safy0ngbvzkliiw0hsmwf91zsbx6hwsa799gwn03izmxgdcn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tobischo/gokeepasslib/v3"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-tobischo-argon2
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/tobischo/gokeepasslib")
+    (synopsis "Keepass 2 reader/writer for Go")
+    (description "This package allows reading Keepass 2 files (kdbx) in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-tscholl2-siec
   (package
     (name "go-github-com-tscholl2-siec")
