@@ -15530,6 +15530,41 @@ color (24-bit, RGB)
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-gopasspw-gitconfig
+  (package
+    (name "go-github-com-gopasspw-gitconfig")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gopasspw/gitconfig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sg7652sa47c102ymzj1cmbjfpw3dvi6rasrzj8wirdbrgqqq19x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Source only as it cycles with go-github-com-gopasspw-gopass.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/gopasspw/gitconfig"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-gobwas-glob
+           #;go-github-com-gopasspw-gopass)) ;cycles
+    (home-page "https://github.com/gopasspw/gitconfig")
+    (synopsis "Implementation of the Git config format in pure Go")
+    (description
+     "Package gitconfig implements a pure Go parser of Git SCM config files.
+The support is currently not matching git exactly, e.g. includes, urlmatches
+and multivars are currently not supported.  And while we try to preserve the
+original file a much as possible when writing we currently don't exactly
+retain (insignificant) whitespaces.")
+    (license license:expat)))
+
 (define-public go-github-com-goreleaser-chglog
   (package
     (name "go-github-com-goreleaser-chglog")
