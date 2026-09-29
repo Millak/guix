@@ -20383,6 +20383,7 @@ It is part of the Sigstore project for software supply chain security.")
            go-sigs-k8s-io-release-utils))
     (propagated-inputs
      (list go-cloud-google-com-go-iam
+           go-cloud-google-com-go-profiler
            go-github-com-asaskevich-govalidator
            go-github-com-blang-semver
            go-github-com-cyberphone-json-canonicalization
@@ -20408,6 +20409,8 @@ It is part of the Sigstore project for software supply chain security.")
            go-github-com-prometheus-client-golang
            go-github-com-redis-go-redis-v9
            go-github-com-rs-cors
+           go-github-com-sassoftware-relic
+           go-github-com-sassoftware-relic-v7
            go-github-com-secure-systems-lab-go-securesystemslib
            go-github-com-sigstore-protobuf-specs
            go-github-com-sigstore-sigstore
@@ -20421,6 +20424,7 @@ It is part of the Sigstore project for software supply chain security.")
            go-github-com-tink-crypto-tink-go-v2
            go-github-com-transparency-dev-merkle
            go-github-com-veraison-go-cose
+           go-go-step-sm-crypto
            go-go-uber-org-zap
            go-golang-org-x-crypto
            go-golang-org-x-mod
@@ -20435,15 +20439,11 @@ It is part of the Sigstore project for software supply chain security.")
            go-sigs-k8s-io-yaml
 
            ;; TODO: Complete packaging.
-           ;; go-cloud-google-com-go-profiler
            ;; go-cloud-google-com-go-pubsub
            ;; go-cloud-google-com-go-pubsub-v2
            ;; go-github-com-adamkorcz-go-fuzz-headers-1
            ;; go-github-com-cavaliercoder-go-rpm
            ;; go-github-com-go-redis-redismock-v9
-           ;; go-github-com-sassoftware-relic
-           ;; go-github-com-sassoftware-relic-v7
-           ;; go-go-step-sm-crypto
            #;go-gocloud-dev))
     (home-page "https://github.com/sigstore/rekor")
     (synopsis "Sigstore transparency log")
