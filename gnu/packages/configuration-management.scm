@@ -26,6 +26,8 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
@@ -92,87 +94,100 @@ everything is configured the way it's supposed to be.")
 (define-public chezmoi
   (package
     (name "chezmoi")
-    (version "2.1.0")
+    (version "2.72.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/twpayne/chezmoi")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/twpayne/chezmoi")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kjjbns80pcd6wh51kmhpw8xlm57cqgq205qp2i2z78n82h3fijc"))))
+                "0qfp2iighx5889lssx8m0xv3pw8mysxards4x8vz8bzsflmgm3ig"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/twpayne/chezmoi"
-      #:embed-files #~(list ".*\\.xml")
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestScript/autocommit"
-                             "TestScript/autopush"
-                             "TestScript/bitwarden"
-                             "TestScript/builtingit"
-                             "TestScript/cd_unix"
-                             "TestScript/completion"
-                             "TestScript/doctor_unix"
-                             "TestScript/edit"
-                             "TestScript/editconfig"
-                             "TestScript/git"
-                             "TestScript/gopass"
-                             "TestScript/init"
-                             "TestScript/issue1213"
-                             "TestScript/keepassxc"
-                             "TestScript/lastpass"
-                             "TestScript/merge_unix"
-                             "TestScript/modify_unix"
-                             "TestScript/onepassword"
-                             "TestScript/pass"
-                             "TestScript/runscriptdir_unix"
-                             "TestScript/script"
-                             "TestScript/script_unix"
-                             "TestScript/scriptonce_unix"
-                             "TestScript/scriptorder_unix"
-                             "TestScript/scriptsubdir_unix"
-                             "TestScript/secret"
-                             "TestScript/state_unix"
-                             "TestScript/templatefuncs"
-                             "TestScript/update"
-                             "TestScript/vault")
-                       "|"))))
+      #:import-path "chezmoi.io/chezmoi/v2"
+      #:embed-files
+      #~(list ".*\\.xml" "words.txt.gz" "betterleaks.toml"
+              "cl100k_base.tiktoken.gz"
+              ;; For go-github-com-urfave-cli-v3:
+              "bash_autocomplete" "powershell_autocomplete.ps1"
+              "zsh_autocomplete" "prelude.graphql")
+      #:test-subdirs
+      ;; XXX: Enable the rest of the tests.
+      #~(list "." "internal/chezmoigit" "internal/chezmoilog"
+              "internal/archivetest" "internal/chezmoitest"
+              "internal/chezmoibubbles" "internal/cmds/lint-whitespace"
+              "internal/cmds/execute-template"
+              "internal/cmds/generate-install.sh"
+              "internal/cmds/lint-commit-messages"
+              "assets/chezmoi.io/docs/reference/commands")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'rename-binaries
+            (lambda _
+              (rename-file
+               (string-append #$output "/bin/v2")
+               (string-append #$output "/bin/chezmoi")))))))
     (native-inputs
-     (list go-github-com-masterminds-sprig-v3
+     (list go-filippo-io-age
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azsecrets
+           go-github-com-burntsushi-toml
+           go-github-com-masterminds-sprig-v3
+           go-github-com-shopify-ejson
+           go-github-com-alecthomas-assert-v2
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
+           go-github-com-bartventer-httpcache
+           go-github-com-betterleaks-betterleaks
            go-github-com-bmatcuk-doublestar-v4
            go-github-com-bradenhilton-mozillainstallhash
-           go-github-com-charmbracelet-glamour-0.3
+           go-github-com-charmbracelet-bubbles
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-glamour
+           go-github-com-charmbracelet-lipgloss
            go-github-com-coreos-go-semver
+           go-github-com-fsnotify-fsnotify
            go-github-com-go-git-go-git-v5
-           go-github-com-google-go-github-v36
-           go-github-com-google-gops
-           go-github-com-google-renameio
-           go-github-com-mitchellh-mapstructure
+           go-github-com-go-sprout-sprout
+           go-github-com-go-viper-mapstructure-v2
+           go-github-com-goccy-go-yaml
+           go-github-com-google-go-github-v72
+           go-github-com-google-renameio-v2
+           go-github-com-gopasspw-gopass
+           go-github-com-itchyny-gojq
+           go-github-com-klauspost-compress
+           go-github-com-mitchellh-copystructure
            go-github-com-muesli-combinator
-           go-github-com-pelletier-go-toml
+           go-github-com-muesli-termenv
+           go-github-com-nwaples-rardecode-v2
+           go-github-com-pete-woods-go-expect
            go-github-com-rogpeppe-go-internal
-           go-github-com-rs-zerolog
-           go-github-com-sergi-go-diff
-           go-github-com-spf13-afero
            go-github-com-spf13-cobra
-           go-github-com-spf13-viper
-           go-github-com-stretchr-testify
+           go-github-com-spf13-pflag
+           go-github-com-tailscale-hujson
+           go-github-com-tobischo-gokeepasslib-v3
+           go-github-com-twpayne-go-pinentry-v4
            go-github-com-twpayne-go-shell
-           go-github-com-twpayne-go-vfs-v3
+           go-github-com-twpayne-go-vfs-v5
            go-github-com-twpayne-go-xdg-v6
+           go-github-com-ulikunitz-xz
            go-github-com-zalando-go-keyring
            go-go-etcd-io-bbolt
-           go-go-uber-org-multierr
+           go-golang-org-x-crypto
            go-golang-org-x-oauth2
+           go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-term
-           go-gopkg-in-yaml-v2
-           go-gopkg-in-yaml-v3
-           go-howett-net-plist))
+           go-golang-org-x-text
+           go-gopkg-in-ini-v1
+           go-howett-net-plist
+           go-mvdan-cc-sh-v3
+           go-znkr-io-diff))
     (home-page "https://www.chezmoi.io/")
     (synopsis "Personal configuration files manager")
     (description "This package helps to manage personal configuration files
