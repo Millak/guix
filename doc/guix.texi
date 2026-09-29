@@ -36959,7 +36959,7 @@ its environment variables template} for the list of available options.
 @end table
 @end deftp
 
-@subsubheading go-wbedav
+@subsubheading go-webdav
 @cindex go-webdav
 @uref{https://github.com/emersion/go-webdav, go-webdav} is a
 server for the
