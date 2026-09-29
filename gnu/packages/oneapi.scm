@@ -19,16 +19,23 @@
 
 (define-module (gnu packages oneapi)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compiler-tools)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
@@ -36,6 +43,141 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+;; Built against LLVM 17, not 22 -- IGC's bf16 support probes for
+;; and no-ops against LLVM 17, which Intel's own docs mark Production.
+(define-public intel-graphics-compiler
+  (package
+    (name "intel-graphics-compiler")
+    (version "2.40.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/intel-graphics-compiler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c9lh4g8kwf2sgl9nrmqcvqyph2z94c98mnsj21ykdc8xrwkg1wj"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; IRBuilderGeneratorCodeGen.cmake picks the first of several
+            ;; candidate version directories that EXISTS; only patch ones
+            ;; v2.40.13 actually ships (just "17.0.0"), never create one
+            ;; -- an empty mkdir-p'd candidate would get picked first and
+            ;; break the build a different way (missing stddef.h etc).
+            (for-each
+              (lambda (v)
+                (let* ((headers-dir (string-append
+                                      "external/llvm/releases/" v
+                                      "/clang/lib/Headers"))
+                       (stdint.h (string-append headers-dir "/stdint.h")))
+                  (when (file-exists? headers-dir)
+                    (when (file-exists? stdint.h)
+                      (delete-file stdint.h))
+                    (call-with-output-file stdint.h
+                      (lambda (port)
+                        (display "#ifndef IGC_PORTABLE_STDINT_H
+#define IGC_PORTABLE_STDINT_H
+typedef __INT8_TYPE__ int8_t;
+typedef __INT16_TYPE__ int16_t;
+typedef __INT32_TYPE__ int32_t;
+typedef __INT64_TYPE__ int64_t;
+typedef __UINT8_TYPE__ uint8_t;
+typedef __UINT16_TYPE__ uint16_t;
+typedef __UINT32_TYPE__ uint32_t;
+typedef __UINT64_TYPE__ uint64_t;
+#endif
+" port))))))
+              '("17" "17.0.0" "17.0.6"))
+            ;; dllInterfaceCompute.cpp unconditionally calls
+            ;; LLVMModule->dump(), which only exists when LLVM is built
+            ;; with assertions/LLVM_ENABLE_DUMP -- Guix's llvm-17 isn't,
+            ;; so it's an undefined symbol at link time. Not needed for
+            ;; normal compilation.
+            (substitute* "IGC/AdaptorOCL/dllInterfaceCompute.cpp"
+              (("LLVMModule->dump\\(\\);") ";"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(let ((clang #$(this-package-native-input "clang"))
+              (lld #$(this-package-native-input "lld"))
+              (llvm #$(this-package-native-input "llvm"))
+              (opencl-clang #$(this-package-native-input "opencl-clang"))
+              (spirv-llvm-translator
+               #$(this-package-native-input "spirv-llvm-translator")))
+          (list "-DIGC_OPTION__LLVM_MODE=Prebuilds"
+                "-DIGC_OPTION__LLVM_PREFERRED_VERSION=17.0.6"
+                (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                ;; libigc.so/libigdfcl.so link against libLLVM-17.so,
+                ;; libz.so.1 and libopencl-clang.so.17; CMake's automatic
+                ;; RPATH tracking doesn't pick these up.
+                "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON"
+                (string-append "-DCMAKE_INSTALL_RPATH="
+                               llvm "/lib;"
+                               #$(this-package-input "zlib") "/lib;"
+                               opencl-clang "/lib;"
+                               spirv-llvm-translator "/lib")
+                (string-append "-DCMAKE_PREFIX_PATH="
+                               llvm ";"
+                               spirv-llvm-translator ";" opencl-clang)
+                ;; lldELF/lldCommon default to a nonexistent Windows-
+                ;; prebuilt path; point them at lld-17 directly.
+                (string-append "-DIGC_OPTION__LLDELF_LIB_DIR=" lld)
+                (string-append "-DIGC_OPTION__LLD_BIN_DIR=" lld)
+                (string-append "-DIGC_OPTION__LLDELF_H_DIR=" lld)
+                ;; Avoids a file(GLOB_RECURSE) search for opencl-c.h next
+                ;; to the clang-17 binary.
+                (string-append "-DIGC_OPTION__OPENCL_HEADER_PATH="
+                               clang "/lib/clang/17/include/opencl-c.h")
+                "-DCMAKE_INSTALL_LIBDIR=lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; vc-intrinsics/SPIRV-Tools/SPIRV-Headers are built in-tree
+          ;; with IGC regardless of LLVM_MODE: IGC's own
+          ;; external/{SPIRV-Tools,vc-intrinsics} cmake wrappers expect
+          ;; them as siblings of IGC's own source root.
+          (add-after 'unpack 'add-vc-intrinsics
+            (lambda _
+              (copy-recursively #$(package-source vc-intrinsics)
+                                "../vc-intrinsics")))
+          (add-after 'unpack 'add-spirv-tools
+            (lambda _
+              (copy-recursively #$(package-source spirv-tools-for-igc)
+                                "../SPIRV-Tools")))
+          (add-after 'unpack 'add-spirv-headers
+            (lambda _
+              (copy-recursively #$(package-source spirv-headers-1.4.357.0)
+                                "../SPIRV-Headers")))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (mkdir-p "build")
+              (chdir "build")
+              (apply invoke "cmake" ".." configure-flags))))))
+    (inputs (list libedit ncurses zlib zstd))
+    (native-inputs (list bison
+                         clang-17
+                         flex
+                         git-minimal
+                         lld-17
+                         llvm-17
+                         opencl-clang
+                         pkg-config
+                         python
+                         python-mako
+                         python-pyyaml
+                         spirv-headers-1.4.357.0
+                         spirv-llvm-translator-17
+                         spirv-tools-for-igc
+                         vc-intrinsics))
+    (home-page "https://github.com/intel/intel-graphics-compiler")
+    (synopsis "Intel Graphics Compiler for OpenCL")
+    (description "The Intel Graphics Compiler (IGC) is an LLVM-based compiler
+for OpenCL targeting Intel graphics hardware.")
+    (license license:expat)))
 
 (define-public level-zero
   (package
