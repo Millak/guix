@@ -1666,6 +1666,31 @@ Protogetter addresses this issue by suggesting use of getter methods for field
 access.")
     (license license:expat)))
 
+(define-public go-github-com-gitleaks-go-gitdiff
+  (package
+    (name "go-github-com-gitleaks-go-gitdiff")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gitleaks/go-gitdiff")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fi4swcs2cis0rfdhlgzqcgx2l7xm9m1ablk28c0ziva8n2v9p7v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gitleaks/go-gitdiff"))
+    (home-page "https://github.com/gitleaks/go-gitdiff")
+    (synopsis "Diff parser and printer for Go")
+    (description
+     "This package provides a unified diff parser and printer for Go.  It's an
+alternative fork of @url{https://github.com/bluekeyes/go-gitdiff}.")
+    (license license:expat)))
+
 (define-public go-github-com-gkampitakis-ciinfo
   (package
     (name "go-github-com-gkampitakis-ciinfo")
