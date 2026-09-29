@@ -9494,6 +9494,23 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; the rest is released under the Expat license
     (license (list license:expat license:bsd-3))))
 
+;; For perl-bio-db-hts@3.01, remove when no longer required.
+(define-public htslib-1.21
+  (hidden-package
+   (package
+     (inherit htslib)
+     (name "htslib")
+     (version "1.21")
+     (source
+      (origin
+        (inherit (package-source htslib))
+        (method url-fetch)
+        (uri (string-append
+              "https://github.com/samtools/htslib/releases/download/"
+              version "/htslib-" version ".tar.bz2"))
+        (sha256
+         (base32 "08qq1yn6lqqnww532s11nr6gz0gfpn58rn3gy90kd5pl6pki1dc4")))))))
+
 ;; This package should be removed once no packages rely upon it.
 (define htslib-1.3
   (package/inherit htslib
