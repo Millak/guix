@@ -1945,32 +1945,29 @@ noncharacters are also represented.")
                 (scandir name (lambda (file)
                                 (not (member file '("." ".." "LICENSE"))))))
 
-              (define (install-font-variant variant)
-                "Given font variant VARIANT, install one of its formats,
-variable TTF or OTF or TTF."
-                (with-directory-excursion variant
-                  (let ((formats (scan-directory ".")))
-                    (cond
-                     ((member "variable-ttf" formats)
-                      (install "variable-ttf"))
-                     ((member "otf" formats)
-                      (install "otf"))
-                     ((member "ttf" formats)
-                      (install "ttf"))))))
-
               (define (install-font font)
                 "Given FONT, install one of its variants, either full or
 unhinted, and install its hinted variant into 'ttf' output.  According to the
 source, unhinted and hinted variants are always available."
                 (with-directory-excursion font
-                  (if (member "full" (scan-directory "."))
-                      (install-font-variant "full")
-                      (install-font-variant "unhinted"))
+                  (with-directory-excursion
+                      (if (member "full" (scan-directory "."))
+                          "full"
+                          "unhinted")
+                    (let ((formats (scan-directory ".")))
+                      ;; Install the variable ttf fonts if available.
+                      (when (member "variable-ttf" formats)
+                        (install "variable-ttf" #$output:variable))
+                      ;; Install the otf fonts.
+                      (unless (member "otf" formats)
+                        (error "Missing otf font" (getcwd)))
+                      (install "otf")))
+                  ;; Install the hinted ttf fonts.
                   (install "hinted" #$output:ttf)))
 
               (with-directory-excursion "fonts"
                 (for-each install-font (scan-directory "."))))))))
-    (outputs '("out" "ttf"))
+    (outputs '("out" "ttf" "variable"))
     (home-page "https://fonts.google.com/noto")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
