@@ -1959,7 +1959,7 @@ Layer-4 sockets.")
 (define-public podman
   (package
     (name "podman")
-    (version "6.1.1")
+    (version "6.1.3")
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")))
@@ -1970,7 +1970,7 @@ Layer-4 sockets.")
              (url "https://github.com/podman-container-tools/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0zy9kmsi06q8iqnqq7xhsyhrljksjlggsk0vhlral7jf92ll10vc"))
+        (base32 "17wqxxw0jkqgzf6w68qichxi7hsj709p3hnn7a8yypi6l1vnqnxn"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -2055,7 +2055,7 @@ Layer-4 sockets.")
      (list grep
            bats
            git-minimal/pinned
-           go
+           go-1.26
            go-md2man
            gettext-minimal ; for envsubst
            mandoc
