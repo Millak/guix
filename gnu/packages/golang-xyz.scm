@@ -26894,6 +26894,35 @@ package (which is based off an earlier version of this package).")
 balanced binary search trees in Go Language.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pete-woods-go-expect
+  (package
+    (name "go-github-com-pete-woods-go-expect")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pete-woods/go-expect")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i32h2qvw77rpabp73z8g6s3himzgyqnjrrfgrfm3ish1j2jvm87"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pete-woods/go-expect"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-x-xpty
+           go-golang-org-x-sys
+           go-gotest-tools-v3))
+    (home-page "https://github.com/pete-woods/go-expect")
+    (synopsis "Expect-like Golang library")
+    (description
+     "Package expect provides an expect-like interface to automate control of
+interactive applications through a pseudo-terminal.  It is an alternative fork
+of @url{https://github.com/Netflix/go-expect}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-peterbourgon-diskv
   (package
     (name "go-github-com-peterbourgon-diskv")
