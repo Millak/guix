@@ -78,6 +78,9 @@
                  (string-append "filename=" #$output
                                 "/share/rochpl/HPL.dat"))
                 ;; Record command names too.
+                (("^rochpl_runscript=.*")
+                 (string-append "rochpl_runscript="
+                                #$output "/bin/run_rochpl\n"))
                 (("\\$\\{rocm_dir\\}/bin/rocm-smi")
                  (search-input-file inputs "/bin/rocm-smi"))
                 (("lscpu")
