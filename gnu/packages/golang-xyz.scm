@@ -12638,6 +12638,33 @@ with possibility to add and remove tag options.  It's intended to be used by
 an editor, but also has modes to run it from the terminal.")
       (license license:bsd-3))))
 
+(define-public go-github-com-fatih-semgroup
+  (package
+    (name "go-github-com-fatih-semgroup")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fatih/semgroup")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z3404gcb2yxgh9cvgsfaf1j6glz3xdwm8y0fwjyhi3nws4dl4x2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fatih/semgroup"))
+    (propagated-inputs (list go-golang-org-x-sync))
+    (home-page "https://github.com/fatih/semgroup")
+    (synopsis "Runs a maximum of tasks at any time")
+    (description
+     "Package semgroup provides synchronization and error propagation, for
+groups of goroutines working on subtasks of a common task.  It uses a weighted
+semaphore implementation to make sure that only a number of maximum tasks can
+be run at any time.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-fatih-structs
   (package
     (name "go-github-com-fatih-structs")
