@@ -4500,6 +4500,32 @@ automated testing of HDL code.")
     ;; subdirectories are under ASL.
     (license (list license:mpl2.0 license:asl2.0))))
 
+(define-public python-vunit-bridge
+  (package
+    (name "python-vunit-bridge")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vunit/vunit-python-bridge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hx4w2949cgyrqnxh76v34laihafwwchm5c9bcimm9rs9iazn99m"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-numpy python-vunit))
+    (home-page "https://github.com/vunit/vunit-python-bridge")
+    (synopsis "@code{VUnit} package making Python callable from VHDL")
+    (description
+     "This package embeds a Python interpreter in the simulator process so
+that a VHDL testbench can execute Python code and call Python functions
+without leaving the simulation.")
+    (license license:mpl2.0)))
+
 (define-public qrouter
   (package
     (name "qrouter")
