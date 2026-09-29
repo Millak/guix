@@ -144,6 +144,23 @@ SPIR-V modules.  The project includes an assembler, binary module
 parser,disassembler, validator, and optimizer for SPIR-V.")
     (license license:asl2.0)))
 
+(define-public spirv-tools-for-igc
+  (package
+    (inherit spirv-tools)
+    (name "spirv-tools-for-igc")
+    (version "1.4.357.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/SPIRV-Tools")
+             (commit (string-append "vulkan-sdk-" version))))
+       (sha256
+        (base32 "00nq302dkg44pyl8rcnngcgmi9bg8bsgv0487kidl90cmwbqkvcx"))
+       (file-name (git-file-name name version))))
+    (inputs (modify-inputs inputs
+              (replace "spirv-headers" spirv-headers-1.4.357.0)))))
+
 (define-public spirv-tools-static
   (package/inherit spirv-tools
     (name "spirv-tools-static")
