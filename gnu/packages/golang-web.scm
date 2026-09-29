@@ -4569,6 +4569,44 @@ lookups.  It implements looking up the following records:
 Storage}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-bartventer-httpcache
+  (package
+    (name "go-github-com-bartventer-httpcache")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bartventer/httpcache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rywzvh9b5s8g6rzss9yc59dz90f54568fnyf64cfrs1xp9xg5c8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bartventer/httpcache"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "Test_storeService_OpenError"
+                             "Test_storeService_handlers"
+                             "Test_transport_CacheHit_MustRevalidate_Stale"
+                             "Test_transport_CacheHit_NoCacheUnqualified")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/bartventer/httpcache")
+    (synopsis "Standards-compliant HTTP caching transport for Go clients")
+    (description
+     "Package httpcache provides an implementation of @code{http.RoundTripper}
+that adds transparent HTTP response caching according to
+@url{https://rfc-editor.org/rfc/rfc9111.html, RFC 9111} (HTTP Caching).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-beeper-argo-go
   (package
     (name "go-github-com-beeper-argo-go")
