@@ -29993,7 +29993,7 @@ for manual interpretation.")
 (define-public python-bibtexparser
   (package
     (name "python-bibtexparser")
-    (version "2.0.0b9")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -30002,7 +30002,7 @@ for manual interpretation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ym3lnvm02j2qxvm3qwbw8a10b6wc70wrfwqiqgppcap2vd5h85y"))))
+        (base32 "1ww9vlc9x7svhd6ww62c7bfikyqv5qwgingc2s5rjizl9nai5wlv"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-pylatexenc python-pyparsing))
     (native-inputs
