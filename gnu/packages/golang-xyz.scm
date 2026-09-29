@@ -14299,6 +14299,52 @@ package
     ;; LICENSE.md.
     (license (list license:expat license:asl2.0 license:x11))))
 
+(define-public go-github-com-go-sprout-sprout
+  (package
+    (name "go-github-com-go-sprout-sprout")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-sprout/sprout")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1814lig5nmfw3fjn800xm6w9ysqj9dblkn50syvl5azy8mvajgqa"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "benchmarks")
+            (delete-file-recursively "sprigin/compatibility")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-sprout/sprout"
+      #:test-flags
+      ;; Network access is required.
+      #~(list "-skip" "TestGetHostByName|TestSemverCompare")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-google-uuid
+           go-github-com-masterminds-semver-v3
+           go-github-com-mitchellh-copystructure
+           go-github-com-spf13-cast
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-text))
+    (home-page "https://sprout.atom.codes/")
+    (synopsis "Template functions for Go templates with steroids")
+    (description
+     "Sprout is an evolved variant of the
+@url{https://github.com/Masterminds/sprig, Masterminds/sprig} library,
+reimagined for modern Go versions.  It introduces fresh functionalities and
+commits to maintaining the library, picking up where Sprig left off.")
+    (license license:expat)))
+
 (define-public go-github-com-go-sql-driver-mysql
   (package
     (name "go-github-com-go-sql-driver-mysql")
