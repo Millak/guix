@@ -398,3 +398,36 @@ management.  UMF allows users to manage multiple memory pools characterized by
 different attributes, allowing certain allocation types to be isolated from
 others and allocated using different hardware resources as required..")
     (license license:asl2.0)))
+
+;; LLVM IR intrinsics consumed by intel-graphics-compiler's codegen
+;; backend; version pinned to IGC v2.40.13's own dependency table.
+(define-public vc-intrinsics
+  (package
+    (name "vc-intrinsics")
+    (version "0.25.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/intel/vc-intrinsics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "093yn5508xdpym3rrb1i0r27rhr4v7kvjix3qa3saikrfp1kadx3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DLLVM_DIR=" #$(this-package-input "llvm")
+                             "/lib/cmake/llvm"))))
+    (native-inputs (list pkg-config))
+    (inputs (list llvm-17 python-minimal))
+    (home-page "https://github.com/intel/vc-intrinsics")
+    (synopsis "LLVM intrinsics for Intel's GenX vector ISA")
+    (description
+     "vc-intrinsics provides LLVM IR intrinsics and an LLVM
+pass for Intel's GenX vector compute instruction set, used by Intel
+Graphics Compiler (IGC) and related tools to represent hardware-specific
+vector operations in LLVM IR.")
+    (license license:expat)))
