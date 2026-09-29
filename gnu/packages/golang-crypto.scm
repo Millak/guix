@@ -4204,6 +4204,32 @@ Main functions:
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-tobischo-argon2
+  (package
+    (name "go-github-com-tobischo-argon2")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tobischo/argon2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a7cxy9za6ibs2rz618qhvi8mm8y9fsaqjnsj5q5cbndisg0ia18"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tobischo/argon2"))
+    (propagated-inputs (list go-golang-org-x-crypto go-golang-org-x-sys))
+    (home-page "https://github.com/tobischo/argon2")
+    (synopsis "Fork of golang.org/x/crypto/argon2 to expose argon2d variant")
+    (description
+     "Package argon2 implements the key derivation function Argon2.  Argon2
+was selected as the winner of the Password Hashing Competition and can be used
+to derive cryptographic keys from passwords.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tscholl2-siec
   (package
     (name "go-github-com-tscholl2-siec")
