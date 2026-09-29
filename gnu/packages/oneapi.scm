@@ -38,7 +38,7 @@
 (define-public level-zero
   (package
     (name "level-zero")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method git-fetch)
@@ -48,7 +48,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vqmxyzcnrklj1qfh3vg9sapsp5dq4gjs6lz6j2l0ac9xdabrjmv"))))
+         "0r5rx01d3rzg8hpn3qrl4c8vvk14iris1yb1jxk0jcapw49ryzv1"))))
     (build-system cmake-build-system)
     (arguments
      (list
