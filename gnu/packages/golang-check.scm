@@ -3756,6 +3756,32 @@ single file ready for https://coveralls.io/.")
      "This package provides a state machine assisted testing library for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-muesli-crunchy
+  (package
+    (name "go-github-com-muesli-crunchy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muesli/crunchy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qj0xlcx9vsx3igdy8aq47d0qh4ccvlqsvrxfakr2qh1v35p4p0d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; They try to reach https://api.pwnedpasswords.com.
+      #:tests? #f
+      #:import-path "github.com/muesli/crunchy"))
+    (propagated-inputs (list go-github-com-xrash-smetrics))
+    (home-page "https://github.com/muesli/crunchy")
+    (synopsis "Finds common flaws in passwords")
+    (description
+     "Finds common flaws in passwords.  Like cracklib, but written in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-nbio-st
   (package
     (name "go-github-com-nbio-st")
