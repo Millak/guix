@@ -28626,6 +28626,31 @@ https://rootlesscontaine.rs/} (syscalls such as @code{chown(2)} which would
 ordinarily fail).")
     (license license:asl2.0)))
 
+(define-public go-github-com-rrethy-ahocorasick
+  (package
+    (name "go-github-com-rrethy-ahocorasick")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RRethy/ahocorasick")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10gx35ms7yi2mdpfrsf1jiydlnjr0crg3hsr593agrs4vjxz8dnw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rrethy/ahocorasick"))
+    (home-page "https://github.com/rrethy/ahocorasick")
+    (synopsis "Golang implementation of the Aho-Corasick algorithm")
+    (description
+     "Package ahocorasick implements the Aho-Corasick string matching
+algorithm for efficiently finding all instances of multiple patterns in a
+text.")
+    (license license:expat)))
+
 (define-public go-github-com-rs-zerolog
   (package
     (name "go-github-com-rs-zerolog")
