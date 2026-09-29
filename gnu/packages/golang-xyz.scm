@@ -4027,7 +4027,7 @@ and is therefore compatible with cross-compiling.")
 (define-public go-github-com-bitfield-script
   (package
     (name "go-github-com-bitfield-script")
-    (version "0.24.1")
+    (version "0.25.1")
     (source
      (origin
        (method git-fetch)
@@ -4036,12 +4036,11 @@ and is therefore compatible with cross-compiling.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pzmz7n39sh9sprclzd0m0l0flf626286fh51m065yjhkqzrjw89"))))
+        (base32 "0i15mr1x3mkydqr9j65lhjskirqlvyk3gr3gj6xkbcrilm0g5acy"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/bitfield/script"
-      #:test-flags #~(list "-vet=off")))
+      #:import-path "github.com/bitfield/script"))
     (native-inputs
      (list go-github-com-google-go-cmp))
     (propagated-inputs
