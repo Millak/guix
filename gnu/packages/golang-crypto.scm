@@ -2131,6 +2131,94 @@ intended to (eventually) be 1:1 with the TPM 2.0 spec
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-gopasspw-gopass
+  (package
+    (name "go-github-com-gopasspw-gopass")
+    (version "1.17.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gopasspw/gopass")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wvzq37lx716dyqaqb2didlim5cmaq0akndkbf19fyr065ny4naj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gopasspw/gopass"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "pkg/set" "pkg/debug" "pkg/pwgen" "pkg/qrcon" "tests/can"
+              "pkg/fsutil" "pkg/passkey" "pkg/protect" "pkg/tempfile"
+              "internal/diff" "internal/tree" "pkg/hibp/dump" "helpers/semdup"
+              "internal/cache" "internal/store" "internal/hashsum"
+              "helpers/changelog" "helpers/commitmsg" "internal/reminder"
+              "pkg/pwgen/pwrules" "internal/recipients" "internal/cache/ghssh"
+              "helpers/semdup/analyzer" "internal/pwschemes/bcrypt"
+              "internal/pwschemes/argon2i" "internal/backend/crypto/gpg"
+              "internal/pwschemes/argon2id"
+              "internal/backend/crypto/gpg/colons"
+              "internal/backend/crypto/gpg/gpgconf"
+              "internal/backend/crypto/age/identityfile"
+              "internal/backend/crypto/age/identityfile")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-filippo-io-age
+           go-github-com-blang-semver-v4
+           go-github-com-caspr-io-yamlpath
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-dustin-go-humanize
+           go-github-com-ergochat-readline
+           go-github-com-fatih-color
+           go-github-com-godbus-dbus-v5
+           go-github-com-google-go-github-v61
+           go-github-com-gopasspw-gitconfig
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-jsimonetti-pwscheme
+           go-github-com-kballard-go-shellquote
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-tty
+           go-github-com-mitchellh-go-ps
+           go-github-com-muesli-crunchy
+           go-github-com-pquerna-otp
+           go-github-com-protonmail-go-crypto
+           go-github-com-schollz-closestmatch
+           go-github-com-skip2-go-qrcode
+           go-github-com-twpayne-go-pinentry-v4
+           go-github-com-urfave-cli-v3
+           go-github-com-xhit-go-str2duration-v2
+           go-github-com-zalando-go-keyring
+           go-github-com-zeebo-blake3
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-tools
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-gokyle-twofactor
+           ;; go-github-com-gopasspw-clipboard
+           ;; go-github-com-kbinani-screenshot
+           ;; go-github-com-makiuchi-d-gozxing
+           ;; go-github-com-martinhoefling-goxkcdpwgen
+           #;go-github-com-noborus-ov))
+    (home-page "https://www.gopass.pw/")
+    (synopsis "Password manager")
+    (description
+     "Gopass implements the gopass command line tool and Go library.")
+    (license license:expat)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-gsterjov-go-libsecret
   (package
     (name "go-github-com-gsterjov-go-libsecret")
