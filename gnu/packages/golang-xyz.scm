@@ -38737,16 +38737,21 @@ that @code{gofmt} is happy with.")
 (define-public go-mvdan-cc-sh-v3
   (package
     (name "go-mvdan-cc-sh-v3")
-    (version "3.10.0")
+    (version "3.14.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/sh")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mvdan/sh")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ryqrhdjvj0ll88fk6dh63a5hjl0rpww3x8kmzqfnf5r83jdz3sh"))))
+        (base32 "0kwgba0d15sgz59q24qfmvqcg8bx0mivbfrm8vxadw12bxf5z9mm"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "moreinterp")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -38755,15 +38760,19 @@ that @code{gofmt} is happy with.")
       #:test-flags
       #~(list "-skip" (string-join
                        ;; XXX: Check why these tests fail.
-                       (list "TestRunnerRun/#279"
-                             "TestRunnerRun/#281"
-                             "TestRunnerRun/#282"
-                             "TestRunnerRun/#289"
-                             "TestRunnerRun/#960"
-                             "TestRunnerRun/#989"
-                             "TestRunnerRun/#990"
-                             "TestRunnerRun/#991"
-                             "TestRunnerRunConfirm/#152"
+                       (list "TestExecETXTBSY"
+                             "TestKillTimeout/#00"
+                             "TestKillTimeout/#01"
+                             "TestKillTimeout/#02"
+                             "TestRunnerRun/#1301"
+                             "TestRunnerRun/#1310"
+                             "TestRunnerRun/#1339"
+                             "TestRunnerRun/#1340"
+                             "TestRunnerRun/#1341"
+                             "TestRunnerRun/#375"
+                             "TestRunnerRun/#377"
+                             "TestRunnerRun/#378"
+                             "TestRunnerRun/#385"
                              "TestScript/flags")
                        "|"))))
     (native-inputs
@@ -38772,9 +38781,7 @@ that @code{gofmt} is happy with.")
     (propagated-inputs
      (list go-github-com-creack-pty
            go-github-com-google-renameio-v2
-           go-github-com-muesli-cancelreader
            go-github-com-rogpeppe-go-internal
-           go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-term
            go-mvdan-cc-editorconfig))
