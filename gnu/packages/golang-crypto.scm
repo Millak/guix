@@ -2426,6 +2426,38 @@ Hybrid Public Key Encryption} (HPKE) draft.")
 formats.")
     (license license:expat)))
 
+(define-public go-github-com-jsimonetti-pwscheme
+  (package
+    (name "go-github-com-jsimonetti-pwscheme")
+    (version "0.0.0-20220922140336-67a4d090f150")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jsimonetti/pwscheme")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p28ipf4xmjn585mp9qmqkisk6w4967yci9iapb29jrpzjhywr6l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/jsimonetti/pwscheme"))
+    (home-page "https://github.com/jsimonetti/pwscheme")
+    (synopsis "Golang packages defining different password schemes")
+    (description
+     "This package defines password schemes.
+
+Supported schemes:
+@itemize
+@item {SSHA} Salted SHA1
+@item {SSHA256} Salted SHA256
+@item {SSHA512} Salted SHA512
+@item {MD5-CRYPT} Crypt with MD5
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-jzelinskie-whirlpool
   (package
     (name "go-github-com-jzelinskie-whirlpool")
