@@ -754,16 +754,19 @@ ACTIVATION-SCRIPT-TYPE."
                       ;; does not exist, 'setutxent' does not create it and
                       ;; thus there is no accounting at all.
                       ;; On GNU/Hurd use utmp instead of utmpx
-                      (if  (and (string-suffix? "-gnu" %host-type)
-                                (not (string-contains %host-type "linux")))
-                           (close-port (open-file "/var/run/utmp" "a0"))
-                           (close-port (open-file "/var/run/utmpx" "a0")))
-
+                      (let ((file (if (and (string-suffix? "-gnu" %host-type)
+                                           (not (string-contains %host-type "linux")))
+                                      "/var/run/utmp"
+                                      "/var/run/utmpx")))
+                        (close-port (open file (logior O_WRONLY O_CREAT O_APPEND)
+                                          #o644)))
 
                       ;; Same for 'wtmp', which is populated by mingetty et
                       ;; al.
                       (mkdir-p "/var/log")
-                      (close-port (open-file "/var/log/wtmp" "a0"))
+                      (close-port (open "/var/log/wtmp"
+                                        (logior O_WRONLY O_CREAT O_APPEND)
+                                        #o644))
 
                       ;; Set up /run/current-system.  Among other things this
                       ;; sets up locales, which the activation snippets
