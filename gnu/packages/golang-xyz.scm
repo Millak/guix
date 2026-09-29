@@ -3760,6 +3760,66 @@ bounds.")
 coalescing repeated calls into one.")
     (license license:expat)))
 
+(define-public go-github-com-betterleaks-betterleaks
+  (package
+    (name "go-github-com-betterleaks-betterleaks")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/betterleaks/betterleaks")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03q60ldm8936gp70qwxgsmws8jcznqi5xbv04kvzbmvciqcs6mac"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/betterleaks/betterleaks"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "config" "regexp" "report" "sources/scm" "detect/codec"
+              "internal/sigv4" "internal/words" "internal/validate"
+              "internal/confidence" "internal/httpclient"
+              "internal/ahocorasick" "internal/exprruntime"
+              "internal/contextwindow" "cmd/generate/config/base"
+              "cmd/generate/config/utils")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charlievieth-fastwalk
+           go-github-com-expr-lang-expr
+           go-github-com-fatih-semgroup
+           go-github-com-gitleaks-go-gitdiff
+           go-github-com-go-sprout-sprout
+           go-github-com-google-go-github-v72
+           go-github-com-h2non-filetype
+           go-github-com-hashicorp-go-version
+           go-github-com-mattn-go-isatty
+           go-github-com-mholt-archives
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-pkoukk-tiktoken-go
+           go-github-com-rrethy-ahocorasick
+           go-github-com-rs-zerolog
+           go-github-com-shurcool-githubv4
+           go-golang-org-x-exp
+           go-golang-org-x-sync
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-betterleaks-go-re2
+           #;go-github-com-lucasjones-reggen))
+    (home-page "https://github.com/betterleaks/betterleaks")
+    (synopsis "Find leaked secrets everywhere")
+    (description
+     "Betterleaks is a configurable and thorough secrets scanner.")
+    (license license:expat)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-bgentry-speakeasy
   (package
     (name "go-github-com-bgentry-speakeasy")
