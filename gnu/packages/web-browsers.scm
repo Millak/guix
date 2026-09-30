@@ -94,6 +94,7 @@
   #:use-module (gnu packages markup)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nim)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -107,6 +108,7 @@
   #:use-module (gnu packages regex)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
@@ -885,6 +887,49 @@ saved to a file for further viewing in another window.")
 @item Support for any character encoding recognised by Python.
 @end itemize")
     (license license:bsd-2)))
+
+(define-public chawan
+  (package
+    (name "chawan")
+    (version "0.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~bptato/chawan")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1il1z8hw9hyv8jq892mw9d8pkv2fbpr9ghkgsgqjdqah2fhckjp0"))
+       (patches (search-patches "chawan-0.4.4-tmp-nimcache.patch"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; must override absolute shell path set by test configurations.
+          (add-after 'unpack 'patch-shell-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/local/pager.nim" "adapter/protocol/man.nim")
+                (("\"/bin/sh\"")
+                 (format #f "~s" (search-input-file inputs "bin/sh"))))))
+          (delete 'configure))))
+    (native-inputs (list nim pkg-config))
+    (inputs (list bash-minimal brotli libssh2 openssl))
+    (home-page "https://chawan.net/")
+    (synopsis "Text-mode web browser and pager")
+    (description
+     "Chawan is a text-mode web browser and pager for Unix-like
+systems, with a focus on implementing modern web standards while remaining
+self-contained, easy to understand and extensible.  It includes functionality
+such as CSS, inline images inside the terminal, and JavaScript through a small,
+independent browser engine.  Most of Chawan has been developed from scratch in
+the memory-safe Nim programming language.")
+    (license license:unlicense)))
 
 (define-public dillo
   (package

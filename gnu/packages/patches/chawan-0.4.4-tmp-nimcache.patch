@@ -1,0 +1,35 @@
+By default, Nim stores intermediate object files in ~/.cache/nim.  patch moves
+the nimcache into the working directory of the guix build.  This should not be
+needed past version 0.4.4 of Chawan.
+
+diff --git a/Makefile b/Makefile
+index 8f538522..4e5a844e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -227,7 +227,7 @@ $(OUTDIR_LIBEXEC)/urldec: $(OUTDIR_LIBEXEC)/urlenc
+ 
+ # Do not add FLAGS here, because that breaks cross-compilation.
+ $(OBJDIR)/chac: src/chac.nim lib/monoucha0/monoucha/* lib/monoucha0/monoucha/qjs/*
+-	$(NIMC) -o:$@ $<
++	$(NIMC) --nimcache:"$(OBJDIR)/chac_cache" -o:$@ $<
+ 
+ $(OUTDIR_LIBEXEC)/%.jsb: src/%.js $(OBJDIR)/chac
+ 	$(OBJDIR)/chac $(chac_flags) $< $@
+@@ -314,7 +314,7 @@ uninstall:
+ 	for f in $(manpages1); do rm -f "$(DESTDIR)$(MANPREFIX1)/$$f"; done
+ 
+ test/net/run: test/net/run.nim
+-	$(NIMC) test/net/run.nim
++	$(NIMC) --verbosity:0 --nimcache:"$(OBJDIR)/$(TARGET)/test" test/net/run.nim
+ 
+ .PHONY: map
+ map:
+@@ -346,7 +346,7 @@ $(OBJDIR)/chagashi_test:
+ 	unxz $(OBJDIR)/chagashi_test/data.tar.xz
+ 	tar xf $(OBJDIR)/chagashi_test/data.tar -C $(OBJDIR)/chagashi_test
+ 
+-test_flags = --verbosity:0
++test_flags = --verbosity:0 --nimcache:"$(OBJDIR)/$(TARGET)/test"
+ 
+ .PHONY: test_charset
+ test_charset: test/charset/run.sh $(OBJDIR)/chagashi_test
