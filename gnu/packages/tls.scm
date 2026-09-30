@@ -551,6 +551,7 @@ OpenSSL for TARGET."
   (package
     (name "openssl")
     (version "3.5.7")
+    (replacement openssl-3.5/fixed)
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -671,6 +672,24 @@ OpenSSL for TARGET."
     (synopsis "SSL/TLS implementation")
     (description "OpenSSL is an implementation of SSL/TLS.")
     (license license:asl2.0)))
+
+(define-public openssl-3.5/fixed
+  (hidden-package
+   (package
+     (inherit openssl-3.5)
+     (version "3.5.9")
+     (source (origin
+               (inherit (package-source openssl-3.5))
+               (uri (list (string-append "https://www.openssl.org/source/openssl-"
+                                         version ".tar.gz")
+                          (string-append "ftp://ftp.openssl.org/source/"
+                                         "openssl-" version ".tar.gz")
+                          (string-append "ftp://ftp.openssl.org/source/old/"
+                                         (string-trim-right version char-set:letter)
+                                         "/openssl-" version ".tar.gz")))
+               (sha256
+                (base32
+                 "16l5xgqp1ii4vffbr8ap2wqbn8jqrm6x6aflzdvhvw7fw815cgv0")))))))
 
 (define-public openssl-3.0
   ;; LTS series with EOL 2026-09-07
