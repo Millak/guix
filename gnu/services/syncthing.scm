@@ -514,7 +514,8 @@
                             (passwd:uid user-pw)
                             (passwd:gid user-pw)))
                    (chmod (string-append "/var/lib/syncthing-" #$user) #o700))
-                 (make-forkexec-constructor
+
+                 (fork+exec-command
                   (append (list (string-append #$syncthing "/bin/syncthing")
                                 ;; Do not try to try to launch a web browser on startup.
                                 "--no-browser"
