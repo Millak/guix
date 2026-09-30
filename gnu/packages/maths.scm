@@ -3715,7 +3715,7 @@ script files.")
     (license license:gpl3+)))
 
 ;; For a fully featured Octave, users are strongly recommended also to install
-;; the following packages: less, ghostscript, gnuplot.
+;; the following packages: less, ghostscript.
 (define-public octave-cli
   (package
     (inherit octave-minimal)
@@ -3742,7 +3742,6 @@ script files.")
         ;; provide.
         less
         ghostscript
-        gnuplot
         texinfo)))
     (inputs
      (modify-inputs inputs
