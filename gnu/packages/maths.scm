@@ -3686,6 +3686,7 @@ can solve two kinds of problems:
            rapidjson
            readline
            suitesparse
+           sundials
            zlib))
     (native-inputs
      (list gfortran
