@@ -6970,14 +6970,14 @@ Unicode-to-LaTeX conversion.")
 (define-public python-sh
   (package
     (name "python-sh")
-    (version "2.2.2")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sh" version))
        (sha256
         (base32
-         "0nxnkvmrl6vlan6lsvjymmxpr0gf8k0gnwr1632lwa0sqjkjfck5"))))
+         "1ngzjpavdxbyf79r9fh7c7icpmbwcjq907cski0r7v89hpvawl52"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6997,7 +6997,7 @@ Unicode-to-LaTeX conversion.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-hatchling python-pytest))
     (home-page "https://github.com/amoffat/sh")
     (synopsis "Python subprocess replacement")
     (description "This package provides a replacement for Python's
