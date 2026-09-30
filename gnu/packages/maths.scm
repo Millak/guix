@@ -3640,6 +3640,80 @@ can solve two kinds of problems:
               (prepend googlebenchmark ceres)))
     (synopsis "Benchmarks of the Ceres optimization problem solver")))
 
+(define-public octave-minimal
+  (package
+    (name "octave-minimal")
+    (version "11.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/octave/octave-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1q8jbrpvydqgp5bvy491nmiv6zm12mjzxd7wybsd3ridkcag701b"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-shell="
+                             (assoc-ref %build-inputs "bash")
+                             "/bin/sh")
+
+              ;; XXX: Without this flag, linking octave-cli fails with
+              ;; undefined references to 'logf@GLIBCXX_3.4' et.al. due to
+              ;; not pulling in liboctinterp.la for -lstdc++.
+              "--enable-link-all-dependencies")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR")))))))
+    (inputs
+     (list alsa-lib
+           arpack-ng
+           bdb
+           curl
+           fftw
+           fftwf
+           glpk
+           ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
+           ;; the next rebuild cycle, add an absolute reference for -ljpeg in
+           ;; libtiff.la instead of having to provide it here.
+           libjpeg-turbo
+           hdf5
+           libsndfile
+           libxft
+           openblas
+           pcre
+           portaudio
+           qhull
+           rapidjson
+           readline
+           suitesparse
+           sundials
+           zlib))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           perl
+           zip))
+    ;; Octave code uses this variable to detect directories holding multiple CA
+    ;; certificates to verify peers with.  This is required for the networking
+    ;; functions that require encryption to work properly.
+    (native-search-paths
+     (list (search-path-specification
+             (variable "CURLOPT_CAPATH")
+             (files '("etc/ssl/certs")))))
+    (home-page "https://www.gnu.org/software/octave/")
+    (synopsis
+     "High-level language for numerical computation (mininal, no graphics)")
+    (description "GNU Octave is a high-level interpreted language that is
+specialized for numerical computations.  It can be used for both linear and
+non-linear applications and it provides great support for visualizing results.
+Work may be performed both at the interactive command-line as well as via
+script files.")
+    (license license:gpl3+)))
+
 ;; For a fully featured Octave, users are strongly recommended also to install
 ;; the following packages: less, ghostscript, gnuplot.
 (define-public octave-cli
