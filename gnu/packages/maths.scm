@@ -3657,12 +3657,7 @@ can solve two kinds of problems:
       #:configure-flags
       #~(list (string-append "--with-shell="
                              (assoc-ref %build-inputs "bash")
-                             "/bin/sh")
-
-              ;; XXX: Without this flag, linking octave-cli fails with
-              ;; undefined references to 'logf@GLIBCXX_3.4' et.al. due to
-              ;; not pulling in liboctinterp.la for -lstdc++.
-              "--enable-link-all-dependencies")
+                             "/bin/sh"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
