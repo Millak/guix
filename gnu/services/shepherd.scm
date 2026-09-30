@@ -392,35 +392,6 @@ stored."
       (shepherd-service-file/free-form service)
       (shepherd-service-file/regular service)))
 
-(define (scm->go file shepherd)
-  "Compile FILE, which contains code to be loaded by shepherd's config file,
-and return the resulting '.go' file. SHEPHERD is used as shepherd package."
-  (define shepherd&co
-    (cons shepherd
-          (match (lookup-package-propagated-input shepherd "guile-fibers")
-            (#f '())
-            (fibers (list fibers)))))
-
-  (let-system (system target)
-    (with-extensions shepherd&co
-      (computed-file (string-append (basename (scheme-file-name file) ".scm")
-                                    ".go")
-                     #~(begin
-                         (use-modules (system base compile)
-                                      (system base target))
-
-                         ;; Do the same as the Shepherd's 'load-in-user-module'.
-                         (let ((env (make-fresh-user-module)))
-                           (module-use! env (resolve-interface '(shepherd service)))
-                           (with-target #$(or target #~%host-type)
-                             (lambda _
-                               (compile-file #$file #:output-file #$output
-                                             #:env env)))))
-
-                     ;; It's faster to build locally than to download.
-                     #:options '(#:local-build? #t
-                                 #:substitutable? #f)))))
-
 (define* (shepherd-signal-action
           name signal
           #:key
@@ -463,8 +434,7 @@ of the service's configuration file."
 as shepherd package."
   (assert-valid-graph services)
 
-  (let ((files (map shepherd-service-file services))
-        (scm->go (cute scm->go <> shepherd)))
+  (let ((files (map shepherd-service-file services)))
     (define config
       #~(begin
           (use-modules (srfi srfi-1))
@@ -503,9 +473,13 @@ while loading '~a': ~s~%"
                                (save-module-excursion
                                 (lambda ()
                                   (set-current-module (make-user-module))
-                                  (load-compiled file))))
+                                  (primitive-load file))))
                              #:unwind? #t))
-                         '#$(map scm->go files))))
+                         ;; Note: We used to pre-compile FILES, but the
+                         ;; problem is that 'load-compiled' is a continuation
+                         ;; barrier as of 3.0.10, which could be a problem
+                         ;; when loading individual files.
+                         '#$files)))
 
           (format #t "starting services...~%")
           (let ((services-to-start
