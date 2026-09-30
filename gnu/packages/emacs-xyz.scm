@@ -48747,6 +48747,38 @@ experience for opening and closing folds.")
     (home-page "https://github.com/jamescherti/kirigami.el")
     (license license:gpl3+)))
 
+(define-public emacs-folding
+  (let ((commit "443b826c76a4938fc0961298ff0e6c924c723ed7")
+        (revision "0"))
+    (package
+      (name "emacs-folding")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/jaalto/project-emacs--folding-mode")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05z1xg474mar77wax2lxlf35461w2wk0bwkg79c671wcsgjixvdw"))))
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'build-info-manual
+              (lambda _
+                (invoke "makeinfo" "folding.texi"))))))
+      (native-inputs (list texinfo))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/jaalto/project-emacs--folding-mode")
+      (synopsis "A folding-editor-like minor mode")
+      (description
+       "This package provides a minor mode for hiding parts of the edited text
+or program.")
+      (license license:gpl2))))
+
 (define-public emacs-mint-mode
   (package
     (name "emacs-mint-mode")
