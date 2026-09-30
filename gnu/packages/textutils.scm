@@ -679,7 +679,7 @@ application code.")
 (define-public papis
   (package
     (name "papis")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -688,7 +688,7 @@ application code.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ijy39ixgkzm43nsi6ff1hh3hgbd366dkbkga2qv24alq18g5shv"))))
+        (base32 "1alxncp9lmbdrwncr5c69v0ix73a3p1r0y55h442sl4qpwlp0qll"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "--pyargs" "papis")))
@@ -700,19 +700,18 @@ application code.")
     (inputs
      (list python-arxiv
            python-beautifulsoup4
-           python-bibtexparser-for-cobib        ;refresh on the next release
+           python-bibtexparser
            python-click
            python-colorama
            python-doi
            python-dominate
            python-filetype
            python-habanero
-           python-isbnlib
+           python-lark
            python-lxml
            python-platformdirs
            python-prompt-toolkit
            python-pygments
-           python-pyparsing
            python-pyyaml
            python-requests
            python-slugify))
