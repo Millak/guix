@@ -3718,103 +3718,36 @@ script files.")
 ;; the following packages: less, ghostscript, gnuplot.
 (define-public octave-cli
   (package
+    (inherit octave-minimal)
     (name "octave-cli")
-    (version "11.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnu/octave/octave-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "1q8jbrpvydqgp5bvy491nmiv6zm12mjzxd7wybsd3ridkcag701b"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list alsa-lib
-           arpack-ng
-           bdb
-           curl
-           fftw
-           fftwf
-           fltk
-           fontconfig
-           freetype
-           gl2ps
-           glpk
-           glu
-           graphicsmagick
-
-           ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
-           ;; the next rebuild cycle, add an absolute reference for -ljpeg in
-           ;; libtiff.la instead of having to provide it here.
-           libjpeg-turbo
-
-           hdf5
-           libsndfile
-           libxft
-           mesa
-           openblas
-           pcre
-           portaudio
-           qhull
-           rapidjson
-           readline
-           suitesparse
-           sundials
-           zlib))
-    (native-inputs
-     (list gfortran
-           pkg-config
-           perl
-           ;; The following inputs are not actually used in the build process.
-           ;; However, the ./configure gratuitously tests for their existence and
-           ;; assumes that programs not present at build time are also not, and
-           ;; can never be, available at run time!  If these inputs are therefore
-           ;; not present, support for them will be built out.  However, Octave
-           ;; will still run without them, albeit without the features they
-           ;; provide.
-           less
-           ghostscript
-           gnuplot
-           texinfo
-           zip))
-    ;; Octave code uses this variable to detect directories holding multiple CA
-    ;; certificates to verify peers with.  This is required for the networking
-    ;; functions that require encryption to work properly.
-    (native-search-paths
-     (list (search-path-specification
-            (variable "CURLOPT_CAPATH")
-            (files '("etc/ssl/certs")))))
     (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "--with-shell="
-                             (assoc-ref %build-inputs "bash")
-                             "/bin/sh")
-
-              ;; XXX: Without this flag, linking octave-cli fails with
-              ;; undefined references to 'logf@GLIBCXX_3.4' et.al. due to
-              ;; not pulling in liboctinterp.la for -lstdc++.
-              "--enable-link-all-dependencies")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              (setenv "HOME" (getenv "TMPDIR"))))
-          (add-after 'configure 'configure-makeinfo
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "libinterp/corefcn/help.h"
-                (("\"makeinfo\"")
-                 (format #f "~s"
-                         (search-input-file inputs "bin/makeinfo")))))))))
-    (home-page "https://www.gnu.org/software/octave/")
-    (synopsis "High-level language for numerical computation (no GUI)")
-    (description "GNU Octave is a high-level interpreted language that is
-specialized for numerical computations.  It can be used for both linear and
-non-linear applications and it provides great support for visualizing results.
-Work may be performed both at the interactive command-line as well as via
-script files.")
-    (license license:gpl3+)))
+     (substitute-keyword-arguments arguments
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'configure-makeinfo
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "libinterp/corefcn/help.h"
+                  (("\"makeinfo\"")
+                   (format #f "~s"
+                           (search-input-file inputs "bin/makeinfo"))))))))))
+    (native-inputs
+     (modify-inputs native-inputs
+       (prepend
+        ;; The following inputs are not actually used in the build process.
+        ;; However, the ./configure gratuitously tests for their existence and
+        ;; assumes that programs not present at build time are also not, and
+        ;; can never be, available at run time!  If these inputs are therefore
+        ;; not present, support for them will be built out.  However, Octave
+        ;; will still run without them, albeit without the features they
+        ;; provide.
+        less
+        ghostscript
+        gnuplot
+        texinfo)))
+    (inputs
+     (modify-inputs inputs
+       (prepend fltk fontconfig freetype gl2ps glu graphicsmagick)))
+    (synopsis "High-level language for numerical computation (no GUI)")))
 
 (define-public octave
   (package (inherit octave-cli)
