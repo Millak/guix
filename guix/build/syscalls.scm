@@ -1074,7 +1074,7 @@ backend device."
                           (string->pointer "")
                           0)))
         (cond ((< size 0)
-               (throw 'system-error "getxattr" "~S: ~A"
+               (throw 'system-error "getxattr" "~S ~S: ~A"
                       (list file key (strerror err))
                       (list err)))
               ((zero? size) "")
@@ -1087,7 +1087,7 @@ backend device."
                                          size)))
                       (if (>= size 0)
                           (utf8->string buf)
-                          (throw 'system-error "getxattr" "~S: ~A"
+                          (throw 'system-error "getxattr" "~S ~S: ~A"
                                  (list file key (strerror err))
                                  (list err))))))))))
 
@@ -1104,7 +1104,7 @@ backend device."
                            (bytevector-length bv)
                            flags)))
         (unless (zero? ret)
-          (throw 'system-error "setxattr" "~S: ~A"
+          (throw 'system-error "setxattr" "~S ~S: ~A"
                  (list file key value (strerror err))
                  (list err)))))))
 
