@@ -52962,14 +52962,23 @@ value must be a @code{shepherd-configuration}, as described below.
 @deftp {Data Type} shepherd-configuration
 This data type represents the Shepherd's configuration.
 
-@table @code
-@item shepherd (default: @code{shepherd})
+@table @asis
+@item @code{shepherd} (default: @code{shepherd})
 The Shepherd package to use.
 
-@item services (default: @code{'()})
+@item @code{services} (default: @code{'()})
 A list of @code{<shepherd-service>} to start.
 You should probably use the service extension
 mechanism instead (@pxref{Shepherd Services}).
+
+@item @code{check?} (default: @code{#t})
+Whether to check the entire configuration with @command{shepherd
+--dry-run} (supported since the Shepherd 1.1 series).
+
+When true, an invalid configuration---e.g., with unbound variables,
+wrong argument types, or similar errors---leads to build error when the
+system is instantiated, making it impossible to end up with a system
+with obvious Shepherd configuration errors.
 @end table
 @end deftp
 

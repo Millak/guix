@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2016, 2018-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -113,12 +113,15 @@
   (shepherd shepherd-configuration-shepherd
             (default shepherd-1.0))               ;file-like
   (services shepherd-configuration-services
-            (default '()))) ; list of <shepherd-service>
+            (default '()))                        ;list of <shepherd-service>
+  (check?   shepherd-configuration-check?         ;boolean
+            (default #t)))
 
 (define (shepherd-boot-gexp config)
   "Return a gexp starting the shepherd service."
   (let ((shepherd (shepherd-configuration-shepherd config))
-        (services (shepherd-configuration-services config)))
+        (services (shepherd-configuration-services config))
+        (check?   (shepherd-configuration-check? config)))
   #~(begin
       ;; Keep track of the booted system.
       (false-if-exception (delete-file "/run/booted-system"))
@@ -142,7 +145,8 @@
       ;; Start shepherd.
       (execl #$(file-append shepherd "/bin/shepherd")
              "shepherd" "--config"
-             #$(shepherd-configuration-file services shepherd)))))
+             #$(shepherd-configuration-file services shepherd
+                                            #:check? check?)))))
 
 (define shepherd-packages
   (compose list shepherd-configuration-shepherd))
@@ -429,7 +433,9 @@ of the service's configuration file."
    (documentation "Trigger immediate execution of this timer.")
    (procedure #~trigger-timer)))
 
-(define (shepherd-configuration-file services shepherd)
+(define* (shepherd-configuration-file/unchecked services shepherd
+                                                #:optional
+                                                (name "shepherd.conf"))
   "Return the shepherd configuration file for SERVICES.  SHEPHERD is used
 as shepherd package."
   (assert-valid-graph services)
@@ -444,6 +450,22 @@ as shepherd package."
             (let ((m (make-fresh-user-module)))
               (module-use! m (resolve-interface '(shepherd service)))
               m))
+
+          (define maybe-fail-safe
+            ;; Swallow exceptions thrown when loading individual files, unless
+            ;; asked not to.  TODO: Remove this once the Shepherd 1.1 is the
+            ;; default.
+            (if (getenv "GUIX_SHEPHERD_FAIL_HARD")
+                (lambda (thunk) (thunk))
+                (lambda (thunk)
+                  (with-exception-handler
+                      (lambda (exception)
+                        (format #t "Exception caught \
+while loading '~a': ~s~%"
+                                file exception)
+                        #f)
+                    thunk
+                    #:unwind? #t))))
 
           ;; Specify the default environment visible to all the services.
           ;; Without this statement, all the environment variables of PID 1
@@ -463,18 +485,12 @@ as shepherd package."
           (register-services
            (parameterize ((current-warning-port (%make-void-port "w")))
              (filter-map (lambda (file)
-                           (with-exception-handler
-                               (lambda (exception)
-                                 (format #t "Exception caught \
-while loading '~a': ~s~%"
-                                         file exception)
-                                 #f)
+                           (maybe-fail-safe
                              (lambda ()
                                (save-module-excursion
                                 (lambda ()
                                   (set-current-module (make-user-module))
-                                  (primitive-load file))))
-                             #:unwind? #t))
+                                  (primitive-load file))))))
                          ;; Note: We used to pre-compile FILES, but the
                          ;; problem is that 'load-compiled' is a continuation
                          ;; barrier as of 3.0.10, which could be a problem
@@ -498,7 +514,41 @@ while loading '~a': ~s~%"
             (redirect-port (open "/dev/null" (logior O_RDONLY O_CLOEXEC))
                            (current-input-port)))))
 
-    (scheme-file "shepherd.conf" config)))
+    (scheme-file name config)))
+
+(define* (shepherd-configuration-file services shepherd
+                                      #:key (check? #t))
+  "Return the shepherd configuration file for SERVICES, but only if it can be
+successfully loaded in a SHEPHERD dry run, unless CHECK? is false."
+  (if check?
+      (let ((file (shepherd-configuration-file/unchecked
+                   services shepherd
+                   "shepherd.conf-unchecked")))
+        (computed-file "shepherd.conf"
+                       (with-imported-modules '((guix build utils))
+                         #~(begin
+                             (use-modules (guix build utils))
+
+                             (let ((shepherd #+(file-append shepherd
+                                                            "/bin/shepherd")))
+
+                               ;; Shepherd < 1.1 does not support '--dry-run'.  Do
+                               ;; nothing when using an older version.
+                               (if (with-output-to-port (%make-void-port "w")
+                                     (lambda ()
+                                       (zero? (system* shepherd "-c" "/dev/null"
+                                                       "--dry-run"))))
+                                   (begin
+                                     ;; Let errors go through.
+                                     (setenv "GUIX_SHEPHERD_FAIL_HARD" "yes")
+                                     (invoke shepherd "-c" #$file "--dry-run"))
+                                   (format (current-error-port)
+                                           "'~a' does not support '--dry-run', \
+Shepherd configuration cannot be checked~%"
+                                           shepherd))
+
+                               (copy-file #$file #$output))))))
+      (shepherd-configuration-file/unchecked services shepherd)))
 
 (define* (shepherd-service-lookup-procedure services
                                             #:optional
