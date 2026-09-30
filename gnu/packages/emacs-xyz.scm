@@ -14780,6 +14780,35 @@ features like jumping to definitions, finding references, and viewing
 documentation, enhancing the Python development experience within Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-python-x
+  (let ((commit "0fbc5fd9eefc358e46b2799f4b0d573193e3e620")
+        (revision "0"))
+    (package
+      (name "emacs-python-x")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/wavexx/python-x.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1d0mfl3z5954jm0v8fk2hkkajfzrv5j3v69ypyc21z66ysnz6qys"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f)) ;no tests
+      (propagated-inputs (list emacs-folding emacs-compat))
+      (home-page "https://gitlab.com/wavexx/python-x")
+      (synopsis
+       "Interactive evaluation extras for Emacs's built-in python-mode")
+      (description
+       "This package extends the built-in @code{python-mode} with several
+additional functions and behaviors inspired by @code{ess-mode}, which are
+targeted to interactive code evaluation with an inferior Python process.")
+      (license license:gpl3+))))
+
 (define-public emacs-jack
   (let ((commit "3b4ea97fcc107d0ffd201ea695129af52f390113")
         (revision "0"))
