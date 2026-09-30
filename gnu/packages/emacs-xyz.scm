@@ -21522,7 +21522,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.21.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -21531,7 +21531,7 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19wx9mc488qipm08s7hc0zrfmiylw577lmf3jpvqcjq7amx14jgc"))))
+        (base32 "0v8wf84mj1y0i1jikywf5ram7b8ymx61kmdv41pggprabfy4gpcq"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -21543,9 +21543,6 @@ implementation.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'patch-el-files)
-          (add-after 'unpack 'remove-network-tests
-            (lambda _
-              (delete-file "../test/cider-jar-tests.el")))
           (replace 'check
             (lambda* (#:key test-command tests?
                       #:allow-other-keys)
@@ -21558,6 +21555,7 @@ implementation.")
     (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs
      (list emacs-clojure-mode
+           emacs-compat
            emacs-parseedn
            emacs-pkg-info
            emacs-queue
