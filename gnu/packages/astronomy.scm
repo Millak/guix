@@ -18,7 +18,7 @@
 ;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2025-2026 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
-;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2025, 2026 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4002,6 +4002,11 @@ Origins Spectrograph}.")
       #:test-flags #~(list "camb.tests.camb_test")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'disable-native-optimizations
+            (lambda _
+              ;; Prevent compilation with -march=native, breaking
+              ;; reproducibility and compatability
+              (setenv "NONNATIVE" "1")))
           ;; XXX: It may be set via FORUTILSPATH environment variable but
           ;; build fails with error:
           ;; mkdir: cannot create directory ‘Releaselib’: Read-only file system
