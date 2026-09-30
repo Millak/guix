@@ -5577,7 +5577,7 @@ WireGuard peer, and exposes a SOCKS5/HTTP proxy or tunnels on the machine.")
 (define-public zapret2
   (package
     (name "zapret2")
-    (version "0.9.5")
+    (version "1.0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -5586,7 +5586,7 @@ WireGuard peer, and exposes a SOCKS5/HTTP proxy or tunnels on the machine.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1awl8ngh6x6sdn04az1rrsw1v7ignaz8bp4d3067li8gc9bp6cnd"))))
+        (base32 "04m33nv47v9hzgscfgmxai2li9r61zwjki2053p6kb7mkpjy6bl9"))))
     (build-system gnu-build-system)
     (arguments
      (list
