@@ -2384,6 +2384,331 @@ modified BTree data structure.  The trees are optimized for use inside ZODB's
 conflicts detected by that mechanism.")
     (license license:zpl2.1)))
 
+(define-public python-cachecontrol
+  (package
+    (name "python-cachecontrol")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ionrock/cachecontrol")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "07ifs4dhahhsgj4vxgfl5ymnmb4my5l2wb8jiinn6fncszcfmr59"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-filelock python-msgpack python-requests))
+    (native-inputs
+     (list python-cherrypy python-flit-core python-pytest))
+    (home-page "https://github.com/ionrock/cachecontrol")
+    (synopsis "The httplib2 caching algorithms for use with requests")
+    (description "CacheControl is a port of the caching algorithms in
+@code{httplib2} for use with @code{requests} session objects.")
+    (license license:asl2.0)))
+
+(define-public python-canvasapi
+  (package
+    (name "python-canvasapi")
+    (version "3.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ucfopen/canvasapi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "017gashyd4avxzlz3imwn18vmfd0cjyhbm063isra3d2wk3ivrkx"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-arrow python-pytz python-requests))
+    (native-inputs (list python-pytest
+                         python-requests-mock
+                         python-setuptools
+                         python-urllib3))
+    (home-page "https://github.com/ucfopen/canvasapi")
+    (synopsis "API wrapper for the Canvas LMS")
+    (description
+     "CanvasAPI is a Python library for accessing Instructure’s Canvas LMS API.
+The library enables developers to programmatically manage Canvas courses,
+users, gradebooks, and more.")
+    (license license:expat)))
+
+(define-public python-cbor2
+  (package
+    (name "python-cbor2")
+    (version "5.4.2.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cbor2" version))
+       (sha256
+        (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://github.com/agronholm/cbor2")
+    (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
+    (description "This Python library provides encoding and decoding for the
+Concise Binary Object
+Representation (CBOR) (@url{https://www.rfc-editor.org/rfc/rfc8949.html, RFC
+8949}) serialization format.  The specification is fully compatible with the
+original RFC 7049.  Among its features are:
+@itemize
+@item Simple API like the @code{json} or @code{pickle} modules.
+@item Support many CBOR tags with stdlib objects.
+@item Generic tag decoding.
+@item Shared value references including cyclic references.
+@item String references compact encoding with repeated strings replaced with
+indices.
+@item Optional C module backend tested on big- and little-endian architectures.
+@item Extensible tagged value handling using tag_hook and object_hook on
+decode and default on encode.
+@end itemize")
+    (license license:expat)))
+
+(define-public python-cfn-lint
+  (package
+    (name "python-cfn-lint")
+    (version "1.38.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws-cloudformation/cfn-lint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1crwx0cp50h83xz8lc4ny504mx4dadpk80ln539syd4jd78qplgy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 2136 passed, 11 deselected, 1 warning
+      #:test-flags
+      #~(list "--ignore=test/integration/"
+              "-k" (string-join
+                    ;; Tests failing on doctest or comparing diff.
+                    (list "not test_build_graph"
+                          "test_good_template"
+                          "test_success_run"
+                          "test_update_docs"
+                          ;; ImportError: Missing optional dependencies sarif
+                          "test_sarif_formatter")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-deprecated
+            (lambda _
+              (substitute* "src/cfnlint/data/AdditionalSpecs/LmbdRuntimeLifecycle.json"
+                (("deprecated\": \"2025")
+                 "deprecated\": \"2125")))))))
+    (native-inputs
+     (list python-defusedxml
+           python-pydot
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-aws-sam-translator
+           python-jsonpatch
+           python-networkx
+           python-pyyaml
+           python-regex
+           python-sympy
+           python-typing-extensions
+           ;; [optional]
+           python-junit-xml))
+    (home-page "https://github.com/aws-cloudformation/cfn-lint")
+    (synopsis "Validate CloudFormation templates")
+    (description
+     "This package lets you validate CloudFormation YAML/JSON templates against
+the CloudFormation spec and additional checks.  Includes checking valid values
+for resource properties and best practices.")
+    (license license:expat)))
+
+(define-public python-cheroot
+  (package
+    (name "python-cheroot")
+    (version "11.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cherrypy/cheroot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))
+       ;; TODO: Remove this patch on next release.
+       (patches (search-patches "python-cheroot-openssl-test.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 150 passed, 3 xfailed, 7 warnings
+      #:test-flags
+      ;; To prevent dependency on python-pypytools which depends on python-py
+      ;; both marked as deprecated by maintainers, see:
+      ;; <https://codeberg.org/guix/guix/issues/7475>.
+      #~(list "--ignore=cheroot/test/test_server.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
+              (delete-file "pytest.ini"))))))
+    (native-inputs
+     (list python-portend
+           python-pyopenssl
+           python-pytest
+           python-pytest-mock
+           python-requests
+           python-requests-toolbelt
+           python-setuptools
+           python-setuptools-scm
+           python-trustme))
+    (propagated-inputs
+     (list python-jaraco-functools
+           python-more-itertools))
+    (home-page "https://cheroot.cherrypy.dev")
+    (synopsis "Highly-optimized, pure-python HTTP server")
+    (description
+     "Cheroot is a high-performance, pure-Python HTTP server.")
+    (license license:bsd-3)))
+
+(define-public python-cherrypy
+  (package
+    (name "python-cherrypy")
+    (properties '((commit . "1f75bc9eed8e0e385f64f368bd69f58d96fb8c2b")
+                  (revision . "0")))
+    (version (git-version "18.10.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cherrypy/cherrypy")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l01a4sbfm42s5xp6ngphgqf0yb65ksqbsb27kznvybblyaxfa9p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 288 passed, 9 skipped, 1 xfailed, 2 xpassed, 15 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
+              (delete-file "pytest.ini")))
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"cherrypy.scaffold\",")
+                 (string-join
+                  (list "\"cherrypy.scaffold\""
+                        "\"cherrypy._private_api\""
+                        "\"cherrypy._private_api.compat\",")
+                  ",\n  "))))))))
+    (propagated-inputs
+     (list python-cheroot
+           python-filelock
+           python-jaraco-collections
+           python-more-itertools
+           python-portend))
+    (native-inputs
+     (list python-path
+           python-pytest
+           python-pytest-services
+           python-requests
+           python-requests-toolbelt
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://www.cherrypy.dev")
+    (synopsis "Object-Oriented HTTP framework")
+    (description
+     "CherryPy is a pythonic, object-oriented web framework.  It helps in
+building web applications in the same way any other object-oriented Python
+program would be built.")
+    (license license:bsd-3)))
+
+(define-public python-cloud-init
+  (package
+    (name "python-cloud-init")
+    (version "24.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/canonical/cloud-init")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18872z2y9wkh558y1bx5r0rksb4i584jbc8z4g8marwawhwxq506"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; This requires usermod
+        "--ignore=tests/unittests/distros/test_create_users.py"
+        ;; This writes to /var
+        "--ignore=tests/unittests/net/test_dhcp.py"
+        "-k"
+        (string-append
+         ;; This test messes with PATH, so it cannot find mkdir
+         "not test_path_env_gets_set_from_main"
+         " and not test_apt_configure_sources_list_"
+         ;; These all fail because /bin/sh doesn't exist.  We cannot patch
+         ;; this because the generated scripts must use /bin/sh as they are
+         ;; supposed to be run on minimal systems.
+         " and not test_handler_creates_and_runs_bootcmd_script_with_instance_id"
+         " and not test_handler_runs_bootcmd_script_with_error"
+         " and not test_subp_combined_stderr_stdout"
+         " and not test_handle_part"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (substitute* "tests/unittests/cmd/test_clean.py"
+                (("#!/bin/sh") (string-append "#!" (which "sh"))))))
+          (add-after 'install 'move-files
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each (lambda (dir)
+                          (let ((source (string-append (site-packages inputs outputs) "/" dir))
+                                (target (string-append #$output "/" (basename dir))))
+                            (copy-recursively source target)
+                            (delete-file-recursively source)))
+                        (list "etc" "lib" "usr/lib" "usr/share")))))))
+    (propagated-inputs
+     (list python-configobj
+           python-jinja2
+           python-jsonpatch
+           python-jsonschema
+           python-netifaces
+           python-oauthlib
+           python-pyserial
+           python-pyyaml
+           python-responses))
+    (native-inputs
+     (list procps ;for ps when running tests
+           python-pytest
+           python-pytest-mock
+           python-passlib
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/canonical/cloud-init")
+    (synopsis "Cloud instance initialization tools")
+    (description
+     "Cloud-init is the multi-distribution method for cross-platform cloud
+instance initialization.  It is supported across all major public cloud
+providers, provisioning systems for private cloud infrastructure, and
+bare-metal installations.")
+    ;; Either license can be chosen
+    (license (list license:asl2.0 license:gpl3))))
+
 (define-public python-cloudpathlib
   (package
     (name "python-cloudpathlib")
@@ -2432,6 +2757,68 @@ conflicts detected by that mechanism.")
      "This package provides a Python library with classes that mimic
 @code{pathlib.Path}'s interface for URIs from different cloud storage
 services.")
+    (license license:expat)))
+
+(define-public python-cloudscraper
+  (package
+    (name "python-cloudscraper")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VeNoMouS/cloudscraper")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13w0ywz2y8x0zwpwzrnn46wyq307hfpdcz49zy33yyf46rq9n10n"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "cloudscraper"
+           (for-each delete-file
+                     '("captcha/9kw.py" "captcha/anticaptcha.py"))
+           (substitute* "__init__.py"
+             ;; Perhaps it's a joke, but don't promote proprietary software.
+             (("([Th]is feature is not available) in the .*'" _ prefix)
+              (string-append prefix ".'")))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test_403_handling")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; XXX: Relax brotli dependency.
+              (substitute* "pyproject.toml"
+                (("\"brotli>=.*\"")
+                 "\"brotli\""))
+              ;; XXX: Dependencies, that have not yet been packaged
+              ;; and cause an import error when included.
+              (delete-file "cloudscraper/interpreters/v8.py")))
+          (add-after 'unpack 'fix-references
+            (lambda _
+              (substitute* "cloudscraper/interpreters/nodejs.py"
+                (("'node'")
+                 (string-append "'" (which "node") "'"))))))))
+    (inputs (list node-lts))
+    (propagated-inputs
+     (list python-pycryptodome
+           python-brotli
+           python-js2py
+           python-polling2
+           python-requests
+           python-requests-toolbelt
+           python-responses
+           python-pyparsing
+           python-websocket-client))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/venomous/cloudscraper")
+    (synopsis "Cloudflare anti-bot bypass")
+    (description
+     "This module acts as a webbrowser solving Cloudflare's Javascript
+challenges.")
     (license license:expat)))
 
 (define-public python-conda-package-handling
@@ -2488,6 +2875,174 @@ extracting, creating, and converting between formats.")
      "This package provides an efficient library to read from new and old format
 @code{.conda} and @code{.tar.bz2} conda packages.")
     (license license:bsd-3)))
+
+(define-public python-css-html-js-minify
+  (let ((commit "8f72452960e41bc5476e50d96481f633eff72750")
+        (revision "0"))
+    (package
+      (name "python-css-html-js-minify")
+      (version (git-version "2.5.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/juancarlospaco/css-html-js-minify")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lkx03720zk6q16w3d9r3l5kryikd1cmzwrcjzsjxwrq4zfh6vdf"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "setup.cfg"
+                  (("^tests_require.*") "")))))))
+      (native-inputs (list python-pytest python-setuptools))
+      (home-page "https://github.com/juancarlospaco/css-html-js-minify")
+      (synopsis "CSS/HTML/JS minifier")
+      (description
+       "This package provides a single-file minifier for CSS, HTML, and JavaScript.")
+      ;; XXX: The README just says "GNU GPL and GNU LGPL and MIT".  From
+      ;; <https://github.com/juancarlospaco/css-html-js-minify/issues/9> it
+      ;; looks like the user can choose a license.
+      (license (list license:gpl3+ license:lgpl3+ license:expat)))))
+
+(define-public python-css-parser
+  (package
+    (name "python-css-parser")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ebook-utils/css-parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0514g5a0r972lm883b3aja3b8jsxywmhxn4xpx7ksjpqmx38wga4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/ebook-utils/css-parser")
+    (synopsis "CSS related utilities for Python")
+    (description
+     "Css-parser is a Python package for parsing and building CSS
+Cascading Style Sheets.  Currently it provides a DOM only and no rendering
+options.
+
+It's a fork of cssutils 1.0.2, updated and modified for parsing ebooks, due to
+cssutils not receiving updates as of 1.0.2.")
+    (license license:lgpl3+)))
+
+(define-public python-cssmin
+  (package
+    (name "python-cssmin")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zacharyvoase/cssmin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04bzpal6j26pjjjf3p7iq6g2wcr61j4g0ygqz6h847h4hsyah9qg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/zacharyvoase/cssmin")
+    (synopsis "Python port of the YUI CSS Compressor")
+    (description "Python port of the YUI CSS Compressor.")
+    (license (list license:expat license:bsd-3))))
+
+(define-public python-cssselect
+  (package
+    (name "python-cssselect")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scrapy/cssselect")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "110l98x1mz1mxcal89xscsg28vg624sc0y6b5x1n2clwa19q5g4y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling python-lxml python-pytest))
+    (home-page "https://github.com/scrapy/cssselect")
+    (synopsis "CSS3 selector parser and translator to XPath 1.0")
+    (description
+     "Cssselect ia a Python module that parses CSS3 Selectors and translates
+them to XPath 1.0 expressions.  Such expressions can be used in lxml or
+another XPath engine to find the matching elements in an XML or HTML document.")
+    (license license:bsd-3)))
+
+(define-public python-cssselect2
+  (package
+    (name "python-cssselect2")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Kozea/cssselect2")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1drvb83siq9s6dygyhab6kzk2v2ib6cv51ls42p4jrxs9q8cdiw0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-tinycss2))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (home-page "https://doc.courtbouillon.org/cssselect2/stable/")
+    (synopsis "CSS selectors for Python ElementTree")
+    (description "@code{cssselect2} is a straightforward implementation of
+CSS3 Selectors for markup documents (HTML, XML, etc.) that can be read by
+ElementTree-like parsers (including cElementTree, lxml, html5lib, etc.).
+
+Unlike the Python package @code{cssselect}, it does not translate selectors to
+XPath and therefore does not have all the correctness corner cases that are
+hard or impossible to fix in cssselect.")
+    (license license:bsd-3)))
+
+(define-public python-cssutils
+  (package
+    (name "python-cssutils")
+    (version "2.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cssutils" version))
+       (sha256
+        (base32 "08fhyw7x88xzhphm6jc6v72kw3i8iysw91x7rgd3fl4iycvr4wz9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 399 passed, 2 skipped, 43 xfailed
+      #:test-flags
+      ;; Examples try to access http://cthedot.de/not-present.css.
+      #~(list "--ignore=examples/")))
+    (native-inputs
+     (list python-cssselect
+           python-jaraco-test
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-encutils python-more-itertools))
+    (home-page "https://github.com/jaraco/cssutils")
+    (synopsis "CSS Cascading Style Sheets library for Python")
+    (description
+     "Cssutils is a Python package for parsing and building CSS Cascading
+Style Sheets.  Currently it provides a DOM only and no rendering options.")
+    (license license:lgpl3+)))
 
 (define-public python-dependency-groups
   (package
@@ -4482,40 +5037,6 @@ by calling @code{FrozenList.freeze}.")
 routes using HTTP Digest Authentication.")
     (license license:bsd-2)))
 
-(define-public python-css-html-js-minify
-  (let ((commit "8f72452960e41bc5476e50d96481f633eff72750")
-        (revision "0"))
-    (package
-      (name "python-css-html-js-minify")
-      (version (git-version "2.5.5" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/juancarlospaco/css-html-js-minify")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1lkx03720zk6q16w3d9r3l5kryikd1cmzwrcjzsjxwrq4zfh6vdf"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'relax-requirements
-              (lambda _
-                (substitute* "setup.cfg"
-                  (("^tests_require.*") "")))))))
-      (native-inputs (list python-pytest python-setuptools))
-      (home-page "https://github.com/juancarlospaco/css-html-js-minify")
-      (synopsis "CSS/HTML/JS minifier")
-      (description
-       "This package provides a single-file minifier for CSS, HTML, and JavaScript.")
-      ;; XXX: The README just says "GNU GPL and GNU LGPL and MIT".  From
-      ;; <https://github.com/juancarlospaco/css-html-js-minify/issues/9> it
-      ;; looks like the user can choose a license.
-      (license (list license:gpl3+ license:lgpl3+ license:expat)))))
-
 (define-public python-publicsuffixlist
   (package
     (name "python-publicsuffixlist")
@@ -4685,97 +5206,6 @@ software.")
     (description "This package provides the official module to perform HTTP requests
 to the OVHcloud APIs.")
     (license license:bsd-3)))
-
-(define-public python-cbor2
-  (package
-    (name "python-cbor2")
-    (version "5.4.2.post1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cbor2" version))
-       (sha256
-        (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-setuptools-scm))
-    (home-page "https://github.com/agronholm/cbor2")
-    (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
-    (description "This Python library provides encoding and decoding for the
-Concise Binary Object
-Representation (CBOR) (@url{https://www.rfc-editor.org/rfc/rfc8949.html, RFC
-8949}) serialization format.  The specification is fully compatible with the
-original RFC 7049.  Among its features are:
-@itemize
-@item Simple API like the @code{json} or @code{pickle} modules.
-@item Support many CBOR tags with stdlib objects.
-@item Generic tag decoding.
-@item Shared value references including cyclic references.
-@item String references compact encoding with repeated strings replaced with
-indices.
-@item Optional C module backend tested on big- and little-endian architectures.
-@item Extensible tagged value handling using tag_hook and object_hook on
-decode and default on encode.
-@end itemize")
-    (license license:expat)))
-
-(define-public python-cfn-lint
-  (package
-    (name "python-cfn-lint")
-    (version "1.38.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aws-cloudformation/cfn-lint")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1crwx0cp50h83xz8lc4ny504mx4dadpk80ln539syd4jd78qplgy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 2136 passed, 11 deselected, 1 warning
-      #:test-flags
-      #~(list "--ignore=test/integration/"
-              "-k" (string-join
-                    ;; Tests failing on doctest or comparing diff.
-                    (list "not test_build_graph"
-                          "test_good_template"
-                          "test_success_run"
-                          "test_update_docs"
-                          ;; ImportError: Missing optional dependencies sarif
-                          "test_sarif_formatter")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-deprecated
-            (lambda _
-              (substitute* "src/cfnlint/data/AdditionalSpecs/LmbdRuntimeLifecycle.json"
-                (("deprecated\": \"2025")
-                 "deprecated\": \"2125")))))))
-    (native-inputs
-     (list python-defusedxml
-           python-pydot
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-aws-sam-translator
-           python-jsonpatch
-           python-networkx
-           python-pyyaml
-           python-regex
-           python-sympy
-           python-typing-extensions
-           ;; [optional]
-           python-junit-xml))
-    (home-page "https://github.com/aws-cloudformation/cfn-lint")
-    (synopsis "Validate CloudFormation templates")
-    (description
-     "This package lets you validate CloudFormation YAML/JSON templates against
-the CloudFormation spec and additional checks.  Includes checking valid values
-for resource properties and best practices.")
-    (license license:expat)))
 
 (define-public python-pyzabbix
   (package
@@ -5123,113 +5553,6 @@ origin than that of the web application.")
      "A comprehensive HTTP client library supporting many features left out of
 other HTTP libraries.")
     (license license:expat)))
-
-(define-public python-cheroot
-  (package
-    (name "python-cheroot")
-    (version "11.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/cherrypy/cheroot")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))
-       ;; TODO: Remove this patch on next release.
-       (patches (search-patches "python-cheroot-openssl-test.patch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 150 passed, 3 xfailed, 7 warnings
-      #:test-flags
-      ;; To prevent dependency on python-pypytools which depends on python-py
-      ;; both marked as deprecated by maintainers, see:
-      ;; <https://codeberg.org/guix/guix/issues/7475>.
-      #~(list "--ignore=cheroot/test/test_server.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
-              (delete-file "pytest.ini"))))))
-    (native-inputs
-     (list python-portend
-           python-pyopenssl
-           python-pytest
-           python-pytest-mock
-           python-requests
-           python-requests-toolbelt
-           python-setuptools
-           python-setuptools-scm
-           python-trustme))
-    (propagated-inputs
-     (list python-jaraco-functools
-           python-more-itertools))
-    (home-page "https://cheroot.cherrypy.dev")
-    (synopsis "Highly-optimized, pure-python HTTP server")
-    (description
-     "Cheroot is a high-performance, pure-Python HTTP server.")
-    (license license:bsd-3)))
-
-(define-public python-cherrypy
-  (package
-    (name "python-cherrypy")
-    (properties '((commit . "1f75bc9eed8e0e385f64f368bd69f58d96fb8c2b")
-                  (revision . "0")))
-    (version (git-version "18.10.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/cherrypy/cherrypy")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1l01a4sbfm42s5xp6ngphgqf0yb65ksqbsb27kznvybblyaxfa9p"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 288 passed, 9 skipped, 1 xfailed, 2 xpassed, 15 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
-              (delete-file "pytest.ini")))
-          (add-after 'unpack 'patch-pyproject
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"cherrypy.scaffold\",")
-                 (string-join
-                  (list "\"cherrypy.scaffold\""
-                        "\"cherrypy._private_api\""
-                        "\"cherrypy._private_api.compat\",")
-                  ",\n  "))))))))
-    (propagated-inputs
-     (list python-cheroot
-           python-filelock
-           python-jaraco-collections
-           python-more-itertools
-           python-portend))
-    (native-inputs
-     (list python-path
-           python-pytest
-           python-pytest-services
-           python-requests
-           python-requests-toolbelt
-           python-setuptools
-           python-setuptools-scm))
-    (home-page "https://www.cherrypy.dev")
-    (synopsis "Object-Oriented HTTP framework")
-    (description
-     "CherryPy is a pythonic, object-oriented web framework.  It helps in
-building web applications in the same way any other object-oriented Python
-program would be built.")
-    (license license:bsd-3)))
 
 (define-public python-parfive
   (package
@@ -6998,89 +7321,6 @@ authentications)
     (description "This library provides OpenID authentication for Python, both
 for clients and servers.")
     (license license:asl2.0)))
-
-(define-public python-cssutils
-  (package
-    (name "python-cssutils")
-    (version "2.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cssutils" version))
-       (sha256
-        (base32 "08fhyw7x88xzhphm6jc6v72kw3i8iysw91x7rgd3fl4iycvr4wz9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 399 passed, 2 skipped, 43 xfailed
-      #:test-flags
-      ;; Examples try to access http://cthedot.de/not-present.css.
-      #~(list "--ignore=examples/")))
-    (native-inputs
-     (list python-cssselect
-           python-jaraco-test
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-encutils python-more-itertools))
-    (home-page "https://github.com/jaraco/cssutils")
-    (synopsis "CSS Cascading Style Sheets library for Python")
-    (description
-     "Cssutils is a Python package for parsing and building CSS Cascading
-Style Sheets.  Currently it provides a DOM only and no rendering options.")
-    (license license:lgpl3+)))
-
-(define-public python-css-parser
-  (package
-    (name "python-css-parser")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ebook-utils/css-parser")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0514g5a0r972lm883b3aja3b8jsxywmhxn4xpx7ksjpqmx38wga4"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/ebook-utils/css-parser")
-    (synopsis "CSS related utilities for Python")
-    (description
-     "Css-parser is a Python package for parsing and building CSS
-Cascading Style Sheets.  Currently it provides a DOM only and no rendering
-options.
-
-It's a fork of cssutils 1.0.2, updated and modified for parsing ebooks, due to
-cssutils not receiving updates as of 1.0.2.")
-    (license license:lgpl3+)))
-
-(define-public python-cssselect
-  (package
-    (name "python-cssselect")
-    (version "1.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/scrapy/cssselect")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "110l98x1mz1mxcal89xscsg28vg624sc0y6b5x1n2clwa19q5g4y"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-hatchling python-lxml python-pytest))
-    (home-page "https://github.com/scrapy/cssselect")
-    (synopsis "CSS3 selector parser and translator to XPath 1.0")
-    (description
-     "Cssselect ia a Python module that parses CSS3 Selectors and translates
-them to XPath 1.0 expressions.  Such expressions can be used in lxml or
-another XPath engine to find the matching elements in an XML or HTML document.")
-    (license license:bsd-3)))
 
 (define-public python-databricks-cli
   (package
@@ -9296,31 +9536,6 @@ Protocol, WAMP}
 provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
     (license license:isc)))
 
-(define-public python-cachecontrol
-  (package
-    (name "python-cachecontrol")
-    (version "0.14.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ionrock/cachecontrol")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "07ifs4dhahhsgj4vxgfl5ymnmb4my5l2wb8jiinn6fncszcfmr59"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-filelock python-msgpack python-requests))
-    (native-inputs
-     (list python-cherrypy python-flit-core python-pytest))
-    (home-page "https://github.com/ionrock/cachecontrol")
-    (synopsis "The httplib2 caching algorithms for use with requests")
-    (description "CacheControl is a port of the caching algorithms in
-@code{httplib2} for use with @code{requests} session objects.")
-    (license license:asl2.0)))
-
 (define-public python-s3fs
   (package
     (name "python-s3fs")
@@ -9671,27 +9886,6 @@ for Flask.")
 and CSS files,supporting a variety of different filters, including YUI, jsmin,
 jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (license license:bsd-2)))
-
-(define-public python-cssmin
-  (package
-    (name "python-cssmin")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/zacharyvoase/cssmin")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "04bzpal6j26pjjjf3p7iq6g2wcr61j4g0ygqz6h847h4hsyah9qg"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/zacharyvoase/cssmin")
-    (synopsis "Python port of the YUI CSS Compressor")
-    (description "Python port of the YUI CSS Compressor.")
-    (license (list license:expat license:bsd-3))))
 
 (define-public python-elastic-transport
   (package
@@ -10218,33 +10412,6 @@ asynchronously.")
 for URL parsing and changing.")
     (license license:asl2.0)))
 
-(define-public python-canvasapi
-  (package
-    (name "python-canvasapi")
-    (version "3.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ucfopen/canvasapi")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "017gashyd4avxzlz3imwn18vmfd0cjyhbm063isra3d2wk3ivrkx"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-arrow python-pytz python-requests))
-    (native-inputs (list python-pytest
-                         python-requests-mock
-                         python-setuptools
-                         python-urllib3))
-    (home-page "https://github.com/ucfopen/canvasapi")
-    (synopsis "API wrapper for the Canvas LMS")
-    (description
-     "CanvasAPI is a Python library for accessing Instructure’s Canvas LMS API.
-The library enables developers to programmatically manage Canvas courses,
-users, gradebooks, and more.")
-    (license license:expat)))
-
 (define-public python-google
   (package
     (name "python-google")
@@ -10703,36 +10870,6 @@ in various CSS modules.")
 possibly malformed HTML document into an ElementTree tree.  This module is a
 simplified fork of html5lib.")
     (license license:expat)))
-
-(define-public python-cssselect2
-  (package
-    (name "python-cssselect2")
-    (version "0.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Kozea/cssselect2")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1drvb83siq9s6dygyhab6kzk2v2ib6cv51ls42p4jrxs9q8cdiw0"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-tinycss2))
-    (native-inputs
-     (list python-flit-core
-           python-pytest))
-    (home-page "https://doc.courtbouillon.org/cssselect2/stable/")
-    (synopsis "CSS selectors for Python ElementTree")
-    (description "@code{cssselect2} is a straightforward implementation of
-CSS3 Selectors for markup documents (HTML, XML, etc.) that can be read by
-ElementTree-like parsers (including cElementTree, lxml, html5lib, etc.).
-
-Unlike the Python package @code{cssselect}, it does not translate selectors to
-XPath and therefore does not have all the correctness corner cases that are
-hard or impossible to fix in cssselect.")
-    (license license:bsd-3)))
 
 (define-public python-uvloop
   (package
@@ -12431,143 +12568,6 @@ interpreter written in pure Python.")
     (description
      "This package provides a simple implementation of Encrypted Content
 Encoding for HTTP.")
-    (license license:expat)))
-
-(define-public python-cloud-init
-  (package
-    (name "python-cloud-init")
-    (version "24.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/canonical/cloud-init")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18872z2y9wkh558y1bx5r0rksb4i584jbc8z4g8marwawhwxq506"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list
-        ;; This requires usermod
-        "--ignore=tests/unittests/distros/test_create_users.py"
-        ;; This writes to /var
-        "--ignore=tests/unittests/net/test_dhcp.py"
-        "-k"
-        (string-append
-         ;; This test messes with PATH, so it cannot find mkdir
-         "not test_path_env_gets_set_from_main"
-         " and not test_apt_configure_sources_list_"
-         ;; These all fail because /bin/sh doesn't exist.  We cannot patch
-         ;; this because the generated scripts must use /bin/sh as they are
-         ;; supposed to be run on minimal systems.
-         " and not test_handler_creates_and_runs_bootcmd_script_with_instance_id"
-         " and not test_handler_runs_bootcmd_script_with_error"
-         " and not test_subp_combined_stderr_stdout"
-         " and not test_handle_part"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-references
-            (lambda _
-              (substitute* "tests/unittests/cmd/test_clean.py"
-                (("#!/bin/sh") (string-append "#!" (which "sh"))))))
-          (add-after 'install 'move-files
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (for-each (lambda (dir)
-                          (let ((source (string-append (site-packages inputs outputs) "/" dir))
-                                (target (string-append #$output "/" (basename dir))))
-                            (copy-recursively source target)
-                            (delete-file-recursively source)))
-                        (list "etc" "lib" "usr/lib" "usr/share")))))))
-    (propagated-inputs
-     (list python-configobj
-           python-jinja2
-           python-jsonpatch
-           python-jsonschema
-           python-netifaces
-           python-oauthlib
-           python-pyserial
-           python-pyyaml
-           python-responses))
-    (native-inputs
-     (list procps ;for ps when running tests
-           python-pytest
-           python-pytest-mock
-           python-passlib
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/canonical/cloud-init")
-    (synopsis "Cloud instance initialization tools")
-    (description
-     "Cloud-init is the multi-distribution method for cross-platform cloud
-instance initialization.  It is supported across all major public cloud
-providers, provisioning systems for private cloud infrastructure, and
-bare-metal installations.")
-    ;; Either license can be chosen
-    (license (list license:asl2.0 license:gpl3))))
-
-(define-public python-cloudscraper
-  (package
-    (name "python-cloudscraper")
-    (version "3.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/VeNoMouS/cloudscraper")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13w0ywz2y8x0zwpwzrnn46wyq307hfpdcz49zy33yyf46rq9n10n"))
-       (modules '((guix build utils)))
-       (snippet
-        '(with-directory-excursion "cloudscraper"
-           (for-each delete-file
-                     '("captcha/9kw.py" "captcha/anticaptcha.py"))
-           (substitute* "__init__.py"
-             ;; Perhaps it's a joke, but don't promote proprietary software.
-             (("([Th]is feature is not available) in the .*'" _ prefix)
-              (string-append prefix ".'")))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" "not test_403_handling")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              ;; XXX: Relax brotli dependency.
-              (substitute* "pyproject.toml"
-                (("\"brotli>=.*\"")
-                 "\"brotli\""))
-              ;; XXX: Dependencies, that have not yet been packaged
-              ;; and cause an import error when included.
-              (delete-file "cloudscraper/interpreters/v8.py")))
-          (add-after 'unpack 'fix-references
-            (lambda _
-              (substitute* "cloudscraper/interpreters/nodejs.py"
-                (("'node'")
-                 (string-append "'" (which "node") "'"))))))))
-    (inputs (list node-lts))
-    (propagated-inputs
-     (list python-pycryptodome
-           python-brotli
-           python-js2py
-           python-polling2
-           python-requests
-           python-requests-toolbelt
-           python-responses
-           python-pyparsing
-           python-websocket-client))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/venomous/cloudscraper")
-    (synopsis "Cloudflare anti-bot bypass")
-    (description
-     "This module acts as a webbrowser solving Cloudflare's Javascript
-challenges.")
     (license license:expat)))
 
 (define-public python-imap-tools
