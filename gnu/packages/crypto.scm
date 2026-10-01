@@ -295,10 +295,12 @@ communication, encryption, decryption, signatures, etc.")
     (license license:isc)
     (home-page "https://libsodium.org")))
 
+;;; Avoid switching to git-fetch, as git-minimal depends on libmd.
+;;; See guix/guix!11627.
 (define-public libmd
   (package
     (name "libmd")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
             (method url-fetch)
             (uri
@@ -309,7 +311,7 @@ communication, encryption, decryption, signatures, etc.")
                              version ".tar.xz")))
             (sha256
              (base32
-              "186h2gmxzshgf5bdy832yfqb1sp05slcarpcrnngn0h58fwgy5dc"))))
+              "01k70qnr3m79p9pll9w4p9yyd44ih29lc09cdwr70r3nnsv1w3zw"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -325,6 +327,7 @@ communication, encryption, decryption, signatures, etc.")
 @item RIPEMD-160
 @item SHA-1
 @item SHA-2 (SHA-256, SHA-384 and SHA-512)
+@item SHA-3 (SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE-128, SHAKE-256)
 @end itemize")
     (license (list license:bsd-3
                    license:bsd-2
