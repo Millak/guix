@@ -150,11 +150,11 @@ Description Language} Analysis and Standardization Group.")
 
 (define-public json-for-vhdl
   ;; No tagged releases.
-  (let ((commit "0dc9e317440263cd4941f157f5e5668baa858ec2")
-        (revision "0"))
+  (let ((commit "2ab1ebc2c788ececce152a49ffda706f84570e95")
+        (revision "1"))
     (package
       (name "json-for-vhdl")
-      (version (git-version "20220905" revision commit)) ;last revision
+      (version (git-version "20260713" revision commit)) ;last revision
       (source
        (origin
          (method git-fetch)
@@ -163,7 +163,7 @@ Description Language} Analysis and Standardization Group.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1062g2c3dpsb67zhqrn1j04p7jl28g4mcxd6nhrqqfffjsvxkpw9"))))
+          (base32 "1gkj9hc92w7ibz3w3n6aa4hijril5r77vba299xl81nlzjdlb4mx"))))
       (build-system copy-build-system)
       (arguments
        (list
