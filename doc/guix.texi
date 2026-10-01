@@ -39499,6 +39499,10 @@ The port on which to listen for incoming connections.
 List of strings or G-expressions which represent the DNS server(s) to
 announce to VPN clients via DHCP.
 
+@item @code{mtu} (default: @code{#f})
+An optional integer to define the largest packet size (in bytes) that
+can be sent over the VPN tunnel without fragmentation.
+
 @item @code{monitor-ips?} (default: @code{#f})
 @cindex Dynamic IP, with Wireguard
 @cindex dyndns, usage with Wireguard

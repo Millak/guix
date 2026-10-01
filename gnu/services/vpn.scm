@@ -744,6 +744,8 @@ strongSwan.")))
                           (default '()))
   (dns                    wireguard-configuration-dns ;list of strings
                           (default '()))
+  (mtu                    wireguard-configuration-mtu ;integer
+                          (default #f))
   (monitor-ips?           wireguard-configuration-monitor-ips? ;boolean
                           (default #f))
   (monitor-ips-interval   wireguard-configuration-monitor-ips-interval
@@ -783,7 +785,7 @@ strongSwan.")))
           keys)))
 
   (match-record config <wireguard-configuration>
-    (wireguard interface addresses port private-key peers dns
+    (wireguard interface addresses port private-key peers dns mtu
                pre-up post-up pre-down post-down table)
     (let* ((config-file (string-append interface ".conf"))
            (peer-keys (fold peers->preshared-keys (list) peers))
@@ -824,7 +826,10 @@ strongSwan.")))
                     (format #f "~@[ListenPort = ~a~]" #$port)
                     (if (null? '#$dns)
                         ""
-                        (format #f "DNS = ~{~a~^, ~}" (list #$@dns)))))
+                        (format #f "DNS = ~{~a~^, ~}" (list #$@dns)))
+                    (if (null? '#$mtu)
+                        ""
+                        (format #f "MTU = ~a" #$mtu))))
 
                  (mkdir #$output)
                  (chdir #$output)
