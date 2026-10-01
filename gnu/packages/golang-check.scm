@@ -6153,6 +6153,22 @@ similar to the Unix diff command line tool to compare files.")
 ;;; Executables:
 ;;;
 
+(define-public go-check-sumtype
+  (package/inherit go-github-com-alecthomas-go-check-sumtype
+    (name "go-check-sumtype")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _)
+        "github.com/alecthomas/go-check-sumtype/cmd/go-check-sumtype")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/alecthomas/go-check-sumtype")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-alecthomas-go-check-sumtype))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public go-ciinfo
   (package/inherit go-github-com-gkampitakis-ciinfo
     (name "go-ciinfo")
