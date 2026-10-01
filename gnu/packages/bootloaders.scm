@@ -61,6 +61,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages efi)
+  #:use-module (gnu packages less)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -71,6 +72,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -1175,45 +1177,97 @@ CONFIG_TOOLS_KWBIMAGE=n")
     (description "This package provides common Python code used by some of the
 commands part of the U-Boot project, such as Patman.")))
 
-;;; This is packaged separately, as it can be used in other contexts than for
-;;; U-Boot development.
 (define-public patman
   (package
-    (inherit u-boot)
     (name "patman")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nxtboot/patman")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       ;; XXX: Since 0.3.0, u-boot-pylib is bundled with some modifications.
+       (sha256
+        (base32 "1f0dsgvi1g7k6hbvvaaqy99cd93ldn4l5zplf5bh4i5916mxc2nx"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; The test suite strongly relies on the git metadata being available (23
-     ;; failed, 14 passed).
      (list
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          ;; Patman fails to run during 'sanity-check phase, as it needs to be
-          ;; run within a git directory.
-          (delete 'sanity-check)
-          (add-after 'unpack 'chdir
+          (add-after 'unpack 'skip-problematic-tests
             (lambda _
-              (chdir "tools/patman")))
-          (add-after 'install 'wrap-script
+              (substitute* "patman/func_test.py"
+                (("([[:blank:]]*)def test_custom_get_maintainer_script\\(.*"
+                  all indent)
+                 ;; FIXME: This test fails only in the container with:
+                 ;; CommandExc: Error running
+                 ;; '/tmp/guix-build-patman-0.3.0.drv-0/patman.j2zlgyhe/dummy-script.sh
+                 ;; 0001-new-commit.patch': [Errno 2] No such file or
+                 ;; directory.
+                 (string-append indent
+                                "@unittest.skip('fails in build container')\n"
+                                all)))
+              (substitute* "patman/test_cseries.py"
+                (("([[:blank:]]*)def test_series_send\\(.*" all indent)
+                 ;; This test always fail, whether in the build container or
+                 ;; outside of it (see:
+                 ;; <https://github.com/nxtboot/patman/issues/46>).
+                 (string-append indent
+                                "@unittest.skip('always fails')\n"
+                                all)))))
+          (replace 'wrap
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-script (string-append #$output "/bin/patman")
-                `("PATH" ":" prefix
-                  (,(string-append #$(this-package-input "git") "/bin")))
-                `("GIT_EXEC_PATH" ":" prefix
+                (let* ((python (assoc-ref inputs "python"))
+                       (version (python-version python))
+                       (site-suffix (string-append "/lib/python" version
+                                                   "/site-packages")))
+                  `("GUIX_PYTHONPATH" prefix
+                    ,(cons (string-append #$output site-suffix)
+                           (map (lambda (x)
+                                  (string-append (assoc-ref inputs x)
+                                                 site-suffix))
+                                (list "python-aiohttp"
+                                      "python-patatt"
+                                      "python-pygit2")))))
+                `("PATH" prefix
+                  ,(map (lambda (command)
+                          (dirname (search-input-file inputs command)))
+                        (list "bin/git" "bin/less")))
+                `("GIT_EXEC_PATH" prefix
                   (,(dirname (search-input-file
                               inputs "libexec/git-core/git-commit"))
                    ,(dirname (search-input-file
                               inputs
-                              "libexec/git-core/git-send-email"))))))))))
-    (native-inputs (list python-setuptools))
+                              "libexec/git-core/git-send-email")))))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              (substitute* "patman/func_test.py"
+                (("/usr/bin/env python3")
+                 (which "python3")))
+              (setenv "HOME" (getcwd))
+              (setenv "USER" "guixbuilder")
+              (invoke "git" "config" "--global" "user.email" "you@example.com")
+              (invoke "git" "config" "--global" "user.name" "Your Name")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "patman" "test")))))))
+    (native-inputs
+     (list perl
+           python-concurrencytest
+           python-setuptools))
     (inputs
      (list git
            `(,git "send-email")
            guile-3.0/pinned             ;for wrap-script
-           python-pygit2
-           python-requests
-           python-u-boot-pylib))
+           less
+           python-aiohttp
+           python-patatt
+           python-pygit2))
+    (home-page "https://github.com/nxtboot/patman")
     (synopsis "Patch automation tool")
     (description "Patman is a patch automation script which:
 @itemize
@@ -1222,7 +1276,8 @@ commands part of the U-Boot project, such as Patman.")))
 @item Inserts a cover letter with change lists
 @item Runs the patches through automated checks
 @item Optionally emails them out to selected people.
-@end itemize")))
+@end itemize")
+    (license license:gpl2+)))
 
 (define*-public (make-u-boot-package board triplet
                                      #:key
