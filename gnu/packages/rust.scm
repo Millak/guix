@@ -749,7 +749,7 @@ safety and thread safety guarantees.")
     (home-page "https://github.com/thepowersgang/mrustc")
 
     ;; List of systems where rust-bootstrap is explicitly known to build:
-    (supported-systems '("x86_64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))

@@ -54,3 +54,121 @@ index 25ecc2a2..fe8aeef7 100644
  # macos_weak only defines the fdopendir weak symbol for x86/x86_64; other macOS targets emit neither arm.
  # 10.4/10.5 have no $INODE64 variants, so the plain symbol is the correct one there.
  --- library/std/src/sys/unix/fs.rs
+diff --git a/src/expand/asm.cpp b/src/expand/asm.cpp
+index 95255cf4..a7d51f1c 100644
+--- a/src/expand/asm.cpp
++++ b/src/expand/asm.cpp
+@@ -219,6 +219,13 @@ namespace {
+         ERROR(sp, E0000, "Unknown register for x86/x86-64 - `" << str << "`");
+     }
+ 
++    AsmCommon::RegisterClass get_reg_class_aarch64(const Span &sp, const RcString& str)
++    {
++        if(str == "reg"    )    return AsmCommon::RegisterClass::aarch64_reg;
++        if(str == "vreg"   )    return AsmCommon::RegisterClass::aarch64_vreg;
++        ERROR(sp, E0000, "Unknown register for aarch64 - `" << str << "`");
++    }
++
+     AsmCommon::RegisterClass get_reg_class_riscv(const Span &sp, const RcString& str)
+     {
+         if(str == "reg"    )    return AsmCommon::RegisterClass::riscv_reg;
+@@ -232,6 +239,8 @@ namespace {
+             return get_reg_class_x8664(sp, str);
+         if(Target_GetCurSpec().m_arch.m_name == "x86")
+             return get_reg_class_x8664(sp, str);
++        if (Target_GetCurSpec().m_arch.m_name == "aarch64")
++            return get_reg_class_aarch64(sp, str);
+         if (Target_GetCurSpec().m_arch.m_name == "riscv64")
+             return get_reg_class_riscv(sp, str);
+         ERROR(sp, E0000, "Unknown architecture for asm!");
+diff --git a/src/hir/asm.hpp b/src/hir/asm.hpp
+index c5180220..5c73fdb5 100644
+--- a/src/hir/asm.hpp
++++ b/src/hir/asm.hpp
+@@ -39,8 +39,8 @@ namespace AsmCommon {
+         //x86_mm, // Requires
+         x86_kreg,
+ 
+-        //aarch64_reg,
+-        //aarch64_vreg,
++        aarch64_reg,
++        aarch64_vreg,
+         
+         //arm_reg,
+         //arm_sreg,
+@@ -106,6 +106,8 @@ namespace AsmCommon {
+         case RegisterClass::x86_ymm:    return "ymm_reg";
+         case RegisterClass::x86_zmm:    return "zmm_reg";
+         case RegisterClass::x86_kreg:   return "kreg";
++        case RegisterClass::aarch64_reg:  return "reg";
++        case RegisterClass::aarch64_vreg:  return "vreg";
+         case RegisterClass::riscv_reg:  return "reg";
+         case RegisterClass::riscv_freg: return "freg";
+         }
+diff --git a/src/trans/codegen_c.cpp b/src/trans/codegen_c.cpp
+index a01460b3..76bcde18 100644
+--- a/src/trans/codegen_c.cpp
++++ b/src/trans/codegen_c.cpp
+@@ -2898,6 +2898,10 @@ namespace {
+                 {
+                     m_of << "\tassert(!\"Unsupprorted LLVM x86 intrinsic: " << item.m_linkage.name << "\"); abort();\n";
+                 }
++                else if( item.m_linkage.name == "llvm.aarch64.isb" ) {
++                    m_of << "\t__asm__ __volatile__ (\"isb\");\n";
++                    m_of << "\treturn ;\n";
++                }
+                 else {
+                     // TODO: Hand off to compiler-specific intrinsics
+                     //MIR_TODO(*m_mir_res, "LLVM extern linkage: " << item.m_linkage.name);
+@@ -5582,6 +5586,31 @@ namespace {
+                 m_of << ");\n";
+                 return;
+             }
++            // AARCH64 CRC32 assembly instructions
++            else if( m.matches_template({"crc32b {0:w}, {0:w}, {1:w}"}, {"inout:reg", "in:reg"}) )
++            {
++                m_of << indent << "__builtin_aarch64_crc32b("; emit_param(m.input(0)); m_of << ", "; emit_param(m.input(1));
++                m_of << ");\n";
++                return;
++            }
++            else if( m.matches_template({"crc32h {0:w}, {0:w}, {1:w}"}, {"inout:reg", "in:reg"}) )
++            {
++                m_of << indent << "__builtin_aarch64_crc32h("; emit_param(m.input(0)); m_of << ", "; emit_param(m.input(1));
++                m_of << ");\n";
++                return;
++            }
++            else if( m.matches_template({"crc32w {0:w}, {0:w}, {1:w}"}, {"inout:reg", "in:reg"}) )
++            {
++                m_of << indent << "__builtin_aarch64_crc32w("; emit_param(m.input(0)); m_of << ", "; emit_param(m.input(1));
++                m_of << ");\n";
++                return;
++            }
++            else if( m.matches_template({"crc32x {0:w}, {0:w}, {1:x}"}, {"inout:reg", "in:reg"}) )
++            {
++                m_of << indent << "__builtin_aarch64_crc32x("; emit_param(m.input(0)); m_of << ", "; emit_param(m.input(1));
++                m_of << ");\n";
++                return;
++            }
+             // HACK: Abort on various `v*` operations, as they have overly complex register specs that gcc doesn't like
+             else if( se.lines[0].frags.size() > 0 && (
+                 false
+@@ -5743,6 +5772,9 @@ namespace {
+                         case AsmCommon::RegisterClass::x86_ymm: m_of << "x";   break;
+                         case AsmCommon::RegisterClass::x86_zmm: m_of << "v";   break;
+                         case AsmCommon::RegisterClass::x86_kreg: m_of << "Yk"; break;
++                        // aarch64
++                        case AsmCommon::RegisterClass::aarch64_reg: m_of << "r";  break;
++                        case AsmCommon::RegisterClass::aarch64_vreg: m_of << "w"; break;
+                         // riscv
+                         case AsmCommon::RegisterClass::riscv_reg: m_of << "r"; break;
+                         case AsmCommon::RegisterClass::riscv_freg: m_of << "f"; break;
+@@ -5784,6 +5816,9 @@ namespace {
+                             case AsmCommon::RegisterClass::x86_ymm: m_of << "x";   break;
+                             case AsmCommon::RegisterClass::x86_zmm: m_of << "v";   break;
+                             case AsmCommon::RegisterClass::x86_kreg: m_of << "Yk"; break;
++                            // aarch64
++                            case AsmCommon::RegisterClass::aarch64_reg: m_of << "r";  break;
++                            case AsmCommon::RegisterClass::aarch64_vreg: m_of << "w"; break;
+                             // riscv
+                             case AsmCommon::RegisterClass::riscv_reg: m_of << "r"; break;
+                             case AsmCommon::RegisterClass::riscv_freg: m_of << "f"; break;
