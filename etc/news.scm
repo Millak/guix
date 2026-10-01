@@ -43,6 +43,60 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "a6292be30be14986c3bb5dcc89d7b833c080483e")
+        (title
+         (en "New @code{downloaded-channels} construct for channel files")
+         (fr "Nouvelle procédure @code{downloaded-channels} pour les fichiers
+de canaux"))
+        (body
+         (en "Instead of returning a list of channels, a channel file read by
+@command{guix pull} or @command{guix time-machine} can now return the result
+of the new @code{downloaded-channels} procedure, as in this example:
+
+@example
+(downloaded-channels
+  \"https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master\")
+@end example
+
+In this example, the channel file creates an indirection, instructing
+@command{pull} or @command{time-machine} to download the channel file that
+ci.guix.gnu.org serves at that URL for the latest successfully-evaluated
+channel commit.  By installing this as @file{~/.config/guix/channels.scm},
+@command{guix pull} would always fetch its channel set from this URL.
+
+The new @option{--max-indirections} provides control over the number of such
+indirections.  Downloaded channel files are still subject to isolated
+evaluation, the returned channels must be \"trusted\", and they must not cause
+a downgrade; all these checks make downloading channels safe.
+
+See @samp{info \"(guix)Invoking guix pull\"} for more information.")
+         (fr "Au lieu de retourner une liste de canaux, un fichier de canaux
+lu par @command{guix pull} ou @command{guix time-machine} peut maintenant
+retourner le résultat de la nouvelle procédure @code{downloaded-channels},
+comme dans cet exemple :
+
+@example
+(downloaded-channels
+  \"https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master\")
+@end example
+
+Dans cet exemple, le fichier de canaux créée une indirection, demandant à
+@command{pull} et @command{time-machine} de télécharger le fichier canal que
+ci.guix.gnu.org fournit à cette URL pour tout commit du canal qui a été évalué
+avec succès.  Si on installe cet exemple dans
+@file{~/.config/guix/latest/channels.scm}, @command{guix pull} va toujours
+télécharger ses canaux depuis cette URL.
+
+La nouvelle option @option{--max-indirections} permet de contrôler le nombre
+d'indirections.  Les fichiers canal téléchargés sont par ailleurs toujours
+sujets à une évaluation isolée, les canaux qu'ils retournent doivent être de
+confiance et ils ne doivent pas causer de retour en arrière ; ces gardes-fous
+font que télécharger des fichiers canal est sans risques.
+
+Voir @samp{info \"(guix.fr) Invoquer guix pull\"} pour plus
+d'informations.")))
+
  (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
         (title
          (en "New @option{--spice} flag for emitting Spice configured VMs")
