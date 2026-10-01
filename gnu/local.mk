@@ -2000,7 +2000,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/mono-mcs-patches-from-5.10.0.patch	\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
-  %D%/packages/patches/mrustc-patches.patch			\
+  %D%/packages/patches/mrustc-patches-1.54.patch		\
+  %D%/packages/patches/mrustc-patches-1.90.patch		\
   %D%/packages/patches/mswebrtc-b64-refactor.patch		\
   %D%/packages/patches/mswebrtc-cmake.patch			\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
