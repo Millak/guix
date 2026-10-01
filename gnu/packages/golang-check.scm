@@ -6196,6 +6196,21 @@ similar to the Unix diff command line tool to compare files.")
     (inputs '())
     (propagated-inputs '())))
 
+(define-public go-dupword
+  (package/inherit go-github-com-abirdcfly-dupword
+    (name "go-dupword")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/Abirdcfly/dupword/cmd/dupword")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/Abirdcfly/dupword")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-abirdcfly-dupword))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public go-errcheck
   (package/inherit go-github-com-kisielk-errcheck
     (name "go-errcheck")
