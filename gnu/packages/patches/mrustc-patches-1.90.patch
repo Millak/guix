@@ -1,0 +1,56 @@
+diff --git a/rustc-1.54.0-src.patch b/rustc-1.54.0-src.patch
+index c258f486..ee6e8f0a 100644
+--- a/rustc-1.54.0-src.patch
++++ b/rustc-1.54.0-src.patch
+@@ -303,17 +303,6 @@
+  
+  pub use self::arch::{vec128_storage, vec256_storage, vec512_storage};
+ 
+---- src/llvm-project/llvm/include/llvm/Support/Signals.h
+-+++ src/llvm-project/llvm/include/llvm/Support/Signals.h
+-@@ -14,6 +14,7 @@
+- #ifndef LLVM_SUPPORT_SIGNALS_H
+- #define LLVM_SUPPORT_SIGNALS_H
+- 
+-+#include <cstdint>
+- #include <string>
+- 
+- namespace llvm {
+-
+ # MSVC Cannot handle structs larger than 32-bit, so disable this for windows with mrustc
+ --- vendor/hex-0.3.2/src/lib.rs
+ +++ vendor/hex-0.3.2/src/lib.rs
+diff --git a/rustc-1.74.0-src.patch b/rustc-1.74.0-src.patch
+index 25ecc2a2..fe8aeef7 100644
+--- a/rustc-1.74.0-src.patch
++++ b/rustc-1.74.0-src.patch
+@@ -124,29 +124,6 @@
+ +#[cfg(all(target_pointer_width = "64", not(rust_compiler = "mrustc")))]
+  from_hex_array_impl! {
+ 
+---- src/llvm-project/llvm/include/llvm/ADT/SmallVector.h
+-+++ src/llvm-project/llvm/include/llvm/ADT/SmallVector.h
+-@@ -21,2 +21,3 @@
+- #include <cstddef>
+-+#include <cstdint>
+- #include <cstdlib>
+---- src/llvm-project/llvm/lib/Target/X86/MCTargetDesc/X86MCTargetDesc.h
+-+++ src/llvm-project/llvm/lib/Target/X86/MCTargetDesc/X86MCTargetDesc.h
+-@@ -14,4 +14,5 @@
+- #define LLVM_LIB_TARGET_X86_MCTARGETDESC_X86MCTARGETDESC_H
+- 
+-+#include <cstdint>
+- #include <memory>
+- #include <string>
+---- src/llvm-project/llvm/lib/Target/AMDGPU/MCTargetDesc/AMDGPUMCTargetDesc.h
+-+++ src/llvm-project/llvm/lib/Target/AMDGPU/MCTargetDesc/AMDGPUMCTargetDesc.h
+-@@ -16,4 +16,5 @@
+- #define LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUMCTARGETDESC_H
+- 
+-+#include <cstdint>
+- #include <memory>
+- 
+-
+ # macos_weak only defines the fdopendir weak symbol for x86/x86_64; other macOS targets emit neither arm.
+ # 10.4/10.5 have no $INODE64 variants, so the plain symbol is the correct one there.
+ --- library/std/src/sys/unix/fs.rs
