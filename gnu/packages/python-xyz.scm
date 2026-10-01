@@ -37817,7 +37817,7 @@ than trying to just split strings.")
   ;; be replaced with msgpack, cloudpickle, ruamel.yaml, and ujson.
   (package
     (name "python-srsly")
-    (version "2.5.3")
+    (version "2.5.4")
     (source
      (origin
        (method git-fetch)
@@ -37826,22 +37826,14 @@ than trying to just split strings.")
               (commit (string-append "release-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fjd6j540k5i2yrib41k99j05qpa281470birqgcn82dxg9v16vm"))))
+        (base32 "1w3h37d907rl2khysq70dk7b7m43hng3pisr0val0f1mp3w03cf2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 741 passed, 4 skipped, 22 xfailed
       #:test-flags
       #~(list "--pyargs" "srsly")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-broken-tests
-            (lambda _
-              ;; Tests depend on removed in 2.5.3 module
-              ;; "srsly/cloudpickle/compat.py".
-              ;; See: <https://github.com/explosion/srsly/issues/121>.
-              (delete-file "srsly/tests/cloudpickle/cloudpickle_file_test.py")
-              (delete-file "srsly/tests/cloudpickle/cloudpickle_test.py")))
           (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "srsly"))))))
