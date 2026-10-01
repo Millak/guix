@@ -6273,6 +6273,21 @@ tool."))))
     (inputs '())
     (propagated-inputs '())))
 
+(define-public go-nakedret
+  (package/inherit go-github-com-alexkohler-nakedret-v2
+    (name "go-nakedret")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/alexkohler/nakedret/v2/cmd/nakedret")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/alexkohler/nakedret/v2")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-alexkohler-nakedret-v2))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public go-nlreturn
   (package/inherit go-github-com-ssgreg-nlreturn-v2
     (name "go-nlreturn")
