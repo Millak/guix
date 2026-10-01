@@ -24,6 +24,8 @@
   #:use-module (guix utils)
   #:use-module (guix config)
   #:use-module (guix deprecation)
+  #:use-module ((guix diagnostics) #:select (warning))
+  #:use-module ((guix i18n) #:select (G_))
   #:use-module (guix serialization)
   #:use-module (guix remote-procedures)
   #:use-module (guix monads)
@@ -1366,11 +1368,20 @@ supported by STORE.  The result is memoized for STORE."
   ;; derivation builders in general, which appeared in Guix > 0.11.0.
   ;; Return the empty list if it doesn't.  Note that this RPC does not
   ;; exist in 'nix-daemon'.
-  (if (or (> (store-connection-major-version store) #x100)
-          (and (= (store-connection-major-version store) #x100)
-               (>= (store-connection-minor-version store) #x60)))
-      (built-in-builders/direct store)
-      '()))
+  (define builders
+    (if (or (> (store-connection-major-version store) #x100)
+            (and (= (store-connection-major-version store) #x100)
+                 (>= (store-connection-minor-version store) #x60)))
+        (built-in-builders/direct store)
+        '()))
+
+  ;; The "builtin:git-download" builder was introduced in Sep. 2023 and first
+  ;; shipped in 1.5.0 (Jan. 2026).  We will start requiring it soon.
+  (unless (member "git-download" builders)
+    (warning (G_ "'guix-daemon' is old and soon unsupported; \
+see \"Upgrading Guix\" in the manual~%")))
+
+  builders)
 
 (define (built-in-builders store)
   "Return the names of the supported built-in derivation builders
