@@ -39,6 +39,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system waf)
   #:use-module (srfi srfi-1))
@@ -107,14 +108,47 @@ called FLUID that can be used to create applications in minutes.")
   (package
     (inherit fltk-1.3)
     (version "1.4.5")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-              (url "https://github.com/fltk/fltk")
-              (commit (string-append "release-" version))))
-      (sha256
-       (base32 "19bl0ryarg31wkhw01ryilp9iwwh6vwnsq9mnzmarzm0dkwhjc7c"))))))
-
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fltk/fltk")
+             (commit (string-append "release-" version))))
+       (sha256
+        (base32 "19bl0ryarg31wkhw01ryilp9iwwh6vwnsq9mnzmarzm0dkwhjc7c"))
+       (modules '((guix build utils)))
+       (snippet #~(for-each delete-file-recursively '("jpeg" "zlib" "png")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; The tests are GUI programs that need manual verification.
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DFLTK_BUILD_SHARED_LIBS=ON"
+              "-DFLTK_BUILD_TEST=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'patch-config
+            ;; Avoid propagating inputs to consumers that rely on fltk-config.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (string-append #$output "/bin/fltk-config")
+                ;; Take care to patch "-lGLU" before "-lGL".
+                (("-lGLU") (search-input-file inputs "lib/libGLU.so"))
+                (("-lGL") (search-input-file inputs "lib/libGL.so")))))
+          (add-after 'install 'delete-static-libraries
+            (lambda _
+              (for-each delete-file
+                        (find-files (string-append #$output "/lib")
+                                    "\\.a$")))))))
+    (native-inputs (list))
+    (inputs
+     (list glu
+           libjpeg-turbo
+           libpng
+           libx11
+           libxft
+           mesa
+           zlib))))
 
 (define-public ntk
   (package
