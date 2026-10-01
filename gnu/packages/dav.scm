@@ -80,7 +80,7 @@ servers.")
 (define-public pimsync
   (package
     (name "pimsync")
-    (version "0.5.11")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -89,7 +89,7 @@ servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "070301a0z3a9b9jc7ifkmgg4gj2p0srf67lyzf2mifd04jll3iw8"))))
+        (base32 "0y5ib7kmc6qgsawkn0q49db51msdxx41h37rqnrmkavpksrsd6dy"))))
     (build-system cargo-build-system)
     (arguments
      (list
