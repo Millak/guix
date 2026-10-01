@@ -9457,7 +9457,8 @@ properties, screen resolution, and other GNOME parameters.")
                (base32
                 "0s00zxg4z3p02px6nxnhb0q6kn5lyhxbg86z2phrac7ibky541b4"))
               (patches
-               (search-patches "gnome-shell-restore-desktop-file.patch"))))
+               (search-patches "gnome-shell-restore-desktop-file.patch"
+                               "gnome-shell-notify-gnome-session.patch"))))
     (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
