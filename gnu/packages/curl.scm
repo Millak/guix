@@ -443,12 +443,13 @@ sugar and output formatting inspired from @code{httpie}.")
        (sha256
         (base32 "1zdq81smm9ddqcmvwpcm01nf812fr8p4g6i2raxv3s0rd3hi68sl"))
        (patches
-        ;; Some tests are failing due to case sensitivity in curl 8.20:
+        ;; Some tests are failing due to case sensitivity in curl 8.20+:
         ;; <https://github.com/curl/trurl/issues/440>
         ;;
         ;; Those patches are from Debian:
         ;; <https://salsa.debian.org/debian/trurl/-/tree/debian/latest/debian/patches>
-        (search-patches "trurl-fix-tests-for-newer-libcurl.patch"
+        (search-patches "trurl-fix-hex-expected-case.patch"
+                        "trurl-fix-tests-for-newer-libcurl.patch"
                         "trurl-mark-additional-tests-case-sensitive.patch"))))
     (build-system gnu-build-system)
     (arguments

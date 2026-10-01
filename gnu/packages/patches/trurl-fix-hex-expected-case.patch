@@ -1,0 +1,73 @@
+From: Carlos Henrique Lima Melara <charlesmelara@riseup.net>
+Date: Thu, 16 Jul 2026 17:06:38 -0300
+Subject: Fix hex expected case
+
+More tests started to fail due to change in hex casing output by curl 8.21.0.
+So let's fix it in a not beatiful way for now while upstream isn't fixed
+properly.
+
+Bug: https://github.com/curl/trurl/issues/440
+Forwarded: not-needed
+Last-Update: 2026-07-16
+---
+ tests.json | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tests.json b/tests.json
+index 3952e12..be55ac6 100644
+--- a/tests.json
++++ b/tests.json
+@@ -474,7 +474,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "https://example.com/#.a%13%fa\n",
++            "stdout": "https://example.com/#.a%13%FA\n",
+             "stderr": "",
+             "returncode": 0
+         }
+@@ -2855,7 +2855,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "https://example.com/one/tao/%2fB/\n",
++            "stdout": "https://example.com/one/tao/%2FB/\n",
+             "stderr": "",
+             "returncode": 0
+         }
+@@ -3051,7 +3051,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "http://example.com/?a=%5d\n",
++            "stdout": "http://example.com/?a=%5D\n",
+             "stderr": "",
+             "returncode": 0
+         }
+@@ -3063,7 +3063,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "http://example.com/?a=%5d&b=%5d\n",
++            "stdout": "http://example.com/?a=%5D&b=%5D\n",
+             "stderr": "",
+             "returncode": 0
+         }
+@@ -3075,7 +3075,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "sftp://user:pwd%3bgiraffe@odd/\n",
++            "stdout": "sftp://user:pwd%3Bgiraffe@odd/\n",
+             "stderr": "",
+             "returncode": 0
+         }
+@@ -3115,7 +3115,7 @@
+             ]
+         },
+         "expected": {
+-            "stdout": "pwd%3bgiraffe\n",
++            "stdout": "pwd%3Bgiraffe\n",
+             "stderr": "",
+             "returncode": 0
+         }
