@@ -1,0 +1,38 @@
+From 5fd76cbd7ddd38abfa9ba08d6a804591ddab101e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?No=C3=A9=20Lopez?= <noelopez@free.fr>
+Date: Thu, 17 Sep 2026 23:23:34 +0200
+Subject: [PATCH] Notify gnome-session when startup is done.
+
+This is needed to wait for mutter to have set its environment variables before
+having gnome-session-shepherd start the other services.
+
+We simply replace systemd-notify with gherd’s notification mechanism.
+
+See also (gnome-session-shepherd)Notifications.
+
+Upstream-Status: Not applicable.
+---
+ src/shell-util.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/src/shell-util.c b/src/shell-util.c
+index a965c7148..52b030cc8 100644
+--- a/src/shell-util.c
++++ b/src/shell-util.c
+@@ -772,9 +772,10 @@ shell_util_systemd_unit_exists_finish (GAsyncResult  *res,
+ void
+ shell_util_sd_notify (void)
+ {
+-  /* We only use NOTIFY_SOCKET exactly once; unset it so it doesn't remain in
+-   * our environment. */
+-  sd_notify (1, "READY=1");
++  if (-1 == system ("gherd notify gnome-session-meta org.gnome.Shell"))
++  {
++    g_warning ("Failed to notify gnome-session.");
++  }
+ }
+ 
+ /**
+-- 
+2.54.0
+
