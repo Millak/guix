@@ -6518,6 +6518,21 @@ tool."))))
     (inputs '())
     (propagated-inputs '())))
 
+(define-public go-wsl
+  (package/inherit go-github-com-bombsimon-wsl-v4
+    (name "go-wsl")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/bombsimon/wsl/v4/cmd/wsl")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/bombsimon/wsl/v4")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-bombsimon-wsl-v4))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public godot
   (package/inherit go-github-com-tetafro-godot
     (name "godot")
