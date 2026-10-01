@@ -173,7 +173,7 @@ chip written in platform-independent VHDL.")
 (define-public open-logic
   (package
     (name "open-logic")
-    (version "4.6.0")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -185,7 +185,7 @@ chip written in platform-independent VHDL.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "138idj84w48izd59as8593n29p305kjs65cb3vgf0aps6305l7y5"))))
+         "1q8f09yqjpa2638zns7pgjpzdj8ddjd2fvqvsclwpks022q2y79l"))))
     (outputs
      '("out" "olo"))
     (properties
@@ -206,11 +206,6 @@ chip written in platform-independent VHDL.")
                           "--simulator-path"
                           (dirname (search-input-file inputs "bin/nvc"))))
                 (with-directory-excursion "sim"
-                  (substitute* "run.py"
-                    ;; This is required to comply with current VUnit, see:
-                    ;; https://github.com/VUnit/vunit/issues/777
-                    (("compile_builtins=False, ")
-                     ""))
                   (invoke "python3" "run.py" "--nvc" "-v"
                           "-p" (number->string (parallel-job-count))))))))
       #:install-plan
