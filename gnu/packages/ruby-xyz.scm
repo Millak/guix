@@ -5917,6 +5917,17 @@ Mocha stubbing and mocking library with Bacon, a small RSpec clone.")
                (base32
                 "1dkbyzpl31jygnnva5sa754vk42q1fih4qz5ipqw5gqiafrrlb91"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (substitute* "test/transport/test_algorithms.rb"
+                (("test_key_exchange_when_server_does_not_support_preferred_kex_should_fallback_to_secondary"
+                  test)
+                 (string-append test
+                  "; skip 'requires older mocha gem, which is incompatible with Ruby 3.4+'"))))))))
     (native-inputs
      (list bundler
            ruby-bcrypt-pbkdf
