@@ -9518,7 +9518,7 @@ These are pretty simple package variants.  As a convenience, the
 that directly maps to the more sophisticated package transformation
 options (@pxref{Package Transformation Options}):
 
-@deffn {Procedure} options->transformation opts
+@deffn {Procedure} options->transformation opts [#:warn? #t]
 Return a procedure that, when passed an object to build (package,
 derivation, etc.), applies the transformations specified by @var{opts} and returns
 the resulting objects.  @var{opts} must be a list of symbol/string pairs such as:
@@ -9530,6 +9530,9 @@ the resulting objects.  @var{opts} must be a list of symbol/string pairs such as
 
 Each symbol names a transformation and the corresponding string is an argument
 to that transformation.
+
+When @var{warn?} is true, warn about packages for which a transformation had no
+effect.
 @end deffn
 
 For instance, a manifest equivalent to this command:

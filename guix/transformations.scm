@@ -1262,7 +1262,7 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
   (display (G_ "
       --help-transform   list package transformation options not shown here")))
 
-(define (options->transformation opts)
+(define* (options->transformation opts #:key (warn? #t))
   "Return a procedure that, when passed an object to build (package,
 derivation, etc.), applies the transformations specified by OPTS and returns
 the resulting objects.  OPTS must be a list of symbol/string pairs such as:
@@ -1271,7 +1271,10 @@ the resulting objects.  OPTS must be a list of symbol/string pairs such as:
    (without-tests . \"libgcrypt\"))
 
 Each symbol names a transformation and the corresponding string is an argument
-to that transformation."
+to that transformation.
+
+When WARN? is true, warn about packages for which a transformation had no
+effect."
   (define applicable
     ;; List of applicable transformations as symbol/procedure pairs in the
     ;; order in which they appear on the command line.
@@ -1307,7 +1310,8 @@ to that transformation."
      (fold (match-lambda*
              (((name value transform) obj)
               (let ((new (transform obj)))
-                (when (and (eq? new obj)
+                (when (and warn?
+                           (eq? new obj)
                            (package? obj))
                   (warning (G_ "transformation '~a' had no effect on ~a~%")
                            name
