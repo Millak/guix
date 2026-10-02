@@ -209,8 +209,8 @@ read/write Bit Map Font (BMF) into text, JSON and XML.")
                  (base32 "17zby669b64rhxhk2szamzdgvispimh6ici05xa6x2vz4rvk71jq")))))))
 
 (define-public sbcl-3bmd
-  (let ((commit "e68b2d442f29b4534c1c8e2f2cdf7583643a2fc5")
-        (revision "4"))
+  (let ((commit "bc7ae591e58a4db60ff41c2b550323bab2c6dfd0")
+        (revision "5"))
     (package
       (name "sbcl-3bmd")
       (version (git-version "0.0.0" revision commit))
@@ -221,7 +221,7 @@ read/write Bit Map Font (BMF) into text, JSON and XML.")
                (url "https://github.com/3b/3bmd")
                (commit commit)))
          (sha256
-          (base32 "12xqih1gnwsn1baqm7bq3kxss73phn06gvd0v1h1vwsjd1xgpq3g"))
+          (base32 "0jb66w9x8bggkcdj5z6jvhw2nj6nvrks4xpxckc69affd5ncy6q8"))
          (file-name (git-file-name "cl-3bmd" version))))
       (build-system asdf-build-system/sbcl)
       (arguments
