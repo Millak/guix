@@ -746,7 +746,7 @@ manager.")
     (propagated-inputs
      (list btrfs-progs
            guile-config
-           guile-fibers-1.3
+           guile-fibers
            guile-netlink
            (lookup-package-input guix "guile")
            guix
