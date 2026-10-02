@@ -9936,34 +9936,22 @@ time-based, and manual rotation.")
     (arguments
      (list
       #:import-path "github.com/dgraph-io/badger"
-      #:test-flags
-      #~(list "-skip"
-              ;; Test fails with error: assertion is not equal.
-              "TestBuildKeyValueSizeHistogram/All_same_size_key-values")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-failing-tests
-            (lambda* (#:key unpack-path tests? #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "histogram_test.go$")
-                  ;; conversion from int64 to string yields a string of one
-                  ;; rune, not a string of digits (did you mean
-                  ;; fmt.Sprint(x)?).
-                  ;; See: <https://github.com/dgraph-io/badger/issues/2103>.
-                  (("\"testing\"") (string-append "\"testing\"\n\"fmt\""))
-                  (("string") "fmt.Sprint"))))))))
+      #:test-flags #~(list "-vet=off")
+      ;; The rest of the tests are compute and memory instance, run "normal"
+      ;; tests as seen in "tests.sh".
+      #:test-subdirs #~(list "skl")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-andreasbriese-bbloom
-           go-github-com-dgraph-io-ristretto
+           go-github-com-dgraph-io-ristretto-0.0.3
            go-github-com-dustin-go-humanize
            go-github-com-golang-protobuf
            go-github-com-pkg-errors
            go-github-com-spf13-cobra
            go-golang-org-x-net
            go-golang-org-x-sys))
-    (home-page "https://dgraph.io/docs/badger")
+    (home-page "https://dgraph-io.github.io/badger/")
     (synopsis "Key-value database in Golang")
     (description
      "BadgerDB implements an embeddable, key-value (KV) database, written in
