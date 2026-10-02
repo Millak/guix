@@ -36146,6 +36146,40 @@ look up previously used email addresses.  It can be used alongside the Gnus
 email client.")
       (license license:gpl2+))))
 
+(define-public emacs-dianyou
+  ;; last tagged release is 2yrs older than latest commit
+  (let ((commit "f77d9e76be5d8022fa6ee5426144f13f38dd09f2")
+        (revision "0"))
+    (package
+      (name "emacs-dianyou")
+      (version (git-version "0.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/redguardtoo/dianyou.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08pwp1pv8c3klingl0qpymdh9ybqrjj47rdd191vhah2ahn5bs1g"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; no tests
+      (home-page "http://github.com/redguardtoo/dianyou")
+      (synopsis "Search and analyze mails in Gnus")
+      (description
+       "This package provides the following utilities for Gnus users.
+@itemize
+@item @code{dianyou-group-make-nnir-group} to search mails.
+@item @code{dianyou-insert-email-address-from-received-mails} to insert
+email address.
+@item @code{dianyou-switch-gnus-buffer} to switch between gnus buffers.
+@item @code{dianyou-paste-image-from-clipboard} to paste image from clipboard.
+@item @code{dianyou-email-view-in-browser} to view the body of email in
+external browser.
+@item @code{dianyou-email-view-in-web-ui} to view the email in its web UI.
+@end itemize")
+      (license license:gpl3+))))
+
 (define-public emacs-fold-dwim
   (let ((commit "c46f4bb2ce91b4e307136320e72c28dd50b6cd8b")
         (revision "0"))
