@@ -10621,39 +10621,6 @@ users' sessions over extended periods of time.")
 library for Python")
     (license license:asl2.0)))
 
-(define-public python-flask-oidc
-  ;; XXX: Project is unmaintained since 2022, see:
-  ;; <https://github.com/puiterwijk/flask-oidc/issues/146>.
-  (package
-    (name "python-flask-oidc")
-    (version "2.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flask_oidc" version))
-       (sha256
-        (base32
-         "0lr15s5y61qkgic54pln1j82l2c32wgscdj8hymwr44gxby7h8z7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list (string-append "--deselect=tests/test_flask_oidc.py"
-                             "::test_accept_token_no_token"))))
-    (propagated-inputs
-     (list python-authlib
-           python-blinker
-           python-flask
-           python-requests
-           python-responses))
-    (native-inputs
-     (list python-pytest python-poetry-core))
-    (home-page "https://github.com/puiterwijk/flask-oidc")
-    (synopsis "OpenID Connect extension for Flask")
-    (description "@code{python-flask-oidc} provides an OpenID Connect extension
-for Flask.")
-    (license license:bsd-2)))
-
 (define-public python-webassets
   (package
     (name "python-webassets")
