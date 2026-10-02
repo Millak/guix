@@ -33654,6 +33654,35 @@ such as @code{language-python} and fontifies block contents using the
 corresponding Emacs major mode.")
     (license license:agpl3+)))
 
+(define-public emacs-termweb
+  ;; No releases or tags.
+  (let ((commit "489702515ebd7d83a58180c80d21ce1fb818a0fb")
+        (revision "0"))
+    (package
+      (name "emacs-termweb")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.andros.dev/andros/termweb.el.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0lghradgbbh63g47qlzr57pk0gsqf4kn2yqxr8lym86dmlh2p0zk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f)) ;no tests
+      (home-page "https://git.andros.dev/andros/termweb.el")
+      (synopsis "Reformat web pages so they read well in EWW")
+      (description
+       "@code{termweb} reformats web pages for better readability in
+@acronym{EWW, Emacs Web Wowser}, following the
+@url{https://en.andros.dev/blog/dcf8f636/websites-that-read-in-the-terminal-the-termweb-standard,
+TermWeb} design pattern.")
+      (license license:gpl3+))))
+
 (define-public emacs-stumpwm-mode
     (let ((commit "920f8fc1488f7953f205e1dda4c2ecbbbda56d6")
         (revision "3"))
