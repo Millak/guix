@@ -7365,23 +7365,21 @@ authentications)
     (version "3.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python3-openid" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/necaris/python3-openid")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1bxf9a3ny1js422j962zfzl4a9dhj192pvai05whn7j0iy9gdyrk"))))
+        (base32 "1b50wmwb7k5k61zlc7d2b982i20410vp472zgl2yx8gxdnfvn8g1"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest" "openid.test.test_suite")))))))
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "openid.test.test_suite")))
     (propagated-inputs
      (list python-defusedxml))
     (native-inputs
-     (list python-psycopg2 python-django python-setuptools python-wheel))
+     (list python-psycopg2 python-django python-setuptools))
     (home-page "https://github.com/necaris/python3-openid")
     (synopsis "OpenID support for servers and consumers")
     (description "This library provides OpenID authentication for Python, both
