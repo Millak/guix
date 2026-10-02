@@ -45492,6 +45492,33 @@ freedesktop.org specification.  EDNC aspires to be a small, but flexible
 drop-in replacement of standalone daemons like Dunst.")
     (license license:gpl3+)))
 
+(define-public emacs-ednc-popup
+  ;; No releases or tags.
+  (let ((commit "4090a5fc867dbd9345387d8ea141714fd8461f88")
+        (revision "0"))
+    (package
+      (name "emacs-ednc-popup")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/akib/emacs-ednc-popup.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15f97rhnl20gfs6fnr3j5mv1q8hr3scar9hf081wrf1bmdpnjgh1"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; no tests
+      (propagated-inputs (list emacs-ednc emacs-posframe))
+      (home-page "https://codeberg.org/akib/emacs-ednc-popup")
+      (synopsis "Show @acronym{EDNC} notifications using child frame popups")
+      (description
+       "@code{ednc-popup} shows desktop notifications with Emacs with child
+frame popups, when notifications are managed by emacs-ednc.  This is mainly
+useful when used along with emacs-exwm.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-clojuredocs
   (let ((commit "5a7f0f2cb401be0b09e73262a1c18265ab9a3cea"))
     (package
