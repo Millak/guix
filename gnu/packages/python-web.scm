@@ -10918,37 +10918,6 @@ package from WTForms.  The package has been renamed to
 @code{wtforms.ext.sqlalchemy} did.")
     (license license:bsd-3)))
 
-(define-public python-urlgrabber
-  (package
-    (name "python-urlgrabber")
-    (version "4.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urlgrabber" version))
-       (sha256
-        (base32 "0fg16zlw49cw7pjq9dhpc5vd35d5zz1mlki55m464qxfmfpzhnh7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f ; Most tests require network access.
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-setuptools))
-    (propagated-inputs
-     (list python-pycurl python-setuptools python-six))
-    (home-page "http://urlgrabber.baseurl.org/") ; no HTTPS
-    (synopsis "High-level cross protocol url-grabber")
-    (description
-     "@code{urlgrabber} is a library that unifies access to files available on
-the web, FTP or locally.  It supports HTTP, FTP and file:// protocols, it
-supports features like HTTP keep-alive, reget, throttling and more.")
-    (license license:lgpl2.1+)))
-
 (define-public python-pycares
   (package
     (name "python-pycares")
