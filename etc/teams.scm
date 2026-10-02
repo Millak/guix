@@ -1502,7 +1502,7 @@ the \"texlive\" importer."
 (define-member (person "Jelle Licht"
                        "jlicht@fsfe.org"
                        "jlicht")
-  javascript)
+  javascript release)
 
 (define-member (person "Cayetano Santos"
                        "csantosb@disroot.org"
