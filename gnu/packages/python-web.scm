@@ -8172,29 +8172,6 @@ authentications)
 for clients and servers.")
     (license license:asl2.0)))
 
-(define-public python-openid-teams
-  ;; XXX: Last updated in 2018.
-  (package
-    (name "python-openid-teams")
-    (version "1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-openid-teams" version))
-       (sha256
-        (base32
-         "05zrh78alav24rxkbqlpbad6d3x2nljk6z6j7kflxf3vdqa7w969"))))
-    (build-system pyproject-build-system)
-    (arguments '(#:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs (list python-openid python-six))
-    (home-page "https://github.com/puiterwijk/python-openid-teams/")
-    (synopsis "Implementation of the OpenID teams extension for python-openid")
-    (description
-     "@code{openid-teams} is an implementation of the OpenID
-teams extension for python-openid.")
-    (license license:bsd-3)))
-
 (define-public python-priority
   (package
     (name "python-priority")
