@@ -3179,46 +3179,6 @@ hard or impossible to fix in cssselect.")
 Style Sheets.  Currently it provides a DOM only and no rendering options.")
     (license license:lgpl3+)))
 
-(define-public python-databricks-cli
-  (package
-    (name "python-databricks-cli")
-    (version "0.18.0")
-    (home-page "https://github.com/databricks/databricks-cli")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1avag4kwqk2f24r5i0vcmhm6s1gsw6maykhlyj2ixz0qc05pjzvl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda _
-                            (invoke "pytest" "tests" "-vv"))))))
-    (native-inputs
-     ;; For tests.
-     (list python-decorator
-           python-mock
-           python-pytest
-           python-requests-mock
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-click
-           python-oauthlib
-           python-pyjwt
-           python-requests
-           python-six
-           python-tabulate))
-    (synopsis "Command line interface for Databricks")
-    (description
-     "The Databricks Command Line Interface is a tool which provides an easy
-to use interface to the Databricks platform.  The CLI is built on top of the
-Databricks REST APIs.")
-    (license license:asl2.0)))
-
 (define-public python-dependency-groups
   (package
     (name "python-dependency-groups")
