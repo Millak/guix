@@ -23621,7 +23621,7 @@ some degree most natural languages too.")
 (define-public python-find-libpython
   (package
     (name "python-find-libpython")
-    (version "0.4.1")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -23630,11 +23630,9 @@ some degree most natural languages too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "173qxif277vc23kgidwbkxx7z7b7676f8lv5kxy9pd82228m8m79"))))
+        (base32 "0r4mzmlbgzbxldxhw55b6haj9xybx1wwm9pvpr665mhsxgxaaqc3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel
-                         ;; tests
-                         python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/ktbarrett/find_libpython")
     (synopsis "Find the path to the @code{libpython} dynamic library")
     (description
