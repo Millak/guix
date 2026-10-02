@@ -2857,7 +2857,15 @@ memoized as a function of '%current-system'."
            ((#:configure-flags flags ''())
             ;; Since we're not passing the right -Wl,-rpath flags, build the
             ;; static library to avoid RUNPATH validation failure.
-            `(cons "--disable-shared" ,flags))
+            `(cons "--disable-shared"
+                   ;; On armhf-linux no other source of high quality
+                   ;; entropy is available for the bootstraping glibc,
+                   ;; so we rely on /dev/urandom exists at runtime
+                   ;; which is guaranteed since Linux 1.3.30.
+                   ,(if (and (target-linux?)
+                             (target-arm32?))
+                        `(cons "--with-dev-urandom" ,flags)
+                        flags)))
            ((#:phases phases) '%standard-phases)
            ((#:tests? _ #f) #f))))))
 
