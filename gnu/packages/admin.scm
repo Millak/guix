@@ -581,7 +581,7 @@ and provides a \"top-like\" mode (monitoring).")
                          (if (or (target-arm?)
                                  (target-riscv64?))
                              guile-fibers-1.1
-                             guile-fibers-1.3))) ;pinned version to avoid rebuilds
+                             guile-fibers-1.4))) ;pinned version to avoid rebuilds
     (propagated-inputs (list (this-package-native-input "guile-fibers")))
     (inputs (list guile-3.0))
     (synopsis "System service manager")
