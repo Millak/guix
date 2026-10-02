@@ -47,13 +47,13 @@
 (define-public groff
   (package
    (name "groff")
-   (version "1.24.0")
+   (version "1.24.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/groff/groff-" version
                                 ".tar.gz"))
             (sha256 (base32
-                     "0w3mf9jb5j1gbw1160lr5498q4ayl5i3jpf5g8721l1yzzcbr6z7"))))
+                     "1naxkizfbz04rr1hzzz41cz1xpz87i3vfg86w737zqxvpvayzhgr"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                    ;12MiB of PS, PDF, HTML, and examples
@@ -114,7 +114,9 @@
         (add-after 'unpack 'setenv
           (lambda _
             (setenv "GS_GENERATE_UUIDS" "0")
-            #t))
+            ;; This is to fix tests and should not be needed from groff 1.25:
+            ;; https://lists.gnu.org/archive/html/groff/2026-03/msg00077.html
+            (setenv "GROFF_BIN_PATH" ".")))
         (add-after 'unpack 'fix-docdir
           (lambda _         ;see https://savannah.gnu.org/bugs/index.php?55461
             (substitute* "Makefile.in"
