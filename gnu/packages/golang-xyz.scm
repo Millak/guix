@@ -10053,6 +10053,38 @@ supports concurrent serializable transactions.")
 on throughput and hit ratio performance.")
     (license (list license:asl2.0 license:expat))))
 
+;; For go-github-com-dgraph-io-badger and go-github-com-dgraph-io-badger-v2,
+;; remove when no longer required.
+(define-public go-github-com-dgraph-io-ristretto-0.0.3
+  (hidden-package
+   (package
+     (inherit go-github-com-dgraph-io-ristretto)
+     (name "go-github-com-dgraph-io-ristretto")
+     (version "0.0.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/dgraph-io/ristretto")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1v29j6b0r87pf5dwsxi3rxa8yavkl3h79i63rbddfd42p2jyssyg"))))
+     (arguments
+      (list
+       #:tests? (and (target-64bit?)
+                     (not (%current-target-system)))
+       #:import-path "github.com/dgraph-io/ristretto"
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'remove-benchmarks
+             (lambda* (#:key import-path #:allow-other-keys)
+               (with-directory-excursion (string-append "src/" import-path)
+                 (delete-file-recursively "benchmarks")))))))
+     (propagated-inputs
+      (list go-github-com-cespare-xxhash
+            go-github-com-dgryski-go-farm)))))
+
 (define-public go-github-com-dgraph-io-ristretto-v2
   (package
     (inherit go-github-com-dgraph-io-ristretto)
