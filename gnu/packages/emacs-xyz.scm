@@ -46164,6 +46164,33 @@ language.  Auto-dictionary then sets @code{ispell-dictionary} to use the
 detected language.")
     (license license:gpl2+)))
 
+(define-public emacs-annas-archive
+  (package
+    (name "emacs-annas-archive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benthamite/annas-archive")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cm3k18wc82zkf4h6j7jxk79bpsnrbpclb0fk4jbydbha9jx88v4"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "make" "test")
+      ;; some tests require emacs built with libxml2
+      #:emacs emacs-no-x))
+    (home-page "https://github.com/benthamite/annas-archive")
+    (synopsis "Search and download from Anna's Archive")
+    (description
+     "This package provides Emacs integration for Anna's Archive.  It can be
+used to search books and papers by title, ISBN, or DOI, browse results in a
+formatted completion interface, and to download files.")
+    (license license:gpl3+)))
+
 (define-public emacs-persid
   (let ((commit "cf84a4340bd3e5b16b4412e98c4243da9f72503a")
         (revision "2"))
