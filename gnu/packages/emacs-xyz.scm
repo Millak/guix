@@ -46137,6 +46137,34 @@ Given an identifier in one of the known formats, the libray can query
 information about the resources and format it as a bibtex entry.")
       (license license:gpl3+))))
 
+(define-public emacs-org-capture-ref
+  ;; No releases or tags.
+  (let ((commit "65283bb3ebc010cb81b52beb6a04a2084259bc7b")
+        (revision "0"))
+    (package
+      (name "emacs-org-capture-ref")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yantar92/org-capture-ref")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pwihsk76hs9kr7g25kkspr2gkc1aj48nazis2iqzz1zpnmmakvn"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; no tests
+      (propagated-inputs (list emacs-doct emacs-persid))
+      (home-page "https://github.com/yantar92/org-capture-ref")
+      (synopsis "Extract website metadata with org-capture")
+      (description
+       "This is a wrapper to @code{org-capture-templates} that
+      automatically extracts useful meta-information from the captured
+      URLs.  The information is saved into bibtex entry and can be
+      reused to fill the capture template.")
+      (license license:gpl3+))))
+
 (define-public emacs-persist
   (package
     (name "emacs-persist")
