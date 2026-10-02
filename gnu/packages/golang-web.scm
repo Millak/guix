@@ -11997,6 +11997,49 @@ that is lightweight, highly available, and fault tolerant.")
 package.  It contains code for interacting with a Vault server.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-vault-api-auth-approle
+  (package
+    (name "go-github-com-hashicorp-vault-api-auth-approle")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/vault")
+              (commit (go-version->git-ref version
+                                           #:subdir "api/auth/approle"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17rnfghxnc87yj0lbhg7hvzp356r4pjajly5xcy2dzdzigkvi149"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "api/auth" "approle")
+            (delete-all-but "api" "auth")
+            (delete-all-but "." "api")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/vault/api/auth/approle"
+      #:unpack-path "github.com/hashicorp/vault"))
+    (propagated-inputs (list go-github-com-hashicorp-vault-api))
+    (home-page "https://github.com/hashicorp/vault")
+    (synopsis "Hashicorp Vault to AppRole integration")
+    (description
+     "This package implement the Hashicorp Vault @code{approle} auth method
+allowing machines or applications to authenticate with Vault-defined roles.
+The open design of @code{AppRole} enables a varied set of workflows and
+configurations to handle large numbers of applications.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-vault-api-auth-aws
   (package
     (name "go-github-com-hashicorp-vault-api-auth-aws")
