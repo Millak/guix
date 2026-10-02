@@ -3842,6 +3842,28 @@ error messages, preserving the order of @code{have} (actual result) before
      "This package provides mocking utilities for unit tests in Go.")
     (license license:expat)))
 
+(define-public go-github-com-nsf-jsondiff
+  (package
+    (name "go-github-com-nsf-jsondiff")
+    (version "0.0.0-20260207060731-8e8d90c4c0ac")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nsf/jsondiff")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vxh3qpks929yvxiffx3sf7n113fr5sk93figj0v1ck4raf0zzpf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nsf/jsondiff"))
+    (home-page "https://github.com/nsf/jsondiff")
+    (synopsis "JsonDiff library")
+    (description "This package provides a JSON wrapper for Go test output.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
