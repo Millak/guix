@@ -1428,7 +1428,7 @@ of one or more RISC-V harts.")
     (name "swtpm")
     ;; When updating this package, please make sure that the path patching logic
     ;; below is still functional.
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -1437,7 +1437,7 @@ of one or more RISC-V harts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wah3zsnkasccazzlycq8scc52q4h1g58w0br45sr185inw6zgrp"))
+        (base32 "0zy2lhqh17pgw80ahqvmb0ha31iwa37qzc3gc8cldhzzs2434vl8"))
        (snippet
         #~(begin
             ;; Do not attempt to install /var.
