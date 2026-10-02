@@ -543,7 +543,7 @@ This compiler is based on the DMD frontend version 2.112.1.")
       #:out-of-source? #t
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "HOST_CXX=" #$(cxx-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
               "HOST_DMD=gdmd"
               (string-append "INSTALL_DIR=" #$output)
               (string-append "SYSCONFDIR=" #$output "/etc")
