@@ -3044,6 +3044,46 @@ hard or impossible to fix in cssselect.")
 Style Sheets.  Currently it provides a DOM only and no rendering options.")
     (license license:lgpl3+)))
 
+(define-public python-databricks-cli
+  (package
+    (name "python-databricks-cli")
+    (version "0.18.0")
+    (home-page "https://github.com/databricks/databricks-cli")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1avag4kwqk2f24r5i0vcmhm6s1gsw6maykhlyj2ixz0qc05pjzvl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda _
+                            (invoke "pytest" "tests" "-vv"))))))
+    (native-inputs
+     ;; For tests.
+     (list python-decorator
+           python-mock
+           python-pytest
+           python-requests-mock
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-click
+           python-oauthlib
+           python-pyjwt
+           python-requests
+           python-six
+           python-tabulate))
+    (synopsis "Command line interface for Databricks")
+    (description
+     "The Databricks Command Line Interface is a tool which provides an easy
+to use interface to the Databricks platform.  The CLI is built on top of the
+Databricks REST APIs.")
+    (license license:asl2.0)))
+
 (define-public python-dependency-groups
   (package
     (name "python-dependency-groups")
@@ -3062,31 +3102,6 @@ Style Sheets.  Currently it provides a DOM only and no rendering options.")
     (description
      "This package provides a library which is able to parse dependency groups (PEP
 735), following includes, and provide that data as output.")
-    (license license:expat)))
-
-(define-public python-devpi-common
-  (package
-    (name "python-devpi-common")
-    (version "4.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "devpi_common" version))
-       (sha256
-        (base32 "1k217b0fvsc7k2afw6wwlvqr1ksnv1vjzfm61g358vn98nd0lni3"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-lazy python-packaging-legacy
-                             python-requests))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/devpi/devpi")
-    (synopsis
-     "Utilities jointly used by devpi-server, devpi-client and others")
-    (description
-     "This package provides utilities jointly used by devpi-server,
-devpi-client and others.")
     (license license:expat)))
 
 (define-public python-devpi-client
@@ -3144,6 +3159,31 @@ devpi-client and others.")
      "The devpi command line tool is typically used in conjunction with
 devpi-server.  It allows uploading, testing and installing packages from devpi
 indexes.")
+    (license license:expat)))
+
+(define-public python-devpi-common
+  (package
+    (name "python-devpi-common")
+    (version "4.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "devpi_common" version))
+       (sha256
+        (base32 "1k217b0fvsc7k2afw6wwlvqr1ksnv1vjzfm61g358vn98nd0lni3"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-lazy python-packaging-legacy
+                             python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/devpi/devpi")
+    (synopsis
+     "Utilities jointly used by devpi-server, devpi-client and others")
+    (description
+     "This package provides utilities jointly used by devpi-server,
+devpi-client and others.")
     (license license:expat)))
 
 (define-public python-devpi-process
@@ -3450,6 +3490,32 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
      "Dominate is a Python library for creating and manipulating HTML
 documents using an elegant DOM API.")
     (license license:lgpl3+)))
+
+(define-public python-dpkt
+  (package
+    (name "python-dpkt")
+    (version "1.9.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kbandla/dpkt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dhy8l4sqfxqdda6lishb95g3v6hnw14l20ipqpzb6vaw1vf7mzj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "dpkt")))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/kbandla/dpkt")
+    (synopsis "Packet generator and parser for TCP/IP protocols")
+    (description
+     "The dpkt module is a fast, simple packet generator and parser for the
+basic TCP/IP protocols.")
+    (license license:bsd-3)))
 
 (define-public python-dropbox
   (package
@@ -7322,46 +7388,6 @@ authentications)
 for clients and servers.")
     (license license:asl2.0)))
 
-(define-public python-databricks-cli
-  (package
-    (name "python-databricks-cli")
-    (version "0.18.0")
-    (home-page "https://github.com/databricks/databricks-cli")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1avag4kwqk2f24r5i0vcmhm6s1gsw6maykhlyj2ixz0qc05pjzvl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda _
-                            (invoke "pytest" "tests" "-vv"))))))
-    (native-inputs
-     ;; For tests.
-     (list python-decorator
-           python-mock
-           python-pytest
-           python-requests-mock
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-click
-           python-oauthlib
-           python-pyjwt
-           python-requests
-           python-six
-           python-tabulate))
-    (synopsis "Command line interface for Databricks")
-    (description
-     "The Databricks Command Line Interface is a tool which provides an easy
-to use interface to the Databricks platform.  The CLI is built on top of the
-Databricks REST APIs.")
-    (license license:asl2.0)))
-
 (define-public python-openid-cla
   ;; XXX: Last updated in 2015.
   (package
@@ -9401,32 +9427,6 @@ with @code{Gevent} to make asynchronous HTTP Requests easily.")
 for network communication and hence it easily integrates with the GLib
 mainloop.")
     (license license:asl2.0)))
-
-(define-public python-dpkt
-  (package
-    (name "python-dpkt")
-    (version "1.9.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kbandla/dpkt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0dhy8l4sqfxqdda6lishb95g3v6hnw14l20ipqpzb6vaw1vf7mzj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "dpkt")))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/kbandla/dpkt")
-    (synopsis "Packet generator and parser for TCP/IP protocols")
-    (description
-     "The dpkt module is a fast, simple packet generator and parser for the
-basic TCP/IP protocols.")
-    (license license:bsd-3)))
 
 (define-public python-geventhttpclient
   (package
