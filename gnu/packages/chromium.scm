@@ -755,7 +755,7 @@
               #$@(if (string-prefix? "aarch64" (or (%current-target-system)
                                                    (%current-system)))
                      '("use_v4l2_codec=true"
-                       "use_vaapi=false"
+                       "use_vaapi=true"
                        "use_av1_hw_decoder=true")
                      '())
 
