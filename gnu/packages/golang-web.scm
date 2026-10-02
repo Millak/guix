@@ -11939,7 +11939,25 @@ that is lightweight, highly available, and fault tolerant.")
               (commit (go-version->git-ref version #:subdir "api"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zimh4g8bwj9zz7hjrpk1arg02m3lkyaqmyl9jdw08qkc2vq679p"))))
+        (base32 "1zimh4g8bwj9zz7hjrpk1arg02m3lkyaqmyl9jdw08qkc2vq679p"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (for-each delete-file-recursively
+                      (list "vault/hcp_link/proto"
+                            "api/auth/kubernetes"
+                            "api/auth/userpass"
+                            "api/auth/approle"
+                            "api/auth/azure"
+                            "internalshared"
+                            "tools/pipeline"
+                            "api/auth/cert"
+                            "api/auth/ldap"
+                            "api/auth/aws"
+                            "api/auth/gcp"
+                            "version"
+                            "sdk"))))))
     (build-system go-build-system)
     (arguments
      (list
