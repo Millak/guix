@@ -8172,28 +8172,6 @@ authentications)
 for clients and servers.")
     (license license:asl2.0)))
 
-(define-public python-openid-cla
-  ;; XXX: Last updated in 2015.
-  (package
-    (name "python-openid-cla")
-    (version "1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-openid-cla" version))
-       (sha256
-        (base32
-         "102hy2qisvjxp5s0v9lvwqi4f2dk0dhns40vjgn008yxc7k0h3cr"))))
-    (build-system pyproject-build-system)
-    (arguments '(#:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs (list python-openid python-six))
-    (home-page "https://github.com/puiterwijk/python-openid-cla/")
-    (synopsis "Implementation of the OpenID CLA extension for python-openid")
-    (description "@code{openid-cla} is an implementation of the OpenID
-contributor license agreement extension for python-openid.")
-    (license license:bsd-3)))
-
 (define-public python-openid-teams
   ;; XXX: Last updated in 2018.
   (package
