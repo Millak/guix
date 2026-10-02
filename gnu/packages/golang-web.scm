@@ -12085,6 +12085,47 @@ configurations to handle large numbers of applications.")
      "This package provides Hashicorp Vault to AWS API integration.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-vault-api-auth-kubernetes
+  (package
+    (name "go-github-com-hashicorp-vault-api-auth-kubernetes")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/vault")
+              (commit (go-version->git-ref version
+                                           #:subdir "api/auth/kubernetes"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17rnfghxnc87yj0lbhg7hvzp356r4pjajly5xcy2dzdzigkvi149"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "api/auth" "kubernetes")
+            (delete-all-but "api" "auth")
+            (delete-all-but "." "api")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/vault/api/auth/kubernetes"
+      #:unpack-path "github.com/hashicorp/vault"))
+    (propagated-inputs (list go-github-com-hashicorp-vault-api))
+    (home-page "https://github.com/hashicorp/vault")
+    (synopsis "Hashicorp Vault to Kubernetes integration")
+    (description
+     "This package implements the @code{kubernetes} auth method which can be
+used to authenticate with Vault using a Kubernetes Service Account Token.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-yamux
   (package
     (name "go-github-com-hashicorp-yamux")
