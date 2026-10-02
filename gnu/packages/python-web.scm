@@ -5717,25 +5717,17 @@ content using a variety of algorithms.")
 (define-public python-joserfc
   (package
     (name "python-joserfc")
-    (version "1.0.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "joserfc" version))
        (sha256
-        (base32 "11m600bmj70bp96wxhwvyj4d57w0zahzq3vic7s4a4k85pl7nl64"))))
+        (base32 "0mhwx7znnhhvxfd6l1imwga2lid8vpb5v8b10lvivv08rxbxg22f"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; No module named 'Crypto'
-      '(list "--ignore=tests/jwe/test_chacha20.py"
-             ;; Deprecation warnings are not raised.
-             "-k" (string-append "not test_guess_bytes_key"
-                                 " and not test_guess_callable_key"
-                                 " and not test_guess_str_key"))))
     (propagated-inputs (list python-cryptography))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-pycryptodome python-pytest python-setuptools))
     (home-page "https://github.com/authlib/joserfc")
     (synopsis "Python library for JOSE RFCs")
     (description
