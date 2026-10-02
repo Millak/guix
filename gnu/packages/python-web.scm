@@ -1576,27 +1576,47 @@ UDP packets.")
 (define-public python-authlib
   (package
     (name "python-authlib")
-    (version "1.5.1")
+    (version "1.6.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "authlib" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/authlib/authlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0blpvz2v2r8yvsgm1yr3n61mhwxvh1b0kyf2rp0i4wv6n3n8bg2w"))))
+        (base32 "0vh1kvmipxa8xp3x5jwqg1gzy4zac2skfj1mv5698jsmfzs2zd8w"))))
     (build-system pyproject-build-system)
-    ;; No tests target.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:test-flags
+      ;; httpx2 has succeed httpx in authlib 1.8.0 (2026-08-30) which requires
+      ;; cryptography >= 45.0.1; leave it for the next python-team cycle and
+      ;; ignore httpx tests for now.
+      #~(list "--ignore=tests/clients/test_httpx/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "DJANGO_SETTINGS_MODULE" "tests.django_settings"))))))
     (propagated-inputs
      (list python-cryptography
+           ;; [optional]
+           python-anyio
+           python-asgiref
+           python-cachelib
            python-django
            python-flask
+           python-flask-sqlalchemy
            python-httpx
            python-requests
-           python-sqlalchemy-2
-           python-starlette
-           python-werkzeug))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/Authlib/1")
+           python-starlette))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-django
+           python-setuptools))
+    (home-page "https://authlib.org/")
     (synopsis "Build OAuth and OpenID Connect servers and clients")
     (description
      "This is a Python library for building OAuth and OpenID Connect servers
