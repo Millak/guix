@@ -30014,6 +30014,42 @@ GNU/Linux, this is a proxy for the @command{xdg-open} command.")
 @url{https://github.com/smallstep/certificates, step-ca}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-smallstep-nosql
+  (package
+    (name "go-github-com-smallstep-nosql")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/nosql")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p3lrjqn7f1cp29v0asxjqv6cyspkihmvc40zpy4j8wynpl9m8yb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/smallstep/nosql"))
+    (native-inputs
+     (list go-github-com-smallstep-assert))
+    (propagated-inputs
+     (list go-github-com-dgraph-io-badger
+           ;; Upstream plans to support badger-v4 soon, see:
+           ;; <https://github.com/smallstep/nosql/issues/81>.
+           go-github-com-dgraph-io-badger-v2
+           go-github-com-go-sql-driver-mysql
+           go-github-com-jackc-pgx-v5
+           go-github-com-pkg-errors
+           go-go-etcd-io-bbolt))
+    (home-page "https://github.com/smallstep/nosql")
+    (synopsis "Abstraction layer for data persistency")
+    (description
+     "@code{NoSQL} is an abstraction layer for data persistence providing a
+few implementations including MySQL, Badger, and BoltDB.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smallstep-truststore
   (package
     (name "go-github-com-smallstep-truststore")
