@@ -37,7 +37,7 @@ diff --git a/build/config/rust.gni b/build/config/rust.gni
 index af3dfac4574f9..82fa215ea75d9 100644
 --- a/build/config/rust.gni
 +++ b/build/config/rust.gni
-@@ -433,7 +433,7 @@ rustc_wrapper_inputs = [
+@@ -431,7 +431,7 @@ rustc_wrapper_inputs = [
  ]
  
  if (host_os == "win") {
@@ -81,55 +81,65 @@ index 105a1d52a1682..88ed50182a604 100644
        # For the rustc sysroot we must include even the rlibs we don't pass to
 --- a/build/rust/gni_impl/run_rs_bindings_from_cc.py
 +++ b/build/rust/gni_impl/run_rs_bindings_from_cc.py
-@@ -15,13 +15,6 @@ CHROMIUM_SRC_DIR = os.path.relpath(os.path.join(THIS_DIR, os.pardir, os.pardir))
+@@ -15,15 +15,6 @@ CHROMIUM_SRC_DIR = os.path.relpath(os.pa
  sys.path.append(THIS_DIR)
  from run_bindgen import filter_clang_args
- 
--RUST_TOOLCHAIN_DIR = os.path.join(CHROMIUM_SRC_DIR, "third_party",
--                                  "rust-toolchain")
+
+-RUST_TOOLCHAIN_DIR = os.path.join(
+-    CHROMIUM_SRC_DIR, "third_party", "rust-toolchain"
+-)
 -RUSTFMT_EXE_PATH = os.path.join(RUST_TOOLCHAIN_DIR, "bin", "rustfmt")
 -RUSTFMT_CONFIG_PATH = os.path.join(CHROMIUM_SRC_DIR, ".rustfmt.toml")
--RS_BINDINGS_FROM_CC_EXE_PATH = os.path.join(RUST_TOOLCHAIN_DIR, "bin",
--                                            "rs_bindings_from_cc")
+-RS_BINDINGS_FROM_CC_EXE_PATH = os.path.join(
+-    RUST_TOOLCHAIN_DIR, "bin", "rs_bindings_from_cc"
+-)
 -
- 
+
  def format_cmdline(args):
- 
-@@ -35,6 +28,10 @@ def format_cmdline(args):
- 
- def main():
-   parser = argparse.ArgumentParser()
-+  parser.add_argument("--rs_bindings_from_cc_path",
-+                      required=True)
-+  parser.add_argument("--rustfmt_path",
-+                      required=True)
-   parser.add_argument("--targets_and_args_from_gn",
-                       metavar="FILE",
-                       help="File parsed into --targets_and_args Crubit arg",
-@@ -81,8 +78,9 @@ def main():
-       json.dumps(targets_and_args)))
- 
-   # All Crubit invocations in Chromium share the following cmdline args.
--  generator_args.append(f"--rustfmt_exe_path={RUSTFMT_EXE_PATH}")
--  generator_args.append(f"--rustfmt_config_path={RUSTFMT_CONFIG_PATH}")
-+  generator_args.append(f"--rustfmt_exe_path={args.rustfmt_path}")
-+  rustfmt_config_path = os.path.join(CHROMIUM_SRC_DIR, ".rustfmt.toml")
-+  generator_args.append(f"--rustfmt_config_path={rustfmt_config_path}")
-   generator_args.append(
-       "--crubit_support_path=third_party/crubit/src/rs_bindings_from_cc/support"
-   )
-@@ -113,7 +111,7 @@ def main():
-   clang_args += ["-Wno-unused-command-line-argument"]
- 
-   # Print a copy&pastable final cmdline when asked for debugging help.
--  cmdline = [RS_BINDINGS_FROM_CC_EXE_PATH, f"--flagfile={params_file_path}"]
-+  cmdline = [args.rs_bindings_from_cc_path, f"--flagfile={params_file_path}"]
-   cmdline.extend(clang_args)
-   if "CRUBIT_DEBUG" in os.environ:
-     pretty_cmdline = format_cmdline(cmdline)
+
+@@ -40,6 +31,18 @@ def main():
+     parser = argparse.ArgumentParser()
+     (
+         parser.add_argument(
++            "--rs_bindings_from_cc_path",
++            required=True
++        ),
++    )
++    (
++        parser.add_argument(
++            "--rustfmt_path",
++            required=True
++        ),
++    )
++    (
++        parser.add_argument(
+             "--targets_and_args_from_gn",
+             metavar="FILE",
+             help="File parsed into --targets_and_args Crubit arg",
+@@ -111,8 +114,9 @@ def main():
+     )
+
+     # All Crubit invocations in Chromium share the following cmdline args.
+-    generator_args.append(f"--rustfmt_exe_path={RUSTFMT_EXE_PATH}")
+-    generator_args.append(f"--rustfmt_config_path={RUSTFMT_CONFIG_PATH}")
++    generator_args.append(f"--rustfmt_exe_path={args.rustfmt_path}")
++    rustfmt_config_path = os.path.join(CHROMIUM_SRC_DIR, ".rustfmt.toml")
++    generator_args.append(f"--rustfmt_config_path={rustfmt_config_path}")
+     generator_args.append(
+         "--crubit_support_path=third_party/crubit/src/rs_bindings_from_cc/support"
+     )
+@@ -143,7 +147,7 @@ def main():
+     clang_args += ["-Wno-unused-command-line-argument"]
+
+     # Print a copy&pastable final cmdline when asked for debugging help.
+-    cmdline = [RS_BINDINGS_FROM_CC_EXE_PATH, f"--flagfile={params_file_path}"]
++    cmdline = [args.rs_bindings_from_cc_path, f"--flagfile={params_file_path}"]
+     cmdline.extend(clang_args)
+     if "CRUBIT_DEBUG" in os.environ:
+         pretty_cmdline = format_cmdline(cmdline)
 --- a/build/rust/gni_impl/rust_target.gni
 +++ b/build/rust/gni_impl/rust_target.gni
-@@ -719,14 +719,14 @@ template("rust_target") {
+@@ -725,9 +725,9 @@ template("rust_target") {
            # `import`ed for `LoadRustEnvAndFlags`, etc.
            inputs = rustc_wrapper_inputs
            if (host_os == "win") {
@@ -139,6 +149,9 @@ index 105a1d52a1682..88ed50182a604 100644
 -            inputs += [ "//third_party/rust-toolchain/bin/clippy-driver" ]
 +            inputs += [ "$rust_sysroot/bin/clippy-driver" ]
            }
+           if (rust_clippy_conf_file != "") {
+             inputs += [ rust_clippy_conf_file ]
+@@ -735,7 +735,7 @@ template("rust_target") {
  
            args = [
              "--clippy-driver",

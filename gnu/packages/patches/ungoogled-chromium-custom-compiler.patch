@@ -16,7 +16,7 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
      ":compiler_codegen",
      ":compiler_deterministic",
      ":clang_warning_suppression",
-@@ -1726,43 +1723,6 @@ config("compiler_deterministic") {
+@@ -1396,43 +1393,6 @@ config("compiler_deterministic") {
      }
    }
  
@@ -60,7 +60,7 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
    # Tells the compiler not to use absolute paths when passing the default
    # paths to the tools it invokes. We don't want this because we don't
    # really need it and it can mess up the RBE cache entries.
-@@ -1795,88 +1755,6 @@ config("compiler_deterministic") {
+@@ -1465,88 +1425,6 @@ config("compiler_deterministic") {
    }
  }
  
@@ -149,11 +149,21 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
  # Controls the usage of a warning suppression mapping (WSM) file to suppress
  # warnings based on the path of the file they come from. It's controlled by the
  # `clang_warning_suppression_file` gn argument , which points to a text file
-@@ -1926,18 +1804,6 @@ ubsan_hardening("return") {
+@@ -1590,7 +1590,7 @@ config("clang_warning_suppression") {
+ # See also: https://crbug.com/40891132#comment10
+ ubsan_hardening("c_array_bounds") {
+   sanitizer = "array-bounds"
+-  condition = !(is_asan && target_cpu == "x86")
++  condition = false
+
+   # Because we've enabled array-bounds sanitizing we also want to suppress
+   # the related warning about "unsafe-buffer-usage-in-static-sized-array",
+@@ -1604,18 +1604,7 @@ ubsan_hardening("c_array_bounds") {
+ # `NOTREACHED()` at the end of such functions.
+ ubsan_hardening("return") {
    sanitizer = "return"
-   }
- }
- 
+-}
+-
 -config("rustc_revision") {
 -  if (rustc_revision != "") {
 -    # Similar to the `clang_revision` config, this is here so that all `.rs`
@@ -164,12 +174,11 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
 -      "cr_rustc_revision=\"$rustc_revision\"",
 -    ]
 -  }
--}
--
++  condition = false
+ }
+
  config("compiler_arm_fpu") {
-   if (current_cpu == "arm" && !is_ios) {
-     cflags = [ "-mfpu=neon" ]
-@@ -2419,11 +2285,7 @@ config("chromium_code") {
+@@ -2104,11 +1970,7 @@ config("chromium_code") {
        defines = [ "_HAS_NODISCARD" ]
      }
    } else {

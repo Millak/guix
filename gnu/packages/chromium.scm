@@ -56,6 +56,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages node-xyz)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
@@ -173,7 +174,7 @@
     "third_party/devtools-frontend/src/front_end/third_party/web-vitals" ;Expat
     "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
-
+    "third_party/devtools-frontend/src/third_party/typescript" ;BSD-3
     "third_party/dom_distiller_js" ;BSD-3
     "third_party/dragonbox" ;ASL2.0, Boost1.0
     "third_party/d3" ;Non-copyleft
@@ -218,6 +219,7 @@
     "third_party/highway" ;ASL2.0
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
     "third_party/hyphenation-patterns" ;Expat
+    "third_party/iamf_tools" ;BSD-3
     ;; FIXME: Our icu does not have some headers such as udatamem.h.
     "third_party/icu" ;Unicode3.0
     "third_party/ink" ;ASL2.0
@@ -390,7 +392,6 @@
     "third_party/zlib/google" ;BSD-3
     "third_party/zxcvbn-cpp" ;Expat
     "url/third_party/mozilla" ;BSD-3, MPL1.1/GPL2+/LGPL2.1+
-    "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64" ;LGPL2.1+
     "v8/third_party/inspector_protocol" ;BSD-3
     "v8/third_party/rapidhash-v8" ;BSD-2
     "v8/third_party/siphash" ;CC0 1.0
@@ -406,7 +407,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "151.0.7922.137")
+(define %chromium-version "153.0.8010.52")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -418,7 +419,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "03kia9fj40hlvvnz1v1gbzbhicfh5zj2f0am7yv3va4mmd3232a0"))))
+      "1sd34gzhc9aimqhq4bnj1zijx3z2f5i8ql7svzis5kc5j8gkcxv6"))))
 
 (define %debian-origin
   (origin
@@ -431,7 +432,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "07ja5wk9p3vcak8czjn70cqg0x7pkwkm2yk9z9fz6925mipnl6yg"))))
+      "1q43rdy7hjjfcdshlb6aw70yjmcp2ncqa32zalzf89nlkzgr869l"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -454,26 +455,15 @@
          "fixes/libcpp-headers.patch"
          "fixes/libpng-testonly.patch"
          "fixes/rust-clanglib.patch"
-         "llvm-19/0001-revert-v8-libm.patch"
-         "llvm-19/0002-revert-v8-libm.patch"
-         "llvm-19/0003-revert-v8-libm.patch"
-         "llvm-19/0004-revert-v8-libm.patch"
-         "llvm-19/0005-revert-v8-libm.patch"
-         "llvm-19/0007-revert-v8-libm.patch"
-         "llvm-19/0008-revert-v8-libm.patch"
-         "llvm-19/0009-revert-v8-libm.patch"
-         "llvm-19/0011-revert-v8-libm.patch"
-         "llvm-19/clang19.patch"
-         "llvm-19/clone-traits.patch"
-         "llvm-19/constexpr.patch"
-         "llvm-19/i18n-builder-enum.patch"
-         "llvm-19/const-profile.patch"
-         "llvm-19/iota.patch"
-         "llvm-19/keyfactory.patch"
-         "llvm-19/raw-ref-map-find.patch"
-         "llvm-19/value-or.patch"
+         "llvm-22/clang22.patch"
+         "llvm-22/clone-traits.patch"
+         "llvm-22/const-profile.patch"
          "llvm-22/ignore-for-ubsan.patch"
+         "llvm-22/keyfactory.patch"
+         "llvm-22/raw-ref-map-find.patch"
          "system/openjpeg.patch"
+         "system/rust-cbor.patch"
+         "system/llvm.patch"
          "trixie/bindgen-boringssl.patch"
          "trixie/cookie-string-view.patch"
          "trixie/nodejs-main.patch"
@@ -486,20 +476,24 @@
            (search-patch patch))))
        (list
          "ungoogled-chromium-custom-compiler.patch"
+         "ungoogled-chromium-crubit.patch"
          "ungoogled-chromium-empty-parsed-rustc-args.patch"
          "ungoogled-chromium-extension-search-path.patch"
          "ungoogled-chromium-golang.patch"
-         "ungoogled-chromium-histograms.patch"
          "ungoogled-chromium-increase-fortify-level.patch"
          "ungoogled-chromium-override-libdrm-assertion.patch"
          "ungoogled-chromium-RUNPATH.patch"
          "ungoogled-chromium-rust-toolchain-var.patch"
          "ungoogled-chromium-system-nspr.patch"
+         "ungoogled-chromium-typescript.patch"
          "ungoogled-chromium-unbundle-minizip.patch")))
 
 (define %patches
   (append %debian-patches
           %guix-patches))
+
+(define lld-as-ld-wrapper-23
+  (make-lld-wrapper lld-23 #:lld-as-ld? #t))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -629,7 +623,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "0ignafc5yhhiknqi6wcw8s4wj1fs70jdcb4bcbv4b4f9q103989z"))
+                "0jl476d87vz7n35h1gxxacffdxjnigx3asv13739fbzi2gwwnvzd"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -714,7 +708,7 @@
                              "\"")
 
               (string-append "clang_version="
-                             #$(version-major (package-version clang)))
+                             #$(version-major (package-version clang-23)))
 
               (string-append "rust_sysroot_absolute=\""
                              (dirname (dirname (search-input-file %build-inputs
@@ -749,6 +743,9 @@
               "link_pulseaudio=true"
               "icu_use_data_file=true"
 
+              "use_typescript_go=false"
+              "devtools_use_typescript_go=false"
+
               ;; VA-API acceleration is currently only supported on x86_64-linux.
               #$@(if (string-prefix? "x86_64" (or (%current-target-system)
                                                   (%current-system)))
@@ -766,17 +763,22 @@
               "proprietary_codecs=true"
               "ffmpeg_branding=\"Chrome\""
 
-              "rtc_use_pipewire=true")
+              "rtc_use_pipewire=true"
+              "rtc_link_pipewire=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-stuff
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let* ((brotli (search-input-file inputs
-                                                "/bin/brotli"))
+              (let* ((brotli     (search-input-file inputs
+                                                    "/bin/brotli"))
                      (libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
-                     (openjpeg (dirname (dirname libopenjp2)))
-                     (gperf (search-input-file (or native-inputs inputs)
-                                               "/bin/gperf"))
+                     (openjpeg   (dirname (dirname libopenjp2)))
+                     (gperf      (search-input-file (or native-inputs inputs)
+                                                    "/bin/gperf"))
+                     (python3    (search-input-file (or native-inputs inputs)
+                                                    "/bin/python3"))
+                     (tsc        (search-input-file (or native-inputs inputs)
+                                                    "/bin/tsc"))
                      (compiler-rt-path (dirname
                                         (dirname
                                          (search-input-file (or native-inputs inputs)
@@ -784,6 +786,15 @@
                 (substitute* "third_party/brotli/BUILD.gn"
                   (("/usr/bin/brotli")
                    brotli))
+
+                (substitute* ".gn"
+                  (("//third_party/cpython3/host/bin/python3")
+                   python3))
+
+                ;; works on top of typescript patch.
+                (substitute* "third_party/devtools-frontend/src/third_party/typescript/typescript.py"
+                  (("/usr/bin/tsc")
+                   tsc))
 
                 ;; This works on top of debian's 'rust-clanglib.patch'.
                 (substitute* "build/config/clang/BUILD.gn"
@@ -907,7 +918,7 @@
                         (string-append " -stdlib=libc++"
                                        " -Wl,--stats"))
                 (setenv "CLANG_MVERS" #$(version-major
-                                         (package-version clang)))
+                                         (package-version clang-23)))
                 (setenv "RUSTC_BOOTSTRAP" "1")
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
@@ -1045,16 +1056,17 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang
-           clang-runtime
-           clang-toolchain
+           clang-23
+           clang-runtime-23
+           clang-toolchain-23
            gn
            gperf
            go
-           lld-as-ld-wrapper
-           llvm
+           lld-as-ld-wrapper-23
+           llvm-23
            ninja
            node-lts
+           node-typescript
            pkg-config
            which
            python-beautifulsoup4
