@@ -11997,6 +11997,51 @@ that is lightweight, highly available, and fault tolerant.")
 package.  It contains code for interacting with a Vault server.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-vault-api-auth-aws
+  (package
+    (name "go-github-com-hashicorp-vault-api-auth-aws")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/vault")
+              (commit (go-version->git-ref version
+                                           #:subdir "api/auth/aws"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17rnfghxnc87yj0lbhg7hvzp356r4pjajly5xcy2dzdzigkvi149"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "api/auth" "aws")
+            (delete-all-but "api" "auth")
+            (delete-all-but "." "api")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/vault/api/auth/aws"
+      #:unpack-path "github.com/hashicorp/vault"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-hashicorp-go-hclog
+           go-github-com-hashicorp-go-secure-stdlib-awsutil
+           go-github-com-hashicorp-go-uuid
+           go-github-com-hashicorp-vault-api))
+    (home-page "https://github.com/hashicorp/vault")
+    (synopsis "Hashicorp Vault to AWS integration")
+    (description
+     "This package provides Hashicorp Vault to AWS API integration.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-yamux
   (package
     (name "go-github-com-hashicorp-yamux")
