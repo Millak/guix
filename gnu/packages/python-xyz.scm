@@ -36729,28 +36729,6 @@ Data Exchange Format decoder and encoder.")
 Communication.")
     (license license:eupl1.1)))
 
-(define-public python-clrprint
-  (package
-    (name "python-clrprint")
-    (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "clrprint" version))
-              (sha256
-               (base32
-                "0xfn8d1by2w7pjiji887qljk1avn4fylbnz1mj28gysm5g0zvy43"))))
-    (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))                    ;there are no tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs (list python-colorama python-termcolor))
-    (home-page "https://github.com/AbhijithAJ/clrprint")
-    (synopsis "Print colorful output in the terminal")
-    (description "@code{clrprint} is developed to print colorful output in the
-terminal.  It has red, blue, green, yellow, purple and black/white (default)
-colors.")
-    (license license:expat)))
-
 (define-public python-mido
   (package
     (name "python-mido")
