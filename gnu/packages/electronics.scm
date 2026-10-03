@@ -3991,7 +3991,7 @@ and reusable bus interfaces to be used with @code{cocotb}.")
 (define-public python-cocotb-test
   (package
     (name "python-cocotb-test")
-    (version "0.2.6")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4000,13 +4000,44 @@ and reusable bus interfaces to be used with @code{cocotb}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f7hf3wwdz21xyq9mg1pzbk5a5hkzszq4wss1r0ismgmn7i4lq7q"))))
+        (base32 "1lac8cgjllsrfycqql6xjhvca9w620j299vv5gnf54vsb7l89sf0"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;requires examples folder from python-cocotb
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'delete-failing-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each delete-file-recursively
+                          (map
+                           (lambda (test) (string-append "tests/" test))
+                           (list
+                            ;; Requires tests folder from python-cocotb
+                            "test_cocotb_tests.py"
+                            ;; Requires examples folder from python-cocotb
+                            "test_cocotb_examples.py")))))))
+      #:test-flags
+      #~(list
+         ;; Fail with "This simulator does not support VHDL".
+         "--deselect=tests/test_compile_errors.py::test_invalid_vhdl"
+         "--deselect=tests/test_dff.py::test_dff_vhdl"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[0]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[1]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[2]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[3]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[4]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[5]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[6]"
+         "--deselect=tests/test_parallel.py::test_dff_vhdl_param[7]"
+         (string-append "--deselect=tests/test_parameters.py::"
+                        "test_dff_vhdl_testcase[parameters0]")
+         (string-append "--deselect=tests/test_parameters.py::"
+                        "test_dff_vhdl_testcase[parameters1]"))))
     (propagated-inputs
      (list python-cocotb))
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list iverilog python-setuptools))
     (home-page "https://github.com/themperek/cocotb-test")
     (synopsis
      "Standard python unit testing cababilities for @code{python-cocotb}")
