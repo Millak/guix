@@ -541,7 +541,7 @@ audio CAPTCHAs.  This is a fork of @url{https://github.com/dchest/captcha}.")
 (define-public go-code-forgejo-org-xorm-xorm
   (package
     (name "go-code-forgejo-org-xorm-xorm")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -550,11 +550,12 @@ audio CAPTCHAs.  This is a fork of @url{https://github.com/dchest/captcha}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pf764g9nczcmwvw1njlskphbjvivs2678pymqz32gayqiw8khdc"))))
+        (base32 "0x5cii7bavbb15m8lpqz9jyyw2djvkaiya6zi9ifln0v0ql1awv8"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "code.forgejo.org/xorm/xorm"))
+      #:import-path "code.forgejo.org/xorm/xorm"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
