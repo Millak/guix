@@ -2460,7 +2460,11 @@ as defaults in Standard Ruby.")
               (substitute* "test/standard/base_test.rb"
                 ((".*test_configures_all_rubocop_cops.*" all)
                  (string-append all
-                                "      skip('fails on guix')\n"))))))))
+                                "      skip('fails on guix')\n")))))
+          (add-before 'check 'disable-frozen-string-literal
+            (lambda _
+              ;; Warnings about frozen string literals cause test failures.
+              (setenv "RUBYOPT" "--disable-frozen-string-literal"))))))
     (native-inputs
      (list ruby-simplecov))
     (propagated-inputs
