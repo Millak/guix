@@ -3658,6 +3658,208 @@ common transpilers built-in for convenience:
 @end itemize")
     (license license:expat)))
 
+(define-public python-elastic-transport
+  (package
+    (name "python-elastic-transport")
+    (version "9.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "elastic_transport" version))
+       (sha256
+        (base32 "0g879z8rqrfbwkxsm6xcycjha1swl7gdgs6m0y0j1zmh4m5f940m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Deselect failing tests (mostly due to network not reachable)
+      #~(list "-k"
+              (string-append
+               "not .badssl.com"
+               " and not test_assert_fingerprint_in_cert_chain_failure"))))
+    (propagated-inputs (list python-certifi python-urllib3))
+    (native-inputs (list nss-certs-for-test
+                         python-aiohttp
+                         ;; python-furo
+                         python-httpx
+                         python-opentelemetry-api
+                         python-opentelemetry-sdk
+                         python-orjson
+                         python-pytest
+                         python-pytest-asyncio-0.26
+                         ;; python-pytest-cov
+                         python-pytest-httpbin
+                         python-pytest-httpserver
+                         python-pytest-mock
+                         python-requests
+                         python-respx ;test
+                         python-setuptools
+                         ;; python-sphinx
+                         ;; python-sphinx-autodoc-typehints
+                         python-trustme
+                         python-wheel))
+    (home-page "https://github.com/elastic/elastic-transport-python")
+    (synopsis "Common library for Python Elastic client libraries")
+    (description
+     "This library was lifted from @code{elasticsearch-py} and then transformed to
+be used across all Elastic services rather than only Elasticsearch.  It
+provides transport classes and utilities shared among Python Elastic client
+libraries.")
+    ;; Apache-2.0 in setup.py and LICENSE file.
+    (license license:asl2.0)))
+
+(define-public python-elasticsearch
+  (package
+    (name "python-elasticsearch")
+    (version "9.1.1")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/elastic/elasticsearch-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "015x73y84nyigcyg00lh32p2pfrqf834fr7clfnzymgzrrxa73jf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list nss-certs-for-test
+           python-aiohttp
+           python-dateutil
+           python-mock
+           python-orjson
+           python-pytest
+           python-pytest-asyncio
+           python-pytz
+           python-pyyaml
+           python-requests
+           python-hatchling))
+    (propagated-inputs
+     (list python-certifi
+           python-elastic-transport))
+    (home-page "https://github.com/elastic/elasticsearch-py")
+    (synopsis "Low-level client for Elasticsearch")
+    (description "Official low-level client for Elasticsearch.  Its goal is to
+provide common ground for all Elasticsearch-related code in Python; because of
+this it tries to be opinion-free and very extendable.")
+    ;; Apache-2.0 in setup.py and LICENSE file.
+    (license license:asl2.0)))
+
+(define-public python-engineio
+  (package
+    (name "python-engineio")
+    (version "4.13.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miguelgrinberg/python-engineio/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ndp68cqssjpvln958v236rg5jgpzy57vs3z45sz7xfscmbi893r"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-tornado))
+    (propagated-inputs
+     (list python-simple-websocket
+           ;; [optional]
+           python-aiohttp
+           python-requests
+           python-websocket-client))
+    (home-page "https://github.com/miguelgrinberg/python-engineio/")
+    (synopsis "Engine.IO server")
+    (description "This package provides a Python implementation of the
+@code{Engine.IO} realtime client and server.")
+    (license license:expat)))
+
+(define-public python-enoslib
+  (package
+    (name "python-enoslib")
+    (version "8.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.inria.fr/discovery/enoslib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 "0vs6b0bnlv95mzv0rjbxqwrhzkgjkn91gqipgwdf7y4ffpz8nybg")))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "enoslib/tests/unit"
+              "--ignore" "enoslib/tests/unit/infra/test_utils.py"
+              "--ignore-glob" "enoslib/tests/unit/infra/enos_iotlab/*")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Otherwise Ansible fails to create its config directory.
+                (setenv "HOME" "/tmp"))))
+          ;; Disable the sanity check, which fails with the following error:
+          ;;
+          ;; ContextualVersionConflict(rich 12.4.1
+          ;; (/gnu/store/...-python-rich-12.4.1/lib/python3.9/site-packages),
+          ;; Requirement.parse('rich[jupyter]~=12.0.0'), {'enoslib'})
+          ;;
+          ;; The optional jupyter dependency of rich isn't critical for
+          ;; EnOSlib to work
+          (delete 'sanity-check))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-ddt
+           python-freezegun
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list ansible
+           python-cryptography
+           python-grid5000
+           python-jsonschema
+           python-netaddr
+           python-packaging
+           python-requests
+           python-rich
+           python-sshtunnel
+           python-pytz))
+    (home-page "https://discovery.gitlabpages.inria.fr/enoslib/index.html")
+    (synopsis "Deploy distributed testbeds on a variety of platforms")
+    (description
+     "EnOSlib is a library to build experimental frameworks on various
+scientific testbeds.  It lets you deploy networks of machines on actual
+hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
+    (license license:gpl3+)))
+
+(define-public python-ephemeral-port-reserve
+  (package
+    (name "python-ephemeral-port-reserve")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yelp/ephemeral-port-reserve")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ifmf5zcw7mhbm73awmf5jwc4rw8lhk81mn4zp797lwkysjm38s7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/Yelp/ephemeral-port-reserve/")
+    (synopsis "Find an unused port, reliably")
+    (description
+     "Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind
+it.")
+    (license license:expat)))
+
 (define-public python-essentials-openapi
   (package
     (name "python-essentials-openapi")
@@ -3771,6 +3973,55 @@ Note: In Guix, this package assumes the environment variable
 @code{EVENTLET_NO_GREENDNS} defaults to @code{yes}.  To try to use it, set it
 to anything else.")
     (license license:expat)))
+
+(define-public python-extruct
+  (package
+    (name "python-extruct")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/scrapinghub/extruct")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03qdldqrvmbsk6klq4nkxvvp3b2a0qqgqg115i3crbmialiaai45"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; 67 passed, 3 deselected
+      ;; XXX: 3 tests fail with errors in assertion.
+      #~(list "-k" (string-append
+                    "not test_microformat"
+                    " and not test_microformat"
+                    " and not test_umicroformat"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-html-text
+           python-jstyleson
+           python-lxml
+           python-mf2py
+           python-pyrdfa3
+           python-rdflib
+           python-w3lib))
+    (home-page "https://github.com/scrapinghub/extruct")
+    (synopsis "Extract embedded metadata from HTML markup")
+    (description "@code{extruct} is a Python library for extracting embedded
+metadata from HTML markup.  Currently, extruct supports:
+@itemize
+@item W3C's HTML Microdata
+@item embedded JSON-LD
+@item Microformat via mf2py
+@item Facebook's Open Graph
+@item (experimental) RDFa via rdflib
+@item Dublin Core Metadata (DC-HTML-2003)
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public python-feedgen
   (package
@@ -9904,148 +10155,6 @@ and CSS files,supporting a variety of different filters, including YUI, jsmin,
 jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (license license:bsd-2)))
 
-(define-public python-elastic-transport
-  (package
-    (name "python-elastic-transport")
-    (version "9.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "elastic_transport" version))
-       (sha256
-        (base32 "0g879z8rqrfbwkxsm6xcycjha1swl7gdgs6m0y0j1zmh4m5f940m"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Deselect failing tests (mostly due to network not reachable)
-      #~(list "-k"
-              (string-append
-               "not .badssl.com"
-               " and not test_assert_fingerprint_in_cert_chain_failure"))))
-    (propagated-inputs (list python-certifi python-urllib3))
-    (native-inputs (list nss-certs-for-test
-                         python-aiohttp
-                         ;; python-furo
-                         python-httpx
-                         python-opentelemetry-api
-                         python-opentelemetry-sdk
-                         python-orjson
-                         python-pytest
-                         python-pytest-asyncio-0.26
-                         ;; python-pytest-cov
-                         python-pytest-httpbin
-                         python-pytest-httpserver
-                         python-pytest-mock
-                         python-requests
-                         python-respx ;test
-                         python-setuptools
-                         ;; python-sphinx
-                         ;; python-sphinx-autodoc-typehints
-                         python-trustme
-                         python-wheel))
-    (home-page "https://github.com/elastic/elastic-transport-python")
-    (synopsis "Common library for Python Elastic client libraries")
-    (description
-     "This library was lifted from @code{elasticsearch-py} and then transformed to
-be used across all Elastic services rather than only Elasticsearch.  It
-provides transport classes and utilities shared among Python Elastic client
-libraries.")
-    ;; Apache-2.0 in setup.py and LICENSE file.
-    (license license:asl2.0)))
-
-(define-public python-elasticsearch
-  (package
-    (name "python-elasticsearch")
-    (version "9.1.1")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/elastic/elasticsearch-py")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "015x73y84nyigcyg00lh32p2pfrqf834fr7clfnzymgzrrxa73jf"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list nss-certs-for-test
-           python-aiohttp
-           python-dateutil
-           python-mock
-           python-orjson
-           python-pytest
-           python-pytest-asyncio
-           python-pytz
-           python-pyyaml
-           python-requests
-           python-hatchling))
-    (propagated-inputs
-     (list python-certifi
-           python-elastic-transport))
-    (home-page "https://github.com/elastic/elasticsearch-py")
-    (synopsis "Low-level client for Elasticsearch")
-    (description "Official low-level client for Elasticsearch.  Its goal is to
-provide common ground for all Elasticsearch-related code in Python; because of
-this it tries to be opinion-free and very extendable.")
-    ;; Apache-2.0 in setup.py and LICENSE file.
-    (license license:asl2.0)))
-
-(define-public python-engineio
-  (package
-    (name "python-engineio")
-    (version "4.13.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/miguelgrinberg/python-engineio/")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ndp68cqssjpvln958v236rg5jgpzy57vs3z45sz7xfscmbi893r"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-setuptools
-           python-tornado))
-    (propagated-inputs
-     (list python-simple-websocket
-           ;; [optional]
-           python-aiohttp
-           python-requests
-           python-websocket-client))
-    (home-page "https://github.com/miguelgrinberg/python-engineio/")
-    (synopsis "Engine.IO server")
-    (description "This package provides a Python implementation of the
-@code{Engine.IO} realtime client and server.")
-    (license license:expat)))
-
-(define-public python-ephemeral-port-reserve
-  (package
-    (name "python-ephemeral-port-reserve")
-    (version "1.1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Yelp/ephemeral-port-reserve")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ifmf5zcw7mhbm73awmf5jwc4rw8lhk81mn4zp797lwkysjm38s7"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/Yelp/ephemeral-port-reserve/")
-    (synopsis "Find an unused port, reliably")
-    (description
-     "Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind
-it.")
-    (license license:expat)))
-
 (define-public python-flask-migrate
   (package
     (name "python-flask-migrate")
@@ -13958,55 +14067,6 @@ full Microformats2 (mf2) specification, including backward compatibility with
 Microformats1 (mf1).")
     (license license:expat)))
 
-(define-public python-extruct
-  (package
-    (name "python-extruct")
-    (version "0.18.0")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/scrapinghub/extruct")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03qdldqrvmbsk6klq4nkxvvp3b2a0qqgqg115i3crbmialiaai45"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; 67 passed, 3 deselected
-      ;; XXX: 3 tests fail with errors in assertion.
-      #~(list "-k" (string-append
-                    "not test_microformat"
-                    " and not test_microformat"
-                    " and not test_umicroformat"))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-html-text
-           python-jstyleson
-           python-lxml
-           python-mf2py
-           python-pyrdfa3
-           python-rdflib
-           python-w3lib))
-    (home-page "https://github.com/scrapinghub/extruct")
-    (synopsis "Extract embedded metadata from HTML markup")
-    (description "@code{extruct} is a Python library for extracting embedded
-metadata from HTML markup.  Currently, extruct supports:
-@itemize
-@item W3C's HTML Microdata
-@item embedded JSON-LD
-@item Microformat via mf2py
-@item Facebook's Open Graph
-@item (experimental) RDFa via rdflib
-@item Dublin Core Metadata (DC-HTML-2003)
-@end itemize")
-    (license license:bsd-3)))
-
 (define-public python-wadllib
   (package
     (name "python-wadllib")
@@ -14744,66 +14804,6 @@ tool for generating Github-style badges as SVG images.")
      "python-grid5000 is a python package wrapping the Grid5000 REST API.
 You can use it as a library in your python project or you can explore the
 Grid5000 resources interactively using the embedded shell.")
-    (license license:gpl3+)))
-
-(define-public python-enoslib
-  (package
-    (name "python-enoslib")
-    (version "8.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.inria.fr/discovery/enoslib")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256 "0vs6b0bnlv95mzv0rjbxqwrhzkgjkn91gqipgwdf7y4ffpz8nybg")))
-    (arguments
-     (list
-      #:test-flags
-      #~(list "enoslib/tests/unit"
-              "--ignore" "enoslib/tests/unit/infra/test_utils.py"
-              "--ignore-glob" "enoslib/tests/unit/infra/enos_iotlab/*")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Otherwise Ansible fails to create its config directory.
-                (setenv "HOME" "/tmp"))))
-          ;; Disable the sanity check, which fails with the following error:
-          ;;
-          ;; ContextualVersionConflict(rich 12.4.1
-          ;; (/gnu/store/...-python-rich-12.4.1/lib/python3.9/site-packages),
-          ;; Requirement.parse('rich[jupyter]~=12.0.0'), {'enoslib'})
-          ;;
-          ;; The optional jupyter dependency of rich isn't critical for
-          ;; EnOSlib to work
-          (delete 'sanity-check))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-ddt
-           python-freezegun
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list ansible
-           python-cryptography
-           python-grid5000
-           python-jsonschema
-           python-netaddr
-           python-packaging
-           python-requests
-           python-rich
-           python-sshtunnel
-           python-pytz))
-    (home-page "https://discovery.gitlabpages.inria.fr/enoslib/index.html")
-    (synopsis "Deploy distributed testbeds on a variety of platforms")
-    (description
-     "EnOSlib is a library to build experimental frameworks on various
-scientific testbeds.  It lets you deploy networks of machines on actual
-hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (license license:gpl3+)))
 
 (define-public python-pynetbox
