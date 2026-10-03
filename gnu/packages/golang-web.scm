@@ -13253,7 +13253,7 @@ geared towards parsing MIME encoded emails.")
   (package
     (inherit go-github-com-jhillyerd-enmime)
     (name "go-github-com-jhillyerd-enmime-v2")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -13262,10 +13262,11 @@ geared towards parsing MIME encoded emails.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1diiz7y86ac8mv5dzd44x46gcqay4zy8yfhbfcrgi75mk4xxyp7l"))))
+        (base32 "087rq6lqy9dm55g9c3z3iahzy9kdw35402s2l5lr053v1435rfvx"))))
     (arguments
      (list
-      #:import-path "github.com/jhillyerd/enmime/v2"))
+      #:import-path "github.com/jhillyerd/enmime/v2"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-cention-sany-utf7
            go-github-com-gogs-chardet
