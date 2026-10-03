@@ -86,6 +86,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages check)
@@ -1714,11 +1715,8 @@ etc.")
 (define-public libresprite
   (package
     (name "libresprite")
-    (version "1.2")
-    ;; TODO: Unbundle third party software.
-    ;; - duktape is bundled inside the project but it's hard to unbundle:
-    ;;   there are many differences from a version to the next and it is not
-    ;;   really designed to work as a shared lib.
+    (version "1.3")
+    ;; TODO: Unbundle third party software: quickjs, simpleini, qoi, etc.
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1728,12 +1726,15 @@ etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vvrvqxrb1i306jj3vqi4mc4ps0bfnk8nsly18x1x1bxrq1yny4d"))))
+                "0vq3bh5yj5g80q6f5k26d531dsqf19mcr9b5a3cgnfyv8n6w7l9d"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DWITH_WEBP_SUPPORT=1"
-                   "-DWITH_DESKTOP_INTEGRATION=1")
+                   "-DWITH_DESKTOP_INTEGRATION=1"
+                   "-DRELEASE_TAG=ON"
+                   (string-append "-DRELEASE_VERSION=" #$version))
+           #:cmake cmake-minimal-4      ; cmake>=4.1 required
            ;; Tests are unmaintained
            #:tests? #f
            #:modules `((ice-9 match)
