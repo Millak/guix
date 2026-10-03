@@ -3903,7 +3903,7 @@ files as specified in IEEE 1364-2005.")
 (define-public python-cocotb
   (package
     (name "python-cocotb")
-    (version "2.0.1")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -3912,30 +3912,36 @@ files as specified in IEEE 1364-2005.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lyv0q1zqldrzfpyy3k1cxdnsw05gv73x5iid20yagvgb6l0sx1d"))))
+        (base32 "1x2jcnp31c30dnzr5zayaac5ac1hw2fbhjb0hixnjb0jp80caw3a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dynamic.*")
+                 (string-append "version = \"" #$version "\"")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (for-each delete-file-recursively
                           (map
                            (lambda (test) (string-append "tests/test_cases/" test))
-                           (list "test_log_prefix"
+                           (list "test_logic_array_indexing"
+                                 ;; requires ghdl
                                  "test_vhdl_libraries"
                                  "test_vhdl_libraries_multiple")))
                 (invoke "make" "-k" "-C" "tests")))))))
     (native-inputs
      (list iverilog
            nvc
-           python-pytest
+           python-psutil
            python-setuptools
            verilator))
     (propagated-inputs
-     (list python-find-libpython))
+     (list python-find-libpython python-pytest))
     (home-page "https://github.com/cocotb/cocotb")
     (synopsis "Library for writing HDL test benches in Python")
     (description
