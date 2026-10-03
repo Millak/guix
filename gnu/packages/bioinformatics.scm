@@ -15848,7 +15848,7 @@ dispersal.  Its output can be processed by treeannotator (from the
 (define-public imp
   (package
     (name "imp")
-    (version "2.23.0")
+    (version "2.25.0")
     (source
      (origin
        (method url-fetch)
@@ -15856,7 +15856,7 @@ dispersal.  Its output can be processed by treeannotator (from the
                            version "/download/imp-" version ".tar.gz"))
        (sha256
         (base32
-         "080z50iq1f3nmkccy2i5hj0i34j26sbwcaqizcbljji9mvp0nc0q"))))
+         "0p1wp83my636pg5207640lh6qp8ddkx5kjxnx28sk3sfa81i8z1g"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #false ; The test suite is notoriously fickle
