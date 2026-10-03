@@ -987,7 +987,7 @@ Guile's foreign function interface.")
 (define-public guile-lzlib
   (package
     (name "guile-lzlib")
-    (version "0.4.0")
+    (version "0.4.1")
     (home-page "https://codeberg.org/guile-compression/guile-lzlib")
     (source
      (origin
@@ -997,11 +997,11 @@ Guile's foreign function interface.")
        ;; "builtin:git-download".
        (method url-fetch)
        (uri (string-append home-page "/archive/" version ".tar.gz"))
-       ;; content nar-sha256: 1gxiy1da7xc75jljc1d9drnibzysamw70g6g3cx8525nm79d6v7a
+       ;; content nar-sha256: 1iz6kg9sd5c2ab47rj2jqgalppjwjpkl5jn4sy4s6681vj83fzma
        (file-name (string-append "guile-lzlib-" version ".tar.gz"))
        (sha256
         (base32
-         "0ssyhrl6x5cs7wvr3ysmy9gm0viz4rlz06vli0rbs5vwwkh1r9hl"))))
+         "1fkfhvhvsqiqq0glr9gw15kq3mpr1lhd1nqqp9zzls564yjvq3kn"))))
     (build-system gnu-build-system)
     (arguments
      (list
