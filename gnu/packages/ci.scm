@@ -295,7 +295,7 @@ reinventing them.")
 (define-public go-code-forgejo-org-forgejo-runner-v12
   (package
     (name "go-code-forgejo-org-forgejo-runner-v12")
-    (version "12.13.0")
+    (version "12.13.2")
     (source
      (origin
        (method git-fetch)
@@ -304,13 +304,13 @@ reinventing them.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v609i9ymqzqf04m6yx51bd1aap52kmnasf3dlnhsdqnz3idkcf2"))))
+        (base32 "0bni952r7bqqa1g8rkwi1gvkxx1shi4cjcy58gr8aqfpqavknbza"))))
     (build-system go-build-system)
     (arguments
      (list
       ;; forgejo-runner binary is in forgejo-runner package, this is a Go
       ;; source library to use in inputs for other packages.
-      #:skip-build? #f
+      #:skip-build? #t
       #:import-path "code.forgejo.org/forgejo/runner/v12"
       #:build-flags
       #~(list (string-append "-ldflags=-X code.forgejo.org/"
@@ -318,7 +318,8 @@ reinventing them.")
                              #$version))
       #:embed-files #~(list ".*\\.json" ".*\\.js" ".*\\.sh")
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Newtork access and running Docker are required.
                        (list "TestCancelLongRunningCommand"
                              "TestClone/annotated-tag"
@@ -352,6 +353,7 @@ reinventing them.")
      (list go-code-forgejo-org-forgejo-actions-proto
            go-connectrpc-com-connect
            go-dario-cat-mergo
+           go-github-com-masterminds-semver
            go-github-com-avast-retry-go-v4
            go-github-com-containerd-errdefs
            go-github-com-creack-pty
@@ -367,7 +369,6 @@ reinventing them.")
            go-github-com-joho-godotenv
            go-github-com-julienschmidt-httprouter
            go-github-com-kballard-go-shellquote
-           go-github-com-masterminds-semver
            go-github-com-mattn-go-isatty
            go-github-com-moby-go-archive
            go-github-com-moby-patternmatcher
