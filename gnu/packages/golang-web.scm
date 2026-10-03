@@ -3279,7 +3279,7 @@ high-level S3 client library.")
 (define-public go-github-com-aws-aws-sdk-go-v2-internal-configsources
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-internal-configsources")
-    (version "1.4.21")
+    (version "1.4.27")
     (source
      (origin
        (method git-fetch)
@@ -3290,7 +3290,7 @@ high-level S3 client library.")
                                     #:subdir "internal/configsources"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068yzhxxxdymr1avb1l1pm9m0p7mcd0zlw5an66mcqldgl7hfivg"))
+        (base32 "1ggb2wgxpijv4xjcxwjvfmpdvl90pmz6jnk0nlqkk6mqpykxnjb5"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -3303,14 +3303,12 @@ high-level S3 client library.")
                        (items (scandir "." pred)))
                   (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "internal" "configsources")
-            (delete-all-but "." "internal")))))
+            (delete-all-but "." "internal")
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "internal/configsources/configtesting")))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests depend on go-github-com-aws-aws-sdk-go-v2-config,
-      ;; introducing a cyclical dependency through
-      ;; go-github-com-aws-aws-sdk-go-v2-credentials
-      #:tests? #f
       #:import-path "github.com/aws/aws-sdk-go-v2/internal/configsources"
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
