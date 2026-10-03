@@ -198,6 +198,10 @@ generate and control the collection of trace data during program execution.")
        (uri (string-append "https://perftools.pages.jsc.fz-juelich.de/cicd/otf2/tags/otf2-"
                            version "/otf2-" version ".tar.gz"))
        (sha256 (base32 "0vhai3xsb1kbqy2fqcvzv9pk886p1iq5pi9mzsadfkmca4x02kjs"))))
+    (properties
+     ;; Tell the 'generic-html' updater to monitor this URL for updates.
+     `((release-monitoring-url
+        . "https://perftools.pages.jsc.fz-juelich.de/cicd/otf2/")))
     (native-inputs (list python))
     (outputs '("doc"                              ; 21MB
                "lib"
