@@ -436,8 +436,9 @@ sampling profiler for games and other applications.")
       (origin
         (method url-fetch)
         (uri (string-append
-               "https://apps.fz-juelich.de/scalasca/releases/scalasca/2.6/"
-               "dist/scalasca-" version ".tar.gz"))
+               "https://apps.fz-juelich.de/scalasca/releases/scalasca/"
+               (version-major+minor version) "/dist/scalasca-" version
+               ".tar.gz"))
         (sha256
           (base32
             "18022bzdlzdgngcc5zlmsakvsk9dfg14kvg4ancqfhxy13cjzrqp"))
