@@ -191,13 +191,13 @@ generate and control the collection of trace data during program execution.")
 (define-public otf2
   (package
     (name "otf2")
-    (version "3.1.1")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://perftools.pages.jsc.fz-juelich.de/cicd/otf2/tags/otf2-"
                            version "/otf2-" version ".tar.gz"))
-       (sha256 (base32 "0vhai3xsb1kbqy2fqcvzv9pk886p1iq5pi9mzsadfkmca4x02kjs"))))
+       (sha256 (base32 "13aasqqf9ddlf4j4hxwr412zkfnw5jlfqigxr37c7f0can5aicw2"))))
     (properties
      ;; Tell the 'generic-html' updater to monitor this URL for updates.
      `((release-monitoring-url
