@@ -88,7 +88,9 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -106,6 +108,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages serialization)
@@ -114,6 +117,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
 
 (define-public duplicity
@@ -1349,6 +1353,84 @@ and workstations.  Protect your files with client-side encryption.  Backup
 your databases too.  Monitor it all with integrated third-party services.
 borgmatic is powered by borg.")
     (license license:gpl3+)))
+
+(define-public bup
+  (package
+    (name "bup")
+    (version "0.34")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bup/bup/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "04a0582i5rkz4mhwpp5345kap98g1mg2vn4vwldifh2ja89aqghp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version-placeholder
+            (lambda _
+              (substitute* "lib/bup/source_info.py"
+                (("\\$Format:%H\\$") #$(string-append "v" version))
+                (("\\$Format:%ci\\$") "2026-09-01 20:36:00 -0300")
+                (("\\$Format:%d\\$") ""))))
+          (add-after 'unpack 'fix-test-treesplit
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/ext/test-treesplit"
+                (("/bin/sh" all)
+                 (search-input-file inputs all)))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "BUP_PYTHON_CONFIG"
+                      (search-input-file inputs "/bin/python3-config"))
+              (invoke "./configure" "--with-pylint=no")))
+          (add-after 'build 'skip-broken-tests
+            ;; meta and on: needs root and complete /etc/group.
+            ;; TODO: install, set test MANPATH correctly,
+            ;; Deselected tests are deprecated, bup works with xattr@1.2.0.
+            ;; the tests use string to set attr instead byte.
+            (lambda _
+              (setenv "PYTEST_ADDOPTS"
+                      (string-join
+                       (list "--ignore=test/ext/test-meta"
+                             "--ignore=test/ext/test-on"
+                             "--ignore=test/ext/test-install"
+                             (string-append
+                              "--deselect=test/int/test_metadata.py::"
+                              "test_user_xattr")
+                             (string-append
+                              "--deselect=test/int/test_metadata.py::"
+                              "test_handling_of_incorrect_existing_linux_xattrs"))
+                       " ")))))))
+    (native-inputs
+     (list bash-minimal
+           man-db
+           pandoc
+           pkg-config
+           python-pytest
+           rsync
+           tzdata))                     ;for tests
+    (inputs
+     (list acl
+           par2cmdline
+           python
+           readline))
+    (propagated-inputs
+     (list git-minimal
+           perl
+           python-xattr))
+    (home-page "https://bup.github.io/")
+    (synopsis "Backup program using rolling checksums and git file formats")
+    (description "Backup system based on the git packfile format, providing
+fast incremental saves and global deduplication (among and within files,
+including virtual machine images).")
+    (license license:lgpl2.0)))
 
 (define-public vorta
   (package
