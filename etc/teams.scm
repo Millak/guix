@@ -1461,7 +1461,7 @@ the \"texlive\" importer."
 (define-member (person "Arthur Rodrigues"
                        "arthurhdrodrigues@proton.me"
                        "arthurhdrodrigues")
-  go)
+  go zig)
 
 (define-member (person "Mark H Weaver"
                        "mhw@netris.org"
