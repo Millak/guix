@@ -5129,7 +5129,7 @@ parsing and frequency finding.")
 (define-public redumper
   (package
     (name "redumper")
-    (version "746")
+    (version "767")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5138,7 +5138,7 @@ parsing and frequency finding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mg3wvjpjy6nby8i4hq5h9gjccc0r0v37lybgx74xw9plj15y4bq"))))
+                "1yrydg024kjiag5xa4bcp38vhl5q9ffhbigl6pdjczf3rw742rz6"))))
     (build-system cmake-build-system)
     (arguments
      (list
