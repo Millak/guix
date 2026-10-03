@@ -434,6 +434,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 # Remove this script when Linux and the Hurd have xattr patches.
 PATH=@PATH@
 
+umask 022
+
 # XXX Work around a race condition (probably in the root translator).
 for i in $(seq 100000); do :; done
 
