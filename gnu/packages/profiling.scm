@@ -448,6 +448,10 @@ sampling profiler for games and other applications.")
               (use-modules (guix build utils))
               (delete-file-recursively "vendor/cubew/")
               (delete-file-recursively "vendor/otf2/")))))
+    (properties
+     ;; Tell the 'generic-html' updater to monitor this URL for updates.
+     `((release-monitoring-url
+        . "https://perftools.pages.jsc.fz-juelich.de/cicd/scalasca")))
     (build-system gnu-build-system)
     (arguments
       (list
