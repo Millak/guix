@@ -1164,12 +1164,16 @@ Duperemove can also take input from the @command{fdupes} program.")
                    #$(file-append (this-package-input "file")
                                   "/bin/file"))))))
           (add-after 'install 'wrap-program
-            ;; Tell 'ranger' where 'w3mimgdisplay' is.
-            (lambda _
+            (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((ranger (string-append #$output "/bin/ranger"))
+                     (scope.sh (string-append (site-packages inputs outputs)
+                                              "/ranger/data/scope.sh"))
                      (w3m #$(this-package-input "w3m"))
                      (w3mimgdisplay (string-append w3m
-                                     "/libexec/w3m/w3mimgdisplay")))
+                                                   "/libexec/w3m/w3mimgdisplay")))
+                ;; Restore execute permission for 'scope.sh'.
+                (chmod scope.sh #o555)
+                ;; Tell 'ranger' where 'w3mimgdisplay' is.
                 (wrap-program ranger
                   `("W3MIMGDISPLAY_PATH" ":" prefix
                     (,w3mimgdisplay)))))))))
