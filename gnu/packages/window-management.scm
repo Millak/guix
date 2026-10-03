@@ -3218,7 +3218,7 @@ corners, shadows, inactive window dimming, etc.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/swaywm/swayidle")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1yv3y6437xzp8dlr9g78bpqn0bx7sxlwkrcjgbxd0vqpy12z043z"))))
