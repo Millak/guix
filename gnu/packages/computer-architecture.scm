@@ -48,7 +48,7 @@
 (define-public gem5
   (package
     (name "gem5")
-    (version "25.1")
+    (version "25.1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -57,7 +57,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p40cb3g29zwy3fskah6rxyn8a8xjh9cc6riyigg5l4i854hj2nj"))
+        (base32 "0pbckqv08f6yiirr9f6gxivgrk422z31p04fifdhvzyc5magh8ls"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -135,8 +135,8 @@
            gperftools
            hdf5
            libpng
-           protobuf
-           pybind11-2
+           protobuf-6
+           pybind11
            python
            python-ply
            python-pydot
