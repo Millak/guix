@@ -251,7 +251,7 @@
 (define-public ani-cli
   (package
     (name "ani-cli")
-    (version "4.14")
+    (version "5.1")
     (source
      (origin
        (method git-fetch)
@@ -260,7 +260,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jm26w53nd70dfmkdaia8gqsmly80g1rvjgdyzwirc1xvw68l81v"))))
+        (base32 "1409hdwhgpg6c2x0qccn5rmdm7dh3h3qjcv29d6zy5xp4gg01x4l"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -281,7 +281,7 @@
                           inputs (string-append "bin/" command))))
               (wrap-program (string-append #$output "/bin/ani-cli")
                 `("PATH" ":" prefix
-                  ,(map bin (list "aria2c"
+                  ,(map bin (list "base64"
                                   "curl"
                                   "ffmpeg"
                                   "fzf"
@@ -289,10 +289,8 @@
                                   "mpv"
                                   "sed"
                                   "tput"
-                                  "uname"
                                   "yt-dlp")))))))))
-    (inputs (list aria2
-                  bash-minimal
+    (inputs (list bash-minimal
                   coreutils
                   curl
                   ffmpeg
@@ -300,7 +298,6 @@
                   grep
                   mpv
                   ncurses
-                  openssl
                   sed
                   yt-dlp))
     (native-search-paths
@@ -314,7 +311,7 @@
     (synopsis "Browse and watch anime from the command line")
     (description
      "ani-cli is a @acronym{CLI, command-line interface} to browse and watch
-anime by streaming videos from @uref{https://allanime.to,All Anime}.
+anime by streaming videos from @uref{https://hianime.at,HiAnime}.
 
 There are different features such as episode browsing, history tracking,
 streaming at multiple resolutions, and much more, depending on what programs the
