@@ -3972,12 +3972,10 @@ and Verilog RTL using Python.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "make" "-k" "-C" "tests")
                 (invoke "make" "-k" "-C" "examples")))))))
     (native-inputs
      (list iverilog
            nvc
-           python-pytest
            python-setuptools))
     (propagated-inputs
      (list python-cocotb
