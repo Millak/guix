@@ -72,7 +72,7 @@
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "3.31.1")
+    (version "3.32.1")
     (source
      (origin
        (method git-fetch)
@@ -81,7 +81,7 @@
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x6sr7n13dqz56ymbz0k4xjw2j4s01mwsn1jhhmw9mk9y4jiklsr"))))
+        (base32 "14ayd9q18034yxn22phxi6p9i42mj5i18fbvcbs8c8k3l7wb3nb9"))))
     (build-system cmake-build-system)
     (arguments
      (list
