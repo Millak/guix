@@ -6080,7 +6080,7 @@ Terminfo databases.")
 (define-public go-github-com-charmbracelet-glamour
   (package
     (name "go-github-com-charmbracelet-glamour")
-    (version "0.10.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch/lfs)
@@ -6089,7 +6089,7 @@ Terminfo databases.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14g1jinn3czq7dhdl5id0g96n05bg7v6rqv944091r70nl08gagw"))))
+        (base32 "0rmhvi9r9jw55n0jg84kfis8109axcn3zyxwigc82ybc73vjcd88"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6097,22 +6097,12 @@ Terminfo databases.")
       #:import-path "github.com/charmbracelet/glamour"
       #:test-flags
       #~(list "-skip" (string-join
-                       ;; Some tests fail with comparing terminal escape
-                       ;; sequence.
-                       (list "TestRenderHelpers"
-                             "TestRenderer/code_block"
+                       (list "TestRenderer/emoji"
                              "TestRenderer/table_align"
                              "TestRenderer/table_truncate"
-                             "TestRendererIssues/107"
-                             "TestRendererIssues/257"
                              "TestRendererIssues/316"
                              "TestRendererIssues/46_2"
-                             "TestRendererIssues/48"
-                             "TestRendererIssues/79"
-                             "TestTermRenderer"
-                             "TestTermRendererWriter"
-                             "TestWithChromaFormatterCustom"
-                             "TestWithChromaFormatterDefault")
+                             "TestRendererIssues/48")
                        "|"))))
     (propagated-inputs
      (list go-github-com-alecthomas-chroma-v2
