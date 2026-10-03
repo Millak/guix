@@ -16529,6 +16529,61 @@ go-nft wraps invocation of the @command{nft} utility with functions to append
 and delete rules; create, clear and delete tables and chains.")
     (license license:asl2.0)))
 
+(define-public go-github-com-newrelic-go-agent-v3
+  (package
+    (name "go-github-com-newrelic-go-agent-v3")
+    (version "3.45.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/newrelic/go-agent")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xhhk47bp2vxvn3zgi51yzk1ysjy5k47bijdyr3vmq2miav3iwvi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "v3/integrations")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/newrelic/go-agent/v3"
+      #:unpack-path "github.com/newrelic/go-agent"
+      #:test-flags
+      ;; Network setup is required.
+      #~(list "-skip" "TestConnect|TestDistributedTracingTestApp")
+      #:test-subdirs
+      ;; Run core tests as seen in Makefile.
+      #~(list "newrelic/integrationsupport"
+              "newrelic/sqlparse"
+              "internal"
+              "internal/awssupport"
+              "internal/cat"
+              "internal/com_newrelic_trace_v1"
+              "internal/crossagent"
+              "internal/jsonx"
+              "internal/logcontext"
+              "internal/logger"
+              "internal/stacktracetest"
+              "internal/sysinfo"
+              "internal/utilization")))
+    (native-inputs
+     (list go-github-com-nsf-jsondiff))
+    (propagated-inputs
+     (list go-github-com-google-pprof
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/newrelic/go-agent")
+    (synopsis "New Relic Go Agent")
+    (description
+     "This package provides a Go integration to @url{https://newrelic.com/,
+New Relic} API, an observability application.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nrdcg-goinwx
   (package
     (name "go-github-com-nrdcg-goinwx")
