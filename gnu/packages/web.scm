@@ -839,7 +839,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
       (build-system gnu-build-system)
       (inputs `(("libxcrypt" ,libxcrypt)
                 ("openssl" ,openssl)
-                ("pcre" ,pcre)
+                ("pcre2" ,pcre2)
                 ("nginx-sources" ,(package-source nginx))
                 ("zlib" ,zlib)))
       (arguments
