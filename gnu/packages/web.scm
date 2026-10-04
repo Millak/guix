@@ -683,7 +683,7 @@ the same, being completely separated from the Internet.")
                (base32
                 "0yd2ml6jgwxvls6p7qzaglimbc5z3nklasvbsd5n4dj8adyn0lg9"))))
     (build-system gnu-build-system)
-    (inputs (list libxcrypt libxml2 libxslt openssl pcre zlib))
+    (inputs (list libxcrypt libxml2 libxslt openssl pcre2 zlib))
     (arguments
      (list
       #:tests? #f                       ; no test target
