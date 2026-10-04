@@ -608,7 +608,8 @@ used in the image."
                 (gpt-image? image)))
       (raise
        (formatted-message
-        (G_ "EFI bootloader required with GPT partitioning"))))
+        (G_ "the used bootloader '~a' is an EFI bootloader; it requires GPT partitioning")
+        (bootloader-name bootloader))))
 
     (let* ((format (image-format image))
            (image-type (format->image-type format))
