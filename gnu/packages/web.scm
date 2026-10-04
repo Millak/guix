@@ -6165,7 +6165,7 @@ embedded_plugins =
            libxml2
            libyaml
            openssl
-           pcre
+           pcre2
            zlib
            ;; For plugins.
            python))
