@@ -7132,6 +7132,53 @@ functions and around einops with an API and features adapted to xarray.")
 objects.")
     (license license:expat)))
 
+(define-public python-xyzpy
+  (package
+    (name "python-xyzpy")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xyzpy" version))
+       (sha256
+        (base32 "128v4124yvhdwcw86pbbsgia0301x9nvjnyccvdqqsjlmw4am82b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 508 passed, 12 skipped, 1 deselected, 1 xpassed, 845 warnings
+      #:test-flags
+      #~(list (string-append
+               ;; FileNotFoundError: [Errno 2] No such file or directory:
+               ;; 'taskset'
+               "--deselect=tests/test_gen/test_cropping.py"
+               "::TestGrowSubprocessResources"
+               "::test_grow_subprocess_with_affinities_and_gpus"))))
+    (propagated-inputs
+     (list python-cloudpickle
+           python-h5netcdf
+           python-h5py
+           python-joblib
+           python-numpy
+           python-pandas
+           python-tqdm
+           python-xarray
+           ;; [optional]
+           python-bokeh
+           python-matplotlib))
+    (native-inputs
+     (list python-dask
+           python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (home-page "https://xyzpy.readthedocs.io/en/latest/")
+    (synopsis "Easily generate large parameter space data")
+    (description
+     "@code{xyzpy} is Python library for efficiently generating, manipulating
+and plotting data with a lot of dimensions, of the type that often occurs in
+numerical simulations.  It stands wholly atop the labelled N-dimensional array
+library @code{xarray}.")
+    (license license:expat)))
+
 (define-public pyzo
   (package
     (name "pyzo")
