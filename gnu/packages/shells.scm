@@ -608,7 +608,7 @@ history mechanism, job control and a C-like syntax.")
                    (add-after 'build 'install-info
                      (lambda _ (invoke "make" "install.info"))))))
     (native-inputs (list autoconf texinfo))
-    (inputs (list ncurses pcre perl))
+    (inputs (list ncurses pcre2 perl))
     (synopsis "Powerful shell for interactive use and scripting")
     (description "The Z shell (zsh) is a Unix shell that can be used
 as an interactive login shell and as a powerful command interpreter
