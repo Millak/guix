@@ -443,7 +443,7 @@ to them.")
               (base32
                "0nm2zvy6w4g4jqsss8y6g655b3nlp969x8hbhy785fxc88mzzmwl"))))
     (build-system gnu-build-system)
-    (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
+    (native-inputs (list pcre2))                        ; for 'pcre2-config'
     (inputs (list apr apr-util libxcrypt openssl perl)) ; needed to run bin/apxs
     (arguments
      (list
