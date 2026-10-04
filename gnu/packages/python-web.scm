@@ -2945,6 +2945,72 @@ extracting, creating, and converting between formats.")
 @code{.conda} and @code{.tar.bz2} conda packages.")
     (license license:bsd-3)))
 
+(define-public python-cross-web
+  (package
+    (name "python-cross-web")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/usecross/cross-web")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yx0ii08cjnp311dq7336v02g501ap39kbfh2h62933v9m6k6717"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 114 passed, 1 skipped, 2 deselected
+      #:test-flags
+      ;; Tests fail with deprecation on Litestar side.
+      #~(list (string-append
+               "--deselect=tests/testing/"
+               "clients/test_http_clients.py"
+               "::test_request_adapter_json[http_client_config6]")
+              (string-append
+               "--deselect=tests/testing/clients/"
+               "test_http_clients.py"
+               "::test_request_adapter_form_data[http_client_config6]"))))
+    (native-inputs
+     (list python-django
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-django
+           python-sanic-testing))
+    (propagated-inputs
+     (list python-typing-extensions
+           ;; [optional]
+           python-aiohttp
+           python-chalice
+           python-fastapi
+           python-flask
+           python-httpx
+           python-litestar
+           python-multipart        ;PyPI python-mulipart
+           python-quart
+           python-sanic
+           python-starlette
+           python-werkzeug
+           python-yarl))
+    (home-page "https://github.com/usecross/cross-web")
+    (synopsis "Library for working with web frameworks")
+    (description
+     "Cross provides a unified interface for common Python web framework
+operations,allowing you to write framework-agnostic code that can be easily
+adapted to work with FastAPI, Flask, Django, and other popular Python web
+frameworks.")
+    (license license:expat)))
+
+;; A bare minimal package to prevent pulling all bulky Web frameworks at once.
+(define-public python-cross-web-minimal
+  (package/inherit python-cross-web
+    (name "python-cross-web-minimal")
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-hatchling))
+    (propagated-inputs (list python-typing-extensions))))
+
 (define-public python-css-html-js-minify
   (let ((commit "8f72452960e41bc5476e50d96481f633eff72750")
         (revision "0"))
