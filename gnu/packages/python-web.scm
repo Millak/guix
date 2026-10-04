@@ -5124,6 +5124,29 @@ in Python 3.13 by PEP-594.")
      "This package implements MikroTik's @code{RouterOS} API.")
     (license license:gpl2+)))
 
+(define-public python-litestar-htmx
+  (package
+    (name "python-litestar-htmx")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/litestar-org/litestar-htmx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0brz2w2xk67v69rrj0cj0yd76x152vkyflq5cb6x3km2xn7cdgqw"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))     ;cycles with python-litestar
+    (native-inputs (list python-hatchling))
+    (home-page "https://github.com/litestar-org/litestar-htmx")
+    (synopsis "Litestar plugin for HTMX")
+    (description
+     "This package provides @url{https://htmx.org/, HTMX} Integration for
+Litestar.")
+    (license license:expat)))
+
 (define-public python-multipart/defnull
   (package
     (name "python-multipart-defnull")
