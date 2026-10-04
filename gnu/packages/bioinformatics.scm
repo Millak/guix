@@ -2882,13 +2882,13 @@ biological activities from omics data within a unified framework.")
 (define-public python-demuxem
   (package
     (name "python-demuxem")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "demuxEM" version))
+              (uri (pypi-uri "demuxem" version))
               (sha256
                (base32
-                "1bhyxqjk44bmyd26m1smapf68wyf7252kk65i27k50dd3kswgnd6"))))
+                "0l0zyhg0yrj4mn3adnv0aisb4fa62jbrd7y8sz44l2s3k4iyr39q"))))
     (build-system pyproject-build-system)
     ;; There are no tests.
     (arguments (list #:tests? #false))
