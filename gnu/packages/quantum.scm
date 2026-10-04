@@ -218,6 +218,54 @@ information and many-body calculations, focusing primarily on tensor
 networks.")
     (license license:asl2.0)))
 
+(define-public python-symmray
+  (package
+    (name "python-symmray")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jcmgray/symmray")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zrb873jfh43k290i36lapvlhp7i5lx39p40yj2jia2ddjg9f7cg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-env
+            (lambda _
+              (setenv "SYMMRAY_DEBUG" "1")
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list python-cotengra
+           python-einops
+           python-hatch-vcs
+           python-hatchling
+           python-numpy
+           python-pytest
+           python-quimb))
+    (propagated-inputs
+     (list python-autoray))
+    (home-page "https://symmray.readthedocs.io")
+    (synopsis "Minimal block sparse symmetric and fermionic tensor library")
+    (description
+     "Package @code{symmray} is minimal library for block sparse, abelian
+symmetric and fermionic arrays, designed to look as much as possible like
+standard ndarrays, whose blocks can be backed by @code{numpy}, @code{torch} or
+any other @code{autoray} compatible library.
+
+This library was developed in part for the work:
+
+Fermionic tensor network contraction for arbitrary geometries - Yang Gao,
+Huanchen Zhai, Johnnie Gray, Ruojing Peng, Gunhee Park, Wen-Yuan Liu, Eirik
+F. Kjønstad, Garnet Kin-Lic Chan -
+@url{https://doi.org/10.1103/PhysRevResearch.7.023193}.")
+    (license license:asl2.0)))
+
 (define-public sbcl-rpcq
   (package
     (name "sbcl-rpcq")
