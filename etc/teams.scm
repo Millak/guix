@@ -1456,7 +1456,7 @@ the \"texlive\" importer."
 (define-member (person "Sharlatan Hellseher"
                        "sharlatanus@gmail.com"
                        "Hellseher")
-  bioinformatics go python science)
+  bioinformatics go python science zig)
 
 (define-member (person "Arthur Rodrigues"
                        "arthurhdrodrigues@proton.me"
