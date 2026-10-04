@@ -1315,7 +1315,7 @@ the \"texlive\" importer."
 (define-member (person "Tanguy Le Carrour"
                        "tanguy@bioneland.org"
                        "tanguybl")
-  python home)
+  python home release)
 
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr"
@@ -1335,7 +1335,7 @@ the \"texlive\" importer."
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il"
                        "efraim")
-  maintainers codeberg embedded bootstrap release rust)
+  maintainers codeberg embedded bootstrap rust)
 
 (define-member (person "jgart"
                        "jgart@dismail.de"
@@ -1561,7 +1561,7 @@ the \"texlive\" importer."
 (define-member (person "Rodion Goritskov"
                        "rodion@goritskov.com"
                        "rodion-goritskov")
-  games java kde linux-libre release)
+  games java kde linux-libre)
 
 (define-member (person "Jason Conroy"
                        "jconroy@tscripta.net"
@@ -1736,7 +1736,8 @@ the \"texlive\" importer."
 
 (define-member (person "Dan Littlewood"
                        "dan@danielittlewood.xyz"
-                       "danielittlewood"))
+                       "danielittlewood")
+  release)
 
 
 (define (find-team name)
