@@ -14593,6 +14593,25 @@ Amazon S3 or any other external service.")
 starlette.")
     (license license:expat)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-fastapi-minimal
+  (package/inherit python-fastapi
+    (name "python-fastapi-minimal")
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:tests? #t #t) #f)))
+    (native-inputs
+     (list python-pdm-backend))
+    (propagated-inputs
+     (list python-annotated-doc
+           python-opentelemetry-api
+           python-pydantic
+           python-starlette
+           python-typing-extensions
+           python-typing-inspection))))
+
 (define-public python-fastapi-csrf-protect
   (package
     (name "python-fastapi-csrf-protect")
