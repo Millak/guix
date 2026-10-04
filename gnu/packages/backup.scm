@@ -272,21 +272,21 @@ can even repair them.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (if tests?
-		  ;; XXX: The test_owner_parse, test_read_disk, and
-		  ;; test_write_disk_lookup tests expect user 'root' to
-		  ;; exist, but the chroot's /etc/passwd doesn't have
-		  ;; it.  Turn off those tests.
+                  ;; XXX: The test_owner_parse, test_read_disk, and
+                  ;; test_write_disk_lookup tests expect user 'root' to
+                  ;; exist, but the chroot's /etc/passwd doesn't have
+                  ;; it.  Turn off those tests.
                   (begin
-		    ;; The tests allow one to disable tests matching a globbing pattern.
-		    (invoke "make"
-			    "libarchive_test"
-			    "bsdcpio_test"
-			    "bsdtar_test")
+                    ;; The tests allow one to disable tests matching a globbing pattern.
+                    (invoke "make"
+                            "libarchive_test"
+                            "bsdcpio_test"
+                            "bsdtar_test")
 
-		    ;; XXX: This glob disables too much.
-		    (invoke "./libarchive_test" "^test_*_disk*")
-		    (invoke "./bsdcpio_test" "^test_owner_parse")
-		    (invoke "./bsdtar_test"))
+                    ;; XXX: This glob disables too much.
+                    (invoke "./libarchive_test" "^test_*_disk*")
+                    (invoke "./bsdcpio_test" "^test_owner_parse")
+                    (invoke "./bsdtar_test"))
                   ;; Tests may be disabled if cross-compiling.
                   (format #t "Test suite not run.~%"))))
           (add-after 'install 'add--L-in-libarchive-pc
@@ -364,22 +364,22 @@ random access nor for in-place modification.  This package provides the
                       (setenv "SKIP_OPEN_FD_ERR_TEST" "1")
                       (setenv "IGNORE_TRAVERSALS_TEST4" "1")
 
-		      ;; XXX: The test_owner_parse, test_read_disk, and
-		      ;; test_write_disk_lookup tests expect user 'root' to
-		      ;; exist, but the chroot's /etc/passwd doesn't have it
-		      ;; (see:
-		      ;; <https://github.com/libarchive/libarchive/issues/2794>).
-		      (invoke "make" "-j" (number->string
+                      ;; XXX: The test_owner_parse, test_read_disk, and
+                      ;; test_write_disk_lookup tests expect user 'root' to
+                      ;; exist, but the chroot's /etc/passwd doesn't have it
+                      ;; (see:
+                      ;; <https://github.com/libarchive/libarchive/issues/2794>).
+                      (invoke "make" "-j" (number->string
                                            (if parallel-build?
                                                (parallel-job-count)
                                                1))
-			      "libarchive_test"
-			      "bsdcpio_test"
-			      "bsdtar_test")
-		      ;; XXX: This glob disables too much.
-		      (invoke "./libarchive_test" "^test_*_disk*")
-		      (invoke "./bsdcpio_test" "^test_owner_parse")
-		      (invoke "./bsdtar_test"))
+                              "libarchive_test"
+                              "bsdcpio_test"
+                              "bsdtar_test")
+                      ;; XXX: This glob disables too much.
+                      (invoke "./libarchive_test" "^test_*_disk*")
+                      (invoke "./bsdcpio_test" "^test_owner_parse")
+                      (invoke "./bsdtar_test"))
                     ;; Tests may be disabled if cross-compiling.
                     (format #t "Test suite not run.~%"))))))))))
 
