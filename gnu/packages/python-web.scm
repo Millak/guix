@@ -129,6 +129,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lsof)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openstack)
@@ -2546,6 +2547,54 @@ decode and default on encode.
 the CloudFormation spec and additional checks.  Includes checking valid values
 for resource properties and best practices.")
     (license license:expat)))
+
+(define-public python-chalice
+  (package
+    (name "python-chalice")
+    (version "1.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/chalice")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06vmwjhksb3nck1wpf7dj9hfnvl45fzzrpy9h1pij5aipj17773k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1387 passed, 16 skipped, 1 deselected, 29 warnings
+      #:test-flags
+      #~(list "--ignore=chalice/templates"
+              "--ignore=docs/source/samples/todo-app/code/tests/test_db.py"
+              ;; Network access and extra credentials are required.
+              "--ignore=tests/aws/test_features.py"
+              "--ignore=tests/aws/test_websockets.py"
+              "--ignore=tests/integration/test_package.py"
+              (string-append "--deselect=tests/functional/test_awsclient.py"
+                             "::TestUpdateDomainName"
+                             "::test_update_domain_name_failed"))))
+    (native-inputs
+     (list python-boto3
+           python-pytest
+           python-requests
+           python-setuptools
+           python-websocket-client))
+    (propagated-inputs
+     (list python-botocore
+           python-click
+           python-inquirer         ;XXX: move to (gnu packages python-xyz)
+           python-jmespath
+           python-pip              ;hard dependency
+           python-pyyaml
+           python-six))            ;hard dependency
+    (home-page "https://github.com/aws/chalice")
+    (synopsis "Python Serverless Microframework")
+    (description
+     "Chalice is a Python framework for building serverless applications with
+AWS Lambda service, enabling quick prototyping and deployment.")
+    (license license:asl2.0)))
 
 (define-public python-cheroot
   (package
