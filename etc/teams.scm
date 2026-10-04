@@ -1734,6 +1734,10 @@ the \"texlive\" importer."
                        "ghisvail")
   bioinformatics python science)
 
+(define-member (person "Dan Littlewood"
+                       "dan@danielittlewood.xyz"
+                       "danielittlewood"))
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
