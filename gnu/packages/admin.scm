@@ -739,8 +739,9 @@ manager.")
                 "1w3fvkdmqvbzqfx3xindm8qgam54wja46isgwasaiqmmhnla7p52"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--localstatedir=/var")
-       #:make-flags '("GUILE_AUTO_COMPILE=0")))
+     (list #:configure-flags #~("--localstatedir=/var")
+           #:make-flags #~("GUILE_AUTO_COMPILE=0")
+           #:parallel-build? #f))       ;avoid race condition
     (native-inputs
      (list autoconf automake guile-3.0 pkg-config texinfo))
     (propagated-inputs
