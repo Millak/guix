@@ -86,6 +86,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
@@ -2175,6 +2176,47 @@ Python file for configuration.")
     (description
      "This package provides the @code{pep8-naming} Python module, a plugin for
 flake8 to check PEP-8 naming conventions.")
+    (license license:expat)))
+
+(define-public python-polyfactory
+  (package
+    (name "python-polyfactory")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "polyfactory" version))
+       (sha256
+        (base32 "16kf4krdnmn218mh1ymdhvvncr3rpf381xnizxig7va3zyv5hwi3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Missing optional dependencies.
+      #~(list "--ignore=docs/examples/"
+              "--ignore=tests/test_beanie_factory.py")))
+    (native-inputs
+     (list python-aiosqlite
+           python-annotated-types
+           python-pytest
+           python-pytest-asyncio
+           python-hatchling))
+    (propagated-inputs
+     (list python-faker
+           python-typing-extensions
+           ;; [optional]
+           ;; python-beanie                         ;not packaged yet in Guix
+           python-email-validator
+           python-msgspec
+           python-pydantic
+           python-pymongo
+           python-sqlalchemy-2))
+    (home-page "https://polyfactory.litestar.dev/latest/")
+    (synopsis "Mock data generation factories")
+    (description
+     "Polyfactory is a simple and powerful mock data generation library,
+based around type hints and supporting @code{dataclasses}, @code{TypedDicts},
+Pydantic models, msgspec Struct's and more.")
     (license license:expat)))
 
 (define-public python-psleak
