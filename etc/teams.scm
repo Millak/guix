@@ -1085,8 +1085,8 @@ importer."
         "The current release team.  Members are expected to change with each
 release."
         #:scope (list "NEWS"
-                      "etc/manifests/release-minimal.scm"
-                      "etc/manifests/release-desktop.scm")))
+                      (make-regexp* "^etc/manifests/release-.+\\.scm$")
+                      (make-regexp* "^etc/teams/release/"))))
 
 (define-team reproduciblebuilds
   (team 'reproduciblebuilds

@@ -387,8 +387,8 @@ gnu/packages/chez\.scm                             @guix/racket
 gnu/packages/racket\.scm                           @guix/racket
 
 NEWS                                               @guix/release
-etc/manifests/release-minimal\.scm                 @guix/release
-etc/manifests/release-desktop\.scm                 @guix/release
+etc/manifests/release-.+\.scm$                     @guix/release
+etc/teams/release/                                 @guix/release
 
 gnu/packages/diffoscope\.scm                       @guix/reproduciblebuilds
 
