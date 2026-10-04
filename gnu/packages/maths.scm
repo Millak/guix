@@ -746,6 +746,53 @@ enough to be used effectively as a scientific calculator.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/units/")))
 
+(define-public ddsmt
+  (package
+    (name "ddsmt")
+    (version "2.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ddsmt/ddSMT")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dj8dwzq6ix7yrifq8mahnwvd0b78hpfjy2vdm534avyb5jyv083"))
+       (patches (search-patches "ddsmt-console-script-loading.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't execute git(1) to determine the version.
+          (add-after 'unpack 'set-version-without-git
+            (lambda _
+              (call-with-output-file "ddsmt/version.py"
+                (lambda (port)
+                  (format port "VERSION = ~s~%" #$version)))))
+          ;; See <https://github.com/ddsmt/ddSMT/pull/40>.
+          (add-after 'unpack 'fix-import-path
+            (lambda _
+              (substitute* "setup.cfg"
+                (("ddsmt:__main__.main")
+                 "ddsmt.__main__:main"))))
+          (add-after 'unpack 'reference-gprof2dot-by-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ddsmt/debug_utils.py"
+                (("'gprof2dot'")
+                 (format #f "'~a'" (search-input-file inputs "bin/gprof2dot")))))))))
+    (inputs (list gprof2dot))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/ddsmt/ddSMT")
+    (synopsis "Delta debugger for SMT-LIBv2 files")
+    (description
+     "This package provides a delta debugger for input in the
+SMT-LIB language and its dialects and extensions.  It serves as an input
+minimizer for SMT-LIB(-like) input that triggers interesting behavior for
+a given command.")
+    (license license:expat)))
+
 (define-public double-conversion
   (package
     (name "double-conversion")

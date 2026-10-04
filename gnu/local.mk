@@ -1199,6 +1199,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
   %D%/packages/patches/dbus-helper-search-path.patch		\
   %D%/packages/patches/ddd-build.patch				\
+  %D%/packages/patches/ddsmt-console-script-loading.patch	\
   %D%/packages/patches/debops-setup-py-avoid-git.patch	\
   %D%/packages/patches/decibels-set-root-dir.patch		\
   %D%/packages/patches/dee-vapi.patch			\
