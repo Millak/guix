@@ -890,7 +890,7 @@ like appearance, display, keyboard and mouse settings.")
            libgudev
            libnotify
            libxfce4ui
-           pcre
+           pcre2
            xfce4-panel
            startup-notification))
     (native-search-paths
