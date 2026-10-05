@@ -28991,6 +28991,38 @@ sets of n-grams.  The precomputation scales well and is much faster and more
 accurate than Levenshtein for long strings.")
     (license license:expat)))
 
+(define-public go-github-com-schollz-jsonstore
+  (package
+    (name "go-github-com-schollz-jsonstore")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/schollz/jsonstore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05k38xjyiqsx6wlqs675k27g9vliq2r2xhpwy1dfi450bq1xzng7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/schollz/jsonstore"
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")
+                (delete-file-recursively "tests")))))))    ;integration tests
+    (home-page "https://github.com/schollz/jsonstore")
+    (synopsis "Thread-safe in-memory JSON key-store")
+    (description
+     "JSONStore is a Go-library for a simple thread-safe in-memory JSON
+key-store with persistent backend.")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-logger
   (package
     (name "go-github-com-schollz-logger")
