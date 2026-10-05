@@ -862,7 +862,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.20.8")                           ;stable version = even minor
+    (version "4.20.10")                           ;stable version = even minor
     (source
      (origin
        (method git-fetch)
@@ -871,7 +871,7 @@ like appearance, display, keyboard and mouse settings.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0605a9vxva3bplnv4pj0qf1gk1jxacqg03czhi396qs1fgs6ihw1"))))
+        (base32 "1yal263xp9rqryq04iqagkkf5ca2k8zv35png32m469m2zvvjx4c"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:configure-flags '("--enable-maintainer-mode" ;for thunar-marshal.c
