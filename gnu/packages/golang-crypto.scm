@@ -5356,19 +5356,22 @@ Protocol.")
      (list
       #:skip-build? #t
       #:import-path "go.step.sm/crypto"
-      ;; XXX: Remove when all inputs are packaged.
-      #:test-subdirs
-      #~(list "nssdb" "minica" "x25519" "keyutil" "kms/uri" "pemutil"
-              "sshutil" "tlsutil" "fipsutil" "randutil" "tpm/tss2"
-              "x509util" "kms/apiv1" "fingerprint" "kms/softkms"
-              "tpm/algorithm" "internal/emoji" "kms/sshagentkms"
-              "tpm/manufacturer" "internal/templates" "internal/utils/asn1"
-              "internal/utils/file" "internal/bcrypt_pbkdf"
-              "internal/utils/utfbom"
-              "internal/utils/convert")))
+      #:embed-files
+      ;; For go-github-com-go-piv-piv-go-v2.
+      #~(list "yubico-ca-1.pem" "yubico-intermediate.pem")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Test tries to access <https://www.marvell.com>.
+                       (list "TestValidateCaviumRoot"
+                             ;; XXX: Generated JOSE files are not equal.
+                             "TestGenerateDefaultKeyPair/ok")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify
-           go-go-uber-org-mock))
+           go-go-uber-org-mock
+           ;; For go-github-com-go-piv-piv-go-v2.
+           pkg-config
+           pcsc-lite))
     (propagated-inputs
      (list go-cloud-google-com-go-kms
            go-filippo-io-edwards25519
@@ -5378,10 +5381,16 @@ Protocol.")
            go-github-com-azure-azure-sdk-for-go-sdk-azidentity
            go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys
            go-github-com-go-jose-go-jose-v3
+           go-github-com-go-piv-piv-go-v2
            go-github-com-google-go-tpm
+           go-github-com-google-go-tpm-tools
            go-github-com-googleapis-gax-go-v2
            go-github-com-masterminds-sprig-v3
+           go-github-com-peterbourgon-diskv-v3
            go-github-com-pkg-errors
+           go-github-com-schollz-jsonstore
+           go-github-com-smallstep-go-attestation
+           go-github-com-thalesgroup-crypto11
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-sys
@@ -5389,15 +5398,7 @@ Protocol.")
            go-google-golang-org-api
            go-google-golang-org-grpc
            go-google-golang-org-protobuf
-           go-modernc-org-sqlite
-
-           ;; TODO: Complete packaging.
-           ;; go-github-com-go-piv-piv-go-v2
-           ;; go-github-com-google-go-tpm-tools
-           ;; go-github-com-peterbourgon-diskv-v3
-           ;; go-github-com-schollz-jsonstore
-           ;; go-github-com-smallstep-go-attestation
-           #;go-github-com-thalesgroup-crypto11))
+           go-modernc-org-sqlite))
     (home-page "https://github.com/smallstep/crypto")
     (synopsis "Collection of miscellaneous Go crypto packages")
     (description
@@ -5426,9 +5427,7 @@ with TPMs
 @item @code{fipsutil} - reports whether the cryptography libraries are
 operating in FIPS 140-3 mode
 @end itemize")
-    (license license:asl2.0)
-    ;; XXX: Don't expose since it's a partial package.
-    (properties '((hidden? . #t)))))
+    (license license:asl2.0)))
 
 (define-public go-lukechampine-com-blake3
   (package
