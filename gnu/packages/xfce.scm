@@ -411,39 +411,52 @@ management D-Bus specification.")
                   (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public libxfce4windowing
-  (package
-    (name "libxfce4windowing")
-    (version "4.20.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.xfce.org/xfce/libxfce4windowing")
-             (commit (string-append name "-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1mh6dpl4g9dnyydw8qachdb6m907zcjkqrsfla1418qj2nzq4cwm"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags #~(list "--enable-gtk-doc")))
-    (native-inputs (list xfce4-dev-tools))
-    (propagated-inputs (list gtk+)) ;required by libxfce4windowing-0.pc
-    (inputs (list libdisplay-info
-                  libwnck
-                  libxrandr
-                  wayland
-                  wayland-protocols
-                  wlr-protocols))
-    (home-page "https://docs.xfce.org/xfce/libxfce4windowing/")
-    (synopsis "Windowing concept abstraction library for X11 and Wayland")
-    (description
-     "Libxfce4windowing is an abstraction library that attempts to present
+  (let ((xfce-wayland-protocols
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://gitlab.xfce.org/xfce/xfce-wayland-protocols")
+                  (commit "55dbf3e3d2a91b525c528c0dd4c1a7805a99364b")))
+           (file-name "xfce-wayland-protocols-checkout")
+           (sha256
+            (base32 "17ch40c2hnb3537kdq1zsyqlf3v85wnyn7fsxzzdf97zij0vl66w")))))
+    (package
+      (name "libxfce4windowing")
+      (version "4.20.7")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.xfce.org/xfce/libxfce4windowing")
+                (commit (string-append name "-" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0597hb05479d6annx3ypy5px1rf6p4b43fryfr4dy4n4z51rx7r3"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(copy-recursively #$xfce-wayland-protocols
+                              "protocols/xfce-wayland-protocols"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "--enable-gtk-doc")))
+      (native-inputs (list xfce4-dev-tools))
+      (propagated-inputs (list gtk+))   ;required by libxfce4windowing-0.pc
+      (inputs (list libdisplay-info
+                    libwnck
+                    libxrandr
+                    wayland
+                    wayland-protocols
+                    wlr-protocols))
+      (home-page "https://docs.xfce.org/xfce/libxfce4windowing/")
+      (synopsis "Windowing concept abstraction library for X11 and Wayland")
+      (description
+       "Libxfce4windowing is an abstraction library that attempts to present
 windowing concepts (screens, toplevel windows, workspaces, etc.) in a
 windowing-system-independent manner.")
-    (license lgpl2.1+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))
-                  (stable-version-regexp . ,%xfce-stable-version)))))
+      (license lgpl2.1+)
+      (properties `((release-tag-prefix . ,(string-append name "-"))
+                    (stable-version-regexp . ,%xfce-stable-version))))))
 
 (define-public xfce4-panel
   (package
