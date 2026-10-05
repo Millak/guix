@@ -52198,7 +52198,9 @@ target service type and a procedure that, given the parameters of the
 service, returns a list of objects to extend the service of that type.
 
 Every service type has at least one service extension.  The only
-exception is the @dfn{boot service type}, which is the ultimate service.
+exceptions are the @dfn{system service type} and the @dfn{home service
+type}, which are the ultimate services for Guix System and Guix Home,
+respectively.
 
 @item
 Optionally, a default value for instances of this type.
