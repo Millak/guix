@@ -2097,6 +2097,48 @@ strings, in Go and it's a fork of
 @url{https://github.com/tenfyzhong/cityhash}.")
     (license license:expat)))
 
+(define-public go-github-com-go-piv-piv-go-v2
+  ;; XXX: v2/piv/certs/gen.sh pulls certificates from
+  ;; <https://developers.yubico.com/PKI> and stores them in the project's
+  ;; source.
+  (package
+    (name "go-github-com-go-piv-piv-go-v2")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-piv/piv-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "073k63x4pxp2j3xlzk8cb2lb12cwxy2n413y0qz95ivf1yxcdvlq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/go-piv/piv-go/v2"
+      #:unpack-path "github.com/go-piv/piv-go"))
+    ;; pkg-config and pcsc-lite would be required in final package which uses
+    ;; go-github-com-go-piv-piv-go-v2.
+    (native-inputs (list pkg-config))
+    (inputs (list pcsc-lite))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/go-piv/piv-go")
+    (synopsis "Keys and certificates for YubiKeys in Go")
+    (description
+     "YubiKeys implement the PIV specification for managing smart card
+certificates.  This applet is a simpler alternative to GPG for managing
+asymmetric keys on a YubiKey.
+
+This package is an alternative to Paul Tagliamonte's
+@url{https://github.com/paultag/go-ykpiv, go-ykpiv}, a wrapper for YubiKey's
+@code{ykpiv.h} C library." )
+    (license (list license:asl2.0
+                   ;; v2/third_party/rsa contains a fork of internal
+                   ;; crypto/rsa logic to allow computation of PSS padding.
+                   license:bsd-3))))
+
 (define-public go-github-com-golang-jwt-jwt
   (package
     (name "go-github-com-golang-jwt-jwt")
