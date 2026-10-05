@@ -200,7 +200,6 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
-  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -519,8 +518,6 @@ them in order to efficiently transfer a minimal amount of data.")
 Raspberry Pi ISP (PiSP), consisting of the Frontend and Backend hardware
 components.")
     (license license:bsd-2)))
-
-(define-deprecated/public-alias libcamera (@ (gnu packages photo) libcamera))
 
 (define-public libdnet
   (package
