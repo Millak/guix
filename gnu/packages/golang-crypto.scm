@@ -1696,6 +1696,79 @@ crypto package.")
 encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
     (license license:expat)))
 
+(define-public go-github-com-eclipse-keypont-crypto11
+  ;; It was previously known as github.com/ThalesGroup/crypto11.  Upstream
+  ;; note: "This module has moved to a new home. Please use
+  ;; github.com/eclipse-keypont/crypto11 instead."
+  (package
+    (name "go-github-com-eclipse-keypont-crypto11")
+    (version "1.6.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eclipse-keypont/crypto11")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0brl1qn4p0j3qsr5dxw9sf7qq7lzdvwrzsqhv3q87hp01iwiy2vb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Segfaulted, which is not the best for crypto library.
+      ;; failed to create module context: failed to open module
+      #:tests? #f
+      #:import-path "github.com/eclipse-keypont/crypto11"))
+    (propagated-inputs
+     (list go-github-com-miekg-pkcs11
+           go-github-com-pkg-errors
+           go-github-com-thales-e-security-pool))
+    (home-page "https://github.com/eclipse-keypont/crypto11")
+    (synopsis "Golang @code{crypto} interfaces that uses PKCS#11 as a backend")
+    (description
+     "This package provides an implementation of the standard Golang
+@code{crypto} interfaces that uses PKCS#11 as a backend.
+
+The supported features are:
+
+@itemize
+@item generation and retrieval of RSA, DSA and ECDSA keys
+@item importing and retrieval of x509 certificates
+@item PKCS#1 v1.5 signing
+@item PKCS#1 PSS signing
+@item PKCS#1 v1.5 decryption
+@item PKCS#1 OAEP decryption
+@item ECDSA signing
+@item DSA signing
+@item random number generation
+@item AES and DES3 encryption and decryption
+@item HMAC support
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-eclipse-keypont-crypto11-v2
+  (package
+    (inherit go-github-com-eclipse-keypont-crypto11)
+    (name "go-github-com-eclipse-keypont-crypto11-v2")
+    (version "2.0.0-rc5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eclipse-keypont/crypto11")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zzms2fxcsvl0b0z1yj8c327lmhq8wjk7wcr3fbl00wzag69fay6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/eclipse-keypont/crypto11/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-eclipse-keypont-pkcs11-go))))
+
 (define-public go-github-com-eclipse-keypont-pkcs11-go
   (package
     (name "go-github-com-eclipse-keypont-pkcs11-go")
@@ -4161,6 +4234,18 @@ of @code{golang.org/x/crypto} maintained by Tailscale.")
 decoding.  On AVX2-capable x86_64 CPUs, xhex enables SIMD acceleration at
 runtime.")
     (license license:expat)))
+
+;; To cover go-go-step-sm-crypto@0.91.0; remove when no longer required.
+(define-public go-github-com-thalesgroup-crypto11
+  ;; Upstream note: "This module has moved to a new home. Please use
+  ;; github.com/eclipse-keypont/crypto11 instead."
+  (hidden-package
+   (package
+     (inherit go-github-com-eclipse-keypont-crypto11)
+     (name "go-github-com-thalesgroup-crypto11")
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:import-path _) "github.com/ThalesGroup/crypto11"))))))
 
 (define-public go-github-com-tink-crypto-tink-go-v2
   (package
