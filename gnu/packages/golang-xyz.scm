@@ -26644,7 +26644,7 @@ of @url{https://github.com/Netflix/go-expect}.")
 (define-public go-github-com-peterbourgon-diskv
   (package
     (name "go-github-com-peterbourgon-diskv")
-    (version "3.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -26653,11 +26653,12 @@ of @url{https://github.com/Netflix/go-expect}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pdy8f7bkm65gx4vknwcvfa619hknflqxkdlvmf427k2mzm91gmh"))))
+        (base32 "1mxpa5aad08x30qcbffzk80g9540wvbca4blc1r2qyzl65b8929b"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/peterbourgon/diskv"))
+      #:import-path "github.com/peterbourgon/diskv"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs (list go-github-com-google-btree))
     (home-page "https://github.com/peterbourgon/diskv")
     (synopsis "Disk-backed key-value store")
