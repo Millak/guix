@@ -2250,6 +2250,38 @@ intended to (eventually) be 1:1 with the TPM 2.0 spec
 @end itemize")
     (license license:asl2.0)))
 
+;; This repo was archived by the owner on Aug 25, 2025. It is now read-only.
+(define-public go-github-com-google-go-tspi
+  (package
+    (name "go-github-com-google-go-tspi")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-tspi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ql299zpkjrh7nffvasspf940b9gdi42acfzkwbkf0bsdciqs07r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Source only package, it requires trousers/tss.h.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/google/go-tspi"))
+    (propagated-inputs
+     (list go-github-com-google-certificate-transparency-go))
+    (home-page "https://github.com/google/go-tspi")
+    (synopsis
+     "Go bindings and support code for libtspi and tpm communication")
+    (description
+     "This is a library providing a set of bindings for communication between
+code written in Go and libtspi, the library responsible for providing a TPM
+control interface.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gopasspw-gopass
   (package
     (name "go-github-com-gopasspw-gopass")
