@@ -6127,7 +6127,7 @@ Implements
 (define-public guile-gspec
   (package
     (name "guile-gspec")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -6137,7 +6137,7 @@ Implements
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00qdr8vc4ygfjxrg26h1vdvqjzars03hjkwcfp62xq84flc4lns0"))))
+         "0wbq8rl21hr39hpqd8i9wixq9bhl82ji4vg66b4zza3cwznw4n2h"))))
     (build-system guile-build-system)
     (arguments (list
                 #:source-directory "src"))
@@ -6147,7 +6147,7 @@ Implements
     (synopsis "Test runner that encourages software design")
     (description
      "GSpec allows tests to come along with a short description and to be
-grouped by contexts.  Tests are not only non-regression mechanisms, but also a
+grouped by contexts. Tests are not only non-regression mechanisms, but also a
 module usage and behavior documentation, a support for design thinking, and a
 support for communication about the model with domain experts.
 
