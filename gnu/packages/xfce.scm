@@ -376,7 +376,7 @@ merging features essential for loading menus modified with menu editors.")
 (define-public tumbler
   (package
     (name "tumbler")
-    (version "4.20.1")
+    (version "4.20.2")
     (source
      (origin
        (method git-fetch)
@@ -385,7 +385,7 @@ merging features essential for loading menus modified with menu editors.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dh7hk6979053wjs0qly3s3y9kvd67yi9dinn2mllsn2vca412d7"))))
+        (base32 "0sfni2aw108pfhp5gbvc1y3vxgbi687jnpwphbssg5qlfjpqkd4c"))))
     (build-system gnu-build-system)
     (native-inputs (list xfce4-dev-tools))
     (propagated-inputs (list glib)) ;required by tumbler-1.pc
