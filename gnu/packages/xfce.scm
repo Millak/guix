@@ -1443,7 +1443,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.20.0")
+    (version "4.20.1")
     (source
      (origin
        (method git-fetch)
@@ -1452,7 +1452,7 @@ system resources, while still being visually appealing and user friendly.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "089qv5704y5dk2jddl3rij4d591q5i2dqlv8gb6vr250pyp1v9d8"))))
+        (base32 "0jb7gx0njnx1lbrl2mf3cp789qzh06v7axpaq18vxbw2vzj29y6h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
