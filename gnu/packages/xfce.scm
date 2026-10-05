@@ -1318,7 +1318,7 @@ on your desktop.")
 (define-public xfce4-dict
   (package
     (name "xfce4-dict")
-    (version "0.8.9")
+    (version "0.8.10")
     (source
      (origin
        (method git-fetch)
@@ -1328,10 +1328,10 @@ on your desktop.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w24pnvhl73dwb8jr88vs20xmqivjzfacr67g9w4c6b0z6f56pkj"))))
-    (build-system gnu-build-system)
+        (base32 "128lv7nw27sl8zf62zp8g22d4wiqaf494fcs5hn6d4xpqnlzmw3p"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list xfce4-dev-tools))
+     (list gettext-minimal `(,glib "bin") pkg-config))
     (inputs
      (list libxfce4ui xfce4-panel))
     (home-page "https://docs.xfce.org/apps/xfce4-dict/")
