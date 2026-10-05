@@ -20904,6 +20904,75 @@ service.")
 Sigstore ecosystem, implementing RFC 3161 timestamp response validation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-slackhq-nebula
+  ;; This a verbatim copy of (@ (gnu packages networking) nebula), packaged
+  ;; as Go source library.
+  (package
+    (name "go-github-com-slackhq-nebula")
+    (version "1.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/slackhq/nebula")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zj8wlchilk8lwjj686sgbr6ahqackzyhndi45j2hd9iv6mlx36x"))
+       ;; Remove windows-related binary blobs and files
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "dist/windows")
+            (delete-file-recursively "wintun")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/slackhq/nebula"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-filippo-io-bigmod
+           go-github-com-anmitsu-go-shlex
+           go-github-com-armon-go-radix
+           go-github-com-cyberdelia-go-metrics-graphite
+           go-github-com-flynn-noise
+           go-github-com-gaissmai-bart
+           go-github-com-gogo-protobuf
+           go-github-com-google-gopacket
+           go-github-com-kardianos-service
+           go-github-com-miekg-dns
+           go-github-com-miekg-pkcs11
+           go-github-com-nbrownus-go-metrics-prometheus
+           go-github-com-prometheus-client-golang
+           go-github-com-rcrowley-go-metrics
+           go-github-com-sirupsen-logrus
+           go-github-com-skip2-go-qrcode
+           go-github-com-stefanberger-go-pkcs11uri
+           go-github-com-vishvananda-netlink
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-zx2c4-com-wireguard
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+           go-gvisor-dev-gvisor-source))
+    (home-page "https://github.com/slackhq/nebula")
+    (synopsis "Scalable, peer-to-peer overlay networking tool")
+    (description
+     "Nebula is a peer-to-peer networking tool based on the
+@url{https://noiseprotocol.org/, Noise Protocol Framework}.  It is not a fully
+decentralized network, but instead uses central discovery nodes and a
+certificate authority to facilitate direct, encrypted peer-to-peer connections
+from behind most firewalls and @acronym{NAT, Network Address Translation}
+layers.")
+    (license license:expat)))
+
 (define-public go-github-com-slok-go-http-metrics
   (package
     (name "go-github-com-slok-go-http-metrics")
