@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
-;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023, 2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,24 +99,61 @@
                 "0017xx1czl626fq326xikkp16x322vid95096vlqmj11vg5k6nrd"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               "static"))               ; 420 KiB .a files
+               "plugin-applefile"
+               "plugin-archive"
+               "plugin-deb"
+               "plugin-dvi"
+               "plugin-exiv2"
+               "plugin-flac"
+               "plugin-gif"
+               "plugin-gstreamer"
+               "plugin-html"
+               "plugin-jpeg"
+               "plugin-midi"
+               "plugin-mime"
+               "plugin-mpeg"            ;more than halves closure size
+               "plugin-msoffice"
+               "plugin-odf"
+               "plugin-ogg"
+               "plugin-ole2"
+               "plugin-qt"
+               "plugin-ps"
+               "plugin-rpm"
+               "plugin-thumbnailgtk"
+               "plugin-tiff"
+               "plugin-wav"
+               "plugin-zip"))
     (arguments
-     (list #:configure-flags
-           #~(list (string-append "--with-ltdl="
-                                  #$(this-package-input "libltdl")))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'move-static-libraries
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Move static libraries to the "static" output.
-                   (let* ((out    #$output)
-                          (lib    (string-append out "/lib"))
-                          (slib   (string-append #$output:static "/lib")))
-                     (mkdir-p slib)
-                     (for-each (lambda (file)
-                                 (install-file file slib)
-                                 (delete-file file))
-                               (find-files lib "\\.a$"))))))))
+     (list
+      #:modules (append '((srfi srfi-26))
+                        %default-gnu-modules)
+      #:configure-flags
+      #~(list (string-append "--with-ltdl="
+                             #$(this-package-input "libltdl"))
+              "--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-libtool-libraries
+            (lambda _
+              ;; The libtool libraries (.la) files retain
+              ;; references and are not necessary.
+              (for-each delete-file
+                        (find-files #$output "\\.la$"))))
+          (add-after 'install 'move-plugins
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((plugin-outputs (filter (cut string-prefix? "plugin-" <>)
+                                             (map car outputs)))
+                     (plugins (map (cut string-drop <> 7)
+                                   plugin-outputs)))
+                (for-each
+                 (lambda (x)
+                   (let* ((fmt "lib/libextractor/libextractor_~a.so")
+                          (src (search-input-file
+                                outputs (format #f fmt x)))
+                          (dst (assoc-ref outputs (format #f "plugin-~a" x))))
+                     (install-file src (string-append dst "/lib/libexetractor"))
+                     (delete-file src)))
+                 plugins)))))))
     (native-inputs
      (list pkg-config))
     (inputs
