@@ -520,9 +520,6 @@ Raspberry Pi ISP (PiSP), consisting of the Frontend and Backend hardware
 components.")
     (license license:bsd-2)))
 
-(define-deprecated/public-alias libcamera-minimal (@ (gnu packages photo)
-                                                     libcamera-minimal))
-
 (define-deprecated/public-alias libcamera (@ (gnu packages photo) libcamera))
 
 (define-public libdnet
