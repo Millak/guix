@@ -3193,7 +3193,7 @@ high-level S3 client library.")
 (define-public go-github-com-aws-aws-sdk-go-v2-internal-configsources
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-internal-configsources")
-    (version "1.4.27")
+    (version "1.5.3")
     (source
      (origin
        (method git-fetch)
@@ -3204,7 +3204,7 @@ high-level S3 client library.")
                                     #:subdir "internal/configsources"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ggb2wgxpijv4xjcxwjvfmpdvl90pmz6jnk0nlqkk6mqpykxnjb5"))
+        (base32 "0ixaqvhblkrrzwzqc6jpqnm2qhnn509cygknrysjz51navqg6s58"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
