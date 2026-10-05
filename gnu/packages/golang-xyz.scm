@@ -26670,6 +26670,22 @@ abstraction on top.  The end result is a conceptually simple, but highly
 performant, disk-backed storage system.")
     (license license:expat)))
 
+(define-public go-github-com-peterbourgon-diskv-v3
+  (package
+    (inherit go-github-com-peterbourgon-diskv)
+    (name "go-github-com-peterbourgon-diskv-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterbourgon/diskv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pdy8f7bkm65gx4vknwcvfa619hknflqxkdlvmf427k2mzm91gmh"))))
+    (arguments (list #:import-path "github.com/peterbourgon/diskv/v3"))))
+
 (define-public go-github-com-peterbourgon-ff-v3
   (package
     (name "go-github-com-peterbourgon-ff-v3")
