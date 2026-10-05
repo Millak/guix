@@ -1696,6 +1696,33 @@ crypto package.")
 encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
     (license license:expat)))
 
+(define-public go-github-com-eclipse-keypont-pkcs11-go
+  (package
+    (name "go-github-com-eclipse-keypont-pkcs11-go")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eclipse-keypont/pkcs11-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ydvxdi8k3v4ncaimk7vm8bgzgjz5cr6a0jpgwx6ngaz9j2d5zrk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/eclipse-keypont/pkcs11-go"))
+    (home-page "https://github.com/eclipse-keypont/pkcs11-go")
+    (synopsis "OASIS PKCS #11 v3.2 specification in GoLang")
+    (description
+     "This package provides a Go binding for the
+@url{https://docs.oasis-open.org/pkcs11/pkcs11-spec/v3.2/pkcs11-spec-v3.2.html,
+OASIS PKCS #11 (Cryptoki) v3.2} cryptographic token interface, including
+post-quantum (ML-KEM / ML-DSA) and other v3.2 additions.")
+    (license license:expat)))
+
 (define-public go-github-com-elithrar-simple-scrypt
   (package
     (name "go-github-com-elithrar-simple-scrypt")
