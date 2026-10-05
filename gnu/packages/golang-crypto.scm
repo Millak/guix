@@ -4174,6 +4174,42 @@ adding the ability to obtain the list of host key algorithms for a known
 host.")
     (license license:asl2.0)))
 
+(define-public go-github-com-smallstep-go-attestation
+  (package
+    (name "go-github-com-smallstep-go-attestation")
+    (version "0.4.4-0.20260814222900-a849f4e2cd68")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/go-attestation")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06haiwwcay7985y83ciyfqiqwm2mgrrjplxyhxl9w5iv10p76bpr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/smallstep/go-attestation"))
+    (native-inputs
+     (list openssl))
+    (propagated-inputs
+     (list go-github-com-google-certificate-transparency-go
+           go-github-com-google-go-cmp
+           go-github-com-google-go-tpm
+           go-github-com-google-go-tpm-tools
+           go-github-com-google-go-tspi
+           go-golang-org-x-sys))
+    (home-page "https://github.com/smallstep/go-attestation")
+    (synopsis "TPMs for the purposes of attestation in Go")
+    (description
+     "Go-Attestation abstracts remote attestation operations across a variety
+of platforms and @acronym{Trusted Platform Module, TPM}s, enabling remote
+validation of machine identity and state.  It's an alternative fork of
+@url{https://github.com/google/go-attestation}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smallstep-pkcs7
   (package
     (name "go-github-com-smallstep-pkcs7")
