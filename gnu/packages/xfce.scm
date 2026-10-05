@@ -809,7 +809,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.20.4")
+    (version "4.20.5")
     (source
      (origin
        (method git-fetch)
@@ -818,7 +818,7 @@ allows you to shut down the computer from Xfce.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03rxgycs7gz8pww4xn151paf2jgvln9m8i9p28s7id8wvkdsw20h"))
+        (base32 "1i2pwr381sp30lklplmgf75z1kf155gf7ilzmhf54kjq9z26hy5h"))
        (patches (search-patches "xfce4-settings-defaults.patch"
                                 "xfce4-settings-hotplug-events.patch"))))
     (build-system gnu-build-system)
