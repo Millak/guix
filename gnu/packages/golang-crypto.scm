@@ -2250,6 +2250,57 @@ intended to (eventually) be 1:1 with the TPM 2.0 spec
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-go-tpm-tools
+  (package
+    (name "go-github-com-google-go-tpm-tools")
+    (version "0.4.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/go-tpm-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rdgs2w8cz0h9aik9qkg89l62xzfjd0fszzpvrpygmcbacc42iz4"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (for-each delete-file-recursively
+                      (list "agent" "cmd" "keymanager" "launcher"
+                            "verifier"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Source only for now.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/google/go-tpm-tools"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-google-go-tpm
+           go-google-golang-org-protobuf
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-google-go-attestation
+           ;; go-github-com-google-go-eventlog
+           ;; go-github-com-google-go-sev-guest
+           ;; go-github-com-google-go-tdx-guest
+           ;; go-github-com-google-logger
+           #;go-github-com-googlecloudplatform-confidential-space-server))
+    (home-page "https://github.com/google/go-tpm-tools")
+    (synopsis "High-level API for using TPMs in Go")
+    (description
+     "The @code{go-tpm-tools} module is a
+@url{https://trustedcomputinggroup.org/resource/trusted-platform-module-2-0-a-brief-introduction/,
+TPM 2.0} support library designed to complement
+@url{https://github.com/google/go-tpm, Go-TPM}.")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 ;; This repo was archived by the owner on Aug 25, 2025. It is now read-only.
 (define-public go-github-com-google-go-tspi
   (package
