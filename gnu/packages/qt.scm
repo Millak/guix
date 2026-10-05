@@ -4514,7 +4514,7 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.16.0")
+    (version "6.17.0")
     (source
      (origin
        (method url-fetch)
@@ -4524,7 +4524,7 @@ Python.")
                                  "/sip-" version ".tar.gz")))
        (sha256
         (base32
-         "1zjggr5mrisfx9g7rsb22dw1yzs6r4q1g96bl8iaz8s74g8bkp12"))
+         "1x3b8mvgxhc51x2ac0bdlw57c2vqjwcc8wan676lfwp83zxkk24c"))
        (modules '((guix build utils)))
        (snippet
         ;; Relax setuptools dependency
