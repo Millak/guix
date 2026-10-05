@@ -3343,7 +3343,7 @@ AWS Identity and Access Management.")
 (define-public go-github-com-aws-aws-sdk-go-v2-service-kms
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-kms")
-    (version "1.50.0")
+    (version "1.60.0")
     (source
      (origin
        (method git-fetch)
@@ -3353,7 +3353,7 @@ AWS Identity and Access Management.")
                                            #:subdir "service/kms"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syzl2cd6m9hdjnn15163afz1wh85gva10l4k8j8w5i1jhk5sf40"))
+        (base32 "0ixaqvhblkrrzwzqc6jpqnm2qhnn509cygknrysjz51navqg6s58"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
