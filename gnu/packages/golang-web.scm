@@ -4047,7 +4047,7 @@ clients supporting token authentication.")
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -4057,7 +4057,7 @@ clients supporting token authentication.")
                                            #:subdir "sdk/security/keyvault/azkeys"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jxpzd6sg6fp2mim3sr7gg9y0lvlngf23mmij388ywz4zfvpcqhq"))
+        (base32 "1d1ryxsvd63f28qfczvxcdcb5y121wk84kn0yg1pc16hf0y2krmh"))
        (modules '((guix build utils)))
        (snippet #~(begin
                     (delete-all-but "sdk/security/keyvault" "azkeys")
