@@ -31194,6 +31194,31 @@ performance.")
 distances, edit scripts and ratios for strings (slices of runes).")
     (license license:expat)))
 
+(define-public go-github-com-thales-e-security-pool
+  (package
+    (name "go-github-com-thales-e-security-pool")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/thales-e-security/pool")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fx32ka3p594nq7iarlrlslayp9w90xi6zhr8wfh0zcv83c9rja4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/thales-e-security/pool"))
+    (home-page "https://github.com/thales-e-security/pool")
+    (synopsis "Subset of Go packages from Vitess project")
+    (description
+     "This package exposes the resource pool implementation and some of the
+atomic types.  It is a copy of a few packages from
+@url{https://github.com/vitessio/vitess}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-theckman-goconstraint
   (package
     (name "go-github-com-theckman-goconstraint")
