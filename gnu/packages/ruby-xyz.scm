@@ -4970,13 +4970,13 @@ is known as @url{http://www.ietf.org/rfc/rfc2821.txt, RFC2821}.")
 (define-public ruby-pleaserun
   (package
     (name "ruby-pleaserun")
-    (version "0.0.32")
+    (version "0.0.34")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "pleaserun" version))
               (sha256
                (base32
-                "1aykf0l8327bqkkf5xd9jcglsib973zpy37cfnlf4j0vp0cdpn2d"))))
+                "1gfpnpfma4xpnbmxljav5mkz7wbcgnr8p57lphp3rqjsi04593fs"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases
@@ -4987,7 +4987,12 @@ is known as @url{http://www.ietf.org/rfc/rfc2821.txt, RFC2821}.")
                      ;; Mustache is pinned at 0.99.8, for portability with
                      ;; older Rubies.
                      (("dependency\\(%q<mustache>.freeze.*")
-                      "dependency(%q<mustache>.freeze)\n"))))
+                      "dependency(%q<mustache>.freeze)\n")
+                     ;; Dotenv is specified as "~> 2", which is lower than the
+                     ;; packaged 3.  This relax avoids errors of the fpm
+                     ;; package.
+                     (("dependency\\(%q<dotenv>.freeze.*")
+                      "dependency(%q<dotenv>.freeze)\n"))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
