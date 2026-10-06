@@ -9301,7 +9301,6 @@ run.")
 (define-public ruby-rubocop
   (package
     (name "ruby-rubocop")
-    ;; XXX: Also update ruby-rubocop/minimal in ruby-build.scm.
     (version "1.68.0")
     (source
      (origin
@@ -9326,6 +9325,12 @@ run.")
             (lambda _
               (substitute* "rubocop.gemspec"
                 (("'unicode\\-display\\_width'.*") "'unicode-display_width')\n"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-gem-path
+            (lambda _
+              (setenv "GEM_PATH" (string-append (getenv "GEM_PATH") ":" #$output "/lib/ruby/vendor_ruby"))))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" (getcwd))))
@@ -9344,7 +9349,6 @@ run.")
            ruby-rubocop-ast
            ruby-rubocop-capybara-minimal
            ruby-rubocop-factory-bot
-           ruby-rubocop/minimal
            ruby-rubocop-performance-minimal
            ruby-rubocop-rake-minimal
            ruby-rubocop-rspec-minimal
