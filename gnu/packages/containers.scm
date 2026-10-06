@@ -119,7 +119,7 @@
 (define-public go-github-com-checkpoint-restore-checkpointctl
   (package
     (name "go-github-com-checkpoint-restore-checkpointctl")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -128,23 +128,28 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qvgld9vji5f7h2idk6r3q30909hqws0rkpvgina43i57bsfh2sv"))
+        (base32 "1xw9pzibygb1l8dw0acyjlbb6lryjsxgsk7y02c6bn3rz4i027nx"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
-            (delete-file-recursively "vendor")))))
+            (delete-file-recursively "vendor")
+            (substitute* (find-files "." "\\.go$")
+              ;; See: <https://github.com/checkpoint-restore/checkpointctl/issues/233>.
+              (("github.com/containers/storage") "go.podman.io/storage"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/checkpoint-restore/checkpointctl"))
+      #:import-path "github.com/checkpoint-restore/checkpointctl"
+      ;; metadata_fifo_test.go:135: failed to create Unix socket <...>.
+      #:test-flags #~(list "-skip" "TestOpenRegularFileRejectsUnixSocket")))
     (native-inputs
      (list go-github-com-spf13-cobra))
     (propagated-inputs
      (list go-github-com-checkpoint-restore-go-criu-v8
-           go-github-com-containers-storage
            go-github-com-opencontainers-runtime-spec
-           go-github-com-xlab-treeprint))
+           go-github-com-xlab-treeprint
+           go-go-podman-io-storage))
     (home-page "https://github.com/checkpoint-restore/checkpointctl")
     (synopsis "Tool for in-depth analysis of container checkpoints")
     (description
