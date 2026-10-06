@@ -26179,7 +26179,7 @@ or above.")
 (define-public go-github-com-opencontainers-selinux
   (package
     (name "go-github-com-opencontainers-selinux")
-    (version "1.12.0")
+    (version "1.15.1")
     (source
      (origin
        (method git-fetch)
@@ -26188,14 +26188,15 @@ or above.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yrgv8xjrakz3rfshr08xaq4klrgbhgjq6716ns0slwnpvqq7y9p"))))
+        (base32 "0m2wf2jvr1sq6j8f42naazr8dhk4gsxsc3k4f60vcssl8bbqy6mn"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/opencontainers/selinux"))
     (propagated-inputs
-     (list go-golang-org-x-sys))
+     (list go-github-com-cyphar-filepath-securejoin
+           go-golang-org-x-sys))
     (home-page "https://github.com/opencontainers/selinux")
     (synopsis "Common SELinux implementation")
     (description
