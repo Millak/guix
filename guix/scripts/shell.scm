@@ -347,28 +347,11 @@ performed--e.g., because the package cache is not authoritative."
          (((= channel-commit commits) ...)
           (string-join commits)))))
 
-(define (profile-file-cache-key file system graft?)
-  "Return the cache key for the profile corresponding to FILE, a 'guix.scm' or
-'manifest.scm' file, or #f if we lack channel information. GRAFT? is used
-to distinguish cache keys of profiles without grafts."
-  (match (profile-cache-primary-key)
-    (#f #f)
-    (primary-key
-     (let ((stat (stat file)))
-       (bytevector->base32-string
-        ;; Since FILE is not canonicalized, only include the device/inode
-        ;; numbers.  XXX: In some rare cases involving Btrfs and NFS, this can
-        ;; be insufficient: <https://lwn.net/Articles/866582/>.
-        (sha256 (string->utf8
-                 (string-append primary-key ":" system ":"
-                                (if graft? "" "ungrafted:")
-                                (number->string (stat:dev stat)) ":"
-                                (number->string (stat:ino stat))))))))))
-
-(define (profile-spec-cache-key specs system graft?)
+(define (profile-cache-key specs system graft?)
   "Return the cache key corresponding to SPECS built for SYSTEM, where SPECS
-is a list of package specs.  Return #f if caching is not possible. GRAFT? is used
-to distinguish cache keys of profiles without grafts."
+is a list of package specs or sexps denoting other elements such as the name
+of files to load.  Return #f if caching is not possible.  GRAFT?  is used to
+distinguish cache keys of profiles without grafts."
   (match (profile-cache-primary-key)
     (#f #f)
     (primary-key
@@ -393,26 +376,21 @@ return #f and #f."
   ;; process it backwards so the last occurrence "wins".
   (let loop ((opts (reverse opts))
              (system (%current-system))
-             (file #f)
+             (mtime 0)
              (specs '()))
     (match opts
       (()
-       (if file
-           (values (and=> (profile-file-cache-key file system graft?) key->file)
-                   (stat:mtime (stat file)))
-           (values (and=> (profile-spec-cache-key specs system graft?) key->file)
-                   0)))
+       (values (and=> (profile-cache-key specs system graft?) key->file)
+               mtime))
       (((and spec ('package . _)) . rest)
-       (if (not file)
-           (loop rest system file (cons spec specs))
-           (values #f #f)))
+       (loop rest system mtime (cons spec specs)))
       ((('nesting? . #t) . rest)
-       (loop rest system file (append specs '("nested guix"))))
+       (loop rest system mtime (append specs '("nested guix"))))
       ((('load . ('package candidate)) . rest)
        ;; This is 'guix shell -D -f guix.scm'.
-       (if (and (not file) (null? specs))
-           (loop rest system candidate specs)
-           (values #f #f)))
+       (loop rest system
+             (max mtime (stat:mtime (stat candidate)))
+             (cons `(file ,candidate) specs)))
       ((('load . ('ad-hoc-package candidate)) . rest)
        ;; When running 'guix shell -f guix.scm', one typically expects
        ;; 'guix.scm' to be evaluated every time because it may contain
@@ -420,9 +398,9 @@ return #f and #f."
        ;; caching.
        (values #f #f))
       ((('manifest . candidate) . rest)
-       (if (and (not file) (null? specs))
-           (loop rest system candidate specs)
-           (values #f #f)))
+       (loop rest system
+             (max mtime (stat:mtime (stat candidate)))
+             (cons `(manifest ,candidate) specs)))
       ((('expression . _) . _)
        ;; Arbitrary expressions might be non-deterministic or otherwise depend
        ;; on external state so do not cache when they're used.
@@ -432,7 +410,7 @@ return #f and #f."
        ;; least depending on external state (with-source, with-commit, etc.).
        ;; Cache only those that are known to be "cacheable".
        (if (cacheable-transformation-option-key? key)
-           (loop rest system file (cons (first opts) specs))
+           (loop rest system mtime (cons (first opts) specs))
            (values #f #f)))
       ((('profile . _) . _)
        ;; If the user already specified a profile, there's nothing more to
@@ -444,8 +422,9 @@ return #f and #f."
        ;; expanded list of inputs.
        (values #f #f))
       ((('system . system) . rest)
-       (loop rest system file specs))
-      ((_ . rest) (loop rest system file specs)))))
+       (loop rest system mtime specs))
+      ((_ . rest)
+       (loop rest system mtime specs)))))
 
 
 ;;;
