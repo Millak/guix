@@ -10880,7 +10880,7 @@ embedded into other programs via a C++ class library.")
 (define-public scip
   (package
     (name "scip")
-    (version "10.0.1")
+    (version "10.1.0")
     (source
      (origin
        (method git-fetch)
@@ -10889,7 +10889,7 @@ embedded into other programs via a C++ class library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01j0m7fzr8xcwpsd3zfqrbqw8rw2169rlp0qb6srdx5ablkcdcv1"))))
+        (base32 "0w2wq3048fxkip7zm44r5g3vgbhs42j292akw7v3x29p4vy52b04"))))
     (build-system cmake-build-system)
     (arguments
      (list
