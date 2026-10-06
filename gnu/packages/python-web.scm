@@ -6870,7 +6870,7 @@ connector for @code{python-pycrdt}.")
 (define-public python-pycurl
   (package
     (name "python-pycurl")
-    (version "7.45.7")
+    (version "7.48.0")
     (source
      (origin
        (method git-fetch)
@@ -6880,7 +6880,7 @@ connector for @code{python-pycrdt}.")
                       "REL_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gkbv3cvrwd7z3vgqlvcf0wpvm3g6dia8xbx3g4bplnb2cascfiq"))))
+        (base32 "06d6fji6qmiimfnfgfxqnq4hj245q5ipcfvr1csm53ly1sa3jcfy"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -6897,12 +6897,8 @@ connector for @code{python-pycrdt}.")
                    ;; OSError: tests/fake-curl/libcurl/with_openssl.so: cannot
                    ;; open shared object file: No such file or directory
                    " and not test_libcurl_ssl_openssl"
-                   ;; "A requested feature, protocol or option was not
-                   ;; found built-in in this libcurl due to a build-time
-                   ;; decision."
-                   " and not test_issuercert_blob"
-                   " and not test_krb4level"
-                   " and not test_krblevel"))
+                   ;; AssertionError: proc.returncode == 130
+                   " and not test_sigint"))
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'configure-tls-backend
                     (lambda _
@@ -6915,12 +6911,13 @@ connector for @code{python-pycrdt}.")
      (list python-bottle
            python-flaky
            python-flask
+           python-numpy
            python-pytest
            python-setuptools
-           python-wheel))
+           python-websockets))
     (inputs
      (list curl gnutls))
-    (home-page "http://pycurl.io/")
+    (home-page "https://pycurl.github.io/")
     (synopsis "Lightweight Python wrapper around libcurl")
     (description "Pycurl is a lightweight wrapper around libcurl.  It provides
 high-speed transfers via libcurl and frequently outperforms alternatives.")
