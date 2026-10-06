@@ -193,10 +193,12 @@
   (mlambda (api)
     "Return the latest Debian image available.  This image gets used for the
 initial system provisioning phase, before Guix System takes over."
-    (let ((debian-images (filter (lambda (image)
-                                   (string=? "debian"
-                                             (hetzner-image-os-flavor image)))
-                                 (hetzner-api-images api))))
+    (let* ((system-images (hetzner-api-images api
+                                              #:params '(("type" . "system"))))
+           (debian-images (filter (lambda (image)
+                                    (string=? "debian"
+                                              (hetzner-image-os-flavor image)))
+                                  system-images)))
       (hetzner-image-name
        (last (sort debian-images
                    (lambda (x y)
