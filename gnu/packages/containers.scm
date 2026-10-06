@@ -1546,7 +1546,7 @@ also implements \"simple image signing\".  It's a successor of
 (define-public go-go-podman-io-storage
   (package
     (name "go-go-podman-io-storage")
-    (version "1.62.0")
+    (version "1.64.1")
     (source
      (origin
        (method git-fetch)
@@ -1555,7 +1555,7 @@ also implements \"simple image signing\".  It's a successor of
               (commit (go-version->git-ref version #:subdir "storage"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ywj80wkpyq2yhizsdlfh0n2fxip75042rsk7jm4vyp98bb18rb6"))
+        (base32 "00qzkabn5wr92dvvgpxjbg8ipw5vmd3hgkz68gsfv769vap1lmdh"))
        (modules '((guix build utils)))
        (snippet #~(delete-all-but "." "storage"))))
     (build-system go-build-system)
@@ -1564,29 +1564,30 @@ also implements \"simple image signing\".  It's a successor of
       #:import-path "go.podman.io/storage"
       #:unpack-path "go.podman.io"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Root access is required.
                        (list "TestAttachLoopbackDeviceRace"
-                             "TestChangesWithChangesGH13590"
-                             "TestChroot.*"
+                             "TestChroot"
                              "TestCopyDir"
                              "TestCopyWithTarInexistentDestWillCreateIt"
                              "TestEnsureRemoveAllWithMount"
                              "TestLookupAdditionalLayerDecodeError"
                              "TestLookupAdditionalLayerSuccess"
-                             "TestMkdir.*"
+                             "TestMkdir"
                              "TestReplaceFileTarWrapper"
                              "TestStoreDelete"
                              "TestStoreMultiList"
                              "TestSupportsShifting"
                              "TestTarUntarWithXattr"
                              "TestTarWithBlockCharFifo"
-                             "TestTarWithMaliciousSymlinks"
+                             "TestTarWithOptions"
+                             "TestUnpack"
+                             "TestUnpackWhiteouts"
                              "TestUnshareOOMScoreAdj"
-                             "TestUntarHardlinkToSymlink"
                              "TestUntarPath"
                              "TestUntarWithMaliciousSymlinks"
-                             "TestVfs.*")
+                             "TestVfs")
                        "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -1595,14 +1596,14 @@ also implements \"simple image signing\".  It's a successor of
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-github-com-containerd-stargz-snapshotter-estargz
-           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-docker-go-units
            go-github-com-google-go-intervals
            go-github-com-json-iterator-go
            go-github-com-klauspost-compress
            go-github-com-klauspost-pgzip
            go-github-com-mattn-go-shellwords
-           go-github-com-mistifyio-go-zfs-v3
+           go-github-com-mistifyio-go-zfs-v4
            go-github-com-moby-sys-capability
            go-github-com-moby-sys-mountinfo
            go-github-com-moby-sys-user
@@ -1614,8 +1615,7 @@ also implements \"simple image signing\".  It's a successor of
            go-github-com-ulikunitz-xz
            go-github-com-vbatts-tar-split
            go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-gotest-tools-v3))
+           go-golang-org-x-sys))
     (home-page "https://go.podman.io")
     (synopsis "Manage layer/image/container storage")
     (description
