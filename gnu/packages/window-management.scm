@@ -3276,6 +3276,7 @@ colors as your desktop background.")
       #:tests? #f ;No tests.
       #:configure-flags
       #~(list "-DINSTALL_DOCUMENTATION=ON" "-DINSTALL_EXAMPLE_SCRIPTS=ON"
+              "-DWITH_GBM=ON"
               (string-append "-DWL_PROTOCOL_DIR="
                              #$(this-package-input "wayland-protocols")
                              "/share/wayland-protocols")
