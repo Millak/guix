@@ -201,7 +201,7 @@ export PATH=/run/setuid-programs:$PATH
 # Set up the system, user profile, and related variables.
 emulate sh -c '. /etc/profile'
 # Set up the home environment profile.
-emulate sh -c '. ~/.profile'
+emulate sh -c 'test -f ~/.profile && . ~/.profile'
 "))
 
 (define %default-xdefaults
