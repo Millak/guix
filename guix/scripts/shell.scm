@@ -257,6 +257,7 @@ cache) or a 'gc-root' key (to add the profile to cache)."
                                 (('manifest . _) #t)
                                 (('package . _) #t)
                                 (('ad-hoc-package . _) #t)
+                                (('expression . _) #t)
                                 (_ #f))
                               opts)))             ;load right away
         (if (and root (not (assq-ref opts 'gc-root)))
@@ -401,10 +402,10 @@ return #f and #f."
        (loop rest system
              (max mtime (stat:mtime (stat candidate)))
              (cons `(manifest ,candidate) specs)))
-      ((('expression . _) . _)
-       ;; Arbitrary expressions might be non-deterministic or otherwise depend
-       ;; on external state so do not cache when they're used.
-       (values #f #f))
+      ((('expression . exp) . rest)
+       ;; Assume that EXP is deterministic and that the result can be cached.
+       ;; In practice EXP typically refers to a package variable in a module.
+       (loop rest system mtime (cons `(expression ,exp) specs)))
       ((((? transformation-option-key? key) . _) . rest)
        ;; Transformation options are potentially "non-deterministic", or at
        ;; least depending on external state (with-source, with-commit, etc.).
