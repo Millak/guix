@@ -910,36 +910,6 @@ Windows and Mac).")
     (home-page "https://github.com/rake-compiler/rake-compiler-dock")
     (license license:expat)))
 
-(define-public ruby-rubocop/minimal
-  (hidden-package
-   (package
-     (name "ruby-rubocop")
-     (version "1.68.0")
-     (source
-      (origin
-        (method git-fetch)               ;no tests in distributed gem
-        (uri (git-reference
-              (url "https://github.com/rubocop/rubocop")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0pfsrgkg2dhb6a2rknciqskgxgmb9kf48rvbkhay9n8n6m712v2w"))))
-     (build-system ruby-build-system)
-     (arguments
-      (list #:tests? #f
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'unpack 'remove-runtime-dependencies
-                  (lambda _
-                    (substitute* "rubocop.gemspec"
-                      (("s\\.add_dependency.*") "")))))))
-     (synopsis "Ruby code style checking tool")
-     (description
-      "@code{rubocop} is a Ruby code style checking tool.  It aims to enforce
-the community-driven Ruby Style Guide.")
-     (home-page "https://github.com/rubocop/rubocop")
-     (license license:expat))))
-
 (define-public ruby-rspec
   (package
     (name "ruby-rspec")
