@@ -1787,14 +1787,14 @@ It provides a flexible escaping technique and pretty printing.")
 (define-public perl-xml-twig
   (package
     (name "perl-xml-twig")
-    (version "3.52")
+    (version "3.55")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MI/MIROD/"
                                   "XML-Twig-" version ".tar.gz"))
               (sha256
                (base32
-                "1bc0hrz4jp6199hi29sdxmb9gyy45whla9hd19yqfasgq8k5ixzy"))))
+                "0v2gyr1dvhx6vf6pncx5wxgh76kmcg50bglgqz65kiq5vig6wck9"))))
     (build-system perl-build-system)
     (inputs
      (list expat))
