@@ -3009,21 +3009,21 @@ the timing of a design using standard file formats.")
 (define-public openroad
   (package
     (name "openroad")
-    (version "26Q3")
+    (version "26Q4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/The-OpenROAD-Project/OpenROAD")
               (commit version)
-              ;; 26Q3 Uses:
+              ;; 26Q4 Uses:
               ;; - forked, custom opensta
               ;; - forked, custom (berkeley) abc
               ;; - magic commit number of yosys-slang
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nmklw2mr28p07g5d9zxq9x3n2s2bzilqc5gq535inlcr5pl0jcc"))))
+        (base32 "0vapzjq1r2xq4vql2pkznvr6jbmwk4ydsc8mlrhwrjhib17dfd78"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -3058,6 +3058,7 @@ the timing of a design using standard file formats.")
            glpk
            gmp
            lemon-graph
+           libdeflate
            libomp
            mpfr
            or-tools
