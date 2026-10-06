@@ -36,6 +36,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cryptsetup)
@@ -49,6 +50,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages search)
@@ -530,14 +532,35 @@ This package is part of the KDE administration module.")
      (list #:qtbase qtbase
            #:tests? #f ;no tests
            #:configure-flags
-           #~(list "-DQT_MAJOR_VERSION=6")))
+           #~(list "-DQT_MAJOR_VERSION=6")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-bup-rsync
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* '("filedigger/restorejob.cpp"
+                                  "kcm/kupkcm.cpp"
+                                  "daemon/buprepairjob.cpp"
+                                  "daemon/bupverificationjob.cpp"
+                                  "daemon/bupjob.cpp"
+                                  "purger/purger.cpp")
+                     (("(QStringLiteral\\(\")bup\"\\)" all first)
+                      (string-append first
+                                     (search-input-file inputs "bin/bup")
+                                     "\")")))
+                   (substitute* '("kcm/kupkcm.cpp"
+                                  "daemon/rsyncjob.cpp")
+                     (("(QStringLiteral\\(\")rsync\"\\)" all first)
+                      (string-append first
+                                     (search-input-file inputs "bin/rsync")
+                                     "\")"))))))))
     ;; These packages are required by the QML modules.
     (propagated-inputs
      (list kcmutils kirigami libplasma plasma5support qtdeclarative))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kconfig
+     (list bup
+           kconfig
            kcoreaddons
            kdbusaddons
            ki18n
@@ -549,6 +572,7 @@ This package is part of the KDE administration module.")
            kxmlgui
            libgit2
            qtwayland
+           rsync
            solid))
     (home-page "https://apps.kde.org/kup/")
     (synopsis "Backup scheduler for Plasma desktop")
