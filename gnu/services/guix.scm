@@ -825,10 +825,15 @@ ca-certificates.crt file in the system profile."
            (start #~(make-forkexec-constructor
                      '(#$(file-append he "/activate"))
                      #:user #$user
+                     ;; FIXME: In 1.0, omitting #:group meant "keep GID
+                     ;; unchanged", effectively using GID 0.  In 1.1, the
+                     ;; group corresponding to USER is picked.  When doing a
+                     ;; dry run in the build environment, 'getpw' always
+                     ;; fails, hence this trick.
+                     #:group (and=> (false-if-exception (getpw #$user))
+                                    (compose group:name getgrgid passwd:gid))
                      #:environment-variables
-                     (list (string-append "HOME=" (passwd:dir (getpw #$user)))
-                           "GUIX_SYSTEM_IS_RUNNING_HOME_ACTIVATE=t")
-                     #:group (group:name (getgrgid (passwd:gid (getpw #$user))))))
+                     (list "GUIX_SYSTEM_IS_RUNNING_HOME_ACTIVATE=t")))
            (stop #~(make-kill-destructor)))))
        config))
 

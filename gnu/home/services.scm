@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
@@ -508,7 +508,11 @@ extended with one gexp.")))
   (gexp->script
    "activate"
    #~(let* ((he-init-file (lambda (he) (string-append he "/setup-environment")))
-            (he-path (string-append (getenv "HOME") "/.guix-home"))
+            (home (or (getenv "HOME")
+                      (let ((directory (passwd:dir (getpwuid (getuid)))))
+                        (setenv "HOME" directory)
+                        directory)))
+            (he-path (string-append home "/.guix-home"))
             (new-home-env (getenv "GUIX_NEW_HOME"))
             (new-home (or new-home-env
                           ;; Absolute path of the directory of the activation
