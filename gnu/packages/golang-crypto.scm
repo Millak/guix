@@ -4174,6 +4174,109 @@ adding the ability to obtain the list of host key algorithms for a known
 host.")
     (license license:asl2.0)))
 
+(define-public go-github-com-smallstep-certificates
+  (package
+    (name "go-github-com-smallstep-certificates")
+    (version "0.30.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smallstep/certificates")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09gjswrhddm9s3qp66n9j9gnz9lpw2vragqn6vjk2c3g0n6fpjz1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/smallstep/certificates"
+      #:unpack-path "github.com/smallstep/certificates"        ;for the CLI
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.version=" #$version))
+      #:embed-files
+      ;; For go-github-com-go-piv-piv-go-v2
+      #~(list "yubico-ca-1.pem" "yubico-intermediate.pem")
+      #:test-flags
+      #~(list "-short"
+              "-shuffle=on"
+              ;; Network access is reqruied.
+              "-skip" (string-join
+                       (list "Test_newHTTPClient/SystemCertPool"
+                             "TestIssuesCertificateUsingRegularSCEPConfiguration")
+                       "|")
+              "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (setenv "HOME" "/tmp")
+              (with-directory-excursion
+                  (string-append "src/" unpack-path "/ca/identity")
+                ;; Test TestIdentity_Renew needs write access to refresh cert
+                ;; during check phase.
+                (make-file-writable "testdata/identity/identity.crt"))))
+          (add-after 'check 'remove-testdata
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "src/" unpack-path "/ca/identity")
+                (delete-file-recursively "testdata/identity/identity.crt")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-smallstep-assert
+           go-github-com-smallstep-cli-utils
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli
+           go-go-uber-org-mock
+           ;; For go-github-com-go-piv-piv-go-v2.
+           pcsc-lite
+           pkg-config))
+    (propagated-inputs
+     (list go-cloud-google-com-go-longrunning
+           go-cloud-google-com-go-security
+           go-github-com-ccoveille-go-safecast-v2
+           go-github-com-coreos-go-oidc-v3
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dgraph-io-badger
+           go-github-com-dgraph-io-badger-v2
+           go-github-com-fxamacker-cbor-v2
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-jose-go-jose-v3
+           go-github-com-google-go-tpm
+           go-github-com-google-uuid
+           go-github-com-googleapis-gax-go-v2
+           go-github-com-hashicorp-vault-api
+           go-github-com-hashicorp-vault-api-auth-approle
+           go-github-com-hashicorp-vault-api-auth-aws
+           go-github-com-hashicorp-vault-api-auth-kubernetes
+           go-github-com-masterminds-sprig-v3
+           go-github-com-newrelic-go-agent-v3
+           go-github-com-pkg-errors
+           go-github-com-prometheus-client-golang
+           go-github-com-rs-xid
+           go-github-com-sirupsen-logrus
+           go-github-com-slackhq-nebula
+           go-github-com-smallstep-go-attestation
+           go-github-com-smallstep-linkedca
+           go-github-com-smallstep-nosql
+           go-github-com-smallstep-pkcs7
+           go-github-com-smallstep-scep
+           go-go-step-sm-crypto
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/smallstep/certificates")
+    (synopsis "Private certificate authority for certificate management")
+    (description
+     "@code{step-ca} is an online certificate authority for secure, automated
+certificate management. It's the server counterpart to the
+@url{https://github.com/smallstep/cli, step CLI tool}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-smallstep-go-attestation
   (package
     (name "go-github-com-smallstep-go-attestation")
