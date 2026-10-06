@@ -29840,33 +29840,6 @@ transactions.  Complete support for Berkeley DB Replication Manager.
 Complete support for Berkeley DB Base Replication.  Support for RPC.")
     (license license:bsd-3)))
 
-;; Last version before rename to python-berkeleydb.
-;; This package is close to deprecation.
-(define-public python-bsddb3
-  (package
-    (inherit python-berkeleydb)
-    (name "python-bsddb3")
-    (version "6.2.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "bsddb3" version))
-       (sha256
-        (base32 "00bqdsfx8jgmfz5bgkx10nlw5bfsw11a86f91zkl53snvk45xl3h"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ;; Tests started failing from Python@3.12.
-       ;; The package is in a pre-deprecation phase, so I didn't bother
-       ;; to try and patch them, but sanity-check passes so the package
-       ;; itself is likely fine.
-       ((#:tests? tests? #t)
-        #f)
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (delete 'remove-legacy)))
-       ((#:test-flags test-flags #~(list))
-        #~(list "test3.py" "-v"))))))
-
 (define-public python-dbfread
   (package
     (name "python-dbfread")
