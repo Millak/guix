@@ -1426,7 +1426,7 @@ those files in github.com/containers repos.")
 (define-public go-go-podman-io-image-v5
   (package
     (name "go-go-podman-io-image-v5")
-    (version "5.39.2")
+    (version "5.41.2")
     (source
      (origin
        (method git-fetch)
@@ -1435,7 +1435,7 @@ those files in github.com/containers repos.")
               (commit (go-version->git-ref version #:subdir "image"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17qjzgc3h89sa0y8qkviz5gry1kvkkm3j79yhn78c7gbmqcx5v0j"))
+        (base32 "192ycqnqcgv0zqj9wnm6cxsplcwvcgspr35wg732jn6c110fpi2g"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1465,14 +1465,17 @@ those files in github.com/containers repos.")
               "unevaluated"
               "validation")
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Tests try to access local directories: /usr/share,
-                       ;; /var/tmp; remote source https://quay.io/v2/,
+                       ;; /var/tmp; remote resources https://quay.io/v2/ and
                        ;; https://registry.suse.com/auth.
                        (list "TestComputeBlobInfo"
                              "TestCreateBigFileTemp"
                              "TestGPGSigningMechanismSign"
+                             "TestLoadManifestDescriptor"
                              "TestMkDirBigFileTemp"
+                             "TestNewImageSource"
                              "TestReferenceNewImage"
                              "TestReferenceNewImageSource"
                              "TestReferencePolicyConfigurationNamespaces"
@@ -1482,13 +1485,16 @@ those files in github.com/containers repos.")
                              "TestSignDockerManifest"
                              "TestSignDockerManifestWithPassphrase"
                              "TestSimpleSignerSignImageManifest"
-                             "TestSourcePrepareLayerData")
+                             "TestSourcePrepareLayerData"
+                             "TestSourcePrepareLayerDatar")
                        "|"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-HOME
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "GODEBUG" "asynctimerchan=0")))))))
     (native-inputs
      (list btrfs-progs
            eudev
@@ -1505,7 +1511,6 @@ those files in github.com/containers repos.")
            go-github-com-distribution-reference
            go-github-com-docker-cli
            go-github-com-docker-distribution
-           go-github-com-docker-docker
            go-github-com-docker-docker-credential-helpers
            go-github-com-docker-go-connections
            go-github-com-hashicorp-go-cleanhttp
@@ -1514,9 +1519,12 @@ those files in github.com/containers repos.")
            go-github-com-klauspost-pgzip
            go-github-com-manifoldco-promptui
            go-github-com-mattn-go-sqlite3
+           go-github-com-moby-moby-api
+           go-github-com-moby-moby-client
            go-github-com-opencontainers-go-digest
            go-github-com-opencontainers-image-spec
            go-github-com-proglottis-gpgme
+           go-github-com-protonmail-go-crypto
            go-github-com-santhosh-tekuri-jsonschema-v6
            go-github-com-secure-systems-lab-go-securesystemslib
            go-github-com-sigstore-fulcio
@@ -1527,11 +1535,10 @@ those files in github.com/containers repos.")
            go-github-com-vbauerster-mpb-v8
            go-go-etcd-io-bbolt
            go-go-podman-io-storage
-           go-golang-org-x-crypto
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-oauth2
            go-golang-org-x-sync
-           go-golang-org-x-term
-           go-gopkg-in-yaml-v3))
+           go-golang-org-x-term))
     (home-page "https://go.podman.io")
     (synopsis "Go library to work in various way with containers' images")
     (description
