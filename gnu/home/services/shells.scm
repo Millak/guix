@@ -190,7 +190,15 @@ another process for example)."))
    "zshenv"
    (zsh-serialize-field config 'zshenv)
    (zsh-serialize-field config 'environment-variables)
-   "[ -n \"$SSH_CLIENT\" ] && source /etc/profile"))
+   "\
+if [ -n \"$SSH_CLIENT\" ]; then
+    if [[ -f $ZDOTDIR/.zprofile ]]; then
+        source $ZDOTDIR/.zprofile
+    else
+        source /etc/profile
+    fi
+fi
+"))
 
 (define (zsh-file-zprofile config)
   (mixed-text-file
@@ -428,7 +436,11 @@ another process for example)."))
 if [ -f ~/.profile ]; then source ~/.profile; fi
 
 # Honor per-interactive-shell startup file
-if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
+if [ -f ~/.bashrc ]; then
+    # Taking care not to source it in the case of a non-interactive SSH
+    # shell, to avoid recursion.
+    [[ $- != *i* && -n $SSH_CLIENT ]] || . ~/.bashrc
+fi
 "
 
         (serialize-field 'bash-profile)

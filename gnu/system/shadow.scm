@@ -157,12 +157,21 @@ PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
 # honor it and otherwise use /bin/sh.
 export SHELL
 
-if [[ $- != *i* ]]
-then
+if [[ $- != *i* ]]; then
     # We are being invoked from a non-interactive shell.  If this
     # is an SSH session (as in \"ssh host command\"), source
-    # /etc/profile so we get PATH and other essential variables.
-    [[ -n \"$SSH_CLIENT\" ]] && source /etc/profile
+    # /etc/profile so we get PATH and other essential variables,
+    # and source one of ~/.bash_profile or ~/.profile for the home
+    # environment.
+
+    if [[ -n \"$SSH_CLIENT\" ]]; then
+        source /etc/profile
+        if [ -f ~/.bash_profile ]; then
+            source ~/.bash_profile
+        elif [ -f ~/.profile ]; then
+            source ~/.profile
+        fi
+    fi
 
     # Don't do anything else, returning a successful return code.
     return 0
@@ -179,21 +188,24 @@ HISTSIZE=10000
 
 (define %default-bash-profile
   (plain-file "bash_profile" "\
-# Set up Guix Home profile
-if [ -f ~/.profile ]; then . ~/.profile; fi
-
 # Honor per-interactive-shell startup file
-if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
+if [ -f ~/.bashrc ]; then
+    # Taking care not to source it in the case of a non-interactive SSH
+    # shell, to avoid recursion.
+    [[ $- != *i* && -n $SSH_CLIENT ]] || . ~/.bashrc
+fi
 
 # Merge search-paths from multiple profiles, the order matters.
 eval \"$(guix package --search-paths \\
 -p $HOME/.config/guix/current \\
--p $HOME/.guix-home/profile \\
 -p $HOME/.guix-profile \\
 -p /run/current-system/profile)\"
 
-# Prepend setuid programs.
-export PATH=/run/setuid-programs:$PATH
+# Set up Guix Home profile
+if [ -f ~/.profile ]; then . ~/.profile; fi
+
+# Prepend privileged programs.
+export PATH=/run/privileged/bin:$PATH
 "))
 
 (define %default-zprofile
