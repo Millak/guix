@@ -29177,19 +29177,18 @@ they use the same path.")
        (sha256
         (base32 "0mwcr2cy0j5j8c9n2wlrlpc5v4za2cdh8jwhm7vpai53lqyvfjlf"))
        (patches
-	(list
-	 (origin
-	   (method url-fetch)
-	   (uri
-            ;; Fix PandasColumns compatibility with pandas 3.0
-            ;; StringDtype, from:
-            ;; <https://github.com/dask/partd/pull/83>.
-	    (string-append "https://github.com/dask/partd/commit/"
-	                   "3efd8ec7e35a7c0aa1ba15ba2cf0766af99d3c21.patch"))
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            ;; Fix PandasColumns compatibility with pandas 3.0 StringDtype,
+            ;; from: <https://github.com/dask/partd/pull/83>.
+            (string-append "https://github.com/dask/partd/commit/"
+                           "3efd8ec7e35a7c0aa1ba15ba2cf0766af99d3c21.patch"))
            (file-name (string-append name "-PR-83-pandas-3-support.patch"))
-	   (sha256
-	    (base32
-	     "1sc6vmrqgqjl4rnw9gv8ymdfaqdi5razww8b322f7hpwhpdydnhk")))))))
+           (sha256
+            (base32
+             "1sc6vmrqgqjl4rnw9gv8ymdfaqdi5razww8b322f7hpwhpdydnhk")))))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
