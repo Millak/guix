@@ -5075,6 +5075,45 @@ in Python 3.13 by PEP-594.")
      "This package implements MikroTik's @code{RouterOS} API.")
     (license license:gpl2+)))
 
+(define-public python-multipart/defnull
+  (package
+    (name "python-multipart-defnull")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/defnull/multipart")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kga8h03rk44nipks2dal9lrs455alfdh4rl1dmpr8q1l8fkcnia"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://multipart.readthedocs.io/")
+    (synopsis "Multipart/form-data parser for Python")
+    (description
+     "This package provides a fast incremental non-blocking parser for
+multipart/form-data [HTML5, @url{https://www.rfc-editor.org/rfc/rfc7578,
+RFC7578}], as well as blocking alternatives for easier use in WSGI or CGI
+applications:
+
+@itemize
+@item PushMultipartParser: Fast SansIO (incremental, non-blocking) parser
+suitable for ASGI, asyncio and other IO, time or memory constrained
+environments.
+
+@item MultipartParser: Streaming parser that reads from a byte stream and
+yields memory- or disk-buffered MultipartPart instances.
+
+@item WSGI Helper: High-level functions and containers for WSGI or CGI
+applications with support for both multipart and urlencoded form submissions.
+@end itemize
+
+It is hosted in PyPI as @url{https://pypi.org/project/multipart/,
+multipart}.")
+    (license license:expat)))
+
 (define-public python-opentelemetry-api
   (package
     (name "python-opentelemetry-api")
