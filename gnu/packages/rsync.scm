@@ -29,6 +29,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages libidn)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages popt)
@@ -45,14 +46,14 @@
 (define-public rsync
   (package
    (name "rsync")
-   (version "3.5.0")
+   (version "3.5.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://rsync.samba.org/ftp/rsync/src/rsync-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "0cqddrjp5mlkdyqrj8wpdgpd3jprnw0cniqycq7m969ycppx3zy7"))))
+              "1vvvqcjlswk31nxr2273v2icjg6mvvys16dkjz1vxf0gq6frqpy5"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
@@ -80,6 +81,7 @@
     (list perl python-minimal)) ;needed for tests
    (inputs
     (list acl
+          libidn2
           lz4
           openssl
           popt
