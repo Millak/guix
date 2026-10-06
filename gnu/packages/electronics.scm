@@ -1786,7 +1786,7 @@ an embedded event driven algorithm.")
 (define-public librelane
   (package
     (name "librelane")
-    (version "3.0.14")
+    (version "3.0.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1795,16 +1795,12 @@ an embedded event driven algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14mcq2pyafj2b2xidlw1xpykci1f4n79qmi1cgx93x32hi6w177x"))))
+                "05xi3akm2ag4yfiqynqri7il5fh29agdqsjvxdbs7vcgf7bxks11"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("click>=8,<8.3") "click>=8"))))
           (add-after 'compress-documentation 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/librelane")
@@ -1840,7 +1836,7 @@ an embedded event driven algorithm.")
            netgen
            openroad
            python
-           python-click
+           python-click-8.1
            python-cloup
            python-deprecated
            python-httpx
