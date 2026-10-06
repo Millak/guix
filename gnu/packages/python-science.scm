@@ -5094,57 +5094,6 @@ contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
 fractional factorial methods.")
     (license license:expat)))
 
-(define-public python-scikit-allel
-  (package
-    (name "python-scikit-allel")
-    (version "1.3.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scikit_allel" version))
-       (sha256
-        (base32 "0d9yadzhsjjqkh6rz273f53iwczk0c7pv9dajzcrmfnk036b8f4s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; AttributeError: 'Dataset' object has no attribute 'asstr'
-              "not test_vcf_to_hdf5"
-              " and not test_vcf_to_hdf5_exclude"
-              " and not test_vcf_to_hdf5_rename"
-              " and not test_vcf_to_hdf5_group"
-              " and not test_vcf_to_hdf5_ann"
-              ;; Does not work with recent hmmlearn
-              " and not test_roh_mhmm_0pct"
-              " and not test_roh_mhmm_100pct"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'build-ext
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
-     (list python-dask python-numpy))
-    (native-inputs
-     (list htslib
-           python-cython
-           python-h5py
-           python-hmmlearn
-           python-numexpr
-           python-numpy
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel
-           python-zarr))
-    (home-page "https://github.com/cggh/scikit-allel")
-    (synopsis "Explore and analyze genetic variation data")
-    (description
-     "This package provides utilities for exploratory analysis of large scale
-genetic variation data.")
-    (license license:expat)))
-
 (define-public python-scikit-base
   (package
     (name "python-scikit-base")
