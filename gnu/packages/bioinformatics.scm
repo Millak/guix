@@ -2244,25 +2244,6 @@ Format (GFF) with Biopython integration.")
      '((upstream-name . "bcbio-gff")))
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
-(define-public python-bcbio-gff-for-python-cmseq
-  (hidden-package
-   (package
-     (inherit python-bcbio-gff)
-     (name "python-bcbio-gff")
-     (version "0.6.9")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/chapmanb/bcbb")
-               (commit (string-append "bcbio-gff-v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "131hiir94jkm9jj2wfpybwndgzn8k0zc1ji1qjn5cz7w48x3ri13"))))
-     (propagated-inputs
-      (modify-inputs propagated-inputs
-        (replace "python-biopython" python-biopython-1.73))))))
-
 (define bed-sample-files
   (let* ((name "bed-sample-files")
          (commit "a06dc0450e484090f15656ffd5d317813a5e1e01")
@@ -2647,44 +2628,6 @@ stochastic gradient descent algorithm.  CellTypist allows for cell prediction
 using either built-in (with a current focus on immune sub-populations) or
 custom models, in order to assist in the accurate classification of different
 cell types and subtypes.")
-    (license license:expat)))
-
-(define-public python-cmseq
-  (package
-    (name "python-cmseq")
-    (version "1.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "CMSeq" version))
-              (sha256
-               (base32
-                "0p6a99c299m5wi2z57dgqz52m1z3nfr8mv7kdnk2jvl2p9nql0wk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false ;there are no tests
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-samtools-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmseq/cmseq.py"
-               (("'samtools'")
-                (string-append "'" (search-input-file inputs "/bin/samtools") "'"))))))))
-    (native-inputs
-     (list python-setuptools))
-    (inputs (list samtools))
-    (propagated-inputs
-     (list python-bcbio-gff-for-python-cmseq
-           python-biopython-1.73
-           python-numpy
-           python-pandas
-           python-pysam
-           python-scipy))
-    (home-page "https://github.com/SegataLab/cmseq/")
-    (synopsis "Set of utilities on sequences and BAM files")
-    (description
-     "CMSeq is a set of commands to provide an interface to .bam files for coverage
-and sequence consensus.")
     (license license:expat)))
 
 (define-public python-cnmf
