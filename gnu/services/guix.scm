@@ -517,8 +517,7 @@
               `(;; XDG_CACHE_HOME is used by Guix when caching narinfo files
                 "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
                 "LC_ALL=en_US.utf8")
-              ;; Run from the log directory so core dumps can be written
-              #:directory "/var/log/guix-build-coordinator"
+              #:directory "/var/lib/guix-build-coordinator-agent"
               #:log-file "/var/log/guix-build-coordinator/agent.log"))))
       (stop #~(make-kill-destructor))
       (modules
@@ -535,6 +534,12 @@
 
       (mkdir-p "/var/log/guix-build-coordinator")
 
+      ;; Create the home directory
+      (mkdir-p "/var/lib/guix-build-coordinator-agent")
+      (chown "/var/lib/guix-build-coordinator-agent"
+             (passwd:uid %user)
+             (passwd:gid %user))
+
       ;; Create a cache directory for storing narinfo files if downloaded
       (mkdir-p "/var/cache/guix-build-coordinator-agent")
       (chown "/var/cache/guix-build-coordinator-agent"
@@ -547,7 +552,7 @@
          (group "nogroup")
          (system? #t)
          (comment "Guix Build Coordinator agent user")
-         (home-directory "/var/empty")
+         (home-directory "/var/lib/guix-build-coordinator-agent")
          (shell (file-append shadow "/sbin/nologin")))))
 
 (define guix-build-coordinator-agent-service-type
