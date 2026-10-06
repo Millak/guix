@@ -5767,6 +5767,40 @@ traffic.")))
 +utility to convert SSH RSA keys to GPG keys.")
     (license license:expat)))
 
+(define-public step-ca
+  (package/inherit go-github-com-smallstep-certificates
+    (name "step-ca")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _ ) "github.com/smallstep/certificates/cmd/...")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (append
+     (package-native-inputs go-github-com-smallstep-certificates)
+     (package-propagated-inputs go-github-com-smallstep-certificates)))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides a command line tool to set up a local
+@acronym{Certificate Authority, CA} service.
+
+Features:
+
+@itemize
+@item HTTPS server and client certificates that work in browsers (RFC5280 and
+CA/Browser Forum compliance)
+
+@item TLS certificates for DevOps: VMs, containers, APIs, database
+connections, Kubernetes pods, etc.
+
+@item SSH certificates for people, in exchange for single sign-on identity
+tokens and for hosts, in exchange for cloud instance identity documents
+
+@item ACME server that supports all popular ACME challenge types
+@end itemize")))
+
 (define-public zlint
   (package/inherit go-github-com-zmap-zlint-v3
     (name "zlint")
