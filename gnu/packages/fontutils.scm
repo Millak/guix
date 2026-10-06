@@ -77,6 +77,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -2405,3 +2406,48 @@ each pixel of a glyph to a polygon, which produces large and
 unoptimized SFD files that should be post-processed using
 @uref{https://fontforge.org, FontForge}.")
     (license license:bsd-2)))
+
+(define-public xmbdfed
+  (package
+    (name "xmbdfed")
+    (version "4.7.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/drj/xmbdfed")
+                     (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zl8zsh7jq3719bail9j9ih8hc9z2khg47yk3sag6r84xdpnlp48"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list "CDEBUGFLAGS=-O2"
+              (string-append "BINDIR=" #$output "/bin")
+              (string-append
+               "FREETYPE2INCLUDES=-I"
+               (search-input-directory %build-inputs "include/freetype2")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "xmkmf")))
+          (add-after 'install 'install-man-page
+            (lambda _
+              (let ((mandir (string-append #$output "/share/man/man1")))
+                (mkdir-p mandir)
+                (copy-file "xmbdfed.man"
+                           (string-append mandir "/xmbdfed.1"))))))))
+    (native-inputs
+     (list imake))
+    (inputs
+     (list libxmu motif))
+    (home-page "https://codeberg.org/drj/xmbdfed")
+    (synopsis "Motif-based BDF font editor")
+    (description
+     "XmBDFEditor is a Motif-based BDF font editor, with it you can create new
+bitmap font files or modify existing ones.")
+    (license license:expat)))
