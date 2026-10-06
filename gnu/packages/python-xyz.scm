@@ -35775,7 +35775,7 @@ for styling strings in the terminal.")
 (define-public python-multipart
   (package
     (name "python-multipart")
-    (version "0.0.29")
+    (version "0.0.32")
     (source
      (origin
        (method git-fetch)
@@ -35784,7 +35784,7 @@ for styling strings in the terminal.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06rxa2xymdqri8zydy7xw2cnpsnzlv2jzdy9g86m5fpfca0pp9fm"))))
+        (base32 "0p547qsxpgqbciyng0n0ck10mv4bchbpf9gm351293yv6qgr43ng"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
@@ -35793,7 +35793,10 @@ for styling strings in the terminal.")
     (home-page "https://github.com/Kludex/python-multipart")
     (synopsis "Streaming multipart parser for Python")
     (description
-     "This package provides a streaming multipart parser for Python.")
+     "This package provides a streaming multipart parser for Python.
+
+It is hosted in PyPI as @url{https://pypi.org/project/python-multipart/,
+python_multipart}.")
     (license license:asl2.0)))
 
 (define-public python-aiopg
