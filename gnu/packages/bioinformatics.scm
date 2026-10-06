@@ -21889,50 +21889,6 @@ datasets to ascertain that it achieves high sensitivity and specificity in
 multiple experimental contexts.")
     (license license:expat)))
 
-(define-public tbsp
-  (let ((commit "dc30c03868233c5504299c9cb0d7b2064ba9cb41")
-        (revision "2"))
-    (package
-      (name "tbsp")
-      (version (git-version "1.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/phoenixding/tbsp")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1im0bik2hxkcb7jzkcxp5nqb30hd8lfraxml6i5ik52j6z3qqln1"))))
-      (build-system pyproject-build-system)
-      (arguments
-       '(#:tests? #f ;no tests included
-         #:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'relax-requirements
-                      (lambda _
-                        (substitute* "setup.py"
-                          ((", <3.0")
-                           ""))))))) ;matplotlib
-      (inputs (list python-matplotlib
-                    python-networkx
-                    python-numpy
-                    python-pybigwig
-                    python-biopython-1.73
-                    python-scikit-learn
-                    python-scipy))
-      (native-inputs (list python-setuptools))
-      (home-page "https://github.com/phoenixding/tbsp/")
-      (synopsis "SNP-based trajectory inference")
-      (description
-       "Several studies focus on the inference of developmental and response
-trajectories from single cell RNA-Seq (scRNA-Seq) data.  A number of
-computational methods, often referred to as pseudo-time ordering, have been
-developed for this task.  CRISPR has also been used to reconstruct lineage
-trees by inserting random mutations.  The tbsp package implements an
-alternative method to detect significant, cell type specific sequence
-mutations from scRNA-Seq data.")
-      (license license:expat))))
-
 (define-public tabixpp
   (package
    (name "tabixpp")
