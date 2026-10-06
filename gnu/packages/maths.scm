@@ -671,6 +671,45 @@ triangulations.")
     (license (license:non-copyleft "file://COPYING.txt"
                                    "See COPYING in the distribution."))))
 
+(define-public qrupdate-ng
+  (package
+    (name "qrupdate-ng")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.mpi-magdeburg.mpg.de/koehlerm/qrupdate-ng")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x7wfib9v7fbq963dqqyimp7039g4nw3ycyzxmvxff47zp3azr4v"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list gfortran openblas))
+    (synopsis "Fortran library implementing matrix decomposition algorithms")
+    (description
+     "@code{Qrupdate-ng} is a Fortran library for fast updating of QR,
+Cholesky, and LU decompositions.  It supports the follwoing matrix
+decompositions:
+@enumerate
+@item QR rank-1 update (`qr1up`)
+@item QR column insert (`qrinc`)
+@item QR column delete (`qrdec`)
+@item QR column shift (`qrshc`)
+@item QR row insert (`qrinr`)
+@item QR row delete (`qrder`)
+@item Cholesky rank-1 update (`ch1up`)
+@item Cholesky rank-1 downdate (`ch1dn`)
+@item Cholesky symmetric insert (`chinx`)
+@item Cholesky symmetric insert (`chdex`)
+@item Cholesky symmetric shift (`chshx`)
+@item LU rank-1 update (`lu1up`)
+@item LU pivoted rank-1 update (`lup1up`)
+@end enumerate\n.")
+    (home-page "https://gitlab.mpi-magdeburg.mpg.de/koehlerm/qrupdate-ng")
+    (license license:gpl3+)))
+
 (define-public units
   (package
    (name "units")
