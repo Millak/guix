@@ -17,14 +17,84 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages taler)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu))
+
+(define-public robocop
+  (package
+    (name "robocop")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "git://git.taler.net/robocop.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09javwf0izasfa2480wp5x1rq64n9aqacnxrd7d2izd4rchb6hl6"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "robocop-json-postprocess"
+                (("exec jq")
+                 (string-append "exec " (search-input-file inputs "bin/jq"))))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (install-file (search-input-file (or native-inputs inputs)
+                                               "share/man/robocop.1.zst")
+                            (string-append #$output "/share/man"))))
+          (add-after 'install 'install-extra-scripts
+            (lambda _
+              (for-each (lambda (x)
+                          (install-file x (string-append #$output "/bin")))
+                        (list "robocop-ch-to-json"
+                              "robocop-eu-to-json"
+                              "robocop-un-to-json"
+                              "robocop-ofac-to-json"
+                              "robocop-uk-to-json"
+                              "robocop-json-postprocess"))))
+          (add-after 'install-extra-scripts 'wrap-python-path
+            (lambda* (#:key outputs #:allow-other-keys)
+              (for-each (lambda (x)
+                          (wrap-script (search-input-file
+                                        outputs (string-append "bin/" x))
+                            `("GUIX_PYTHONPATH" prefix
+                              (,(getenv "GUIX_PYTHONPATH")))))
+                        ;; All these are Python scripts that depend on the
+                        ;; lxml library.
+                        (list "robocop-ch-to-json"
+                              "robocop-eu-to-json"
+                              "robocop-un-to-json"
+                              "robocop-ofac-to-json"
+                              "robocop-uk-to-json")))))))
+    (native-inputs (list taler-docs))
+    (inputs (cons* jq
+                   guile-3.0            ;for wrap-script
+                   python
+                   python-lxml
+                   (cargo-inputs 'robocop)))
+    (home-page "https://www.taler.net/")
+    (synopsis "Counter Terrorist Financing (CTF) sanction processing tool")
+    (description "Robocop is a Counter Terrorist Financing (CTF) sanction
+processing tool.  It can be used for compliance processes in software such as
+@url{https://taler.net, GNU Taler}.")
+    (license license:gpl3+)))
 
 (define-public taler-docs
   ;; No tag or commit; use the latest commit.
