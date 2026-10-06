@@ -9315,27 +9315,28 @@ run.")
          "0pfsrgkg2dhb6a2rknciqskgxgmb9kf48rvbkhay9n8n6m712v2w"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "default"
-       ;; TODO: Figure out why test hangs.
-       #:tests? ,(not (or (%current-target-system)
-                          (target-riscv64?)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-dependencies
-           (lambda _
-             (substitute* "rubocop.gemspec"
-               (("'unicode\\-display\\_width'.*") "'unicode-display_width')\n"))))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))))
-         ;; Rubocop depends on itself for tests, directly and indirectly. By
-         ;; regenerating the TODO list we test rubocop against itself and
-         ;; forgo adjusting the test suite to our environment each release.
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (make-file-writable ".rubocop_todo.yml")
-               (invoke "./exe/rubocop" "--auto-gen-config")))))))
+     (list
+      #:test-target "default"
+      ;; TODO: Figure out why test hangs.
+      #:tests? (not (or (%current-target-system)
+                        (target-riscv64?)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-dependencies
+            (lambda _
+              (substitute* "rubocop.gemspec"
+                (("'unicode\\-display\\_width'.*") "'unicode-display_width')\n"))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          ;; Rubocop depends on itself for tests, directly and indirectly. By
+          ;; regenerating the TODO list we test rubocop against itself and
+          ;; forgo adjusting the test suite to our environment each release.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (make-file-writable ".rubocop_todo.yml")
+                (invoke "./exe/rubocop" "--auto-gen-config")))))))
     (native-inputs
      (list ruby-pry
            ruby-rake
