@@ -40,6 +40,7 @@
   #:autoload   (guix swh) (swh-download-directory %verify-swh-certificate?)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 suspendable-ports)
   #:export (%download-methods
             download-method-enabled?
 
