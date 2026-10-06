@@ -3721,6 +3721,7 @@ can solve two kinds of problems:
            pcre
            portaudio
            qhull
+           qrupdate-ng
            rapidjson
            readline
            suitesparse
