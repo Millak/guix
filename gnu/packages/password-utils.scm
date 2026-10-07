@@ -822,7 +822,6 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
     (arguments
      (list
       #:install-source? #f
-      #:rust rust-1.95
       #:features '(list "sqlite_system" "s3" "postgresql")
       ;; The build.rs script mandates the activation of a DB backend.
       #:cargo-test-flags
@@ -2530,19 +2529,10 @@ protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nsfl2sdb42a8r4pdazpq0pskkrm7wk5yg7zi1jhwr9iigjwhqrb"))
-       ;; The macro std::assert_matches! is unstable in Rust 1.95.
-       (modules '((guix build utils)))
-       (snippet
-        #~(substitute* "src/seed_password/keyring/mod.rs"
-            (("use std::assert_matches;")
-             "")
-            (("assert_matches!\\((.*)\\);" _ value+pattern)
-             (string-append "assert!(matches!(" value+pattern "));"))))))
+        (base32 "1nsfl2sdb42a8r4pdazpq0pskkrm7wk5yg7zi1jhwr9iigjwhqrb"))))
     (build-system cargo-build-system)
     (arguments
      (list
-      #:rust rust-1.95
       #:install-source? #f
       #:cargo-install-paths ''(".")
       #:cargo-test-flags
