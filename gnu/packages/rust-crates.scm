@@ -28245,6 +28245,10 @@ fn main() {
   (crate-source "redox_termios" "0.1.3"
                 "1jzifsj7fqyksz4325l3azfzpyv027kjabf93zcmass3p9q5c510"))
 
+(define rust-redox-termios-0.1.4
+  (crate-source "redox_termios" "0.1.4"
+                "070q8i103dkbyvh5cjw3fb74br00i0n7p5nhfhhi2qx561h7i50v"))
+
 (define rust-redox-users-0.3.5
   (crate-source "redox_users" "0.3.5"
                 "179fxmyqaqzibp533ajgbn4ljah9lrzpqvd3i73h55bs7qrkf1yy"))
@@ -67387,51 +67391,52 @@ fn main() {
                              rust-zerocopy-derive-0.8.52
                              rust-zmij-1.0.21))
                      (jless =>
-                            (list rust-aho-corasick-1.1.3
-                                  rust-anstream-0.6.18
-                                  rust-anstyle-1.0.10
-                                  rust-anstyle-parse-0.2.6
-                                  rust-anstyle-query-1.1.2
-                                  rust-anstyle-wincon-3.0.7
-                                  rust-autocfg-1.4.0
+                            (list rust-aho-corasick-1.1.5
+                                  rust-anstream-1.0.0
+                                  rust-anstyle-1.0.14
+                                  rust-anstyle-parse-1.0.0
+                                  rust-anstyle-query-1.1.5
+                                  rust-anstyle-wincon-3.0.11
+                                  rust-autocfg-1.5.1
                                   rust-beef-0.5.2
                                   rust-bitflags-1.3.2
-                                  rust-bitflags-2.9.0
+                                  rust-bitflags-2.13.2
                                   rust-block-0.1.6
-                                  rust-cc-1.2.19
+                                  rust-cc-1.6.0
                                   rust-cfg-if-0.1.10
-                                  rust-cfg-if-1.0.0
-                                  rust-clap-4.5.35
-                                  rust-clap-builder-4.5.35
-                                  rust-clap-derive-4.5.32
-                                  rust-clap-lex-0.7.4
+                                  rust-cfg-if-1.0.5
+                                  rust-clap-4.6.7
+                                  rust-clap-builder-4.6.7
+                                  rust-clap-derive-4.6.7
+                                  rust-clap-lex-1.1.1
                                   rust-clipboard-0.5.0
                                   rust-clipboard-win-2.2.0
                                   rust-clipboard-win-4.5.0
-                                  rust-colorchoice-1.0.3
+                                  rust-colorchoice-1.0.5
                                   rust-dirs-next-2.0.0
                                   rust-dirs-sys-next-0.1.2
                                   rust-endian-type-0.1.2
-                                  rust-errno-0.3.11
+                                  rust-errno-0.3.14
                                   rust-error-code-2.3.1
                                   rust-fd-lock-3.0.13
+                                  rust-find-msvc-tools-0.1.14
                                   rust-fnv-1.0.7
-                                  rust-getrandom-0.2.15
+                                  rust-getrandom-0.2.17
                                   rust-heck-0.5.0
                                   rust-indoc-1.0.9
-                                  rust-is-terminal-polyfill-1.70.1
+                                  rust-is-terminal-polyfill-1.70.2
                                   rust-isatty-0.1.9
-                                  rust-lazy-static-1.5.0
-                                  rust-libc-0.2.171
+                                  rust-lazy-static-1.5.1
+                                  rust-libc-0.2.190
                                   rust-libc-stdhandle-0.1.0
-                                  rust-libredox-0.1.3
+                                  rust-libredox-0.1.25
                                   rust-linked-hash-map-0.5.6
                                   rust-linux-raw-sys-0.4.15
-                                  rust-log-0.4.27
+                                  rust-log-0.4.34
                                   rust-logos-0.12.1
                                   rust-logos-derive-0.12.1
                                   rust-malloc-buf-0.0.6
-                                  rust-memchr-2.7.4
+                                  rust-memchr-2.8.3
                                   rust-memoffset-0.6.5
                                   rust-nibble-vec-0.1.0
                                   rust-nix-0.23.2
@@ -67439,42 +67444,45 @@ fn main() {
                                   rust-objc-0.2.7
                                   rust-objc-foundation-0.1.1
                                   rust-objc-id-0.1.1
-                                  rust-once-cell-1.21.3
-                                  rust-proc-macro2-1.0.94
-                                  rust-quote-1.0.40
+                                  rust-once-cell-polyfill-1.70.2
+                                  rust-proc-macro2-1.0.107
+                                  rust-quote-1.0.47
                                   rust-radix-trie-0.2.1
                                   rust-redox-syscall-0.1.57
                                   rust-redox-syscall-0.2.16
-                                  rust-redox-termios-0.1.3
+                                  rust-redox-termios-0.1.4
                                   rust-redox-users-0.4.6
-                                  rust-regex-1.11.1
-                                  rust-regex-automata-0.4.9
+                                  rust-regex-1.13.1
+                                  rust-regex-automata-0.4.18
                                   rust-regex-syntax-0.6.29
-                                  rust-regex-syntax-0.8.5
+                                  rust-regex-syntax-0.8.11
                                   rust-rustix-0.38.44
                                   rust-rustyline-9.1.2
                                   rust-scopeguard-1.2.0
-                                  rust-shlex-1.3.0
-                                  rust-signal-hook-0.3.17
-                                  rust-signal-hook-registry-1.4.2
-                                  rust-smallvec-1.15.0
+                                  rust-shlex-2.0.1
+                                  rust-signal-hook-0.3.18
+                                  rust-signal-hook-registry-1.4.8
+                                  rust-smallvec-1.16.2
                                   rust-str-buf-1.0.6
                                   rust-strsim-0.11.1
                                   rust-syn-1.0.109
-                                  rust-syn-2.0.100
+                                  rust-syn-2.0.119
+                                  rust-syn-3.0.6
                                   rust-termion-1.5.6
                                   rust-thiserror-1.0.69
                                   rust-thiserror-impl-1.0.69
-                                  rust-unicode-ident-1.0.18
-                                  rust-unicode-segmentation-1.12.0
+                                  rust-unicode-ident-1.0.26
+                                  rust-unicode-segmentation-1.13.3
                                   rust-unicode-width-0.1.14
                                   rust-utf8parse-0.2.2
-                                  rust-wasi-0.11.0+wasi-snapshot-preview1
+                                  rust-wasi-0.11.1+wasi-snapshot-preview1
                                   rust-winapi-0.3.9
                                   rust-winapi-i686-pc-windows-gnu-0.4.0
                                   rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                  rust-windows-link-0.2.1
                                   rust-windows-sys-0.48.0
                                   rust-windows-sys-0.59.0
+                                  rust-windows-sys-0.61.2
                                   rust-windows-targets-0.48.5
                                   rust-windows-targets-0.52.6
                                   rust-windows-aarch64-gnullvm-0.48.5
