@@ -3628,7 +3628,35 @@ modules and JavaScript.")
          "0fa96s2b1drnsbrwpfk17z3h88zy81w0c0l992fqms479d3w5lln"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f))
+     (list
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/sniffglue")
+                             (in-vicinity #$output "bin/sniffglue"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--gen-completions" shell))))))
+               '(("bash"   . "share/bash-completion/completions/sniffglue")
+                 ("elvish" . "share/elvish/lib/sniffglue")
+                 ("fish"   . "share/fish/vendor_completions.d/sniffglue.fish")
+                 ("zsh"    . "share/zsh/site-functions/_sniffglue"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
     (inputs
      (cons* libpcap libseccomp (cargo-inputs 'sniffglue)))
     (home-page "https://github.com/kpcyrd/sniffglue")
