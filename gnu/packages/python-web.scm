@@ -5124,6 +5124,161 @@ in Python 3.13 by PEP-594.")
      "This package implements MikroTik's @code{RouterOS} API.")
     (license license:gpl2+)))
 
+(define-public python-litestar
+  (package
+    (name "python-litestar")
+    (version "2.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/litestar-org/litestar")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yg49qjhhq2vv6qnn4b1sizp71vjl2qd16j44370n1af6fxzfssa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 3332 passed, 45 skipped, 1 xfailed, 8 warnings, 3 rerun
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--timeout=10"
+              "--reruns=3"
+              "--ignore=tests/e2e/"
+              "--ignore=tests/examples/"
+              "--ignore=tests/unit/test_middleware/"
+              "--ignore=tests/unit/test_plugins/"
+              ;; Tests hang.
+              "--ignore=tests/unit/test_testing/test_sub_client/"
+              ;; Tests miss optional dependencies.
+              "--ignore=tests/unit/test_app.py"
+              "--ignore=tests/unit/test_channels/test_backends.py"
+              "--ignore=tests/unit/test_contrib/test_minijinja.py"
+              "--ignore=tests/unit/test_contrib/test_opentelemetry.py"
+              "--ignore=tests/unit/test_contrib/test_prometheus.py"
+              "--ignore=tests/unit/test_contrib/test_sqlalchemy.py"
+              "--ignore=tests/unit/test_dto/test_factory/test_integration.py"
+              "--ignore=tests/unit/test_repository/test_generic_mock_repository.py"
+              "--ignore=tests/unit/test_template/test_built_in.py"
+              "--ignore=tests/unit/test_template/test_builtin_functions.py"
+              "--ignore=tests/unit/test_template/test_context.py"
+              "--ignore=tests/unit/test_template/test_csrf_token.py"
+              "--ignore=tests/unit/test_template/test_template.py"
+              "--ignore=tests/unit/test_testing/test_test_client.py"
+              ;; Tests require Docker.
+              "--ignore=tests/docker_service_fixtures.py"
+              ;; XXX: Tests need running Redis, PostgreSQL and Valkey.
+              "--ignore=tests/unit/test_stores.py"
+              "--ignore=tests/unit/test_channels/test_plugin.py"
+              ;; Assert 'export namespace API.
+              (string-append "--deselect=tests/unit/test_openapi/"
+                             "test_typescript_converter/"
+                             "test_converter.py"
+                             "::test_openapi_to_typescript_converter")
+              ;; Tests fail find correct version or on deprecation warnings.
+              #$@(map (lambda (ls) (string-append "--deselect=tests/unit/"
+                                                  (string-join ls "::")))
+                      '(("test_cli/test_suggestions.py"
+                         "test_suggest_version")
+                        ("test_connection/test_request.py"
+                         "test_request_headers")
+                        ("test_connection/test_websocket.py"
+                         "test_websocket_headers")
+                        ("test_deprecations.py"
+                         "test_contrib_minijnja_deprecation")
+                        ("test_deprecations.py"
+                         "test_minijinja_from_state_deprecation")))
+              "tests")))
+    (native-inputs
+     (list python-aiosqlite
+           python-asyncpg
+           ;; python-beanie                         ;not packaged yet in Guix
+           python-beautifulsoup4
+           python-fsspec
+           python-hatchling
+           python-httpx-sse
+           python-psutil
+           python-psycopg
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-lazy-fixtures
+           python-pytest-mock
+           python-pytest-rerunfailures
+           python-pytest-timeout
+           python-pytest-xdist
+           python-starlette
+           python-time-machine-2
+           python-trio))
+    (propagated-inputs
+     (list python-anyio
+           python-click
+           python-httpx
+           python-litestar-htmx
+           python-msgspec
+           python-multidict
+           python-multipart/defnull
+           python-polyfactory
+           python-pyyaml
+           python-rich
+           python-rich-click
+           python-sniffio
+           python-typing-extensions
+           ;; [optional]
+           python-advanced-alchemy
+           python-annotated-types
+           python-attrs
+           python-brotli
+           python-cryptography
+           python-email-validator
+           python-jinja2
+           python-jsbeautifier
+           python-mako
+           ;; python-minijinja                      ;not packaged yet in Guix
+           ;; python-opentelemetry-instrumentation-asgi
+           python-opentelemetry-sdk
+           python-piccolo
+           python-pydantic
+           python-pydantic-extra-types
+           python-pyjwt
+           python-redis
+           python-structlog
+           python-valkey
+           python-uvicorn))
+    (home-page "https://litestar.dev/")
+    (synopsis "Light ASGI framework")
+    (description
+     "Litestar is a powerful,flexible yet opinionated ASGI framework, focused
+on building APIs.  It offers high-performance data validation, dependency
+injection, first-class ORM integration, authorization primitives, a rich
+plugin API, middleware, and much more that's needed to get applications up and
+running.")
+    (license license:expat)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-litestar-minimal
+  (package/inherit python-litestar
+    (name "python-litestar-minimal")
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-anyio
+           python-click
+           python-httpx
+           python-litestar-htmx
+           python-msgspec
+           python-multidict
+           python-multipart/defnull
+           python-polyfactory
+           python-pyyaml
+           python-rich
+           python-rich-click
+           python-sniffio
+           python-typing-extensions))))
+
 (define-public python-litestar-htmx
   (package
     (name "python-litestar-htmx")
