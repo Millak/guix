@@ -941,7 +941,7 @@ UTF-32 support.")
                           "-f" "win64" "-i" "include/" "-i" "pregenerated/tmp/"
                           "-Xgnu" "-gcv8" script))
                 (find-files "pregenerated/tmp" "nasm\\.asm")))))))
-     (native-inputs (list clang-13 go gzip nasm perl python-minimal tar))
+     (native-inputs (list clang go gzip nasm perl python-minimal tar))
      (propagated-inputs (cargo-inputs 'rust-ring-0.17))
      (home-page "https://github.com/briansmith/ring")
      (synopsis "Safe, fast, small crypto using Rust")
