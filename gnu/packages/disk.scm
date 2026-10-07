@@ -1674,7 +1674,6 @@ are better handled by external tools.")
     (arguments
      (list
       #:install-source? #f
-      #:rust rust-1.95
       #:cargo-install-paths ''("yazi-cli"
                                "yazi-fm")
       #:phases
