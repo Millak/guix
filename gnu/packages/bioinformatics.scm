@@ -7144,7 +7144,12 @@ with Python.")
        (uri (crate-uri "deacon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m7r864mr30m2bpaax3l2hz14r8imbqyhj8iz9m2q362dh19xygm"))))
+        (base32 "1m7r864mr30m2bpaax3l2hz14r8imbqyhj8iz9m2q362dh19xygm"))
+       (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; Don't try to use a static xz.
+                  (substitute* "Cargo.toml"
+                    ((".*static.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      (list
