@@ -5145,14 +5145,14 @@ to navigate to the best match.")
 (define-public podlet
   (package
     (name "podlet")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "podlet" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j394gv9fpl1wii7l0v4y31mdni6r98l223wd6x2v3ia82091xg4"))))
+        (base32 "0izp9700f1qfn009bqh9d3087q3vvibhry1qf6bicd7v01pxm7z4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f))
