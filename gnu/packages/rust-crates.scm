@@ -93545,18 +93545,16 @@ fn main() {
                                                        rust-zstd-safe-7.2.4
                                                        rust-zstd-sys-2.0.16+zstd.1.5.7))
                      (rust-pcre2-utf32-0.2 =>
-                                           (list rust-bitflags-2.9.0
-                                                 rust-cc-1.2.18
-                                                 rust-cfg-if-1.0.0
-                                                 rust-getrandom-0.3.2
-                                                 rust-jobserver-0.1.33
-                                                 rust-libc-0.2.171
-                                                 rust-log-0.4.27
-                                                 rust-pkg-config-0.3.32
-                                                 rust-r-efi-5.2.0
-                                                 rust-shlex-1.3.0
-                                                 rust-wasi-0.14.2+wasi-0.2.4
-                                                 rust-wit-bindgen-rt-0.39.0))
+                                           (list rust-cc-1.6.0
+                                                 rust-cfg-if-1.0.5
+                                                 rust-find-msvc-tools-0.1.14
+                                                 rust-getrandom-0.4.3
+                                                 rust-jobserver-0.1.35
+                                                 rust-libc-0.2.190
+                                                 rust-log-0.4.34
+                                                 rust-pkg-config-0.3.34
+                                                 rust-r-efi-6.0.0
+                                                 rust-shlex-2.0.1))
                      (rust-pet-0.1.0.d5b5bb0 =>
                                              (list rust-ahash-0.8.12
                                               rust-aho-corasick-1.1.3
