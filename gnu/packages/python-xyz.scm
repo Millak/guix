@@ -18462,14 +18462,22 @@ functionalities with some extras.")
 (define-public python-ptyprocess
   (package
     (name "python-ptyprocess")
-    (version "0.7.0")
+    ;; Latest release is 6 years old and does not work with Python 3.13.
+    (properties '((commit . "12d3221806c0a7cf114b894101814b1f9e338ed4")
+                  (revision . "0")))
+    (version (git-version "0.7.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ptyprocess" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pexpect/ptyprocess")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "081j893x6c9qrfszp8swfqlpvk8agh1jc32y9140pvnf90xhlpaw"))))
+         "0svd00mrj51gwp5189bw5mzlnd1k6skh701rnsx7i95l3sd4fv2q"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core
