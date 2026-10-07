@@ -274,7 +274,8 @@
 
 (define rust-aead-0.6.0-rc.10
   (crate-source "aead" "0.6.0-rc.10"
-                "1zj3j31wxvpf0pd6f6bdq5kdik2ql1k7p2ga613v1ill4xvpwrbb"))
+                "1zj3j31wxvpf0pd6f6bdq5kdik2ql1k7p2ga613v1ill4xvpwrbb"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-aead-0.6.0-rc.2
   (crate-source "aead" "0.6.0-rc.2"
@@ -332,7 +333,8 @@
 
 (define rust-age-0.11.2
   (crate-source "age" "0.11.2"
-                "0jrww5srig0qila8xqd86sa8l2gnk2vslbqg3xpp8nc9cpkhnr5z"))
+                "0jrww5srig0qila8xqd86sa8l2gnk2vslbqg3xpp8nc9cpkhnr5z"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-age-0.11.3
   (crate-source "age" "0.11.3"
@@ -1232,7 +1234,8 @@
 
 (define rust-askama-parser-0.15.6
   (crate-source "askama_parser" "0.15.6"
-                "0s78gcpbls3cq7zcfk0ql1ccp1ab8hjkjnhbkja7gbx33dlz62jx"))
+                "0s78gcpbls3cq7zcfk0ql1ccp1ab8hjkjnhbkja7gbx33dlz62jx"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-askama-parser-0.2.1
   (crate-source "askama_parser" "0.2.1"
@@ -2195,7 +2198,8 @@
 (define rust-aws-lc-sys-0.44.0
   ;; TODO: Unbundle aws-lc.
   (crate-source "aws-lc-sys" "0.44.0"
-                "10vlwayxyylnn4vs57xs0iy0rp76k50v7zbabkh78cdvx1xsx7zh"))
+                "10vlwayxyylnn4vs57xs0iy0rp76k50v7zbabkh78cdvx1xsx7zh"
+                #:snippet '(delete-file-recursively "builder/prebuilt-nasm")))
 
 (define rust-aws-lc-sys-0.45.0
   ;; TODO: Unbundle aws-lc.
@@ -2979,7 +2983,8 @@
 
 (define rust-binseq-0.9.6
   (crate-source "binseq" "0.9.6"
-                "0gbmn7smpiz42phpssn0sqvfrn0v1dk28grpvirh0vi9qd3ixsjz"))
+                "0gbmn7smpiz42phpssn0sqvfrn0v1dk28grpvirh0vi9qd3ixsjz"
+                #:snippet '(delete-file-recursively "data")))
 
 (define rust-binstall-tar-0.4.42
   (crate-source "binstall-tar" "0.4.42"
@@ -4499,7 +4504,8 @@ fn main() {
 (define rust-cargo-0.83.0
   (crate-source "cargo" "0.83.0"
                 "0yvb3vh87ngrfsgvl6r2drjrq5h1yw07yhq6c6kc39wmigc1z4l2"
-                #:snippet '(delete-file-recursively "benches")))
+                #:snippet '(for-each delete-file-recursively
+                                     '("benches" "src/doc"))))
 
 (define rust-cargo-0.94.0
   (crate-source "cargo" "0.94.0"
@@ -4803,7 +4809,8 @@ fn main() {
 
 (define rust-cbc-0.2.1
   (crate-source "cbc" "0.2.1"
-                "15l8zvdhfazl994ijjww6b8z0p4a7jrqhb44xc5ixlc8bzpcjbff"))
+                "15l8zvdhfazl994ijjww6b8z0p4a7jrqhb44xc5ixlc8bzpcjbff"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-cbindgen-0.25.0
   (crate-source "cbindgen" "0.25.0"
@@ -5200,7 +5207,8 @@ fn main() {
 
 (define rust-chacha20-0.10.1
   (crate-source "chacha20" "0.10.1"
-                "108aajbvs3rwl4d0pdvq3p8ydy4pwh0rxy2z265ynwkflrmla96m"))
+                "108aajbvs3rwl4d0pdvq3p8ydy4pwh0rxy2z265ynwkflrmla96m"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-chacha20-0.10.2
   (crate-source "chacha20" "0.10.2"
@@ -8260,7 +8268,8 @@ fn main() {
 
 (define rust-cxx-1.0.189
   (crate-source "cxx" "1.0.189"
-                "0j8s999k3xjl926q6cxmmbcl9vp7pvhbmvrpkd6r9rp3ww0qcy1b"))
+                "0j8s999k3xjl926q6cxmmbcl9vp7pvhbmvrpkd6r9rp3ww0qcy1b"
+                #:snippet '(delete-file-recursively "book")))
 
 (define rust-cxx-1.0.194
   (crate-source "cxx" "1.0.194"
@@ -8269,7 +8278,8 @@ fn main() {
 
 (define rust-cxx-1.0.196
   (crate-source "cxx" "1.0.196"
-                "1yx83byx4rap2g2ms6irxp2jd6rsvsj5i0vwxh5an9h8xl48jvxc"))
+                "1yx83byx4rap2g2ms6irxp2jd6rsvsj5i0vwxh5an9h8xl48jvxc"
+                #:snippet '(delete-file-recursively "book")))
 
 (define rust-cxx-1.0.199
   (crate-source "cxx" "1.0.199"
@@ -9903,7 +9913,8 @@ fn main() {
 
 (define rust-ecdsa-0.17.0-rc.16
   (crate-source "ecdsa" "0.17.0-rc.16"
-                "0a8q1svkargsaw193nr6ma0ydqd3c2kl7p6qraplz21rf4vxvfwi"))
+                "0a8q1svkargsaw193nr6ma0ydqd3c2kl7p6qraplz21rf4vxvfwi"
+                #:snippet '(delete-file-recursively "src/test_vectors")))
 
 (define rust-ece-2.3.1
   (crate-source "ece" "2.3.1"
@@ -9959,7 +9970,8 @@ fn main() {
 
 (define rust-ed25519-3.0.0-rc.4
   (crate-source "ed25519" "3.0.0-rc.4"
-                "146qv6lsjvbkzw0z12xbwccw0fn64hp5a459rs2v1v1dqp3i9sf6"))
+                "146qv6lsjvbkzw0z12xbwccw0fn64hp5a459rs2v1v1dqp3i9sf6"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-ed25519-compact-2.2.0
   (crate-source "ed25519-compact" "2.2.0"
@@ -9999,7 +10011,8 @@ fn main() {
 
 (define rust-ed25519-dalek-3.0.0-pre.6
   (crate-source "ed25519-dalek" "3.0.0-pre.6"
-                "16vlsiy5w7j3c5f43yq7xxsapvj6bbkhlrmai3qj9g6kqfj1hdh5"))
+                "16vlsiy5w7j3c5f43yq7xxsapvj6bbkhlrmai3qj9g6kqfj1hdh5"
+                #:snippet '(for-each delete-file-recursively '("docs" "tests"))))
 
 (define rust-edit-0.1.5
   (crate-source "edit" "0.1.5"
@@ -10123,7 +10136,8 @@ fn main() {
 
 (define rust-elliptic-curve-0.14.0-rc.28
   (crate-source "elliptic-curve" "0.14.0-rc.28"
-                "0y0r0g05i830sphkg9kjh3vinckk0yd9yvdxsqpj4vb08h2qdrxx"))
+                "0y0r0g05i830sphkg9kjh3vinckk0yd9yvdxsqpj4vb08h2qdrxx"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-elsa-1.11.2
   (crate-source "elsa" "1.11.2"
@@ -11668,7 +11682,8 @@ fn main() {
 
 (define rust-fontdue-0.7.3
   (crate-source "fontdue" "0.7.3"
-                "1g7rh4nn0as484hrwr48ybxz0kw072jl6854bvv3qr37fl9zb4q7"))
+                "1g7rh4nn0as484hrwr48ybxz0kw072jl6854bvv3qr37fl9zb4q7"
+                #:snippet '(delete-file-recursively "images")))
 
 (define rust-fontdue-0.9.3
   (crate-source "fontdue" "0.9.3"
@@ -16551,7 +16566,8 @@ fn main() {
 
 (define rust-hdrhistogram-7.6.0
   (crate-source "hdrhistogram" "7.6.0"
-                "1slbyz1wjs00r0qv5v2vqjii9ab8gvybziczrzrhm3vhyi9i17gl"))
+                "1slbyz1wjs00r0qv5v2vqjii9ab8gvybziczrzrhm3vhyi9i17gl"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-headers-0.3.9
   (crate-source "headers" "0.3.9"
@@ -18103,7 +18119,8 @@ fn main() {
 
 (define rust-imgref-1.12.0
   (crate-source "imgref" "1.12.0"
-                "1j3iwdal9mdkmyrsms3lz4n1bxxxjxss2jvbmh662fns63fcxig7"))
+                "1j3iwdal9mdkmyrsms3lz4n1bxxxjxss2jvbmh662fns63fcxig7"
+                #:snippet '(delete-file "imgref.png")))
 
 (define rust-imgref-1.12.1
   (crate-source "imgref" "1.12.1"
@@ -18814,11 +18831,13 @@ fn main() {
 
 (define rust-is-executable-1.0.5
   (crate-source "is_executable" "1.0.5"
-                "1i78ss45h94nwabbn6ki64a91djlli8zdwwbh56jj9kvhssbiaxs"))
+                "1i78ss45h94nwabbn6ki64a91djlli8zdwwbh56jj9kvhssbiaxs"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-is-executable-1.0.6
   (crate-source "is_executable" "1.0.6"
-                "1gdqraq6f5vbfdsk7r9s2g08z9fwp50wc2327g36iaaxcygnmjw2"))
+                "1gdqraq6f5vbfdsk7r9s2g08z9fwp50wc2327g36iaaxcygnmjw2"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-is-macro-0.2.2
   (crate-source "is-macro" "0.2.2"
@@ -19394,7 +19413,6 @@ fn main() {
                 "0g1baplabbdk2yd525w13h6smc294aip9gvkyqy825nx38l3xpf7"))
 
 (define rust-js-sys-0.3.100
-  ;; TODO REVIEW: Check bundled sources.
   (crate-source "js-sys" "0.3.100"
                 "0qi1wjakyw2rx9wwprcfx77g3lvn1b8n6yvfhj2pgym4swh5y0pj"))
 
@@ -19403,7 +19421,6 @@ fn main() {
                 "0cgxklnyrfpzvf32cvdl3x5d070kfsv7ykdxfl3yizwdjqq4rl03"))
 
 (define rust-js-sys-0.3.103
-  ;; TODO REVIEW: Check bundled sources.
   (crate-source "js-sys" "0.3.103"
                 "00lib0b6hqmw56r2hjp7xrv730qacslirbkdlhvmi39zvgy4pd2k"))
 
@@ -19937,7 +19954,8 @@ fn main() {
 
 (define rust-kube-client-3.1.0
   (crate-source "kube-client" "3.1.0"
-                "0h6xlwrjg07npsdr0rgxiyp6f9q27hryi0ndsh2ih7m9y78z5jhg"))
+                "0h6xlwrjg07npsdr0rgxiyp6f9q27hryi0ndsh2ih7m9y78z5jhg"
+                #:snippet '(delete-file-recursively "src/config/test_data")))
 
 (define rust-kube-core-3.1.0
   (crate-source "kube-core" "3.1.0"
@@ -20585,7 +20603,8 @@ fn main() {
 
 (define rust-libflate-2.3.1
   (crate-source "libflate" "2.3.1"
-                "0v6py6c774fsmk0ksx6qlqd7qwn5plncbl8z58amg3km1rq9pnm4"))
+                "0v6py6c774fsmk0ksx6qlqd7qwn5plncbl8z58amg3km1rq9pnm4"
+                #:snippet '(delete-file-recursively "data")))
 
 (define rust-libflate-2.3.2
   (crate-source "libflate" "2.3.2"
@@ -21368,7 +21387,8 @@ fn main() {
 
 (define rust-lightningcss-1.0.0-alpha.72
   (crate-source "lightningcss" "1.0.0-alpha.72"
-                "0d6rqyl7l7ydv0xxaw6ls8anygahdkvlnpi91hfzxzg8jq7pc6yk"))
+                "0d6rqyl7l7ydv0xxaw6ls8anygahdkvlnpi91hfzxzg8jq7pc6yk"
+                #:snippet '(delete-file-recursively "website")))
 
 (define rust-lightningcss-derive-1.0.0-alpha.43
   (crate-source "lightningcss-derive" "1.0.0-alpha.43"
@@ -21904,7 +21924,8 @@ fn main() {
 
 (define rust-lopdf-0.38.0
   (crate-source "lopdf" "0.38.0"
-                "12f2zlrn0brzln93yyw7bs3zka11qcq41v5cl5rd4g5wlbg4y667"))
+                "12f2zlrn0brzln93yyw7bs3zka11qcq41v5cl5rd4g5wlbg4y667"
+                #:snippet '(delete-file-recursively "assets")))
 
 (define rust-loupe-0.1.3
   (crate-source "loupe" "0.1.3"
@@ -25468,7 +25489,8 @@ fn main() {
 
 (define rust-openssl-0.10.71
   (crate-source "openssl" "0.10.71"
-                "1kgvk6wi57bacn6b5z6b57vkyd2j85s6vyxhvj7jbkcqd861652y"))
+                "1kgvk6wi57bacn6b5z6b57vkyd2j85s6vyxhvj7jbkcqd861652y"
+                #:snippet '(delete-file-recursively "test")))
 
 (define rust-openssl-0.10.72
   (crate-source "openssl" "0.10.72"
@@ -25551,9 +25573,19 @@ fn main() {
 (define rust-openssl-src-300.6.1+3.6.3 #f)
 
 (define rust-openssl-sys-0.9.106
-  ;; TODO REVIEW: Check bundled sources.
   (crate-source "openssl-sys" "0.9.106"
-                "1pbwfy5x8znchsbqf7rnkdbdhw1fis5hpx3940y9xhqwh6lixdlb"))
+                "1pbwfy5x8znchsbqf7rnkdbdhw1fis5hpx3940y9xhqwh6lixdlb"
+                #:snippet
+                #~(begin
+                    ;; Remove dependency on boringssl and vendor openssl source.
+                    (substitute* "Cargo.toml.orig"
+                      (("vendored = .*") "vendored = []\n")
+                      ((".*bssl.*") "")
+                      ((".*openssl-src.*") "")
+                      ;; Allow any version of bindgen.
+                      (("(bindgen = \\{ version =) \".*\"," _ bindgen)
+                       (string-append bindgen "\"*\",")))
+                    (copy-file "Cargo.toml.orig" "Cargo.toml"))))
 
 (define rust-openssl-sys-0.9.107
   (crate-source "openssl-sys" "0.9.107"
@@ -26142,7 +26174,9 @@ fn main() {
 
 (define rust-p256-0.14.0-rc.7
   (crate-source "p256" "0.14.0-rc.7"
-                "0a5ds80rlf0bd31s5i39sgy0kvim20j22ncq7sl71z85dswgp2q1"))
+                "0a5ds80rlf0bd31s5i39sgy0kvim20j22ncq7sl71z85dswgp2q1"
+                #:snippet '(for-each delete-file-recursively
+                                     '("src/test_vectors" "tests"))))
 
 (define rust-p384-0.13.1
   (crate-source "p384" "0.13.1"
@@ -26151,7 +26185,8 @@ fn main() {
 
 (define rust-p384-0.14.0-rc.7
   (crate-source "p384" "0.14.0-rc.7"
-                "08z4gk8dfl6ka2rwa5fw7inqvpmapkf9kd9apryrbx8ih9ldz4cc"))
+                "08z4gk8dfl6ka2rwa5fw7inqvpmapkf9kd9apryrbx8ih9ldz4cc"
+                #:snippet '(delete-file-recursively "src/test_vectors")))
 
 (define rust-p521-0.13.3
   (crate-source "p521" "0.13.3"
@@ -26160,7 +26195,8 @@ fn main() {
 
 (define rust-p521-0.14.0-rc.7
   (crate-source "p521" "0.14.0-rc.7"
-                "0b4yv41fa603iw6fms3jm1akv6k9basa2y6c6sfm88p53m2xjv6y"))
+                "0b4yv41fa603iw6fms3jm1akv6k9basa2y6c6sfm88p53m2xjv6y"
+                #:snippet '(delete-file-recursively "src/test_vectors")))
 
 (define rust-packed-seq-4.4.2
   (crate-source "packed-seq" "4.4.2"
@@ -26373,7 +26409,8 @@ fn main() {
 
 (define rust-paraseq-0.5.0
   (crate-source "paraseq" "0.5.0"
-                "05q4vavzjbk4bab96sr11yxnjhg0w7zv9jl65fnza5a96j3zflf7"))
+                "05q4vavzjbk4bab96sr11yxnjhg0w7zv9jl65fnza5a96j3zflf7"
+                #:snippet '(delete-file-recursively "data")))
 
 (define rust-paraseq-0.6.0
   (crate-source "paraseq" "0.6.0"
@@ -27175,7 +27212,8 @@ fn main() {
 
 (define rust-piet-0.6.2
   (crate-source "piet" "0.6.2"
-                "1cai6hcsxs3k77akxcb68vhlpbwfx9cvfqkda1x03qm3j1j1i0g3"))
+                "1cai6hcsxs3k77akxcb68vhlpbwfx9cvfqkda1x03qm3j1j1i0g3"
+                #:snippet '(delete-file-recursively "snapshots/resources")))
 
 (define rust-piet-cairo-0.6.2
   (crate-source "piet-cairo" "0.6.2"
@@ -27394,7 +27432,8 @@ fn main() {
 
 (define rust-pkcs1-0.8.0-rc.4
   (crate-source "pkcs1" "0.8.0-rc.4"
-                "13h813hfymmlrvrvqy7azas525sf37chy5lg0km9dbvr4yajwvcq"))
+                "13h813hfymmlrvrvqy7azas525sf37chy5lg0km9dbvr4yajwvcq"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-pkcs5-0.7.1
   (crate-source "pkcs5" "0.7.1"
@@ -27403,7 +27442,8 @@ fn main() {
 
 (define rust-pkcs5-0.8.0-rc.13
   (crate-source "pkcs5" "0.8.0-rc.13"
-                "1mldknaqccdxzkws8c7if680vwpq6dhkzkmk0javqr36wb37g9y5"))
+                "1mldknaqccdxzkws8c7if680vwpq6dhkzkmk0javqr36wb37g9y5"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-pkcs8-0.10.2
   (crate-source "pkcs8" "0.10.2"
@@ -28702,19 +28742,23 @@ fn main() {
 
 (define rust-pyo3-0.24.2
   (crate-source "pyo3" "0.24.2"
-                "06cjzkam3xsxi8q1l4pxi45gya8jb6mhr8isn411mcb6yfc3a875"))
+                "06cjzkam3xsxi8q1l4pxi45gya8jb6mhr8isn411mcb6yfc3a875"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-0.25.0
   (crate-source "pyo3" "0.25.0"
-                "19277ka0xfam1sljmm5129iars41nbqpflpqzqxfgkiv6rbdcfgj"))
+                "19277ka0xfam1sljmm5129iars41nbqpflpqzqxfgkiv6rbdcfgj"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-0.25.1
   (crate-source "pyo3" "0.25.1"
-                "0ak85gkxs2ylrpbgyq1ksk24asvbsxgzqxh38gis6a06zs5afw49"))
+                "0ak85gkxs2ylrpbgyq1ksk24asvbsxgzqxh38gis6a06zs5afw49"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-0.26.0
   (crate-source "pyo3" "0.26.0"
-                "10vkw1a27ymxbi5rrcp71k9q645ybbjdli20akk1w40j89zi383v"))
+                "10vkw1a27ymxbi5rrcp71k9q645ybbjdli20akk1w40j89zi383v"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-0.27.2
   (crate-source "pyo3" "0.27.2"
@@ -28733,11 +28777,13 @@ fn main() {
 
 (define rust-pyo3-0.29.0
   (crate-source "pyo3" "0.29.0"
-                "0707cvmc6h6hbhsj8wr8d5gl5nqy5jb8fxd4l0kgqjqxn984c9yd"))
+                "0707cvmc6h6hbhsj8wr8d5gl5nqy5jb8fxd4l0kgqjqxn984c9yd"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-0.29.2
   (crate-source "pyo3" "0.29.2"
-                "12qy2y44mfk21p3q451miv0vibx8540nfrxhp5i2dqvkyknxv226"))
+                "12qy2y44mfk21p3q451miv0vibx8540nfrxhp5i2dqvkyknxv226"
+                #:snippet '(delete-file-recursively "branding")))
 
 (define rust-pyo3-async-runtimes-0.24.0
   (crate-source "pyo3-async-runtimes" "0.24.0"
@@ -31037,7 +31083,8 @@ fn main() {
 
 (define rust-rsa-0.10.0-rc.16
   (crate-source "rsa" "0.10.0-rc.16"
-                "1pikq8aqmhzz01lp9mx54bh5rw3zww7syfv2jck6m7nx3s6gvfbg"))
+                "1pikq8aqmhzz01lp9mx54bh5rw3zww7syfv2jck6m7nx3s6gvfbg"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-rsa-0.9.0-pre.0
   (crate-source "rsa" "0.9.0-pre.0"
@@ -32138,7 +32185,8 @@ fn main() {
 
 (define rust-salsa20-0.11.0
   (crate-source "salsa20" "0.11.0"
-                "0b74lra7k6xx8pdamqg9z40hyjq7my75hv50fl9zy815wxb491rg"))
+                "0b74lra7k6xx8pdamqg9z40hyjq7my75hv50fl9zy815wxb491rg"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-salsa20-0.11.0-rc.1
   (crate-source "salsa20" "0.11.0-rc.1"
@@ -32506,7 +32554,8 @@ fn main() {
 
 (define rust-sec1-0.8.1
   (crate-source "sec1" "0.8.1"
-                "0k8fm3c0j2hb9bs5mgnksk9g75ny65w50bhjyzjkq80r5xy46vfm"))
+                "0k8fm3c0j2hb9bs5mgnksk9g75ny65w50bhjyzjkq80r5xy46vfm"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-seccomp-sys-0.1.3
   (crate-source "seccomp-sys" "0.1.3"
@@ -33864,7 +33913,8 @@ fn main() {
 
 (define rust-simd-cesu8-1.2.0
   (crate-source "simd_cesu8" "1.2.0"
-                "0865mv3nmd35f1dccjcfj7dncjmmvvdij3j61z4131mz38jiw0qi"))
+                "0865mv3nmd35f1dccjcfj7dncjmmvvdij3j61z4131mz38jiw0qi"
+                #:snippet '(delete-file-recursively "img")))
 
 (define rust-simd-helpers-0.1.0
   (crate-source "simd_helpers" "0.1.0"
@@ -34243,7 +34293,8 @@ fn main() {
 
 (define rust-smol-1.3.0
   (crate-source "smol" "1.3.0"
-                "18c7d7n9dl5h0isf81cs0g3ly3zp54lmj76z1zgghiw4rm4bbwhk"))
+                "18c7d7n9dl5h0isf81cs0g3ly3zp54lmj76z1zgghiw4rm4bbwhk"
+                #:snippet '(delete-file-recursively "examples")))
 
 (define rust-smol-2.0.2
   (crate-source "smol" "2.0.2"
@@ -44858,7 +44909,8 @@ fn main() {
 
 (define rust-zlib-rs-0.6.4
   (crate-source "zlib-rs" "0.6.4"
-                "1qwl1yj7d45ib4xf3xqnjf38x6j7m76w3dxnyq1h825aikdlfwwp"))
+                "1qwl1yj7d45ib4xf3xqnjf38x6j7m76w3dxnyq1h825aikdlfwwp"
+                #:snippet '(delete-file-recursively "src/deflate/test-data")))
 
 (define rust-zlib-rs-0.6.5
   (crate-source "zlib-rs" "0.6.5"
