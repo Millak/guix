@@ -99689,38 +99689,43 @@ fn main() {
                                  rust-zerocopy-0.8.24
                                  rust-zerocopy-derive-0.8.24))
                      (snafu =>
-                            (list rust-android-tzdata-0.1.1
-                                  rust-android-system-properties-0.1.5
-                                  rust-autocfg-1.4.0
-                                  rust-bumpalo-3.17.0
-                                  rust-cc-1.2.19
-                                  rust-cfg-if-1.0.0
-                                  rust-chrono-0.4.40
+                            (list rust-android-system-properties-0.1.6
+                                  rust-autocfg-1.5.1
+                                  rust-bumpalo-3.20.3
+                                  rust-cc-1.6.0
+                                  rust-cfg-if-1.0.5
+                                  rust-chrono-0.4.45
                                   rust-core-foundation-sys-0.8.7
-                                  rust-iana-time-zone-0.1.63
+                                  rust-find-msvc-tools-0.1.14
+                                  rust-futures-core-0.3.34
+                                  rust-futures-task-0.3.34
+                                  rust-futures-util-0.3.34
+                                  rust-iana-time-zone-0.1.65
                                   rust-iana-time-zone-haiku-0.1.2
-                                  rust-js-sys-0.3.77
-                                  rust-libc-0.2.171
-                                  rust-log-0.4.27
+                                  rust-js-sys-0.3.106
+                                  rust-libc-0.2.190
+                                  rust-log-0.4.34
                                   rust-num-traits-0.2.19
-                                  rust-once-cell-1.21.3
-                                  rust-proc-macro2-1.0.94
-                                  rust-quote-1.0.40
-                                  rust-rustversion-1.0.20
-                                  rust-shlex-1.3.0
-                                  rust-syn-2.0.100
-                                  rust-unicode-ident-1.0.18
-                                  rust-wasm-bindgen-0.2.100
-                                  rust-wasm-bindgen-backend-0.2.100
-                                  rust-wasm-bindgen-macro-0.2.100
-                                  rust-wasm-bindgen-macro-support-0.2.100
-                                  rust-wasm-bindgen-shared-0.2.100
-                                  rust-windows-core-0.61.0
-                                  rust-windows-implement-0.60.0
-                                  rust-windows-interface-0.59.1
-                                  rust-windows-link-0.1.1
-                                  rust-windows-result-0.3.2
-                                  rust-windows-strings-0.4.0))
+                                  rust-once-cell-1.21.4
+                                  rust-pin-project-lite-0.2.17
+                                  rust-proc-macro2-1.0.107
+                                  rust-quote-1.0.47
+                                  rust-rustversion-1.0.23
+                                  rust-shlex-2.0.1
+                                  rust-slab-0.4.12
+                                  rust-syn-2.0.119
+                                  rust-syn-3.0.6
+                                  rust-unicode-ident-1.0.26
+                                  rust-wasm-bindgen-0.2.129
+                                  rust-wasm-bindgen-macro-0.2.129
+                                  rust-wasm-bindgen-macro-support-0.2.129
+                                  rust-wasm-bindgen-shared-0.2.129
+                                  rust-windows-core-0.62.2
+                                  rust-windows-implement-0.60.2
+                                  rust-windows-interface-0.59.3
+                                  rust-windows-link-0.2.1
+                                  rust-windows-result-0.4.1
+                                  rust-windows-strings-0.5.1))
                      (snapshot =>
                                (list rust-aho-corasick-1.1.4
                                      rust-allocator-api2-0.2.21
