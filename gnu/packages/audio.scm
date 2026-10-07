@@ -2870,18 +2870,18 @@ also play midifiles using a Soundfont.")
 (define-public faac
   (package
     (name "faac")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/knik0/faac")
+              (url "https://github.com/FreewareAdvancedAudio/faac")
               (commit (string-append "faac-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rz7dqa4fhip1x5b43s1imn5zvirm4dphi191zg6b54dyqs0vpzs"))))
+        (base32 "1gwjhlpxs26pjk7p5fj47cgqq0fdhcvkxy1ngd4c5q13494i0xrb"))))
     (build-system meson-build-system)
-    (home-page "https://github.com/knik0/faac")
+    (home-page "https://freewareadvancedaudio.github.io/docs/faac")
     (synopsis "Freeware Advanced Audio Codec")
     (description
      "FAAC is a dependency-free @acronym{AAC, Advanced Audio Coding} encoder.")
