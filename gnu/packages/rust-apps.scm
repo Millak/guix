@@ -3405,50 +3405,40 @@ representations.")
     (arguments
      (list
       #:install-source? #f
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'install-manual-page
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (man (string-append out "/share/man/man1")))
-                         (mkdir-p man)
-                         (invoke "a2x"
-                                 "--no-xmllint"
-                                 "--doctype=manpage"
-                                 "--format=manpage"
-                                 "man/procs.1.adoc"
-                                 (string-append "--destination-dir=" man)))))
-                   (add-after 'install 'install-shell-completions
-                     (lambda* (#:key native-inputs outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (share (string-append out "/share"))
-                              (bash-completions-dir
-                               (string-append out "/etc/bash_completion.d/"))
-                              (zsh-completions-dir
-                               (string-append share "/zsh/site-functions"))
-                              (fish-completions-dir
-                               (string-append share "/fish/vendor_completions.d"))
-                              (elvish-completions-dir
-                               (string-append share "/elvish/lib"))
-                              (procs (if #$(%current-target-system)
-                                         (search-input-file native-inputs "/bin/procs")
-                                         (string-append out "/bin/procs"))))
-                         (for-each mkdir-p
-                                   (list bash-completions-dir
-                                         zsh-completions-dir
-                                         fish-completions-dir
-                                         elvish-completions-dir))
-                         (with-output-to-file
-                           (string-append bash-completions-dir "/procs")
-                           (lambda _ (invoke procs "--gen-completion-out" "bash")))
-                         (with-output-to-file
-                           (string-append zsh-completions-dir "/_procs")
-                           (lambda _ (invoke procs "--gen-completion-out" "zsh")))
-                         (with-output-to-file
-                           (string-append fish-completions-dir "/procs.fish")
-                           (lambda _ (invoke procs "--gen-completion-out" "fish")))
-                         (with-output-to-file
-                           (string-append elvish-completions-dir "/procs")
-                           (lambda _ (invoke procs "--gen-completion-out" "elvish")))))))))
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-manual-page
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (man (string-append out "/share/man/man1")))
+                (mkdir-p man)
+                (invoke "a2x"
+                        "--no-xmllint"
+                        "--doctype=manpage"
+                        "--format=manpage"
+                        "man/procs.1.adoc"
+                        (string-append "--destination-dir=" man)))))
+          (add-after 'install 'install-shell-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/procs")
+                             (in-vicinity #$output "bin/procs"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--gen-completion-out" shell))))))
+               '(("bash"   . "share/bash-completion/completions/procs")
+                 ("elvish" . "share/elvish/lib/procs")
+                 ("fish"   . "share/fish/vendor_completions.d/procs.fish")
+                 ("zsh"    . "share/zsh/site-functions/_procs"))))))))
     (native-inputs
      (append
        (if (%current-target-system)
