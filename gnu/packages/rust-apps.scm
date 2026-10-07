@@ -3393,14 +3393,14 @@ representations.")
 (define-public procs
   (package
     (name "procs")
-    (version "0.14.10")
+    (version "0.14.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s2vnfsfrzkqamd0xn7p1gh9m6ja3riksc4waw89hvjph9wng8pn"))))
+        (base32 "0q3js7sdhwrd91aj0sjx8sbr0xwf5xl8ryfrqv8rn3djb5yjklg2"))))
     (build-system cargo-build-system)
     (arguments
      (list
