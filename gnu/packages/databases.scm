@@ -836,6 +836,55 @@ this package in a more convenient interface, and should be preferred where
 they exist.")
     (license license:asl2.0)))
 
+(define-public python-advanced-alchemy
+  (package
+    (name "python-advanced-alchemy")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/litestar-org/advanced-alchemy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mbxqqs0adi7gnxki79drzb859ij6dinq5xgb09yq2b6mf12s34q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Run bare minimal sub-portion of unit tests.
+     (list
+      #:test-flags
+      #~(list "-m" "unit"
+              "--ignore=tests/integration/"
+              "--ignore=tests/unit/test_extensions/"
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-custom-test-configuration
+            (lambda _
+              (delete-file "tests/conftest.py"))))))
+    (native-inputs
+     (list python-hatchling
+           python-click
+           python-msgspec
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-lazy-fixtures
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-alembic
+           python-greenlet
+           python-sqlalchemy-2
+           python-typing-extensions))
+    (home-page "https://advanced-alchemy.litestar.dev/latest/")
+    (synopsis "Ready-to-go SQLAlchemy concoctions")
+    (description
+     "This package provides an optimized companion library for SQLAlchemy with
+base classes, mixins, custom column types, and implementations of the
+repository and service layer patterns to simplify your database operations.")
+    (license license:expat)))
+
 ;; XXX: This project was archived by the owner on Apr 15, 2025. It is now
 ;; read-only.
 (define-public python-prisma
