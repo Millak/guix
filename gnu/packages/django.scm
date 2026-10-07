@@ -1200,6 +1200,16 @@ for Django sites.")
 It works by storing email in the database for later sending.")
     (license license:expat)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-django-minimal
+  (package/inherit python-django
+    (name "python-django-minimal")
+     (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-asgiref python-sqlparse))))
+
 (define-public python-django-contrib-comments
   (package
     (name "python-django-contrib-comments")
