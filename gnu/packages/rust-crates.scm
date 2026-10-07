@@ -77377,30 +77377,31 @@ fn main() {
                                  rust-zvariant-derive-5.10.1
                                  rust-zvariant-utils-3.3.1))
                      (nitrocli =>
-                               (list rust-aho-corasick-1.1.3
-                                     rust-anyhow-1.0.97
-                                     rust-autocfg-1.4.0
+                               (list rust-aho-corasick-1.1.5
+                                     rust-anyhow-1.0.104
+                                     rust-autocfg-1.5.1
                                      rust-base32-0.4.0
                                      rust-bitflags-1.3.2
-                                     rust-bitflags-2.9.0
-                                     rust-cc-1.2.18
-                                     rust-cfg-if-1.0.0
+                                     rust-bitflags-2.13.2
+                                     rust-cc-1.6.0
+                                     rust-cfg-if-1.0.5
                                      rust-clap-2.34.0
                                      rust-directories-3.0.2
                                      rust-dirs-sys-0.3.7
                                      rust-envy-0.4.2
-                                     rust-errno-0.3.11
-                                     rust-fastrand-2.3.0
+                                     rust-errno-0.3.14
+                                     rust-fastrand-2.5.0
+                                     rust-find-msvc-tools-0.1.14
                                      rust-getrandom-0.1.16
-                                     rust-getrandom-0.2.15
-                                     rust-getrandom-0.3.2
+                                     rust-getrandom-0.2.17
+                                     rust-getrandom-0.4.3
                                      rust-heck-0.3.3
-                                     rust-lazy-static-1.5.0
-                                     rust-libc-0.2.171
-                                     rust-libredox-0.1.3
-                                     rust-linux-raw-sys-0.9.4
-                                     rust-log-0.4.27
-                                     rust-memchr-2.7.4
+                                     rust-lazy-static-1.5.1
+                                     rust-libc-0.2.190
+                                     rust-libredox-0.1.25
+                                     rust-linux-raw-sys-0.12.1
+                                     rust-log-0.4.34
+                                     rust-memchr-2.8.3
                                      rust-merge-0.1.0
                                      rust-merge-derive-0.1.0
                                      rust-nitrokey-0.9.0
@@ -77409,55 +77410,47 @@ fn main() {
                                      rust-nitrokey-test-state-0.1.0
                                      rust-num-traits-0.2.19
                                      rust-numtoa-0.1.0
-                                     rust-once-cell-1.21.3
+                                     rust-once-cell-1.21.4
                                      rust-proc-macro-error-1.0.4
                                      rust-proc-macro-error-attr-1.0.4
-                                     rust-proc-macro2-1.0.94
+                                     rust-proc-macro2-1.0.107
                                      rust-progressing-3.0.2
-                                     rust-quote-1.0.40
-                                     rust-r-efi-5.2.0
+                                     rust-quote-1.0.47
+                                     rust-r-efi-6.0.0
                                      rust-rand-core-0.5.1
                                      rust-redox-syscall-0.2.16
-                                     rust-redox-termios-0.1.3
+                                     rust-redox-termios-0.1.4
                                      rust-redox-users-0.4.6
-                                     rust-regex-1.11.1
-                                     rust-regex-automata-0.4.9
-                                     rust-regex-syntax-0.8.5
-                                     rust-rustix-1.0.5
-                                     rust-serde-1.0.219
-                                     rust-serde-derive-1.0.219
-                                     rust-shlex-1.3.0
+                                     rust-regex-1.13.1
+                                     rust-regex-automata-0.4.18
+                                     rust-regex-syntax-0.8.11
+                                     rust-rustix-1.1.5
+                                     rust-serde-1.0.229
+                                     rust-serde-core-1.0.229
+                                     rust-serde-derive-1.0.229
+                                     rust-shlex-2.0.1
                                      rust-structopt-0.3.26
                                      rust-structopt-derive-0.4.18
                                      rust-syn-1.0.109
-                                     rust-syn-2.0.100
-                                     rust-tempfile-3.19.1
+                                     rust-syn-2.0.119
+                                     rust-syn-3.0.6
+                                     rust-tempfile-3.27.0
                                      rust-termion-1.5.6
                                      rust-textwrap-0.11.0
                                      rust-thiserror-1.0.69
                                      rust-thiserror-impl-1.0.69
                                      rust-toml-0.5.11
-                                     rust-unicode-ident-1.0.18
-                                     rust-unicode-segmentation-1.12.0
+                                     rust-unicode-ident-1.0.26
+                                     rust-unicode-segmentation-1.13.3
                                      rust-unicode-width-0.1.14
                                      rust-version-check-0.9.5
                                      rust-wasi-0.9.0+wasi-snapshot-preview1
-                                     rust-wasi-0.11.0+wasi-snapshot-preview1
-                                     rust-wasi-0.14.2+wasi-0.2.4
+                                     rust-wasi-0.11.1+wasi-snapshot-preview1
                                      rust-winapi-0.3.9
                                      rust-winapi-i686-pc-windows-gnu-0.4.0
                                      rust-winapi-x86-64-pc-windows-gnu-0.4.0
-                                     rust-windows-sys-0.59.0
-                                     rust-windows-targets-0.52.6
-                                     rust-windows-aarch64-gnullvm-0.52.6
-                                     rust-windows-aarch64-msvc-0.52.6
-                                     rust-windows-i686-gnu-0.52.6
-                                     rust-windows-i686-gnullvm-0.52.6
-                                     rust-windows-i686-msvc-0.52.6
-                                     rust-windows-x86-64-gnu-0.52.6
-                                     rust-windows-x86-64-gnullvm-0.52.6
-                                     rust-windows-x86-64-msvc-0.52.6
-                                     rust-wit-bindgen-rt-0.39.0))
+                                     rust-windows-link-0.2.1
+                                     rust-windows-sys-0.61.2))
                      (nsncd =>
                             (list rust-aho-corasick-1.1.4
                                   rust-android-system-properties-0.1.5
