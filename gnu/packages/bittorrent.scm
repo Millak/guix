@@ -307,24 +307,33 @@ Line Interface} client for the BitTorrent client Transmission.")
   (package
     (name "libtorrent")
     (version "0.16.14")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rakshasa/libtorrent/")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04jv8vix3izg7mwr07ngagghb0x46cvz8pnja6i0ifhk7c2mhfq7"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rakshasa/libtorrent/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "04jv8vix3izg7mwr07ngagghb0x46cvz8pnja6i0ifhk7c2mhfq7"))))
     (build-system gnu-build-system)
-    (inputs (list curl openssl zlib))
-    (native-inputs (list autoconf automake cppunit libtool pkg-config))
+    (inputs
+     (list curl
+           openssl
+           zlib))
+    (native-inputs
+     (list autoconf
+           automake
+           cppunit
+           libtool
+           pkg-config))
+    (home-page "https://github.com/rakshasa/libtorrent")
     (synopsis "BitTorrent library of rtorrent")
     (description
      "LibTorrent is a BitTorrent library used by and developed in parallel
 with the BitTorrent client rtorrent.  It is written in C++ with emphasis on
 speed and efficiency.")
-    (home-page "https://github.com/rakshasa/libtorrent")
     (license license:gpl2+)))
 
 (define-public rtorrent
