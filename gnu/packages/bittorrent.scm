@@ -340,17 +340,18 @@ speed and efficiency.")
   (package
     (name "rtorrent")
     (version "0.16.14")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rakshasa/rtorrent/")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l032679ga5w40285yjh2crglw6qbmp4wzarbqdshb629njs4b2p"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rakshasa/rtorrent/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l032679ga5w40285yjh2crglw6qbmp4wzarbqdshb629njs4b2p"))))
     (build-system gnu-build-system)
-    (arguments (list #:configure-flags #~(list "--with-xmlrpc-tinyxml2")))
+    (arguments
+     (list #:configure-flags #~(list "--with-xmlrpc-tinyxml2")))
     (inputs
      (list libtorrent
            ncurses
@@ -359,13 +360,18 @@ speed and efficiency.")
            openssl
            tinyxml2
            zlib))
-    (native-inputs (list autoconf automake cppunit libtool pkg-config))
+    (native-inputs
+     (list autoconf
+           automake
+           cppunit
+           libtool
+           pkg-config))
+    (home-page "https://github.com/rakshasa/rtorrent")
     (synopsis "BitTorrent client with ncurses interface")
     (description
      "rTorrent is a BitTorrent client with an ncurses interface.  It supports
 full encryption, DHT, PEX, and Magnet Links.  It can also be controlled via
 XML-RPC over SCGI.")
-    (home-page "https://github.com/rakshasa/rtorrent")
     (license license:gpl2+)))
 
 (define-public tremc
