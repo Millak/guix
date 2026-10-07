@@ -2521,7 +2521,7 @@ protocol.")
 (define-public onepass
   (package
     (name "onepass")
-    (version "3.2.2")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2530,7 +2530,7 @@ protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jhdqrbq47w2kgh4x1677wjvz2014n9z54mz1zvk0g16bbir1cjc"))
+        (base32 "1nsfl2sdb42a8r4pdazpq0pskkrm7wk5yg7zi1jhwr9iigjwhqrb"))
        ;; The macro std::assert_matches! is unstable in Rust 1.95.
        (modules '((guix build utils)))
        (snippet
@@ -2553,7 +2553,7 @@ protocol.")
     (home-page "https://github.com/mrdomino/onepass")
     (synopsis "Mostly stateless deterministic password manager")
     (description
-    "This is a command to compute passwords, by a one-way function, from
+     "This is a command to compute passwords, by a one-way function, from
 Uniform Resource Identifiers of the services and one secret seed password, and
 maybe user names, increments or schemata for the outputs, like
 @code{[[:alnum:]]@{29@}$}.  It can read the seed at a prompt, from a keyring
