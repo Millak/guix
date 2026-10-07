@@ -45,6 +45,7 @@
   #:use-module (guix monads)
   #:use-module (guix gexp)
   #:use-module (guix records)
+  #:use-module ((srfi srfi-9 gnu) #:select (set-record-type-printer!))
   #:use-module (guix packages)
   #:use-module (guix deprecation)
   #:use-module (guix derivations)
@@ -329,6 +330,23 @@ VERSION is the target version of the boot-parameters record."
             (default (and=> (current-source-location)
                             source-properties->location))
             (innate)))
+
+(define (write-operating-system os port)
+  (format port "#<operating-system ~s ~a ~a~x>"
+          (operating-system-host-name os)
+          (if (package? (operating-system-kernel os))
+              (package-full-name (operating-system-kernel os))
+              "")
+          (match (operating-system-location os)
+            ((? location? loc)
+             (format #f "~a:~a "
+                     (location-file loc)
+                     (location-line loc)))
+            (_
+             ""))
+          (object-address os)))
+
+(set-record-type-printer! <operating-system> write-operating-system)
 
 (define-deprecated (operating-system-hosts-file os)
   hosts-service-type
