@@ -22,7 +22,6 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
@@ -55,7 +54,6 @@
       (build-system cargo-build-system)
       (arguments
        (list
-        #:rust rust-1.96
         #:install-source? #f
         #:cargo-package-crates
         '(list "uri-pack"
@@ -153,7 +151,6 @@ adapters (depolymerizer) for the Taler ecosystem.")
         ;; The test suite currently often fails in the Guix build environment
         ;; (see: <https://bugs.gnunet.org/view.php?id=11876>).
         #:tests? #f
-        #:rust rust-1.96
         #:install-source? #f
         #:cargo-package-crates '(list "libeufin-bank"
                                       "libeufin-ebics"
