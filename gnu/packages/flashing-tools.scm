@@ -855,14 +855,14 @@ It can be used to upload images to I.MX SoC's using at least their boot ROM.")
 (define-public wlink
   (package
     (name "wlink")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wlink" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05l6h5d4w181sg00nq0l1808l0zc4fdda6syvgm7ba31glj7xkd4"))))
+        (base32 "03a1f18lhjnajw0hdzi5najh3jx109lih062c63kb5w7szhfqsj2"))))
     (build-system cargo-build-system)
     (arguments `(#:install-source? #f))
     (native-inputs (list pkg-config))
