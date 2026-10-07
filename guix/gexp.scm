@@ -581,6 +581,14 @@ appears."
   (content     plain-file-content)                ;string or bytevector
   (references  plain-file-references))            ;list (currently unused)
 
+(define (write-plain-file file port)
+  (match file
+    (($ <plain-file> name content)
+     (format port "#<plain-file ~s ~20@y ~x>"
+             name content (object-address file)))))
+
+(set-record-type-printer! <plain-file> write-plain-file)
+
 (define (plain-file name content)
   "Return an object representing a text file called NAME with the given
 CONTENT (a string) to be added to the store.
