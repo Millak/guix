@@ -5301,6 +5301,21 @@ when writing automated tests in Python.")
     (description "This package lets you set a different time for your tests.")
     (license license:expat)))
 
+(define-public python-time-machine-2
+  (package
+    (inherit python-time-machine)
+    (name "python-time-machine")
+    (version "2.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adamchainz/time-machine")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l5p6zjxl35zdrz3s5lcvfacsxyp2270vwasj3njzgv52gwngykc"))))))
+
 (define-public python-tox
   ;; NOTE: Try to avoid including it in inputs, it's for the local development
   ;; only.
