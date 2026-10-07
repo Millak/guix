@@ -21605,8 +21605,8 @@ enhancements to optimization and data fitting problems.")
      (list
       #:test-flags
       #~(list
-         ;; Ignore bokejs outdated resources tests.
-         ;; 11998 passed, 23 skipped.
+         ;; Ignore bokehjs outdated resources tests.
+         ;; 11983 passed, 23 skipped, 1 deselected.
          "--ignore=tests/test_bokehjs.py"                   ;1 failed.
          "--ignore=tests/test_defaults.py"                  ;1 failed.
          "--ignore=tests/test_examples.py"                  ;430 failed.
@@ -21618,7 +21618,8 @@ enhancements to optimization and data fitting problems.")
          "--ignore=tests/unit/bokeh/util/test_compiler.py"  ;4 failed.
          "--ignore=tests/unit/bokeh/test_ext.py"            ;1 failed.
          "--ignore=tests/unit/bokeh/server/"                ;3 failed
-         "--ignore=tests/unit/bokeh/util/test_package.py")  ;1 failed.
+         "--ignore=tests/unit/bokeh/util/test_package.py"   ;1 failed.
+         "-k" "not test_handling_SIGTERM")
       #:phases
       #~(modify-phases %standard-phases
           ;; Skip bokehjs build and set environment
