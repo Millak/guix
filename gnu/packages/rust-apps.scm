@@ -3617,7 +3617,7 @@ modules and JavaScript.")
 (define-public sniffglue
   (package
     (name "sniffglue")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
      (origin
        (method url-fetch)
@@ -3625,7 +3625,7 @@ modules and JavaScript.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0dkkw8gwrgawd2s5bg47508i3kjnsv1dwmqa3hlijdvdw4wgm9gz"))))
+         "0fa96s2b1drnsbrwpfk17z3h88zy81w0c0l992fqms479d3w5lln"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f))
