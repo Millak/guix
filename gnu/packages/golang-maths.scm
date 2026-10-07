@@ -878,6 +878,12 @@ pointer receiver.  A @@code{Uint128} value is therefore immutable, just like
     (build-system go-build-system)
     (arguments
      (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; GOFLAGS is set in the build phase to "-v",
+                   ;; leading to excessive t.Logf'ing.
+                   (add-before 'check 'unset-GOFLAGS
+                     (lambda _
+                       (unsetenv "GOFLAGS"))))
       #:import-path "modernc.org/mathutil"))
     (propagated-inputs (list go-github-com-remyoudompheng-bigfft))
     (home-page "https://modernc.org/mathutil")
