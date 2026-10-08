@@ -5288,7 +5288,7 @@ elogind's uaccess feature.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.25.7")
+    (version "1.26.0")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -5298,7 +5298,7 @@ elogind's uaccess feature.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05fcif1midcqvj93msn1mpllqdni3fr0iz1ab56w589rwr3w1rva"))))
+        (base32 "09apan3j4bcvakmjmzl44cmr8zzglf9l58krlj8y71pxnpqpyhyb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
