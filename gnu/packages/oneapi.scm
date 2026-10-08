@@ -215,6 +215,26 @@ for OpenCL targeting Intel graphics hardware.")
      (list license:expat                ;level-zero
            license:asl2.0))))           ;third-party/xla
 
+;; intel-compute-runtime's bundled mcl_ext/ze_mutable_command_list_exp.h
+;; redeclares typedefs that level-zero >= 1.34.0's own
+;; zel_tracing_register_cb.h also declares, with an incompatible
+;; signature -- pin the last version without the clash until upstream
+;; resolves it.
+(define-public level-zero-1.32.0
+  (package
+    (inherit level-zero)
+    (version "1.32.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oneapi-src/level-zero/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "level-zero" version))
+       (sha256
+        (base32
+         "1vqmxyzcnrklj1qfh3vg9sapsp5dq4gjs6lz6j2l0ac9xdabrjmv"))))))
+
 ;;; Updates and replaces oneapi-dnnl in (gnu packages machine-learning)
 (define-public onednn
   ;; See doc/build/build.md.
