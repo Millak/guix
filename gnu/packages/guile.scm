@@ -956,20 +956,19 @@ manipulate repositories of the Git version control system.")
   (package
     (name "guile-zlib")
     (version "0.2.2")
+    (home-page "https://codeberg.org/guile-compression/guile-zlib")
     (source
      (origin
        ;; XXX: Do not use "git-fetch" method here that would create and
        ;; endless inclusion loop, because this package is used as an extension
        ;; in the same method.
        (method url-fetch)
-       (uri
-        (string-append "https://codeberg.org/guile-compression/guile-zlib/archive/v"
-                       version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (uri (string-append home-page "/releases/download/v" version
+                           "/guile-zlib-" version ".tar.gz"))
        (sha256
         ;; content nar-sha256: 0rwjlqr1hl2vczs16xsihw8pyj6s70p1yv9ky0sawhm6g30639k9
         (base32
-         "04p9lb3bq5y0k358s8agpksx9x68vzx330cb8jkn4qp3qj7cmnx2"))))
+         "011flqxhlika0hrv1qzs940kgl0zpckxm9732j7wbb45dya2g2hz"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 zlib))
@@ -978,7 +977,6 @@ manipulate repositories of the Git version control system.")
      "This package provides Guile bindings for zlib, a lossless
 data-compression library.  The bindings are written in pure Scheme by using
 Guile's foreign function interface.")
-    (home-page "https://codeberg.org/guile-compression/guile-zlib")
     (license license:gpl3+)))
 
 (define-public guile2.2-zlib
