@@ -13,7 +13,7 @@ built and composed.
 GNU Guix can be used on top of an already-installed GNU/Linux distribution, or
 it can be used standalone (we call that “Guix System”).
 
-Guix is based on the [[https://nixos.org/nix/][Nix]] package manager.
+Guix shares history with the [[https://nixos.org/nix/][Nix]] package manager.  See [[Guix & Nix]] below.
 
 
 * Requirements
@@ -66,10 +66,9 @@ Join #guix on irc.libera.chat.
 
 * Guix & Nix
 
-GNU Guix is based on [[https://nixos.org/nix/][the Nix package manager]].  It implements the same
-package deployment paradigm, and in fact it reuses some of its code.
-Yet, different engineering decisions were made for Guix, as described
-below.
+GNU Guix shares history with [[https://nixos.org/nix/][the Nix package manager]].  It implements a
+similar package deployment paradigm, and it reuses some of its code.  Yet,
+different engineering decisions were made for Guix, as described below.
 
 Nix is really two things: a package build tool, implemented by a library
 and daemon, and a special-purpose programming language.  GNU Guix relies
@@ -81,13 +80,6 @@ Unicode, libraries, etc.)  And it means that we have a general-purpose
 language, on top of which we can have embedded domain-specific languages
 (EDSLs), such as the one used to define packages.  This broadens what
 can be done in package recipes themselves, and what can be done around them.
-
-Technically, Guix makes remote procedure calls to the ‘nix-worker’
-daemon to perform operations on the store.  At the lowest level, Nix
-“derivations” represent promises of a build, stored in ‘.drv’ files in
-the store.  Guix produces such derivations, which are then interpreted
-by the daemon to perform the build.  Thus, Guix derivations can use
-derivations produced by Nix (and vice versa).
 
 With Nix and the [[https://nixos.org/nixpkgs][Nixpkgs]] distribution, package composition happens at
 the Nix language level, but builders are usually written in Bash.
