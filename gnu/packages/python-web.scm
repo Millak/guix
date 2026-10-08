@@ -12968,13 +12968,6 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
 3.5, which makes your code non-blocking and speedy.")
     (license license:expat)))
 
-(define-public python-sanic-bootstrap
-  (package
-     (inherit python-sanic)
-     (name "python-sanic-bootstrap")
-     (arguments (list #:tests? #f))
-     (native-inputs (list python-setuptools))))
-
 ;; A bare minimal package, mainly to use in tests and reduce closure size.
 ;; Tests are left out in the main package to slim down native-inputs and
 ;; propagated-inputs.
@@ -12994,6 +12987,9 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
            python-ujson
            python-uvloop
            python-websockets))))
+
+;;; Deprecated on <2026-10-08>.
+(define-deprecated-package python-sanic-bootstrap python-sanic-minimal)
 
 (define-public python-socketio
   (package
