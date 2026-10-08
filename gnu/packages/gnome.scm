@@ -3659,6 +3659,7 @@ for dealing with different structured file formats.")
             python
             python-docutils             ;for rst2man
             rust
+            `(,rust "cargo")
             rust-cargo-c
             vala)
       (or (and=> (%current-target-system)
