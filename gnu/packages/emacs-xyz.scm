@@ -31477,7 +31477,7 @@ subscription.")
 (define-public emacs-pulsar
   (package
     (name "emacs-pulsar")
-    (version "1.3.4")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -31486,7 +31486,7 @@ subscription.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p3vd7qglq5hzgccjv5xg0yghpd0h61d3zn7nf36xfglrvywsixg"))))
+                "18gvqvpji06grgpmhg6kb9x6p256f6fbwfj0xj7va5cy7qqdz5q6"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
