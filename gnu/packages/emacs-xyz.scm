@@ -23833,39 +23833,39 @@ separately from it.")
       (license license:gpl3+))))
 
 (define-public emacs-beframe
-  (let ((commit "c3f4583b0767e7f8c38c83ed29af40af8ba3bdfa")) ;version bump
-    (package
-      (name "emacs-beframe")
-      (version "1.5.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/protesilaos/beframe")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1j9v85wxahnm2h828c8dbjm0f81j9pxlf54dgcw443cl0kwcda9c"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ;no tests
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'install 'makeinfo
-              (lambda _ (emacs-makeinfo))))))
-      (native-inputs
-       (list texinfo))
-      (home-page "https://protesilaos.com/emacs/beframe")
-      (synopsis "Isolate Emacs buffers per frame")
-      (description
-       "Beframe enables a frame-oriented Emacs workflow where each frame has
+  (package
+    (name "emacs-beframe")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protesilaos/beframe")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "08a0fqw2m4gh8vddp22h7adlcd80hl7zyf890zaxyj1hz86b92z4"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                     ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://protesilaos.com/emacs/beframe")
+    (synopsis "Isolate Emacs buffers per frame")
+    (description
+     "Beframe enables a frame-oriented Emacs workflow where each frame has
 access to the list of buffers visited therein.  In the interest of brevity, we
 call buffers that belong to frames ``beframed''.  Producing multiple frames
 does not generate multiple buffer lists.  There still is only one global list
 of buffers.  Beframing them simply filters the list.")
-      (license (list license:gpl3+
-                     license:fdl1.3+))))) ; GFDLv1.3+ for the manual
+    (license (list license:gpl3+
+                   license:fdl1.3+))))  ;GFDLv1.3+ for the manual
 
 (define-public emacs-gn-mode
   (package
