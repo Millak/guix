@@ -1109,7 +1109,7 @@ hypertext navigation, and table-of-contents bookmarks.")
                          automake
                          intltool
                          (list glib "bin")
-                         xorg-server
+                         xorg-server-for-tests
                          gobject-introspection
                          gtk-doc/stable
                          libtool
