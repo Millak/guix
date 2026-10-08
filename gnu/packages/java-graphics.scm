@@ -363,7 +363,7 @@ libraries.")
     (inputs
      (list java-piccolo2d-core java-junit))
     (native-inputs
-     (list xorg-server)) ; for tests
+     (list xorg-server-for-tests)) ; for tests
     (description "Piccolo2D is a framework (in the Jazz ZUI tradition) to
 create robust, full-featured graphical applications in Java, with features
 such as zooming and multiple representation.  This package provides additional
