@@ -6760,7 +6760,7 @@ with which other processes.  It provides more usable versions of @command{ps},
 (define-public witr
   (package
     (name "witr")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -6769,7 +6769,7 @@ with which other processes.  It provides more usable versions of @command{ps},
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c995b1c267sngg21546n60pqh09vc2pm6xbdy48kx5fwmi01w4h"))))
+        (base32 "1dl5z3gwbcy8n21ms8vj757q54xymiyqhdldrl3r1w6ydcxq83ah"))))
     (build-system go-build-system)
     (arguments
      (list
