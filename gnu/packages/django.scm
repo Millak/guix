@@ -1386,27 +1386,25 @@ server headers required for Cross-Origin Resource Sharing (CORS).")
 (define-public python-django-redis
   (package
     (name "python-django-redis")
-    (version "5.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-redis" version))
-              (sha256
-               (base32
-                "0hlch69b4v1fc29xpcjhk50cgbdn78v2qzbhkfzsizmh6jman0ka"))))
+    (version "7.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/niwibe/django-redis")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wkq1l39hxarimkyqhlhrrib1iagy1wlr2d7nm9mn9xlqqv630z1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; These fail with: No module named 'test_client'
-      '(list "-k" "not test_custom_key_function and not delete")
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'start-redis
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "redis-server" "--daemonize" "yes")
-               (setenv "PYTHONPATH" ".")
-               (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.sqlite")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-redis
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes")))))))
     (native-inputs
      (list python-fakeredis
            python-hiredis
@@ -1415,11 +1413,16 @@ server headers required for Cross-Origin Resource Sharing (CORS).")
            python-pytest
            python-pytest-django
            python-pytest-mock
+           python-pytest-xdist
            python-setuptools
-           python-wheel
            redis))
     (propagated-inputs
-     (list python-django python-redis))
+     (list python-django
+           python-redis
+           ;; [optional]
+           python-lz4
+           python-msgpack
+           python-pyzstd))
     (home-page "https://github.com/niwibe/django-redis")
     (synopsis "Full featured redis cache backend for Django")
     (description
