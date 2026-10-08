@@ -97,6 +97,7 @@
             current-store-protocol-version        ;for internal use
             cache-lookup-recorder                 ;for internal use
             mcached
+            clear-object-cache
 
             &store-error store-error?
             &store-connection-error store-connection-error?
@@ -1596,6 +1597,13 @@ This is a mutating version that should be avoided.  Prefer the functional
 ;; Instantiate templates for %STORE-MONAD since it's syntactically different
 ;; from %STATE-MONAD.
 (template-directory instantiations %store-monad)
+
+(define* (clear-object-cache #:key (cache %object-cache-id))
+  "This monadic procedures clears the contents of the current store's cache
+identified by CACHE.  Reserved for expert usage."
+  (lambda (store)
+    (values #t
+            (set-store-connection-cache store cache vlist-null))))
 
 (define* (cache-object-mapping object keys result
                                #:key
