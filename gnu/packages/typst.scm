@@ -402,6 +402,45 @@ labels.")
     (inputs (list linguify-fluent-wasm))
     (native-inputs (list bash-minimal just perl))))
 
+(define-public typst-modern-cv
+  (package
+    (name "typst-modern-cv")
+    (version "0.10.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ptsouchlos/modern-cv")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "03zbwci7l68sd02k45cjjzgzjvr4q0y8aw074bfac897smd13f2v"))))
+    (build-system typst-build-system)
+    (arguments
+     (list #:tests? #f                  ; tests require tt
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-dependencies
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (define* (builtin-package-version package #:key
+                                                     (namespace "preview"))
+                     (let ((found-pkg (search-input-directory
+                                       inputs
+                                       (string-append "share/typst/packages/"
+                                                      namespace "/" package))))
+                       (basename (car (find-files found-pkg "^[0-9]*\\.[0-9.]*$"
+                                                  #:directories? #t)))))
+                   (substitute* "lib.typ"
+                     (("(@preview/fontawesome):[^\"]*" all lib)
+                      (string-append lib ":"
+                                     (builtin-package-version "fontawesome")))))))))
+    (propagated-inputs (list typst-fontawesome typst-linguify))
+    (native-inputs (list bash-minimal just perl))
+    (home-page "https://typst.app/universe/package/linguify")
+    (synopsis "Resume/CV template for Typst")
+    (description "This package provides a resume template for Typst, inspired
+by the Awesome-CV package for LaTeX.")
+    (license license:expat)))
+
 (define-public typst-oxifmt
   (package
     (name "typst-oxifmt")
