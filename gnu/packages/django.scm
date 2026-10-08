@@ -42,6 +42,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages check)
@@ -1505,31 +1506,20 @@ using Python multiprocessing.")
 (define-public python-django-q2
   (package
     (name "python-django-q2")
-    (version "1.7.6")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django_q2" version))
        (sha256
-        (base32 "0zd1zpi5d3ky26i9rv0aii6kkb6gwvpypnwmsjbmpxiwawhv242j"))))
+        (base32 "0rvfhrvvc7cmxnqjj21rln0scgdn9qy78ax201pg564h3ybay334"))))
     (build-system pyproject-build-system)
-    ;; XXX: I just don't know how to correctly run the tests.
-    (arguments (list #:tests? #false))
-    (native-inputs (list python-poetry-core python-pytest))
-    (propagated-inputs (list python-blessed
-                             python-boto3
-                             python-croniter
-                             python-django
-                             python-django-picklefield
-                             python-django-q-rollbar
-                             python-django-q-sentry
-                             python-django-redis
-                             python-hiredis
-                             python-iron-mq
-                             python-psutil
-                             python-pymongo
-                             python-redis
-                             python-setproctitle))
+    (arguments (list #:tests? #f))    ;XXX: tests failed to find django_q2
+    (native-inputs
+     (list python-uv-build))
+    (propagated-inputs
+     (list python-django
+           python-django-picklefield))
     (home-page "https://django-q2.readthedocs.org")
     (synopsis "Multiprocessing distributed task queue for Django")
     (description
