@@ -2713,7 +2713,7 @@ development, not the kernel implementation of ACPI.")
 (define-public s-tui
   (package
     (name "s-tui")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2722,7 +2722,7 @@ development, not the kernel implementation of ACPI.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aj97xbdv01rsfjkn75g7y26knsyrw5nzr79x14vbixlnpgx6c1w"))))
+        (base32 "16r8wgh632byg47x4gbd9svhdnig7dlnp78khpk47snncfc2f5lv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
