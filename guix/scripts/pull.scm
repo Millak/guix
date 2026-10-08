@@ -922,6 +922,13 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
     (let* ((url? (or (string-prefix? "https://" file)
                      (string-prefix? "http://" file)))
            (swhid? (string-prefix? "swh:" file))
+           (untrusted-handling (match require-trusted-channels
+                                 ((? boolean? x)
+                                  (if x 'error 'warning))
+                                 ('default
+                                   (if (or url? swhid?)
+                                       'error
+                                       'warning))))
            (result (load* (cond
                            (url? (http-fetch file #:timeout 10))
                            (swhid? (swhid-content-data* file))
@@ -932,14 +939,7 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
         (((? channel?) ...)
          ;; When downloading channels, keep going if and only if these are
          ;; channels the user trusts.
-         (check-trusted-channels result
-                                 (match require-trusted-channels
-                                   ((? boolean? x)
-                                    (if x 'error 'warning))
-                                   ('default
-                                     (if (or url? swhid?)
-                                         'error
-                                         'warning))))
+         (check-trusted-channels result untrusted-handling)
          result)
         ((? downloaded-channels?)
          (if (>= indirections max-indirections)
@@ -947,6 +947,8 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
              (let ((target (downloaded-channels-url result)))
                (info (G_ "following indirection from '~a' to '~a'~%")
                      file target)
+               (check-trusted-channels (downloaded-channels-append result)
+                                       untrusted-handling)
                (append (load-channels target (+ 1 indirections))
                        (downloaded-channels-append result)))))
         (_
