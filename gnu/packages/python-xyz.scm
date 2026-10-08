@@ -2402,7 +2402,7 @@ comparison operators, as defined in the original
 (define-public python-json-log-formatter
   (package
     (name "python-json-log-formatter")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -2411,22 +2411,15 @@ comparison operators, as defined in the original
               (commit (string-append "v" version))))
        (file-name (git-file-name name  version))
        (sha256
-        (base32 "04zs938mjf131h0lfrkm3c2dfh0x5f8rmaks0i29nlxb71zpg0f2"))))
+        (base32 "0xpsv3a5cvwpggqyjkkr59z8wl8n44zkhpwqjnnn7cshb9skvkz1"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-s" "tests.py")))))))
-    (native-inputs (list python-django
-                         python-pytest
-                         python-setuptools
-                         python-simplejson
-                         python-ujson
-                         python-wheel))
+    (arguments (list #:test-flags #~(list "-s" "tests.py")))
+    (native-inputs
+     (list python-django-minimal
+           python-pytest
+           python-setuptools
+           python-simplejson
+           python-ujson))
     (home-page "https://github.com/marselester/json-log-formatter")
     (synopsis "JSON log formatter")
     (description "The library helps you to store logs in JSON format.")
