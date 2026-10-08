@@ -97,6 +97,7 @@
             system-hurd?
             target-hurd32?
             target-hurd64?
+            system-hurd32?
             system-hurd64?
             host-hurd?
             host-hurd64?
@@ -758,6 +759,11 @@ a character other than '@'."
   "Does TARGET represent the 64bit GNU(/Hurd) system?"
   (and (target-hurd? target)
        (target-64bit? target)))
+
+(define* (system-hurd32?)
+  "Is the current system the 32bit GNU(/Hurd) system?"
+  (and (system-hurd?)
+       (target-32bit? (%current-system))))
 
 (define* (system-hurd64?)
   "Is the current system the 64bit GNU(/Hurd) system?"
