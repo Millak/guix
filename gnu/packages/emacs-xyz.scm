@@ -5987,8 +5987,8 @@ podcasts) in Emacs.")
       (license (list license:gpl3+)))))
 
 (define-public emacs-emcp
-  (let ((commit "a91016452ef73813ea4a7e84cde233176d87a97f")
-        (revision "0"))
+  (let ((commit "cc452a2cb8b128305c7091a4adf9435e6b227fc1")
+        (revision "1"))
     (package
       (name "emacs-emcp")
       (version (git-version "0.1.0" revision commit))
@@ -6001,7 +6001,7 @@ podcasts) in Emacs.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "08wbpj95l38fsdihxhgryb74psl11agw5n9swnpf1j3qyhwa13cn"))))
+           "18i0lwv057lij599y2f2hblivvc7rmiwl1ff2vbykmakcsxfncrp"))))
       (build-system emacs-build-system)
       (arguments
        (list
