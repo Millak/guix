@@ -285,6 +285,26 @@ used by the actual CeTZ package.")
                          just
                          perl))))
 
+(define-public typst-fontawesome
+  (package
+    (name "typst-fontawesome")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/duskmoon314/typst-fontawesome")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0pj9jy32vvj9xfz2s6la920nmvm7x70ksbqm5m8ljgfz8fl3m4ix"))))
+    (build-system typst-build-system)
+    (arguments (list #:tests? #f))      ; no tests
+    (home-page "https://github.com/duskmoon314/typst-fontawesome")
+    (synopsis "Typst support for FontAwesome")
+    (description "This package provides a library for using FontAwesome icons
+by their names, similar to texlive-fontawesome for LaTeX.")
+    (license license:expat)))
+
 (define-public typst-larrow
   (package
     (name "typst-larrow")
