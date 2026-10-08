@@ -245,6 +245,56 @@ used by the actual CeTZ package.")
       (sha256
        (base32 "16934mjzy5glhw80vm80p1k1dr9l7yyj7s9425j8k3a0awykgyq0")))))
 
+(define-public linguify-fluent-wasm
+  (package
+    (name "linguify-fluent-wasm")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/typst-community/linguify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "linguify" version))
+       (sha256
+        (base32 "105jhaa4k0mq6fxj3aqqavl9jlp70yyxvrz6a7q5p9gcm5zbdpcn"))
+       (snippet #~(delete-file "src/linguify_fluent_rs.wasm"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'configure-target
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((sysroot
+                     (assoc-ref inputs
+                                "rust-sysroot-for-wasm32-unknown-unknown")))
+                (with-atomic-file-replacement ".cargo/config"
+                  (lambda (in out)
+                    (display (string-append "\
+[target.wasm32-unknown-unknown]
+linker = 'lld'
+
+[build]
+target = ['wasm32-unknown-unknown']
+") out)
+                    (dump-port in out)))
+                (setenv "RUSTFLAGS" (string-append "--sysroot " sysroot)))))
+          (replace 'install
+            (lambda _
+              (install-file
+               (car (find-files "target" "linguify_fluent_rs.wasm"))
+               (string-append #$output "/share/typst/packages/preview/linguify/"
+                              #$version)))))))
+    (inputs (cargo-inputs 'linguify-fluent))
+    (native-inputs (list lld rust-sysroot-for-wasm32-unknown-unknown))
+    (home-page "https://typst.app/universe/package/linguify")
+    (synopsis "Easily localize packages and templates")
+    (description "Linguify is a Typst library for loading strings for different
+languages from TOML files.")
+    (license license:expat)))
+
 (define-public typst-cetz
   (package
     (inherit cetz-core-wasm)

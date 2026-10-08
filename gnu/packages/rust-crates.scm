@@ -70637,6 +70637,45 @@ fn main() {
                                rust-zmij-1.0.21
                                rust-zune-core-0.5.1
                                rust-zune-jpeg-0.5.15))
+                     (linguify-fluent =>
+                                      (list rust-cfg-if-1.0.5
+                                            rust-ciborium-0.2.2
+                                            rust-ciborium-io-0.2.2
+                                            rust-ciborium-ll-0.2.2
+                                            rust-crunchy-0.2.4
+                                            rust-displaydoc-0.2.7
+                                            rust-fluent-0.16.1
+                                            rust-fluent-bundle-0.15.3
+                                            rust-fluent-langneg-0.13.1
+                                            rust-fluent-syntax-0.11.1
+                                            rust-half-2.7.1
+                                            rust-intl-memoizer-0.5.3
+                                            rust-intl-pluralrules-7.0.2
+                                            rust-proc-macro2-1.0.107
+                                            rust-quote-1.0.47
+                                            rust-rustc-hash-1.1.0
+                                            rust-rustc-hash-2.1.3
+                                            rust-self-cell-0.10.3
+                                            rust-self-cell-1.3.0
+                                            rust-serde-1.0.229
+                                            rust-serde-core-1.0.229
+                                            rust-serde-derive-1.0.229
+                                            rust-smallvec-1.16.2
+                                            rust-syn-2.0.119
+                                            rust-syn-3.0.6
+                                            rust-thiserror-1.0.69
+                                            rust-thiserror-impl-1.0.69
+                                            rust-tinystr-0.8.4
+                                            rust-type-map-0.5.1
+                                            rust-unic-langid-0.9.6
+                                            rust-unic-langid-impl-0.9.6
+                                            rust-unicode-ident-1.0.26
+                                            rust-venial-0.5.0
+                                            rust-wasm-minimal-protocol-0.1.0
+                                            rust-zerocopy-0.8.61
+                                            rust-zerocopy-derive-0.8.61
+                                            rust-zerofrom-0.1.8
+                                            rust-zerovec-0.11.8))
                      (lix =>
                           (list rust-countme-3.0.1
                                 rust-dissimilar-1.0.9
