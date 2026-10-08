@@ -3641,7 +3641,7 @@ for filesystem and generic servers.")
 (define-public emacs-mcp-server-lib
   (package
     (name "emacs-mcp-server-lib")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3650,7 +3650,7 @@ for filesystem and generic servers.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c8wk2mhyn10ri4qjk3zy1811k7pzg3i3mm9lzn00v6wdccrm59a"))))
+        (base32 "1s81xi9k4jfz49a1zqnw8rr5q20jbp0840qy59974h4r3vkz1kf1"))))
     (build-system emacs-build-system)
     (arguments
      (list
