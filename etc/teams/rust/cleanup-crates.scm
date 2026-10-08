@@ -1,5 +1,8 @@
-#!/usr/bin/env -S guix repl --
+#!/bin/sh
+# -*- mode: scheme; -*-
+exec guix repl -- "$0" "$@"
 !#
+
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025-2026 Hilton Chain <hako@ultrarare.space>
 ;;;
@@ -18,33 +21,41 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(use-modules (ice-9 regex)
+;;;
+;;; Usage: cleanup-crates.scm [FILE] ...
+;;;
+
+(use-modules (ice-9 match)
+             (ice-9 regex)
              (srfi srfi-26)
              (system base compile)
-             (guix diagnostics)
-             (guix i18n)
-             (guix utils))
+             (guix ui)
+             (guix utils)
+             (guix scripts shell))
 
-(define file "gnu/packages/rust-crates.scm")
+(define (cleanup-crates file)
+  (define %unused
+    (let ((warnings (open-output-string)))
+      (parameterize ((current-warning-port warnings))
+        (compile-file file
+                      #:optimization-level 0
+                      #:warning-level 0
+                      #:opts '(#:warnings (unused-toplevel))))
+      (map (cut match:substring <> 1)
+           (list-matches "`(rust-[^']*)'" (get-output-string warnings)))))
 
-(define %unused
-  (let ((warnings (open-output-string)))
-    (parameterize ((current-warning-port warnings))
-      (compile-file file
-                    #:optimization-level 0
-                    #:warning-level 0
-                    #:opts '(#:warnings (unused-toplevel))))
-    (map (cut match:substring <> 1)
-         (list-matches "`(rust-[^']*)'" (get-output-string warnings)))))
+  (info (G_ "removing ~a unused definitions~%") (length %unused))
+  (for-each (lambda (name)
+              (info (G_ "removing '~a'...~%") name)
+              (and=> (find-definition-location file (string->symbol name) #:define-prefix 'define)
+                     delete-expression))
+            %unused)
 
-(info (G_ "removing ~a unused definitions~%") (length %unused))
+  (info (G_ "collapsing newlines~%"))
+  (guix-shell "sed" "--" "sed" "--in-place" ":a;N;$!ba;s/\\n\\n\\+/\\n\\n/g" file))
 
-(for-each (lambda (name)
-            (info (G_ "removing '~a'...~%") name)
-            (and=> (find-definition-location file (string->symbol name) #:define-prefix 'define)
-                   delete-expression))
-          %unused)
-
-(info (G_ "collapsing newlines~%"))
-
-(system* "sed" "--in-place" ":a;N;$!ba;s/\\n\\n\\+/\\n\\n/g" file)
+(match (program-arguments)
+  ((_ files ..1)
+   (for-each cleanup-crates files))
+  (_
+   (cleanup-crates "gnu/packages/rust-crates.scm")))
