@@ -1,0 +1,62 @@
+Upstream status: https://github.com/gnustep/libobjc2/pull/429
+and https://github.com/gnustep/libobjc2/pull/352
+
+Fixes test compilation and crashes on i686-linux with newer clang.
+
+From e4b159a815bb9ee22e4aaee40b57119f0b380a31 Mon Sep 17 00:00:00 2001
+From: Dariqq <77271900+Dariqq@users.noreply.github.com>
+Date: Thu, 8 Oct 2026 10:02:26 +0000
+Subject: [PATCH] Use caller-saved register in x86-32 block trampoline.
+
+Replace ebx register with ecx. This fixes crashes on x86-32 when
+optimisations are enabled.
+
+Co-authored-by: David Chisnall <davidchisnall@users.noreply.github.com>
+---
+ block_trampolines.S | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/block_trampolines.S b/block_trampolines.S
+index 2f9f11b..a2d0677 100644
+--- a/block_trampolines.S
++++ b/block_trampolines.S
+@@ -60,10 +60,10 @@
+ 	call  1f                   # Store the instruction pointer on the stack
+ 1:
+ 	pop   %eax                 # Load the old instruction pointer
+-	mov   \arg0(%esp), %ebx    # Load the self parameter
+-	mov   %ebx, \arg1(%esp)    # Store self as the second argument
+-	mov   -0x1005(%eax), %ebx  # Load the block pointer to %ebx
+-	mov   %ebx, \arg0(%esp)    # Store the block pointer in the first argument
++	mov   \arg0(%esp), %ecx    # Load the self parameter
++	mov   %ecx, \arg1(%esp)    # Store self as the second argument
++	mov   -0x1005(%eax), %ecx  # Load the block pointer to %ecx
++	mov   %ecx, \arg0(%esp)    # Store the block pointer in the first argument
+ 	jmp   *-0x1001(%eax)       # Call the block function
+ .endm
+ // All arguments on i386 are passed on the stack.  These values are stack
+-- 
+2.54.0
+
+From 0548300e2f1cc4752965b6d1fe3c0de122a7fffe Mon Sep 17 00:00:00 2001
+From: Hugo Melder <service@hugomelder.com>
+Date: Wed, 1 Oct 2025 12:43:53 +0200
+Subject: [PATCH 3/3] Test/FastPathAlloc: fix compilation error
+
+---
+ Test/FastPathAlloc.m | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Test/FastPathAlloc.m b/Test/FastPathAlloc.m
+index 340a8dd3..f1eb6244 100644
+--- a/Test/FastPathAlloc.m
++++ b/Test/FastPathAlloc.m
+@@ -96,7 +96,7 @@ + (instancetype)alloc
+ @implementation ShouldInitSubclassed
+ + (instancetype) alloc
+ {
+-	return [ShouldInit alloc];
++	return (ShouldInitSubclassed *)[ShouldInit alloc];
+ }
+ @end
+ 

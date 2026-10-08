@@ -113,7 +113,9 @@ to easily create cross-compiled binaries.")
               (sha256
                (base32
                 "0790mxwq1na5gm5czi3phw384r44lfckb7wcp1hx1hjyksmg1c0b"))
-              (file-name (git-file-name name version))))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "libobjc2-clang22.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -124,9 +126,7 @@ to easily create cross-compiled binaries.")
                                 "-DCMAKE_CXX_COMPILER=clang++"
                                 "-DTESTS=ON")))
     (native-inputs
-     ;; With newer clangs some test segfault on i686-linux
-     ;; BlockImpTest_optimised and  BlockImpTest_legacy_optimised
-     (list clang-13))
+     (list clang))
     (inputs
      (list robin-map))
     (home-page "https://www.gnustep.org/")
