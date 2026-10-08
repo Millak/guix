@@ -6748,6 +6748,30 @@ powered by the Argos Translate library.")
 of Hidden Markov Models.")
     (license license:bsd-3)))
 
+(define-public llm-proxy
+  (package
+    (name "llm-proxy")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/jbousquie/llm-proxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "125lfhx28fs8s3fzhcqbs87b7crswn9x0br3dnv6qnbybrg0bacd"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'llm-proxy))
+    (home-page "https://jbousquie.codeberg.page/llm-proxy/")
+    (synopsis "Network proxy for LLM API vendors")
+    (native-inputs (list nss-certs-for-test))
+    (description
+     "This package provides a local HTTP proxy written in Rust.  It sits
+between agentic clients and the Albert API (Etalab).")
+    (license license:etalab2.0)))
+
 ;; Keep this in sync with the r-torch package.
 (define-public liblantern
   (package
