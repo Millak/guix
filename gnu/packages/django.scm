@@ -637,20 +637,24 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "4.11.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest_django" version))
-              (sha256
-               (base32
-                "14br4bzx07yxrx6xsyyhlpjgb0sz6lflbw90g87cn0z13qd18jd9"))))
+    (version "4.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-django")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14syhy27bqx5mlq7z7d0wvgq9mdpkmi7x71mlld4bhp7p2g8rh55"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-django python-setuptools python-setuptools-scm python-wheel))
-    (propagated-inputs
-     (list python-pytest))
+     (list python-django-minimal
+           python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://pytest-django.readthedocs.io/")
-    (synopsis "Django plugin for py.test")
+    (synopsis "Django plugin for Pytest")
     (description "Pytest-django is a plugin for py.test that provides a set of
 useful tools for testing Django applications and projects.")
     (license license:bsd-3)))
