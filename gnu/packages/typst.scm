@@ -376,6 +376,32 @@ by their names, similar to texlive-fontawesome for LaTeX.")
 labels.")
     (license license:mpl2.0)))
 
+(define-public typst-linguify
+  (package
+    (inherit linguify-fluent-wasm)
+    (name "typst-linguify")
+    (version (package-version linguify-fluent-wasm)) ; to bind in arguments
+    (build-system typst-build-system)
+    (arguments
+     (list
+      #:tests? #f                  ; tests require tt
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'symlink-wasm
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((dir (car (find-files #$output "src" #:directories? #t)))
+                     (module
+                      (search-path
+                       (search-path-as-string->list
+                        (getenv "GUIX_TYPST_PACKAGE_PATH"))
+                       (string-append
+                        "preview/linguify/" #$version "/"
+                        "linguify_fluent_rs.wasm"))))
+                (symlink module
+                         (string-append dir "/linguify_fluent_rs.wasm"))))))))
+    (inputs (list linguify-fluent-wasm))
+    (native-inputs (list bash-minimal just perl))))
+
 (define-public typst-oxifmt
   (package
     (name "typst-oxifmt")
