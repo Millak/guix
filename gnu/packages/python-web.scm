@@ -12845,20 +12845,23 @@ the @code{BasicRouter}.")
 (define-public python-sanic-testing
   (package
     (name "python-sanic-testing")
-    (version "23.12.0")
+    (version "24.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sanic-testing" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sanic-org/sanic-testing/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gqkzv90sbj9rw7yfly9c58lq9dq30g5hhcgjl3ihzjb66vm571b"))))
+        (base32 "0jk8ji3zjkb0jz15jxmn98yydvzk8djqm2iwcg0d281cmp2j09bf"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; PyPi sources does not contain tests, recursive dependency on
-     ;; python-sanic.
-     (list #:tests? #f))
-    (propagated-inputs (list python-httpx python-sanic-bootstrap))
-    (native-inputs (list python-setuptools python-wheel))
+    (propagated-inputs (list python-httpx))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-sanic-minimal
+           python-setuptools))
     (home-page "https://github.com/sanic-org/sanic-testing/")
     (synopsis "Test clients for Sanic")
     (description "Internal package for @code{python-sanic}, which is
