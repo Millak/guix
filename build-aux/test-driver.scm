@@ -3,10 +3,10 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
 !#
 ;;;; test-driver.scm - Guile test driver for Automake testsuite harness
 
-(define script-version "2026-03-21.02") ;UTC
+(define script-version "2026-10-12.06") ;UTC
 
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
@@ -83,28 +83,26 @@ case is shown.\n"))
         (pretty-print value port #:per-line-prefix "+ "))
       (format port "~A: ~S~%" field value)))
 
-(define* (result->string symbol #:key colorize?)
-  "Return SYMBOL as an upper case string.  Use colors when COLORIZE is #t."
-  (let ((result (string-upcase (symbol->string symbol))))
+(define* (result->string result #:key colorize?)
+  "Return a textual label for RESULT.  Use colors when COLORIZE is #t."
+  (let* ((symbol (or result 'notrun))   ;#f -> 'notrun
+         (label (string-upcase (symbol->string symbol))))
     (if colorize?
         (string-append (case symbol
                          ((pass)       "[0;32m")  ;green
                          ((xfail)      "[1;32m")  ;light green
                          ((skip)       "[1;34m")  ;blue
                          ((fail xpass) "[0;31m")  ;red
+                         ((notrun)     "^[[0;90m")  ;bright black (gray)
                          ((error)      "[0;35m")) ;magenta
-                       result
+                       label
                        "[m")          ;no color
-        result)))
+        label)))
 
-(define* (test-result-kind* #:optional (runner (test-runner-current)))
-  ;; TODO: Since Guile 3.0.11, the test-result-kind value of tests not
-  ;; selected by specifiers is #f instead of 'skip, which seems like a bug.
-  ;; Revert to use 'test-result-kind' after
-  ;; <https://codeberg.org/guile/guile/issues/133> is resolved and made and
-  ;; available in Guix.
-  (or (test-result-ref runner 'result-kind)
-      'skip))
+;;; Remove after <https://codeberg.org/guile/guile/pulls/308> is merged.
+(define (test-runner-notrun-count r)
+  "Return the number of tests that were not run."
+  (or (assq-ref ((@@ (srfi srfi-64) test-runner-counts) r) #f) 0))
 
 (define (current-test-full-name runner)
   "Get full name (test group path + name) of current test."
@@ -145,7 +143,7 @@ called to do the final reporting."
       (hash-set! test-cases-start-time test-case-name start-time)))
 
   (define (test-skipped? runner)
-    (eq? 'skip (test-result-kind* runner)))
+    (eq? 'skip (test-result-kind runner)))
 
   (define (test-failed? runner)
     (not (or (test-passed? runner)
@@ -153,8 +151,9 @@ called to do the final reporting."
 
   (define (test-on-test-end-gnu runner)
     ;; Procedure called at the end of an individual test case, when the result
-    ;; of the test is available.
-    (let* ((results (test-result-alist runner))
+    ;; of the test is available, that is, when its result kind is not #f.
+    (let* ((result-kind (test-result-kind runner))
+           (results (test-result-alist runner))
            (result? (cut assq <> results))
            (result  (cut assq-ref results <>))
            (test-case-name (current-test-full-name runner))
@@ -163,10 +162,13 @@ called to do the final reporting."
            (time-elapsed (time-difference end start))
            (time-elapsed-seconds (+ (time-second time-elapsed)
                                     (* 1e-9 (time-nanosecond time-elapsed)))))
-      (unless (or brief? (and errors-only? (test-skipped? runner)))
-        ;; Display the result of each test case on the console.
+      (unless (or (not result-kind)     ;avoid printing a void result
+                  brief?
+                  (and errors-only? (test-skipped? runner)))
+        ;; Display the result of each test case that have a result on the
+        ;; console.
         (format out-port "~a: ~a - ~a ~@[[~,3fs]~]~%"
-                (result->string (test-result-kind* runner) #:colorize? color?)
+                (result->string result-kind #:colorize? color?)
                 test-name test-case-name
                 (and show-duration? time-elapsed-seconds)))
 
@@ -188,7 +190,7 @@ called to do the final reporting."
         (newline))
 
       (format trs-port ":test-result: ~A ~A [~,3fs]~%"
-              (result->string (test-result-kind* runner))
+              (result->string result-kind)
               test-case-name time-elapsed-seconds)))
 
   (define (finalize runner)
@@ -205,12 +207,14 @@ called to do the final reporting."
                                 test-runner-fail-count
                                 test-runner-xpass-count
                                 test-runner-xfail-count
-                                test-runner-skip-count)
+                                test-runner-skip-count
+                                test-runner-notrun-count)
                           (list "PASS"
                                 "FAIL"
                                 "XPASS"
                                 "XFAIL"
-                                "SKIP")))
+                                "SKIP"
+                                "NOTRUN")))
       (format trs-port ":recheck: ~A~%"
               (if fail "yes" "no"))
       (format trs-port ":copy-in-global-log: ~A~%"
