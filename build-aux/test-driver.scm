@@ -293,7 +293,7 @@ called to do the final reporting."
 ;;; mode: scheme
 ;;; eval: (add-hook 'write-file-functions 'time-stamp)
 ;;; time-stamp-start: "(define script-version \""
-;;; time-stamp-format: "%:y-%02m-%02d.%02H"
+;;; time-stamp-format: "%Y-%02m-%02d.%02H"
 ;;; time-stamp-time-zone: "UTC"
 ;;; time-stamp-end: "\") ;UTC"
 ;;; End:
