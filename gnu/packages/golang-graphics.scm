@@ -325,7 +325,7 @@ GTK Layer Shell library which can also be consumed in the gotk3 library.")
            gtk+
            pango
            pkg-config
-           xorg-server))
+           xorg-server-for-tests))
     (home-page "https://github.com/gotk3/gotk3")
     (synopsis "Go bindings for GTK+3")
     (description
