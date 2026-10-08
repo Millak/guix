@@ -6960,7 +6960,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
@@ -6968,17 +6968,17 @@ over, or update a value in arbitrary data structures.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1rmsffcscmi6zpm0ha3qmpqvvkar0zppggiwmfg4lks1m9wgblqh"))))
+         "129m9cd0v4jb5gnfqr9b97k7c0pwymdpb53kvkkm2gghjb5nqq0k"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
     (inputs
-     (list guile-3.0 xapian-1.4 zlib))
+     (list guile-3.0 xapian zlib))
     (native-inputs
      (list guile-run64
            pkg-config
            lzip
-           swig-4.0))
+           swig))
     (propagated-inputs
      (list guile-lib))
     (home-page "https://guile-xapian.systemreboot.net")
