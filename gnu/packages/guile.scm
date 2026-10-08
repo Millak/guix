@@ -996,12 +996,12 @@ Guile's foreign function interface.")
        ;; with the 'git-fetch' derivation on systems that lack
        ;; "builtin:git-download".
        (method url-fetch)
-       (uri (string-append home-page "/archive/" version ".tar.gz"))
+       (uri (string-append home-page "/releases/download/" version
+                           "/guile-lzlib-" version ".tar.gz"))
        ;; content nar-sha256: 1iz6kg9sd5c2ab47rj2jqgalppjwjpkl5jn4sy4s6681vj83fzma
-       (file-name (string-append "guile-lzlib-" version ".tar.gz"))
        (sha256
         (base32
-         "1fkfhvhvsqiqq0glr9gw15kq3mpr1lhd1nqqp9zzls564yjvq3kn"))))
+         "0hj6566pn3cgarvd66748bjkxi9y50h32924bl7r2k5n9ykr1swv"))))
     (build-system gnu-build-system)
     (arguments
      (list
