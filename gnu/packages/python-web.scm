@@ -12972,6 +12972,26 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
      (arguments (list #:tests? #f))
      (native-inputs (list python-setuptools))))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-sanic-minimal
+  (package/inherit python-sanic
+    (name "python-sanic-minimal")
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs
+     (list python-aiofiles
+           python-html5tagger
+           python-httptools
+           python-multidict
+           python-sanic-routing
+           python-tracerite
+           python-typing-extensions
+           python-ujson
+           python-uvloop
+           python-websockets))))
+
 (define-public python-socketio
   (package
     (name "python-socketio")
