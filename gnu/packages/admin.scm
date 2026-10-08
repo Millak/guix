@@ -3196,7 +3196,7 @@ modules and plugins that extend Ansible.")
 (define-public debops
   (package
     (name "debops")
-    (version "3.3.0")
+    (version "3.3.2")
     (source
      (origin
        (method git-fetch)
@@ -3205,7 +3205,7 @@ modules and plugins that extend Ansible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6wck5kax5h2bjv1vw8pbd7fdcdhx87bj9fakh3h0rar9d2qksj"))
+        (base32 "1gmd26pfvs80qfk0vwy4ifi1x9rg2id50my22qqa0rqqk09xc809"))
        (patches
         (search-patches "debops-setup-py-avoid-git.patch"))))
     (build-system pyproject-build-system)
@@ -3247,7 +3247,7 @@ modules and plugins that extend Ansible.")
                                             "bin/git"
                                             "bin/git-crypt"
                                             "bin/umount"))))))))))
-    (home-page "https://www.debops.org/")
+    (home-page "https://debops.org/")
     (synopsis "Collection of general-purpose Ansible roles")
     (description "The Ansible roles provided by that can be used to manage
 Debian or Ubuntu hosts.  In addition, a default set of Ansible playbooks can
