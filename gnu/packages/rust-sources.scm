@@ -2,6 +2,7 @@
 ;;; Copyright © 2025 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1187,9 +1188,73 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
 intelligence.")
      (license license:expat))))
 
-;;;
+;;; Workspace dependency of depolymerization.
+(define-public rust-taler
+  ;; Things are a bit unstable at the moment for depolymerization, and
+  ;; building from tagged releases does not work.  Use what its Cargo.lock
+  ;; refers to for now.
+  (let ((commit "91ff47a5fc84ee85c8c54eab7e03b649d9608ef8")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-taler")
+       (version (git-version "1.6.1" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git.taler.net/taler-rust.git")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "0353cwmcq2wky9wdfxwmzfyg67094wjpgp5rirw3mhw4i7nn3xmr"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list
+         #:skip-build? #t
+         #:cargo-package-crates
+         ''("taler-macros"
+            "taler-build"
+            "failure-injection"
+            "taler-common"
+            "http-client"
+            "taler-api"               ;dev-dependency depend on taler-test-utils
+            "taler-test-utils"        ;depends on taler-api workspace
+            "taler-apns-relay"
+            "taler-cyclos"
+            "taler-magnet-bank"
+            "taler-wise")
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'adjust-version-info
+               (lambda _
+                 (call-with-output-file ".version"
+                   (lambda (port)
+                     ;; Must match the format of `git describe --tags --always
+                     ;; --abbrev=8' per the README.md.
+                     (format port "v~a~%" #$version)))
+                 (substitute* "Cargo.toml"
+                   (("^version = .*")
+                    (format #f "version = ~s~%" #$version))
+                   (("^([[:graph:]]+) = \\{ path = \"common/.*" _ package)
+                    (format #f "~a = { path = \"common/~a\", version = ~s }~%"
+                            package package #$version)))))
+             (add-after 'unpack 'avoid-circular-dependency
+               (lambda _
+                 (substitute* "common/taler-api/Cargo.toml"
+                   ;; This is a dev-dependency which introduces a circular
+                   ;; dependency with taler-api.
+                   (("taler-test-utils.workspace = true")
+                    "")))))))
+       (inputs (cargo-inputs 'taler))
+       (home-page "https://www.taler.net/")
+       (synopsis "GNU Taler utilities and adapters in Rust")
+       (description "This package provides the GNU Taler utilities in Rust and
+some third party adapters.")
+       (license license:agpl3+)))))
+
 ;;; Workspace dependency of temporal-capi.
-;;;
 (define-public rust-temporal-0.2.6
   (hidden-package
    (package
