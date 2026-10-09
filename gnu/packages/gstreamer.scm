@@ -1132,6 +1132,7 @@ par compared to the rest.")
            pkg-config
            python
            rust
+           `(,rust "cargo")
            rust-cargo-c))
     (inputs
      (cons* csound
