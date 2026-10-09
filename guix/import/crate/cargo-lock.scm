@@ -71,7 +71,7 @@
 ;; source
 (define-peg-pattern crate-source all
   (and (or "registry" "git")
-       "+https://"
+       (or "+https://" "+git://")
        (+ (or "/" "." "?" "=" "-" "#" "_" "~" "%"
               alphanumeric-char))))
 
