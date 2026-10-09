@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
-;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +61,7 @@
             edl1.0
             epl1.0
             epl2.0
+            etalab2.0
             eupl1.1
             eupl1.2
             expat expat-0
@@ -375,6 +376,11 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "EPL 2.0"
            "https://www.eclipse.org/legal/epl-2.0/"
            "https://www.gnu.org/licenses/license-list#EPL2"))
+
+(define etalab2.0
+  (license "Licence Ouverte 2.0"
+           "https://www.data.gouv.fr/pages/legal/licences/etalab-2.0"
+           "https://spdx.org/licenses/etalab-2.0.html"))
 
 (define eupl1.1
   (license "EUPL 1.1"
