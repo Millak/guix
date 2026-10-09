@@ -13741,7 +13741,7 @@ The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
 @end defmac
 
-@defmac delayed object exp
+@defmac delayed-object @var{exp}
 This macro delays the evaluation of @var{exp} until the returned object
 is lowered to a derivation or store item.
 
