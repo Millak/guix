@@ -561,6 +561,16 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "gnu/packages/ninja.scm"
                       "gnu/packages/valgrind.scm")))
 
+(define-team chicken
+  (team 'chicken
+        #:name "Chicken Team"
+        #:description
+        "Chicken Scheme libraries and tools."
+        #:scope (list "gnu/build-system/chicken.scm"
+                      "gnu/build/chicken-build-system.scm"
+                      "gnu/packages/chicken.scm"
+                      "guix/import/egg.scm")))
+
 (define-team codeberg
   (team 'codeberg
         #:name "Codeberg Project Owners"
@@ -1756,6 +1766,11 @@ the \"texlive\" importer."
                        "dan@danielittlewood.xyz"
                        "danielittlewood")
   release)
+
+(define-member (person "Malte Frank Gerdes"
+                       "malte.f.gerdes@gmail.com"
+                       "mfg")
+  chicken)
 
 
 (define (find-team name)
