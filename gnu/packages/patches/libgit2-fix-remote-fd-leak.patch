@@ -1,0 +1,29 @@
+Fixes a bug whereby ‘git_remote_disconnect’ would not actually close the
+socket for the connection to the remote; instead one would have to call
+‘git_remote_free’ to make that happen.
+
+Upstream pull request: https://github.com/libgit2/libgit2/pull/7372
+Upstream bug report: https://github.com/libgit2/libgit2/issues/7356
+
+--- a/src/libgit2/transports/http.c
++++ b/src/libgit2/transports/http.c
+@@ -729,6 +729,10 @@ static int http_close(git_smart_subtransport *t)
+ 	git_net_url_dispose(&transport->server.url);
+ 	git_net_url_dispose(&transport->proxy.url);
+ 
++	/* The call below closes associated file descriptors.  */
++	git_http_client_free(transport->http_client);
++	transport->http_client = NULL;
++
+ 	return 0;
+ }
+ 
+@@ -736,8 +740,6 @@ static void http_free(git_smart_subtransport *t)
+ {
+ 	http_subtransport *transport = GIT_CONTAINER_OF(t, http_subtransport, parent);
+ 
+-	git_http_client_free(transport->http_client);
+-
+ 	http_close(t);
+ 	git__free(transport);
+ }
