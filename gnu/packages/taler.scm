@@ -17,8 +17,13 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages taler)
+  #:use-module (gnu packages c)
+  #:use-module (gnu packages crypto)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
@@ -29,6 +34,101 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu))
+
+(define-public depolymerization
+  ;; The last v0.0.1 release does not current build with a recent rust-taler;
+  ;; use the latest commit available.
+  (let ((commit "db9f7c37411027149abfbb45d071771a9026f059")
+        (revision "0"))
+    (package
+      (name "depolymerization")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "git://git.taler.net/depolymerization.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1i4dprlgl35pwifiix29fcn8gdizv215r24zxa5c5c2f4z5d3z1b"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:cargo-package-crates
+        '(list "uri-pack"
+               "depolymerizer-common"
+               "depolymerizer-bitcoin")
+        #:cargo-install-paths '(list "depolymerizer-bitcoin")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'adjust-version-info
+              (lambda _
+                (call-with-output-file ".version"
+                  (lambda (port)
+                    ;; Must match the format of `git describe --tags --always
+                    ;; --abbrev=8' per the README.md.
+                    (format port "v~a~%" #$version)))
+                (substitute* "depolymerizer-common/Cargo.toml"
+                  (("^version.workspace = true")
+                   (format #f "version = ~s" #$version))
+                  (("uri-pack = \\{ path")
+                   "uri-pack = { version = \"*\", path"))
+                (substitute* "Cargo.toml"
+                  (("^version =.*")
+                   (format #f "version = ~s~%" #$version))
+                  (("path = \"depolymerizer-common\"" all)
+                   (format #f "~a, version = ~s" all #$version)))))
+            (add-after 'unpack 'use-guix-vendored-dependencies
+              (lambda _
+                (substitute* "Cargo.toml"
+                  (("git = \"[[:graph:]]+\"")
+                   ;; Cargo is picky when using pre-release version strings;
+                   ;; provide the exact one used.
+                   (format #f "version = ~s"
+                           #$(package-version
+                              (this-package-input "rust-taler")))))))
+            (delete 'check)             ;moved after install-extra-files
+            (add-after 'install 'install-data-files
+              (lambda _
+                (substitute* "makefile"
+                  (("doc/prebuilt/man")
+                   (string-append #$(this-package-native-input "taler-docs")
+                                  "/share/man"))
+                  (("man/depolymerizer-bitcoin[[:graph:]]*" all)
+                   (string-append all ".zst")))
+                (invoke "make" "install-files"
+                        (string-append "prefix=" #$output))))
+            (add-after 'install 'add-to-PATH
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Ensure the binary is on PATH so that the
+                ;; etc/depolymerizer-bitcoin.conf configuration file can be
+                ;; found relative to it, which is needed for the test suite.
+                (setenv "PATH"
+                        (string-append (dirname
+                                        (search-input-file
+                                         outputs "bin/depolymerizer-bitcoin"))
+                                       ":" (getenv "PATH")))))
+            (add-after 'install-data-files 'check
+              (assoc-ref %standard-phases 'check))
+            (add-before 'check 'start-postgresql
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                    (invoke "initdb" "-D" dbdir)
+                    (invoke "pg_ctl" (string-append "--options=-k " dbdir)
+                            "-D" dbdir "-l" (string-append dbdir "/db.log")
+                            "start")
+                    (invoke "createdb" "-h" dbdir
+                            "taler_rust_check"))))))))
+      (native-inputs (list postgresql taler-docs))
+      (inputs (cons* libsecp256k1 mimalloc (cargo-inputs 'depolymerization)))
+      (home-page "https://www.taler.net/")
+      (synopsis "Blockchain adapters for the Taler ecosystem")
+      (description "Depolymerization is a GNU Taler project to create blockchain
+adapters (depolymerizer) for the Taler ecosystem.")
+      (license license:agpl3+))))
 
 (define-public robocop
   (package
