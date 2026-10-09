@@ -74,6 +74,49 @@ cat > "$channels_file" <<EOF
 EOF
 guix repl -- "$channels_file"
 
+# Check that using 'time-machine' and 'downloaded-channels' with '#:append'
+# correctly verifies if the appended channels are untrusted.  Check that this
+# fails with a "'guix' is not trusted" message.
+cat > "$channels_file" <<EOF
+(use-modules (guix tests http)
+             (guix diagnostics)
+             (guix scripts time-machine))
+
+(define channels
+  '(list))
+
+(with-http-server (list (list 200 (object->string channels)))
+  (let* ((error (open-output-string))
+         (port (mkstemp "guix-channels-XXXXXX"))
+         (file (port-filename port)))
+    (write (quasiquote
+            (downloaded-channels
+             ,(%local-url)
+             #:append
+             (list
+              (channel
+                (name 'guix) ;; this is an untrusted channel
+                (url ,(%local-url)) ;; url doesn't matter
+                (branch "devel")
+                (commit "cabba9e900d2350aef42e65643de78500b2aad06")
+                (introduction
+                 (make-channel-introduction
+                  "badcafef1d5c170db68aa4bbfb77024fdc468ed3"
+                  (openpgp-fingerprint
+                   "CABB A9EE 8A84 FDC6 9DB4  0CFB 090B 1199 3D9A EBB5"))))))) port)
+    (close-port port)
+    (catch 'quit
+      (lambda ()
+        (parameterize ((guix-warning-port error))
+          (guix-time-machine "--allow-untrusted-channels=no" "-C" file "--" "describe")
+          (primitive-exit 1)))
+      (lambda _
+        (delete-file file)
+        (exit (->bool (string-contains (get-output-string error)
+                                       "'guix' is not trusted")))))))
+EOF
+guix repl -- "$channels_file"
+
 # Check '--max-indirections' and 'downloaded-channels'.
 cat > "$channels_file" <<EOF
 (downloaded-channels "https://example.org/channels.scm")
