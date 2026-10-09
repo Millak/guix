@@ -1236,16 +1236,16 @@ seen, tell, and what.")
 (define-public soju
   (package
     (name "soju")
-    (version "0.10.1")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/emersion/soju")
-             (commit (string-append "v" version))))
+              (url "https://codeberg.org/emersion/soju")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hl6djraalpyn6dkf748g2564lbz1lrp8nqddnyjdy3bah87prch"))))
+        (base32 "1lmcfah64630skvgsb6gj6969m19pxj05lwnif5nxin4g5s4109s"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1279,6 +1279,7 @@ seen, tell, and what.")
      (list go-codeberg-org-emersion-go-scfg
            go-codeberg-org-emersion-go-sqlite3-fts5
            go-git-sr-ht-sircmpwn-go-bare
+           go-github-com-sherclockholmes-webpush-go
            go-github-com-coder-websocket
            go-github-com-emersion-go-sasl
            go-github-com-lib-pq
@@ -1286,8 +1287,8 @@ seen, tell, and what.")
            go-github-com-msteinert-pam-v2
            go-github-com-pires-go-proxyproto
            go-github-com-prometheus-client-golang
-           go-github-com-sherclockholmes-webpush-go
            go-golang-org-x-crypto
+           go-golang-org-x-net
            go-golang-org-x-time
            go-gopkg-in-irc-v4
            go-modernc-org-sqlite
