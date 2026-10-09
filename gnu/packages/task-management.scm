@@ -433,6 +433,7 @@ to finish tasks, not organize them.")
     (native-inputs
      (cons* corrosion
             rust
+            `(,rust "cargo")
             (cargo-inputs 'taskwarrior)))
     (home-page "https://taskwarrior.org")
     (synopsis "Command line task manager")
