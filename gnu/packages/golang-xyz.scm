@@ -9242,9 +9242,7 @@ signatures.")
 (define-public go-github-com-cyphar-filepath-securejoin
   (package
     (name "go-github-com-cyphar-filepath-securejoin")
-    ;; XXX: Higher version depends on binding to Rust library
-    ;; <https://github.com/cyphar/libpathrs>.
-    (version "0.5.2")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -9253,20 +9251,17 @@ signatures.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i109zkv3wd1fnc8fyb4zbxi7g0r1pkaasxghnxkp47c3d595aym"))))
+        (base32 "1rjmkrzrn2q9wnaay4f0vxsj3xbvrx590idzsywlnnxr3qb8ka03"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-timeout=30m"
-              "-shuffle=on"
-              ;; Messages: GreaterEqualThan(7.18446744073709551615).
-              "-skip" "TestGreaterEqualThan/OlderMinor")
-      #:import-path "github.com/cyphar/filepath-securejoin"))
+      #:import-path "github.com/cyphar/filepath-securejoin"
+      #:test-flags #~(list "-timeout=30m" "-shuffle=on")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-golang-org-x-sys))
+     (list go-cyphar-com-go-pathrs
+           go-golang-org-x-sys))
     (home-page "https://github.com/cyphar/filepath-securejoin")
     (synopsis "Alternative Golang @code{filepath.SecureJoin} implementation")
     (description
