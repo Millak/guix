@@ -11807,6 +11807,7 @@ meson.project_source_root() / 'Cargo.toml',"))
                           pkg-config
                           rust
                           `(,rust "cargo")
+                          `(,rust "tools")
                           (or (and=> (%current-target-system)
                                      (compose list make-rust-sysroot))
                               '())))
