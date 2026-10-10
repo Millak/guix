@@ -2584,6 +2584,35 @@ particular test phases or milestones have been reached. It is part of the
      "This package provides a Go client library to access the Openwhisk API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aperturerobotics-json-iterator-lite
+  (package
+    (name "go-github-com-aperturerobotics-json-iterator-lite")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aperturerobotics/json-iterator-lite")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j2888rmx1mqhvy6xg5yz9slngqlbdh6iyy17ilgkv5vvda03q5h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aperturerobotics/json-iterator-lite"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/aperturerobotics/json-iterator-lite")
+    (synopsis "Minimal reflection-free JSON marshal and unmarshal for Go")
+    (description
+     "Package jsoniter implements encoding and decoding of JSON as defined in
+@url{https://rfc-editor.org/rfc/rfc4627.html, RFC 4627} and provides
+interfaces with identical syntax of standard lib encoding/json.  Converting
+from encoding/json to jsoniter is no more than replacing the package with
+jsoniter and variable type declarations (if any).  jsoniter interfaces gives
+100% compatibility with code using standard lib.")
+    (license license:expat)))
+
 (define-public go-github-com-apex-log
   (package
     (name "go-github-com-apex-log")
