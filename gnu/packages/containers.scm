@@ -3777,7 +3777,7 @@ Open Container Initiative specification.")))
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method git-fetch)
@@ -3786,7 +3786,7 @@ Open Container Initiative specification.")))
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))
+        (base32 "00hx4j2zff9j3lq5yc4ybiqrk64b4xi6r9n8j267d05imyirpclc"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
