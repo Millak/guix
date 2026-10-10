@@ -965,7 +965,7 @@ development inertia.
 Check out the official @uref{https://git-scm.com/, Git} repository:
 
 @example
-$ git clone https://git.guix.gnu.org/guix.git
+$ git clone https://codeberg.org/guix/guix.git
 @end example
 
 In the rest of this article, we use @samp{$GUIX_CHECKOUT} to refer to the location of
