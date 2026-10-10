@@ -43,7 +43,6 @@
                                             %namespaces
                                             %writable-/tmp)
   #:use-module ((gnu system) #:select (operating-system?
-                                       operating-system-user-services
                                        operating-system-services))
   #:autoload   (gnu system linux-container) (eval/container)
   #:autoload   (gnu system file-systems) (file-system
@@ -496,13 +495,12 @@ resulting from command-line parsing."
                 (passwd:name (getpwnam (getuid)))))
            (os-home-env-config
             (and (operating-system? obj)
-                 (find (lambda (service)
-                         (eq? (service-type-name (service-kind service))
-                              'guix-home))
-                       (operating-system-user-services obj))
-                 (service-value
-                  (fold-services (operating-system-services obj)
-                                 #:target-type guix-home-service-type))))
+                 (guard (condition
+                         ((missing-target-service-error? condition)
+                          #f))
+                   (service-value
+                    (fold-services (operating-system-services obj)
+                                   #:target-type guix-home-service-type)))))
            (os-home-env
             (and os-home-env-config
                  (and=> (find (lambda (home-env-config)
