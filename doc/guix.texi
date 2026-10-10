@@ -53834,6 +53834,7 @@ still in an experimental stage, though.
 @menu
 * Declaring the Home Environment::  Customizing your Home.
 * Configuring the Shell::       Enabling home environment.
+* home-environment Reference::  All about home-environment.
 * Home Services::               Specifying home services.
 * Invoking guix home::          Instantiating a home configuration.
 @end menu
@@ -53879,7 +53880,8 @@ it manually. (@pxref{Configuring the Shell}).
 The @code{packages} field should be self-explanatory, it will install
 the list of packages into the user's profile.  The most important field
 is @code{services}, it contains a list of @dfn{home services}, which are
-the basic building blocks of a home environment.
+the basic building blocks of a home environment.  @xref{home-environment
+Reference}, for the full list of @code{home-environment} fields.
 
 There is no daemon (at least not necessarily) related to a home service,
 a home service is just an element that is used to declare part of home
@@ -53974,6 +53976,42 @@ case of Bash, it is @file{~/.bash_profile}, and in case of Zsh, it is
 This step is only required if your shell is @emph{not} managed by Guix Home.
 Otherwise, everything will be done automatically.
 @end quotation
+
+@node home-environment Reference
+@section @code{home-environment} Reference
+
+The @code{home-environment} record type, provided by @code{(gnu home)},
+lets you declare your home environment---@pxref{Declaring the Home
+Environment}, for an example.  This section documents all the fields of
+@code{home-environment}.
+
+@deftp {Data Type} home-environment
+This is the data type representing the configuration of a ``home
+environment''---packages and services installed for your user account.
+It has the following fields.
+
+@table @asis
+@item @code{packages} (default: @code{'()})
+The list of packages to be installed in your environment.  These
+packages are then visible under @file{~/.guix-home/profile}.
+
+@item @code{services} (default: @code{%base-home-services})
+The list of services available in your home environment.  @xref{Home
+Services}, for a list of available services.
+
+@item @code{essential-services} (default: @dots{})
+The list of @emph{essential services}---services without which Guix Home
+may not work properly.  @xref{Essential Home Services}.
+
+The default value should almost always be kept unchanged.
+@end table
+@end deftp
+
+@defvar %base-home-services
+This is the default list of Home services.  It contains recommended
+services, such as @code{home-log-rotation-service-type} (@pxref{Shepherd
+Home Service}).
+@end defvar
 
 @node Home Services
 @section Home Services
