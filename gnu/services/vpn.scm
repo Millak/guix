@@ -827,7 +827,7 @@ strongSwan.")))
                     (if (null? '#$dns)
                         ""
                         (format #f "DNS = ~{~a~^, ~}" (list #$@dns)))
-                    (if (null? '#$mtu)
+                    (if (not #$mtu)
                         ""
                         (format #f "MTU = ~a" #$mtu))))
 
