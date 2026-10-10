@@ -807,6 +807,42 @@ over the network using the syslog protocol described in
 @url{https://rfc-editor.org/rfc/rfc5424.html, RFC 5424}.")
     (license license:bsd-0)))
 
+(define-public go-cyphar-com-go-pathrs
+  (package
+    (name "go-cyphar-com-go-pathrs")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cyphar/libpathrs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxyrzf7h1wsjfays70wcql200jxchv9kqbgn1kswz3alnkmxxqn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cyphar.com/go-pathrs"
+      #:unpack-path "cyphar.com"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-pathrs.h
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file "go-pathrs/pathrs.h")  ;symlink
+                (copy-file "include/pathrs.h" "go-pathrs/pathrs.h")))))))
+    (native-inputs
+     (list pkg-config))
+    (propagated-inputs
+     (list go-golang-org-x-sys libpathrs))
+    (home-page "https://github.com/cyphar/libpathrs")
+    (synopsis "Go bindings for @code{libpathrs}")
+    (description
+     "Package pathrs provides bindings for libpathrs, a library for safe path
+resolution on Linux.")
+    (license (list license:mpl2.0 license:lgpl3+))))
+
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
