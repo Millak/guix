@@ -25931,7 +25931,7 @@ levels per backend and logger.")
   ;; TODO: Move to (gnu packages containers).
   (package
     (name "go-github-com-opencontainers-cgroups")
-    (version "0.0.8")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
@@ -25940,7 +25940,7 @@ levels per backend and logger.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "149siapv341i1hak7sk3lmzjns6xjav0b8fdmqyw1x6rfjbk8fhg"))))
+        (base32 "13zlc82ygf8m6j2z12cxlrm69j67w984gpazfsrd0m1fmdb46jj7"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -25960,7 +25960,7 @@ levels per backend and logger.")
     (propagated-inputs
      (list go-github-com-cilium-ebpf
            go-github-com-coreos-go-systemd-v22
-           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-godbus-dbus-v5
            go-github-com-moby-sys-mountinfo
            go-github-com-moby-sys-userns
