@@ -1166,7 +1166,7 @@ specification}.")
 (define-public go-github-com-opencontainers-runc
   (package
     (name "go-github-com-opencontainers-runc")
-    (version "1.3.0")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -1175,7 +1175,7 @@ specification}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0midvxwmj4fvhy5mqv616bhlx39j0gd6y890adx7dnz5in506ym1"))
+        (base32 "01y0mp31iywr7kh0cfnn9h2mya2lhasybmlirh156apmmw82gq8c"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -1197,27 +1197,29 @@ specification}.")
                              "libcontainer/system/kernelversion"
                              "libcontainer/utils")))
     (propagated-inputs
-     (list go-github-com-checkpoint-restore-go-criu-v6
+     (list go-cyphar-com-go-pathrs
+           go-github-com-checkpoint-restore-go-criu-v8
            go-github-com-containerd-console
            go-github-com-coreos-go-systemd-v22
-           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-docker-go-units
            go-github-com-godbus-dbus-v5
            go-github-com-moby-sys-capability
+           go-github-com-moby-sys-devices
            go-github-com-moby-sys-mountinfo
            go-github-com-moby-sys-user
            go-github-com-moby-sys-userns
            go-github-com-mrunalp-fileutils
-           go-github-com-opencontainers-cgroups-0.0.1
-           go-github-com-opencontainers-runtime-spec-1.2.1
+           go-github-com-opencontainers-cgroups
+           go-github-com-opencontainers-runtime-spec
            go-github-com-opencontainers-selinux
            go-github-com-seccomp-libseccomp-golang
            go-github-com-sirupsen-logrus
            go-github-com-urfave-cli
            go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
            go-golang-org-x-net
-           go-golang-org-x-sys
-           go-google-golang-org-protobuf))
+           go-golang-org-x-sys))
     (home-page "https://github.com/opencontainers/runc")
     (synopsis "Tool for running containers according to the OCI specification")
     (description
