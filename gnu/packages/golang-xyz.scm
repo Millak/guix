@@ -33452,7 +33452,7 @@ datastore connectivity and testing (viant/dsc, viant/dsunit).")
 (define-public go-github-com-viant-xunsafe
   (package
     (name "go-github-com-viant-xunsafe")
-    (version "0.10.3")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -33461,13 +33461,11 @@ datastore connectivity and testing (viant/dsc, viant/dsunit).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q9zqz6p8spf7nq9r75yv9zizxf80mg0i6w0y9a0qxcgpnji0a3z"))))
+        (base32 "0hailpy4mqqxyx6hpybmlz42rlwk7hipwd3wyly4pwvyxpwsvhd7"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/viant/xunsafe"
-      #:test-flags
-      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
+      #:import-path "github.com/viant/xunsafe"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
