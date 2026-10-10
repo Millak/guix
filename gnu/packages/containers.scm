@@ -3778,18 +3778,78 @@ Open Container Initiative specification.")))
   (package
     (name "skopeo")
     (version "1.24.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/podman-container-tools/skopeo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))))
-    (build-system gnu-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/podman-container-tools/skopeo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "go.podman.io/skopeo/..."
+      #:unpack-path "go.podman.io/skopeo"
+      #:embed-files #~(list "^VERSION$")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Some tests need docker-registry in the PATH or
+                       ;; running Docker daemon.
+                       (list "TestProxy/TestProxyGetBlob"
+                             "TestProxy/TestProxyMetadata"
+                             "TestSkopeo"
+                             "TestTLS/TestDockerDaemon"
+                             "TestTLS/TestOCILayout"
+                             "TestTLS/TestOpenShift"
+                             "TestTLS/TestRegistry")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key inputs unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (setenv "PREFIX" #$output)
+                (setenv "GOMD2MAN" (search-input-file inputs "/bin/go-md2man"))
+                (invoke "make" "install-docs")
+                (invoke "make" "install-completions")
+                (install-file "default-policy.json"
+                              (string-append #$output "/etc/containers")))))
+          (add-after 'install 'wrap-skopeo
+            (lambda _
+              (wrap-program (string-append #$output "/bin/skopeo")
+                `("PATH" suffix
+                  ;; We need at least newuidmap, newgidmap and mount.
+                  ("/run/privileged/bin")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "PATH" (string-append #$output "/bin" ":"
+                                            (getenv "PATH"))))))))
     (native-inputs
-     (list go
+     (list gnupg
+           go-github-com-containers-ocicrypt
+           go-github-com-docker-distribution
+           go-github-com-masterminds-semver-v3
+           go-github-com-moby-sys-capability
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-image-tools
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-go-podman-io-common
+           go-go-podman-io-image-v5
+           go-go-podman-io-storage
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-term
            go-md2man
            pkg-config))
     (inputs
@@ -3802,36 +3862,6 @@ Open Container Initiative specification.")))
            lvm2
            glib
            gpgme))
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "PREFIX="
-              (string-append "DESTDIR=" #$output)
-              "GOGCFLAGS=-trimpath"
-              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
-      #:tests? #f                       ; The tests require Docker
-      #:test-target "test-unit"
-      #:imported-modules
-      (source-module-closure `(,@%default-gnu-imported-modules
-                               (guix build go-build-system)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'unpack 'set-env
-            (lambda _
-              ;; When running go, things fail because HOME=/homeless-shelter.
-              (setenv "HOME" "/tmp")
-              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
-              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
-              ;; calls.  Can be removed once we update to >4.3.
-              (setenv "CC" #$(cc-for-target))))
-          (add-after 'install 'wrap-skopeo
-            (lambda _
-              (wrap-program (string-append #$output "/bin/skopeo")
-                `("PATH" suffix
-                  ;; We need at least newuidmap, newgidmap and mount.
-                  ("/run/privileged/bin"))))))))
     (home-page "https://github.com/podman-container-tools/skopeo")
     (synopsis "Interact with container images and container image registries")
     (description
