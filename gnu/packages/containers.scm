@@ -1334,7 +1334,7 @@ unprivileged user, known as \"Rootless mode\".")
 (define-public go-go-podman-io-common
   (package
     (name "go-go-podman-io-common")
-    (version "0.68.1")
+    (version "0.69.2")
     (source
      (origin
        (method git-fetch)
@@ -1343,7 +1343,7 @@ unprivileged user, known as \"Rootless mode\".")
               (commit (go-version->git-ref version #:subdir "common"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "040snqsg3il98pz9w8442wdzwm2rm07yqbch87f4jic4p4s0707s"))
+        (base32 "1r5nmhg08viddlvh7mpcm56gc4qh6brqxrf0xplfx5sa08aanzq4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1358,32 +1358,81 @@ unprivileged user, known as \"Rootless mode\".")
       #:skip-build? #t
       #:import-path "go.podman.io/common"
       #:unpack-path "go.podman.io"
-      #:embed-files
-      #~(list "^VERSION$")
-      #:test-subdirs
-      ;; XXX: Remove when go-go-podman-io-image-v5 and go-go-podman-io-storage
-      ;; are updated.
-      #~(list "pkg/auth" "pkg/flag" "pkg/chown" "pkg/parse" "pkg/umask"
-              "pkg/report" "pkg/sysctl" "pkg/cgroups" "pkg/filters"
-              "pkg/formats" "pkg/machine" "pkg/seccomp" "pkg/secrets"
-              "pkg/sysinfo" "pkg/timetype" "pkg/manifests" "pkg/configmaps"
-              "pkg/hooks/0.1.0" "pkg/strongunits" "pkg/capabilities"
-              "pkg/subscriptions" "pkg/secrets/filedriver"
-              "pkg/configmaps/filedriver" "pkg/apparmor/internal/supported")))
+      #:test-flags
+      #~(list "--tags" "seccomp,containers_image_openpgp"
+              "--skip"
+              (string-join
+               ;; XXX: Some of these tests need policy.json setuup;
+               ;; check the rest.
+               (list "TestRun" "TestTag" "TestList" "TestPull" "TestPush"
+                     "TestSave" "TestUntag" "TestConfig" "TestDelete"
+                     "TestImport" "TestLookup" "TestRunCwd" "TestTmpdir"
+                     "TestGoodDir" "TestGoodNew" "TestHistory" "TestFilterID"
+                     "TestGoodFile" "TestNetavark" "TestNoStages"
+                     "TestDiskUsage" "TestRunCancel" "TestLoadByPath"
+                     "TestPullPolicy" "TestLookupImage" "TestAddArtifacts"
+                     "TestFilterDigest" "TestGoodValidate" "TestInvalidStage"
+                     "TestRemoveImages" "TestExecWithInput"
+                     "TestFilterIdLabel" "TestLoadReference"
+                     "TestPullPlatforms" "TestExtensionStage"
+                     "TestFilterManifest" "TestImageFunctions"
+                     "TestInvalidCommand" "TestRunEnvironment"
+                     "TestRunKillTimeout" "TestStoreAndLookup"
+                     "TestStoreAndLookup" "TestCorruptedLayers"
+                     "TestFilterReference" "TestRunIgnoreOutput"
+                     "TestMonitorOneDirGood" "TestMonitorTwoDirGood"
+                     "TestPushOtherPlatform" "TestCreateManifestList"
+                     "TestDefaultMaskedPaths" "TestInspectHealthcheck"
+                     "TestPullOCINoReference" "TestConvertManifestList"
+                     "TestRuntimeConfigFilter" "TestTagAndUntagParallel"
+                     "TestInvalidAnnotationKey" "TestInvalidAnnotationValue"
+                     "TestShortNameAndIDconflict"
+                     "TestCreateAndTagManifestList"
+                     "TestPushWithForceCompression"
+                     "TestRuntimeListImagesByNames"
+                     "TestArtifactStore_copyArtifact"
+                     "TestRuntimeListImagesAllImages"
+                     "TestCreateAndRemoveManifestList"
+                     "TestFilterAfterSinceBeforeUntil"
+                     "TestInspectManifestListWithAnnotations"
+                     "TestPullPlatformsWithEmptyRegistriesConf")
+               "|"))
+      #:embed-files #~(list "^VERSION$")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hardcoded-paths
+            (lambda _
+              (substitute* "src/go.podman.io/common/pkg/config/config_linux.go"
+                (("/usr/local/libexec/podman")
+                 (string-append #$output "/libexec/podman"))
+                (("/usr/local/lib/podman")
+                 (string-append #$output "/bin")))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "GODEBUG" "asynctimerchan=0")))))))
     (native-inputs
-     (list go-github-com-onsi-ginkgo-v2
-           go-github-com-davecgh-go-spew
+     (list go-github-com-davecgh-go-spew
+           go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
            go-github-com-stretchr-testify))
+    (inputs
+     (list btrfs-progs
+           eudev
+           gnupg
+           gpgme
+           libassuan
+           libseccomp))
     (propagated-inputs
      (list go-github-com-checkpoint-restore-checkpointctl
            go-github-com-checkpoint-restore-go-criu-v8
            go-github-com-containerd-platforms
            go-github-com-containers-ocicrypt
            go-github-com-coreos-go-systemd-v22
-           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-cyphar-filepath-securejoin
            go-github-com-davecgh-go-spew
            go-github-com-d6o-gotree-v3    ;go-github-com-disiqueira-gotree-v3
            go-github-com-docker-distribution
