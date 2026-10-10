@@ -14839,7 +14839,9 @@ interfaces available.
 
 To use package transformations at the level of the entire system,
 @pxref{operating-system-transformation, the @code{transformation} field
-of @code{operating-system}}.
+of @code{operating-system}}.  @xref{home-environment-transformation, the
+@code{transformation} field of @code{home-environment}}, for how to do
+it at the level of the home environment
 
 @node Additional Build Options
 @subsection Additional Build Options
@@ -54004,6 +54006,42 @@ The list of @emph{essential services}---services without which Guix Home
 may not work properly.  @xref{Essential Home Services}.
 
 The default value should almost always be kept unchanged.
+
+@anchor{home-environment-transformation}
+@item @code{transformation} (default: @code{identity})
+A one-argument procedure that, when passed a file-like object, returns
+another file-like object (@pxref{G-Expressions}, for more on file-like
+objects).
+
+This procedure is called for every file-like object---including but not
+limited to packages---that appears while lowering the home environment
+to a derivation, and is thus in a key position to customize what goes in
+your home environment.
+
+@cindex optimizing, for a CPU micro-architecture
+@cindex CPU micro-architecture tuning, for Home
+For example, here is how you would tune every package in your home
+environment for the @code{x86-64-v4} micro-architecture group:
+
+@lisp
+(use-modules (guix transformations))
+
+(home-environment
+  ;; @dots{}
+  (transformation
+    (options->transformation '((tune . "x86-64-v4"))
+                             ;; Don't warn about non-tunable
+                             ;; packages.
+                             #:warn? #f)))
+@end lisp
+
+@xref{Package Transformation Options}, for info on
+@code{options->transformation} and related procedures.
+
+Note that when your home is created as part of an operating system
+@i{via} @code{guix-home-service-type} (@pxref{guix-home-service-type,
+@code{guix-home-service-type}}), it does @emph{not} inherit the value of
+the @code{transformation} field of the operating system.
 @end table
 @end deftp
 

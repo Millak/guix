@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022, 2024-2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +50,7 @@
             home-environment-essential-services
             home-environment-default-essential-services
             home-environment-services
+            home-environment-transformation
             home-environment-location
 
             home-environment-with-provenance
@@ -74,6 +75,8 @@
   (services           home-environment-user-services
                       (default %base-home-services)
                       (sanitize validate-service-list))
+  (transformation     home-environment-transformation
+                      (default identity))
 
   (location           home-environment-location            ; <location>
                       (default (and=> (current-source-location)
@@ -110,10 +113,11 @@
 
 (define* (home-environment-derivation he)
   "Return a derivation that builds home environment."
-  (let* ((services         (home-environment-services he))
-         (home (fold-services services
-                              #:target-type home-service-type)))
-    (service-value home)))
+  (with-transformation (home-environment-transformation he)
+    (let* ((services (home-environment-services he))
+           (home (fold-services services
+                                #:target-type home-service-type)))
+      (service-value home))))
 
 
 (define (home-environment-configuration-file he)
