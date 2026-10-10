@@ -5854,7 +5854,11 @@ basic eye-candy effects.")
            python-lz4                   ; Faster compression than zlib.
            python-netifaces
            python-pycups))
-    (native-inputs (list pkg-config pandoc python-cython python-setuptools))
+    (native-inputs (list gobject-introspection
+                         pandoc
+                         pkg-config
+                         python-cython
+                         python-setuptools))
     (arguments
      (list
       #:configure-flags
