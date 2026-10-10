@@ -1610,7 +1610,7 @@ data.")
 (define-public json-c
   (package
     (name "json-c")
-    (version "0.18")
+    (version "0.19")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1618,8 +1618,11 @@ data.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "090pn7gyicvpqq01451zhkjw1fw3h4l6v2f6mxlvhrli8x3b0sl7"))))
+               "1pi69rbcxnda01clpbfa9vzsripw27ji5xrb0pcinc1fj14h5b9p"))))
     (build-system cmake-build-system)
+    (native-inputs
+     ;; needed for unit test
+     (list xxd))
     (home-page "https://github.com/json-c/json-c/wiki")
     (synopsis "JSON implementation in C")
     (description
@@ -1657,7 +1660,8 @@ It aims to conform to RFC 7159.")
       #:configure-flags
       #~(list #$(string-append "CFLAGS=-g -O2"
                                " -Wno-error=calloc-transposed-args"
-                               " -Wno-error=implicit-function-declaration"))))))
+                               " -Wno-error=implicit-function-declaration"))))
+    (native-inputs '())))
 
 (define-public json-parser
   (package
