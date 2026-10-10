@@ -49,7 +49,9 @@
          (en "New @code{downloaded-channels} construct for channel files")
          (de "Neue Prozedur @code{downloaded-channels} für Kanaldateien")
          (fr "Nouvelle procédure @code{downloaded-channels} pour les fichiers
-de canaux"))
+de canaux")
+         (pt "Nova construção @code{downloaded-channels} para arquivos de
+canal"))
         (body
          (en "Instead of returning a list of channels, a channel file read by
 @command{guix pull} or @command{guix time-machine} can now return the result
@@ -120,7 +122,29 @@ confiance et ils ne doivent pas causer de retour en arrière ; ces gardes-fous
 font que télécharger des fichiers canal est sans risques.
 
 Voir @samp{info \"(guix.fr) Invoquer guix pull\"} pour plus
-d'informations.")))
+d'informations.")
+         (pt "Em vez de retornar uma lista de canais, um arquivo de canal lido
+por @command{guix pull} ou @command{guix time-machine} podem agora retornar o
+resultado do novo procedimento @code{downloaded-channels}, como neste exemplo:
+
+@example
+(downloaded-channels
+  \"https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master\")
+@end example
+
+Neste exemplo, o arquivo de canal cria um aindireção, instruindo
+@command{pull} ou @command{time-machine} a baixar o arquivo de canal que
+@url{ci.guix.gnu.org} serve nesta URL no commit mais recente evaluado com
+sucesso.  Ao instalar isso como @file{~/.config/guix/channels.scm}, o comando
+@command{guix pull} sempre á buscar o canal assinalado nesta URL.
+
+A nova opção @option{--max-indirections} fornece controle sobre o número de
+tais indireções.  Canais baixados ainda estão sijeitos à evaluação isolada, o
+canal retornado deve ser \"confiado\", e eles não devem causar atualização
+retrógrada (@emph{downgrade}); todas estas conferências tornam a obtenção de
+canais segura.
+
+Veja @samp{info \"(guix.pt_BR)Invocando guix pull\"} para mais informação.")))
 
  (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
         (title
