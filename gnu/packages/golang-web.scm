@@ -23994,7 +23994,7 @@ for the Go programming language.")
 (define-public go-github-com-zitadel-oidc-v3
   (package
     (name "go-github-com-zitadel-oidc-v3")
-    (version "3.45.0")
+    (version "3.51.14")
     (source
      (origin
        (method git-fetch)
@@ -24003,7 +24003,7 @@ for the Go programming language.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14wqsrbyrd88czkjnl3x8b7cwaya7x2rvkks3pdm5d6l4aljg0r7"))))
+        (base32 "1nwli0rkwwzgi1n1xn3lww58ydqpqka7cjrpjmsqm1y8434klzwl"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -24018,12 +24018,12 @@ for the Go programming language.")
                              "TestNewResourceServer/spotify-with-static-tokenurl")
                        "|"))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-golang-mock
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-bmatcuk-doublestar-v4
            go-github-com-go-chi-chi-v5
            go-github-com-go-jose-go-jose-v4
-           go-github-com-golang-mock
            go-github-com-google-go-github-v31
            go-github-com-google-uuid
            go-github-com-gorilla-securecookie
@@ -24031,8 +24031,6 @@ for the Go programming language.")
            go-github-com-muhlemmer-gu
            go-github-com-muhlemmer-httpforwarded
            go-github-com-rs-cors
-           go-github-com-sirupsen-logrus
-           go-github-com-zitadel-logging
            go-github-com-zitadel-schema
            go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-trace
