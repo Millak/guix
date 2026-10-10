@@ -3341,6 +3341,10 @@ fn main() {
   (crate-source "bpaf_derive" "0.5.23"
                 "06yyhfd0wkfxqa9q316vh2y0m4rx3606jdfi6sgnzh7xck1sk72l"))
 
+(define rust-bpfvm-0.1.2
+  (crate-source "bpfvm" "0.1.2"
+                "1gwzdl4vwcs15209l76nbpanf6fn0khsajxk8rbnq3zaj9l776b1"))
+
 (define rust-bracoxide-0.1.5
   (crate-source "bracoxide" "0.1.5"
                 "0alnn0lkfyfk5i1dd0ykqpw4zli6az7bdkslh98xga8s90f9jlkz"))
@@ -23731,6 +23735,10 @@ fn main() {
   (crate-source "once_cell" "1.20.2"
                 "0xb7rw1aqr7pa4z3b00y7786gyf8awx2gca3md73afy76dzgwq8j"))
 
+(define rust-once-cell-1.20.3
+  (crate-source "once_cell" "1.20.3"
+                "0bp6rgrsri1vfdcahsimk08zdiilv14ppgcnpbiw8hqyp2j64m4l"))
+
 (define rust-once-cell-1.21.1
   (crate-source "once_cell" "1.21.1"
                 "1g645fg3rk800ica72ypwajllgij38az3n831sm2rragrknhnnyp"))
@@ -23867,6 +23875,14 @@ fn main() {
 (define rust-open-5.4.2
   (crate-source "open" "5.4.2"
                 "0mfxj1p2s8fz1vb9zfn22mw76sqp9kq1ac0krqvza7mwci3bxqxd"))
+
+(define rust-open-enum-0.3.0
+  (crate-source "open-enum" "0.3.0"
+                "07lirnywmcrhdh3cgff6c93qw5x5kbpfay8sh36cfkpqkhcz21wq"))
+
+(define rust-open-enum-derive-0.3.0
+  (crate-source "open-enum-derive" "0.3.0"
+                "125vh04g7mav3b35729w3fkky6a47x3n7fdk78bzgv4zwm1y8jl9"))
 
 (define rust-opendal-0.55.0
   (crate-source "opendal" "0.55.0"
@@ -33694,6 +33710,10 @@ fn main() {
   (crate-source "sys-mount" "2.1.1"
                 "0hl7vz00sjr38zwfiszzxgjfa54w0zjzsangapy92kdgdb9918k5"))
 
+(define rust-syscalls-0.8.1
+  (crate-source "syscalls" "0.8.1"
+                "1rvnmgj8vj1k5jddbdbkf53gh7ma8qk8lf7hdvnkr00dvsj4bil1"))
+
 (define rust-syscallz-0.17.0
   (crate-source "syscallz" "0.17.0"
                 "19zc9rdjxhddbmnkdhk2aixh8csqv4rhbll78smvy471qdvxhpx0"))
@@ -34299,6 +34319,10 @@ fn main() {
 (define rust-textwrap-0.15.2
   (crate-source "textwrap" "0.15.2"
                 "0galmidi6gpn308b1kv3r4qbb48j2926lcj0idwhdhlylhjybcxp"))
+
+(define rust-textwrap-0.16.1
+  (crate-source "textwrap" "0.16.1"
+                "1fgqn3mg9gdbjxwfxl76fg0qiq53w3mk4hdh1x40jylnz39k9m13"))
 
 (define rust-textwrap-0.16.2
   (crate-source "textwrap" "0.16.2"
@@ -70028,6 +70052,90 @@ fn main() {
                                   rust-wit-parser-0.244.0
                                   rust-zeroize-1.8.2
                                   rust-zmij-1.0.21))
+                     (libpathrs =>
+                                (list rust-anstream-0.6.21
+                                      rust-anstyle-1.0.13
+                                      rust-anstyle-parse-0.2.7
+                                      rust-anstyle-query-1.1.5
+                                      rust-anstyle-wincon-3.0.11
+                                      rust-anyhow-1.0.100
+                                      rust-atty-0.2.14
+                                      rust-autocfg-1.5.0
+                                      rust-bitflags-1.3.2
+                                      rust-bitflags-2.13.0
+                                      rust-bpfvm-0.1.2
+                                      rust-bytemuck-1.25.0
+                                      rust-bytemuck-derive-1.10.2
+                                      rust-cfg-if-1.0.4
+                                      rust-clap-3.2.25
+                                      rust-clap-4.5.60
+                                      rust-clap-builder-4.5.60
+                                      rust-clap-lex-0.2.4
+                                      rust-clap-lex-1.0.0
+                                      rust-colorchoice-1.0.4
+                                      rust-diff-0.1.13
+                                      rust-either-1.15.0
+                                      rust-errno-0.3.14
+                                      rust-fastrand-2.3.0
+                                      rust-getrandom-0.3.4
+                                      rust-hashbrown-0.12.3
+                                      rust-hermit-abi-0.1.19
+                                      rust-indexmap-1.9.3
+                                      rust-indoc-2.0.7
+                                      rust-is-terminal-polyfill-1.70.2
+                                      rust-itertools-0.15.0
+                                      rust-libc-0.2.183
+                                      rust-linux-raw-sys-0.12.1
+                                      rust-log-0.4.29
+                                      rust-memchr-2.8.3
+                                      rust-once-cell-1.20.3
+                                      rust-once-cell-polyfill-1.70.2
+                                      rust-open-enum-0.3.0
+                                      rust-open-enum-derive-0.3.0
+                                      rust-os-str-bytes-6.6.1
+                                      rust-paste-1.0.15
+                                      rust-path-clean-1.0.1
+                                      rust-ppv-lite86-0.2.21
+                                      rust-pretty-assertions-1.4.1
+                                      rust-proc-macro2-1.0.101
+                                      rust-quote-1.0.41
+                                      rust-r-efi-5.3.0
+                                      rust-rand-0.9.2
+                                      rust-rand-chacha-0.9.0
+                                      rust-rand-core-0.9.5
+                                      rust-rustix-1.1.4
+                                      rust-rustversion-1.0.23
+                                      rust-scopeguard-1.2.0
+                                      rust-serde-1.0.228
+                                      rust-serde-core-1.0.228
+                                      rust-serde-derive-1.0.228
+                                      rust-serde-repr-0.1.20
+                                      rust-static-assertions-1.1.0
+                                      rust-strsim-0.10.0
+                                      rust-strsim-0.11.1
+                                      rust-syn-1.0.109
+                                      rust-syn-2.0.106
+                                      rust-syscalls-0.8.1
+                                      rust-tempfile-3.27.0
+                                      rust-termcolor-1.4.1
+                                      rust-textwrap-0.16.1
+                                      rust-thiserror-1.0.69
+                                      rust-thiserror-2.0.17
+                                      rust-thiserror-impl-1.0.69
+                                      rust-thiserror-impl-2.0.17
+                                      rust-unicode-ident-1.0.18
+                                      rust-utf8parse-0.2.2
+                                      rust-wasip2-1.0.2+wasi-0.2.9
+                                      rust-winapi-0.3.9
+                                      rust-winapi-i686-pc-windows-gnu-0.4.0
+                                      rust-winapi-util-0.1.11
+                                      rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                      rust-windows-link-0.2.1
+                                      rust-windows-sys-0.61.2
+                                      rust-wit-bindgen-0.51.0
+                                      rust-yansi-1.0.1
+                                      rust-zerocopy-0.8.40
+                                      rust-zerocopy-derive-0.8.40))
                      (librsvg =>
                               (list rust-adler2-2.0.1
                                rust-aes-0.8.4

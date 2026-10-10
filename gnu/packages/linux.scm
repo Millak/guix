@@ -193,6 +193,7 @@
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
@@ -215,6 +216,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -10823,6 +10825,59 @@ high-speed networking devices.")
     ;; Only the x86_64 architecture is supported.
     (supported-systems '("x86_64-linux"))
     (license (list license:bsd-3 license:gpl2)))) ; dual
+
+(define-public libpathrs
+  (package
+    (name "libpathrs")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cyphar/libpathrs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxyrzf7h1wsjfays70wcql200jxchv9kqbgn1kswz3alnkmxxqn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:features ''("capi")
+      ;; tests: 4892 passed; 0 failed; 1777 ignored; 0 measured; 9 filtered out
+      #:cargo-test-flags
+      '`("--"
+         ;; "Awful hack to detect the /proc/sys overmount case in containers."
+         ;; src/tests/common/procfs.rs tries to read /proc and /proc/sys.
+         ,@(map (lambda (test) (string-append "--skip=tests::test_procfs"
+                                              "::procfs_overmounts_new_"
+                                              test))
+                '("opath_procpid1_readlink_pid1_nomount"
+                  "openat2_procpid1_readlink_pid1_nomount"
+                  "procpid1_readlink_pid1_nomount"
+                  "unmasked_opath_procpid1_readlink_pid1_nomount"
+                  "unmasked_openat2_procpid1_readlink_pid1_nomount"
+                  "unmasked_procpid1_readlink_pid1_nomount"
+                  "unsafe_open_opath_procpid1_readlink_pid1_nomount"
+                  "unsafe_open_openat2_procpid1_readlink_pid1_nomount"
+                  "unsafe_open_procpid1_readlink_pid1_nomount")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (invoke "cargo" "cinstall" "--release"
+                      "--library-type" "cdylib"
+                      "--library-type" "staticlib"
+                      "--features" "capi"
+                      (string-append "--prefix=" #$output)))))))
+    (native-inputs (list rust-cargo-c util-linux which))
+    (inputs (cargo-inputs 'libpathrs))
+    (home-page "https://github.com/cyphar/libpathrs")
+    (synopsis "C-friendly API to make path resolution safer on Linux")
+    (description
+     "This library implements a set of C-friendly APIs to make path resolution
+within a potentially-untrusted directory safe on GNU/Linux.")
+    (license (list license:gpl3 license:lgpl3+ license:mpl2.0))))
 
 (define-public libpfm4
   (package
