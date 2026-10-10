@@ -2613,6 +2613,59 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 100% compatibility with code using standard lib.")
     (license license:expat)))
 
+(define-public go-github-com-aperturerobotics-protobuf-go-lite
+  (package
+    (name "go-github-com-aperturerobotics-protobuf-go-lite")
+    (version "0.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aperturerobotics/protobuf-go-lite")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z5fyy3zav1rny3hhh3n4j2hqmdizs088jl01xb9v8zp0q0vfwqi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aperturerobotics/protobuf-go-lite"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests expect GO111MODULE=on.
+                       (list "TestCodegenModeDefaultUsesHelperMethods"
+                             "TestCodegenModeUnrolledUsesPreviousMethodShape"
+                             "TestCodegenModeRejectsUnknown"
+                             "TestEdition2024DefaultFeaturesCompile"
+                             "TestEdition2024AdvertiseOnlyDefaultFeaturesCo"
+                             "TestEdition2024RejectsClosedEnum"
+                             "TestEdition2024RejectsLegacyBestEffortJSON"
+                             "TestEdition2024RejectsOpaqueGoAPI"
+                             "TestJSONOptionalFieldMask"
+                             "TestRegistryOptInGeneratesInitAndOptions"
+                             "TestRegistryDisabledByDefault"
+                             "TestRegistryRequiresFeatures")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aperturerobotics-json-iterator-lite
+           go-github-com-golang-protobuf
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/aperturerobotics/protobuf-go-lite")
+    (synopsis "Reflection-free Protobuf for Go.")
+    (description
+     "protobuf-go-lite is a stripped-down version of the
+@url{https://github.com/protocolbuffers/protobuf-go, protobuf-go} code
+generator modified to work without reflection and merged with
+@url{https://github.com/planetscale/vtprotobuf, vtprotobuf} to provide modular
+features with static code generation for marshal/unmarshal, size, clone,
+equal, text, and JSON. JSON support is derived from a fork of
+@url{https://github.com/@code{TheThingsIndustries/protoc-gen-go-json,
+protoc-gen-go-json}}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-apex-log
   (package
     (name "go-github-com-apex-log")
@@ -28472,6 +28525,22 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
        ((#:tests? _ #t) #f)))
     (native-inputs (package-propagated-inputs
                     go-google-golang-org-grpc-cmd-protoc-gen-go-grpc))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public protoc-gen-go-lite
+  (package/inherit go-github-com-aperturerobotics-protobuf-go-lite
+    (name "protoc-gen-go-lite")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _)
+        "github.com/aperturerobotics/protobuf-go-lite/cmd/protoc-gen-go-lite")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/aperturerobotics/protobuf-go-lite")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-aperturerobotics-protobuf-go-lite))
     (propagated-inputs '())
     (inputs '())))
 
