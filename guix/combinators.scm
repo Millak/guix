@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2017, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -28,12 +28,31 @@
 (define-module (guix combinators)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
-  #:export (fold2
+  #:export (given
+            fold2
             fold-tree
             fold-tree-leaves
             compile-time-value
             procedure-call-location
             define-compile-time-procedure))
+
+;;; Commentary:
+;;;
+;;; This module provides useful combinators that complement SRFI-1 and
+;;; friends.
+;;;
+;;; Code:
+
+(define* (given pred consequent #:optional (alternate identity))
+  "Return a procedure that, for a given value V, returns:
+(if (pred v) (consequent v) (alternate v)).  This is a higher-order 'if'."
+  ;; Racket calls this 'if?', which makes the parallel clear but breaks the
+  ;; convention of using question marks for predicates only.  SRFI-235 doesn't
+  ;; have this.
+  (lambda (value)
+    (if (pred value)
+        (consequent value)
+        (alternate value))))
 
 (define fold2
   (case-lambda
