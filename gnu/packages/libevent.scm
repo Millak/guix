@@ -47,6 +47,7 @@
   (package
     (name "libevent")
     (version "2.1.12")
+    (replacement libevent/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -78,6 +79,19 @@ network servers.  An application just needs to call event_dispatch() and
 then add or remove events dynamically without having to change the event
 loop.")
     (license license:bsd-3)))
+
+(define libevent/fixed
+  (package
+    (inherit libevent)
+    (version "2.1.13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/libevent/libevent/releases/download/release-"
+                    version "-stable/libevent-" version "-stable.tar.gz"))
+              (sha256
+               (base32
+                "0p1igbz4f5nnbvcm2hdn34dszvxy076fxdg5hyv83ahbihxkisgp"))))))
 
 (define-public libevent-with-openssl
   (package/inherit libevent
