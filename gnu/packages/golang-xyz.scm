@@ -6787,7 +6787,7 @@ code is based on the Go-based PHaul implementation from the CRIU repository.")
   (package
     (inherit go-github-com-checkpoint-restore-go-criu-v7)
     (name "go-github-com-checkpoint-restore-go-criu-v8")
-    (version "8.2.0")
+    (version "8.4.0")
     (source
      (origin
        (inherit (package-source go-github-com-checkpoint-restore-go-criu-v7))
@@ -6797,11 +6797,17 @@ code is based on the Go-based PHaul implementation from the CRIU repository.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kdm5rg87vd893g7l8w8xg3pp29f7dwsrmyyjjyzl9496kp08imn"))))
+        (base32 "0yqqlabn2f78hkv49q62kdyapiwzq8137fr797jqvwdpy3nlqddk"))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-checkpoint-restore-go-criu-v7)
-       ((#:import-path _) "github.com/checkpoint-restore/go-criu/v8")))))
+       ((#:import-path _) "github.com/checkpoint-restore/go-criu/v8")))
+    (native-inputs
+     (list go-github-com-spf13-cobra))
+    (propagated-inputs
+     (list go-github-com-aperturerobotics-protobuf-go-lite
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))))
 
 (define-public go-github-com-cheggaaa-pb
   (package
