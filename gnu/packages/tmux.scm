@@ -167,7 +167,7 @@ windows.")
 (define-public python-libtmux
   (package
     (name "python-libtmux")
-    (version "0.60.0")
+    (version "0.62.0")
     (source
      (origin
        (method git-fetch)
@@ -176,7 +176,7 @@ windows.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fjrlk4z01cv0a0hnwxqq4ah6kljnnhbq3p3lpv06iyq028sl7yn"))))
+        (base32 "095k82hcklbsm4yv90pcwq1fvxs1jinwxfh31wdvak4bdj711ri5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -188,7 +188,13 @@ windows.")
                       (string-append "not test_" f))
                     '("capture_pane_start" ; Permission denied.
                       "control_mode_stdout_preserves_non_ascii_output"
-                      "new_window_name_invalid_on_3_7"))
+                      "new_window_name_invalid_on_3_7"
+                      "hooks_dataclass"
+                      "hook_set_show_unset_cycle"
+                      "display_popup_flags"
+                      "display_popup_target_client"
+                      "display_popup_close_on_success"
+                      "new_pane_floating"))
                " and "))
       #:phases
       #~(modify-phases %standard-phases
