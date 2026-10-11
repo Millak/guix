@@ -120,6 +120,9 @@
    (name "sharlatan"))
   ("F494 72F4 7A59 00D5 C235  F212 89F9 6D48 08F3 59C7"
    (name "snape"))
+  (;; primary: "B69C 8CAE 1A49 AEB1 ED69  6AEB 43D0 423F 1F04 5DF2"
+   "2C75 758B FD45 E62D 02F5  5AE6 BA81 424E 7395 2048"
+   (name "untrusem"))
   ("6580 7361 3BFC C5C7 E2E4  5D45 DC51 8FC8 7F97 16AA"
    (name "vagrantc"))
   (;; primary: "C955 CC5D C048 7FB1 7966  40A9 199A F6A3 67E9 4ABB"
