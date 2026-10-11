@@ -8076,6 +8076,38 @@ API and doesn't use reflection.  It relies on small interfaces to
 decode/encode structures and slices.")
     (license license:expat)))
 
+(define-public go-github-com-futurfusion-vsock
+  (package
+    (name "go-github-com-futurfusion-vsock")
+    (version "0.0.0-20260219213046-d78a7104f821")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FuturFusion/vsock")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ia87r7g9nffawzg0dfqrbfln2qnl6jc40y1j7zabd68vkk7nskm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/FuturFusion/vsock"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-socket
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/FuturFusion/vsock")
+    (synopsis "vsock")
+    (description
+     "Package vsock provides access to Linux VM sockets (AF_VSOCK) for
+communication between a hypervisor and its virtual machines.  It's and
+alternative fork of @url{https://github.com/mdlayher/vsock}.")
+    (license license:expat)))
+
 (define-public go-github-com-gaissmai-bart
   (package
     (name "go-github-com-gaissmai-bart")
