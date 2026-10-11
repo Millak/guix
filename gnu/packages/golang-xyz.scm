@@ -3628,6 +3628,58 @@ strategies, such as fixed delay, backoff delay, and random delay.")
          (package-arguments go-github-com-avast-retry-go)
        ((#:import-path _) "github.com/avast/retry-go/v4")))))
 
+(define-public go-github-com-avengemedia-dankgo
+  (package
+    (name "go-github-com-avengemedia-dankgo")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AvengeMedia/dankgo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0319dmrbhbycw46k7x138vxb1730871m9blji700wh1p5garxkz5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/AvengeMedia/dankgo"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Test try to bind unix sockets.
+                       (list "TestClientCallCustomHandler"
+                             "TestFindRunningSocket"
+                             "TestHandshakeAndPing"
+                             "TestSubscribeAndPublish"
+                             "TestSubscribeHandlerOverride")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-log
+           go-github-com-danielgtaylor-huma-v2
+           go-github-com-go-chi-chi-v5
+           go-github-com-godbus-dbus-v5
+           go-github-com-gorilla-schema
+           go-github-com-iancoleman-strcase
+           go-github-com-mattn-go-isatty
+           go-github-com-muesli-termenv
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           go-mvdan-cc-gofumpt))
+    (home-page "https://danklinux.com/")
+    (synopsis "Common Go packages used by DMS and Dank Linux Suite")
+    (description
+     "This package provides common Go modules used by DMS & the Dank Linux
+suite (dankcalendar,dgop,danksearch, and whatever comes next).")
+    (license license:expat)))
+
 (define-public go-github-com-awesome-gocui-gocui
   (package
     (name "go-github-com-awesome-gocui-gocui")
