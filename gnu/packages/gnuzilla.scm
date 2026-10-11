@@ -113,9 +113,9 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/mozilla/compare-locales")
-          (commit "RELEASE_9_0_4")))    ;use the latest release
+          (commit "RELEASE_9_0_5")))    ;use the latest release
     (file-name "mozilla-compare-locales")
-    (sha256 (base32 "13qn983j0pgs2550fgd5gvnl4lq6ywqjvgbyx850jwg79w8b0ifz"))))
+    (sha256 (base32 "06j6mr4wd1z8q2fr3dhd0mg1d5hbny4x825q2l48841q144dmyc3"))))
 
 (define mozilla-l10n
   (origin
@@ -125,9 +125,9 @@
            ;; Use the revision specified in the
            ;; browser/locales/l10n-changesets.json file of the used firefox
            ;; source (all the languages normally use the same revision).
-          (commit "64046fdc97c1b1886a479dead61e6dc5428ae6e6")))
+          (commit "5e42b46226b4e4b8722697bc020b18013c543eb5")))
     (file-name "mozilla-l10n")
-    (sha256 (base32 "1rvk1m8bjnk9x61663s7bhgax6ig37v9m1d64g89fk1qwsk3djhh"))))
+    (sha256 (base32 "134pggczsy2z0yx0gx7fpimsmja9dvkfibqjzfa95jgqidbmjljb"))))
 
 (define (format-locales all-locales-file)
   "Format a Scheme list of all the locales string found in ALL-LOCALES-FILE.
@@ -151,6 +151,7 @@ in the case of Firefox, it is browser/locales/all-locales."
     "bg"
     "bn"
     "bo"
+    "bqi"
     "br"
     "brx"
     "bs"
@@ -256,9 +257,9 @@ in the case of Firefox, it is browser/locales/all-locales."
     "zh-TW"))
 
 ;;; Please keep these versions in sync with icedove.
-(define %icecat-base-version "140.17.0")
+(define %icecat-base-version "153.5.0")
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
-(define %icecat-build-id "20260929000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20261013000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -278,9 +279,9 @@ in the case of Firefox, it is browser/locales/all-locales."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0csws0jrmwxrz0fh72kd0c5sq4v0vaavmn0jmddwas90ifqx6vjd"))))
+              "02s1wdhvfvn2cyjikgqy7k5xk8vmfzg25073zfmcff4v9xyllw98"))))
 
-         (gnuzilla-commit "d7ffa7cbb29e7047b491ebbf5e50549548d480cb")
+         (gnuzilla-commit "ac1ff821a67463e277853820109d56f7a2daf44d")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -291,7 +292,7 @@ in the case of Firefox, it is browser/locales/all-locales."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0hiknvpc6hqxxf7a250zalbps84sn4vpfb6bv0v7ava00kyf61mf"))))
+              "0sfgrglj6l0i7b2b6fsj76380wvp359g78bz0ljx0q9zh8iich82"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -458,7 +459,7 @@ preferences/advanced-scripts.dtd"
            ;; See <https://bugzilla.mozilla.org/show_bug.cgi?id=1962139>
            ffmpeg-6
            libvpx
-           icu4c-77
+           icu4c-78
            pixman
            pulseaudio
            mesa
@@ -598,9 +599,7 @@ preferences/advanced-scripts.dtd"
                  #$(local-file
                     (search-patch "icecat-use-system-wide-dir.patch"))
                  #$(local-file
-                    (search-patch "icecat-fhs-configure-option.patch"))
-                 #$(local-file
-                    (search-patch "icecat-adjust-mozilla-desktop.patch"))))))
+                    (search-patch "icecat-fhs-configure-option.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
             (lambda _
               ;; Remove bundled libraries that we don't use, since they may
@@ -853,21 +852,29 @@ preferences/advanced-scripts.dtd"
           (add-after 'wrap-program 'install-desktop-entry
             (lambda _
               ;; Install the '.desktop' file.
-              (let* ((desktop-file (string-append "toolkit/mozapps/installer"
-                                                  "/linux/rpm/mozilla.desktop"))
-                     (applications (string-append #$output "/share/applications")))
-                (substitute* desktop-file
-                  (("@MOZ_APP_NAME@")
-                   "icecat")
-                  (("^Exec=icecat")
-                   (string-append "Exec=" #$output "/bin/icecat"))
-                  (("@MOZ_APP_DISPLAYNAME@")
-                   "GNU IceCat")
-                  (("@MOZ_APP_REMOTINGNAME@")
-                   "Icecat"))
+              (let* ((applications (string-append #$output "/share/applications"))
+                     (desktop-file (string-append applications "/icecat.desktop")))
                 (mkdir-p applications)
-                (copy-file desktop-file
-                           (string-append applications "/icecat.desktop")))))
+                (call-with-output-file desktop-file
+                  (lambda (p)
+                    (format p "\
+[Desktop Entry]
+Version=1.0
+Name=GNU IceCat
+GenericName=Web Browser
+Comment=Your web, the way you like it
+Exec=~a/bin/icecat %u
+Icon=icecat
+Terminal=false
+Type=Application
+StartupWMClass=Icecat
+MimeType=text/html;text/xml;application/xhtml+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+X-MultipleArgs=false
+X-Desktop-File-Install-Version=0.16
+Categories=Network;WebBrowser;
+Encoding=UTF-8~%"
+                            #$output))))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _
               (with-directory-excursion "browser/branding/unofficial"
@@ -899,6 +906,202 @@ testing.")
      `((ftp-directory . "/gnu/gnuzilla")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
+
+;;;
+;;; TEMPORARY old version of icecat-source and dependencies
+;;; for use by icedove until it is updated.
+;;;
+
+(define mozilla-140.17.0-compare-locales
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/mozilla/compare-locales")
+          (commit "RELEASE_9_0_4")))    ;use the latest release
+    (file-name "mozilla-compare-locales")
+    (sha256 (base32 "13qn983j0pgs2550fgd5gvnl4lq6ywqjvgbyx850jwg79w8b0ifz"))))
+
+(define mozilla-140.17.0-l10n
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/mozilla-l10n/firefox-l10n")
+           ;; Use the revision specified in the
+           ;; browser/locales/l10n-changesets.json file of the used firefox
+           ;; source (all the languages normally use the same revision).
+          (commit "64046fdc97c1b1886a479dead61e6dc5428ae6e6")))
+    (file-name "mozilla-l10n")
+    (sha256 (base32 "1rvk1m8bjnk9x61663s7bhgax6ig37v9m1d64g89fk1qwsk3djhh"))))
+
+(define %icecat-140.17.0-locales
+  '("ach" "af" "an" "ar" "ast" "az" "be" "bg" "bn" "bo" "br" "brx" "bs" "ca"
+    "ca-valencia" "cak" "ckb" "cs" "cy" "da" "de" "dsb" "el" "en-CA" "en-GB"
+    "eo" "es-AR" "es-CL" "es-ES" "es-MX" "et" "eu" "fa" "ff" "fi" "fr" "fur"
+    "fy-NL" "ga-IE" "gd" "gl" "gn" "gu-IN" "he" "hi-IN" "hr" "hsb" "hu" "hy-AM"
+    "hye" "ia" "id" "is" "it" "ja" "ja-JP-mac" "ka" "kab" "kk" "km" "kn" "ko"
+    "lij" "lo" "lt" "ltg" "lv" "meh" "mk" "ml" "mr" "ms" "my" "nb-NO" "ne-NP"
+    "nl" "nn-NO" "oc" "pa-IN" "pl" "pt-BR" "pt-PT" "rm" "ro" "ru" "sat" "sc"
+    "scn" "sco" "si" "sk" "skr" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te"
+    "tg" "th" "tl" "tr" "trs" "uk" "ur" "uz" "vi" "wo" "xh" "zh-CN" "zh-TW"))
+
+(define %icecat-140.17.0-base-version "140.17.0")
+(define %icecat-140.17.0-version (string-append %icecat-140.17.0-base-version "-gnu1"))
+
+(define icecat-140.17.0-source
+  (let* ((major-version (first  (string-split %icecat-140.17.0-base-version #\.)))
+         (minor-version (second (string-split %icecat-140.17.0-base-version #\.)))
+         (sub-version   (third  (string-split %icecat-140.17.0-base-version #\.)))
+
+         (upstream-firefox-version (string-append %icecat-140.17.0-base-version "esr"))
+         (upstream-firefox-source
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://ftp.mozilla.org/pub/firefox/releases/"
+                  upstream-firefox-version "/source/"
+                  "firefox-" upstream-firefox-version ".source.tar.xz"))
+            (sha256
+             (base32
+              "0csws0jrmwxrz0fh72kd0c5sq4v0vaavmn0jmddwas90ifqx6vjd"))))
+
+         (gnuzilla-commit "d7ffa7cbb29e7047b491ebbf5e50549548d480cb")
+         (gnuzilla-source
+          (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "git://git.savannah.gnu.org/gnuzilla.git")
+                  (commit gnuzilla-commit)))
+            (file-name (git-file-name "gnuzilla"
+                                      (string-take gnuzilla-commit 8)))
+            (sha256
+             (base32
+              "0hiknvpc6hqxxf7a250zalbps84sn4vpfb6bv0v7ava00kyf61mf"))))
+
+         ;; 'search-patch' returns either a valid file name or #f, so wrap it
+         ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
+         (makeicecat-patch
+          (local-file (assume-valid-file-name
+                       (search-patch "icecat-makeicecat.patch")))))
+
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "icecat-" %icecat-140.17.0-version ".tar.zst"))
+      (sha256 #f)
+      (uri
+       (delay
+        (with-imported-modules '((guix build utils))
+          #~(begin
+              (use-modules (guix build utils))
+              (let ((firefox-dir
+                     (string-append "firefox-" #$%icecat-140.17.0-base-version))
+                    (icecat-dir
+                     (string-append "icecat-" #$%icecat-140.17.0-version)))
+
+                (set-path-environment-variable
+                 "PATH" '("bin")
+                 (list #+python
+                       #+(canonical-package bash)
+                       #+(canonical-package coreutils)
+                       #+(canonical-package findutils)
+                       #+(canonical-package patch)
+                       #+(canonical-package xz)
+                       #+(canonical-package zstd)
+                       #+(canonical-package sed)
+                       #+(canonical-package grep)
+                       #+(canonical-package bzip2)
+                       #+(canonical-package gzip)
+                       #+(canonical-package tar)))
+
+                (set-path-environment-variable
+                 "PYTHONPATH"
+                 (list #+(format #f "lib/python~a/site-packages"
+                                 (version-major+minor
+                                  (package-version python))))
+                 '#+(cons python-jsonschema
+                          (map second
+                               (package-transitive-propagated-inputs
+                                python-jsonschema))))
+
+                ;; We copy the gnuzilla source directory because it is
+                ;; read-only in 'gnuzilla-source', and the makeicecat script
+                ;; uses "cp -a" to copy parts of it and assumes that the
+                ;; copies will be writable.
+                (copy-recursively #+gnuzilla-source "/tmp/gnuzilla"
+                                  #:log (%make-void-port "w"))
+
+                (with-directory-excursion "/tmp/gnuzilla"
+                  (make-file-writable "makeicecat")
+                  (invoke "patch" "--force" "--no-backup-if-mismatch"
+                          "-p1" "--input" #+makeicecat-patch)
+                  (patch-shebang "makeicecat")
+                  (substitute* "makeicecat"
+                    (("^readonly FFMAJOR=(.*)" all ffmajor)
+                     (unless (string=? #$major-version
+                                       (string-trim-both ffmajor))
+                       ;; The makeicecat script cannot be expected to work
+                       ;; properly on a different version of Firefox, even if
+                       ;; no errors occur during execution.
+                       (error "makeicecat major version mismatch"))
+                     (string-append "readonly FFMAJOR=" #$major-version "\n"))
+                    (("^readonly FFMINOR=.*")
+                     (string-append "readonly FFMINOR=" #$minor-version "\n"))
+                    (("^readonly FFSUB=.*")
+                     (string-append "readonly FFSUB=" #$sub-version "\n"))
+                    (("^readonly DATADIR=.*")
+                     "readonly DATADIR=/tmp/gnuzilla/data\n")
+                    (("^readonly SOURCEDIR=.*")
+                     (string-append "readonly SOURCEDIR=" icecat-dir "\n"))
+                    (("/bin/sed")
+                     #+(file-append (canonical-package sed) "/bin/sed"))))
+
+                (format #t "Unpacking upstream firefox tarball...~%")
+                (force-output)
+                (invoke "tar" "xf" #+upstream-firefox-source)
+                (rename-file firefox-dir icecat-dir)
+
+                (with-directory-excursion icecat-dir
+                  (format #t "Populating l10n directory...~%")
+                  (force-output)
+                  (mkdir "l10n")
+                  (with-directory-excursion "l10n"
+                    (for-each
+                     (lambda (locale)
+                       (let ((locale-dir (string-append #+mozilla-140.17.0-l10n "/"
+                                                        locale)))
+                         (format #t "  ~a~%" locale)
+                         (force-output)
+                         (copy-recursively locale-dir locale
+                                           #:log (%make-void-port "w"))
+                         (for-each make-file-writable (find-files locale))
+                         (with-directory-excursion locale
+                           (mkdir-p "browser/chrome/browser/preferences")
+                           (call-with-output-file "browser/chrome/browser/\
+preferences/advanced-scripts.dtd"
+                             (lambda (port) #f)))))
+                     '#+%icecat-140.17.0-locales)
+                    (copy-recursively #+mozilla-140.17.0-compare-locales
+                                      "compare-locales"
+                                      #:log (%make-void-port "w"))
+                    (delete-file "compare-locales/.gitignore")))
+
+                (format #t "Running makeicecat script...~%")
+                (force-output)
+                (invoke "bash" "/tmp/gnuzilla/makeicecat")
+
+                (format #t "Packing IceCat source tarball...~%")
+                (force-output)
+                (setenv "ZSTD_NBTHREADS" (number->string (parallel-job-count)))
+                (invoke "tar" "cfa" #$output
+                        ;; Avoid non-determinism in the archive.  We set the
+                        ;; mtime of files in the archive to early 1980 because
+                        ;; the build process fails if the mtime of source
+                        ;; files is pre-1980, due to the creation of zip
+                        ;; archives.
+                        "--mtime=@315619200" ; 1980-01-02 UTC
+                        "--owner=root:0"
+                        "--group=root:0"
+                        "--sort=name"
+                        icecat-dir)))))))))
 
 (define %icedove-build-id "20260929000000") ;must be of the form YYYYMMDDhhmmss
 ;;; See <https://product-details.mozilla.org/1.0/thunderbird_versions.json>
@@ -1034,7 +1237,7 @@ testing.")
                ;; Extract the base Icecat tarball, renaming its top-level
                ;; directory.
                (invoke "tar" "--transform" (string-append "s,[^/]*," #$name ",")
-                       "-xf" #$icecat-source)
+                       "-xf" #$icecat-140.17.0-source)
                (chdir #$name)
 
                ;; Merge the Thunderdbird localization data.

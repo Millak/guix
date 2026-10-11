@@ -1640,7 +1640,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/hwloc-add-with-opencl.patch		\
   %D%/packages/patches/i3lock-blur-fix-build-on-gcc-10.patch	\
   %D%/packages/patches/i7z-gcc-10.patch				\
-  %D%/packages/patches/icecat-adjust-mozilla-desktop.patch      \
   %D%/packages/patches/icecat-makeicecat.patch			\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
   %D%/packages/patches/icecat-compare-paths.patch		\
