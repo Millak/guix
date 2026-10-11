@@ -1183,6 +1183,68 @@ validation functions.")
 specification}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-opencontainers-runc
+  (package
+    (name "go-github-com-opencontainers-runc")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/runc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0midvxwmj4fvhy5mqv616bhlx39j0gd6y890adx7dnz5in506ym1"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/opencontainers/runc"
+      ;; Most tests require additinoal set up and downloading images from
+      ;; Internet.
+      #:test-subdirs #~(list "."
+                             "libcontainer/capabilities"
+                             "libcontainer/devices"
+                             "libcontainer/intelrdt"
+                             "libcontainer/internal/userns"
+                             "libcontainer/logs"
+                             "libcontainer/nsenter/test"
+                             "libcontainer/specconv"
+                             "libcontainer/system"
+                             "libcontainer/system/kernelversion"
+                             "libcontainer/utils")))
+    (propagated-inputs
+     (list go-github-com-checkpoint-restore-go-criu-v6
+           go-github-com-containerd-console
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-docker-go-units
+           go-github-com-godbus-dbus-v5
+           go-github-com-moby-sys-capability
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-mrunalp-fileutils
+           go-github-com-opencontainers-cgroups-0.0.1
+           go-github-com-opencontainers-runtime-spec-1.2.1
+           go-github-com-opencontainers-selinux
+           go-github-com-seccomp-libseccomp-golang
+           go-github-com-sirupsen-logrus
+           go-github-com-urfave-cli
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/opencontainers/runc")
+    (synopsis "Tool for running containers according to the OCI specification")
+    (description
+     "@code{runc} is a CLI tool and library for spawning and running
+containers on Linux according to the OCI specification.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opencontainers-umoci
   (package
     (name "go-github-com-opencontainers-umoci")
