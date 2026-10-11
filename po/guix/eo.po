@@ -5796,7 +5796,7 @@ msgstr "dum havigo de ~a: servilo iom malrapidas~%"
 #: guix/scripts/substitute.scm:496
 #, scheme-format
 msgid "try `--no-substitutes' if the problem persists~%"
-msgstr "provu '--no-substituse' se la problemo persistos~%"
+msgstr "provu '--no-substitutes' se la problemo persistos~%"
 
 #: guix/scripts/substitute.scm:510
 #, fuzzy, scheme-format
