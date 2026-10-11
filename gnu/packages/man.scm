@@ -541,7 +541,7 @@ sorted alphabetically and organised by section
 (define-public scdoc
   (package
    (name "scdoc")
-   (version "1.11.4")
+   (version "1.11.5")
    (source
     (origin
      (method git-fetch)
@@ -550,7 +550,7 @@ sorted alphabetically and organised by section
            (commit version)))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "17jv62n874ynhc4fdzmdhid89lxcv1s17p2h1k5f50g268gl4mw2"))))
+      (base32 "1jhjkp0bk16pb5ry7pjwyif9lk0phinrs1r6mw9waqdyp5mrydjf"))))
    (build-system gnu-build-system)
    (arguments
     `(#:make-flags
