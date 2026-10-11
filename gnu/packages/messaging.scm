@@ -4023,24 +4023,28 @@ a text snippet), using @code{libphonenumber}.")
 (define-public senpai
   (package
     (name "senpai")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://git.sr.ht/~delthas/senpai")
-         (commit (string-append "v" version))))
+          (url "https://git.sr.ht/~delthas/senpai")
+          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d16wbqm3hrydcb0308mg5cvgzz85vqq1bnwx0ly4647fr3f21wp"))))
+        (base32 "1yhkcppgz63vzhi389z75s94zv4mdprw7bpy01hr08mqvhly0dan"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "git.sr.ht/~delthas/senpai/cmd/senpai"
+     (list #:import-path "git.sr.ht/~delthas/senpai/..."
            #:unpack-path "git.sr.ht/~delthas/senpai"
            #:install-source? #f
-           ;; Step away from cmd/senpai to test the whole project.
-           #:test-subdirs #~(list "../../...")
+           #:build-flags
+           #~(list (string-append "-ldflags=-X"
+                                  " git.sr.ht/~delthas/senpai.version="
+                                  #$version))
+           #:embed-files
+           #~(list "org.varlink.service.varlink")
            #:phases
            #~(modify-phases
                  %standard-phases
@@ -4057,8 +4061,8 @@ a text snippet), using @code{libphonenumber}.")
                     (string-append "src/" unpack-path "/doc/senpai.5")
                     (string-append #$output "/share/man/man5"))))
                (add-after 'install 'install-desktop-file
-                (lambda* (#:key unpack-path #:allow-other-keys)
-                  (install-file
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (install-file
                     (string-append "src/" unpack-path "/contrib/senpai.desktop")
                     (string-append #$output "/share/applications")))))))
     (native-inputs
@@ -4068,12 +4072,13 @@ a text snippet), using @code{libphonenumber}.")
            go-github-com-delthas-go-libnp
            go-github-com-delthas-go-localeinfo
            go-github-com-disintegration-imaging
+           go-github-com-emersion-go-varlink
            go-github-com-godbus-dbus-v5
            go-github-com-rivo-uniseg
+           go-golang-org-x-image
            go-golang-org-x-net
            go-golang-org-x-time
            go-mvdan-cc-xurls-v2
-           go-github-com-mattn-go-runewidth
            scdoc
            which))
     (home-page "https://sr.ht/~delthas/senpai")
