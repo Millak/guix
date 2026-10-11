@@ -36589,7 +36589,10 @@ APIs may be unstable
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "go.yaml.in/yaml/v2"))
+      #:import-path "go.yaml.in/yaml/v2"
+      ;; cannot use -9223372036854775808 (untyped int constant) as int value
+      ;; in map literal (overflows)
+      #:tests? (not (target-32bit?))))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://github.com/yaml/go-yaml")
