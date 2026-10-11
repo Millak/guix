@@ -1910,94 +1910,6 @@ as created by Podman, CRI-O and containerd.")))
 configure network interfaces in Linux containers.")
     (license license:asl2.0)))
 
-(define-public cqfd
-  (package
-    (name "cqfd")
-    (version "5.6.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/savoirfairelinux/cqfd")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1p0093hx2ryxng2l53cqaca8g7gw888ydq2i328raip62pcdrccp"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; The test suite requires a docker daemon and connectivity.
-     (list
-      #:tests? #f
-      #:make-flags #~(list (string-append "COMPLETIONSDIR="
-                                          #$output "/etc/bash_completion.d")
-                           (string-append "PREFIX=" #$output))
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (delete 'build))))
-    (home-page "https://github.com/savoirfairelinux/cqfd")
-    (synopsis "Convenience wrapper for Docker")
-    (description "cqfd is a Bash script that provides a quick and convenient
-way to run commands in the current directory, but within a Docker container
-defined in a per-project configuration file.")
-    (license license:gpl3+)))
-
-(define-public crun
-  (package
-    (name "crun")
-    (version "1.30.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/containers/crun")
-              (commit version)
-              (recursive? #t)))
-       (sha256
-        (base32
-         "0xcplka3n3blj7yycdxc0v9231fbcpbhn2kx9vdysa5p13bv1hvh"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags #~(list "--disable-systemd")
-      #:tests? #f ; XXX: needs /sys/fs/cgroup mounted
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'git-version-h
-            (lambda _
-              (call-with-output-file "git-version.h"
-                (lambda (port)
-                  (format
-                   port
-                   "#ifndef GIT_VERSION\n# define GIT_VERSION ~s\n#endif"
-                   #$version)))))
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (substitute* (find-files "tests" "\\.(c|py)")
-                (("/bin/true") (which "true"))
-                (("/bin/false") (which "false"))
-                ;; relies on sd_notify which requires systemd?
-                (("\"sd-notify\" : test_sd_notify,") "")
-                (("\"sd-notify-file\" : test_sd_notify_file,") "")))))))
-    (inputs
-     (list json-c
-           libcap
-           libseccomp
-           yajl))
-    (native-inputs
-     (list automake
-           autoconf
-           git-minimal/pinned
-           libtool
-           pkg-config
-           python-minimal-wrapper))
-    (home-page "https://github.com/containers/crun")
-    (synopsis "Open Container Initiative (OCI) Container runtime")
-    (description
-     "crun is a fast and low-memory footprint Open Container Initiative (OCI)
-Container Runtime fully written in C.")
-    (license license:gpl2+)))
-
 (define-public conmon
   (package
     (name "conmon")
@@ -2144,6 +2056,94 @@ network attachments.")
     (home-page "https://containerd.io/")
     (license license:asl2.0)))
 
+(define-public cqfd
+  (package
+    (name "cqfd")
+    (version "5.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/savoirfairelinux/cqfd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1p0093hx2ryxng2l53cqaca8g7gw888ydq2i328raip62pcdrccp"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The test suite requires a docker daemon and connectivity.
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "COMPLETIONSDIR="
+                                          #$output "/etc/bash_completion.d")
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (delete 'build))))
+    (home-page "https://github.com/savoirfairelinux/cqfd")
+    (synopsis "Convenience wrapper for Docker")
+    (description "cqfd is a Bash script that provides a quick and convenient
+way to run commands in the current directory, but within a Docker container
+defined in a per-project configuration file.")
+    (license license:gpl3+)))
+
+(define-public crun
+  (package
+    (name "crun")
+    (version "1.30.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/crun")
+              (commit version)
+              (recursive? #t)))
+       (sha256
+        (base32
+         "0xcplka3n3blj7yycdxc0v9231fbcpbhn2kx9vdysa5p13bv1hvh"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--disable-systemd")
+      #:tests? #f ; XXX: needs /sys/fs/cgroup mounted
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'git-version-h
+            (lambda _
+              (call-with-output-file "git-version.h"
+                (lambda (port)
+                  (format
+                   port
+                   "#ifndef GIT_VERSION\n# define GIT_VERSION ~s\n#endif"
+                   #$version)))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* (find-files "tests" "\\.(c|py)")
+                (("/bin/true") (which "true"))
+                (("/bin/false") (which "false"))
+                ;; relies on sd_notify which requires systemd?
+                (("\"sd-notify\" : test_sd_notify,") "")
+                (("\"sd-notify-file\" : test_sd_notify_file,") "")))))))
+    (inputs
+     (list json-c
+           libcap
+           libseccomp
+           yajl))
+    (native-inputs
+     (list automake
+           autoconf
+           git-minimal/pinned
+           libtool
+           pkg-config
+           python-minimal-wrapper))
+    (home-page "https://github.com/containers/crun")
+    (synopsis "Open Container Initiative (OCI) Container runtime")
+    (description
+     "crun is a fast and low-memory footprint Open Container Initiative (OCI)
+Container Runtime fully written in C.")
+    (license license:gpl2+)))
+
 (define-public distrobox
   (package
     (name "distrobox")
@@ -2261,226 +2261,6 @@ containers highly integrated with the hosts.")
      "This package provides a tool for exploring a Docker image, layer
 contents, and discovering ways to shrink the size of Docker/OCI image.")
     (license license:expat)))
-
-;;; TODO: This package needs to be updated to its 2.x series, now authored in
-;;; Go.
-(define-public docker-compose
-  (package
-    (name "docker-compose")
-    (version "1.29.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "docker-compose" version))
-       (sha256
-        (base32
-         "1dq9kfak61xx7chjrzmkvbw9mvj9008k7g8q7mwi4x133p9dk32c"))))
-    (build-system pyproject-build-system)
-    ;; TODO: Tests require running Docker daemon.
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pyyaml
-            (lambda _
-              (substitute* "setup.py"
-                ((", < 6")
-                 "")))))))
-    (native-inputs (list python-setuptools))
-    (inputs
-     (list python-cached-property
-           python-distro
-           python-docker-5
-           python-dockerpty
-           python-docopt
-           python-dotenv-0.13.0
-           python-jsonschema-3
-           python-pyyaml
-           python-requests
-           python-six
-           python-texttable
-           python-websocket-client-0.59))
-    (home-page "https://www.docker.com/")
-    (synopsis "Multi-container orchestration for Docker")
-    (description "Docker Compose is a tool for defining and running
-multi-container Docker applications.  A Compose file is used to configure an
-application’s services.  Then, using a single command, the containers are
-created and all the services are started as specified in the configuration.")
-    (license license:asl2.0)))
-
-(define-public docker-policy-helper
-  (package/inherit go-github-com-moby-policy-helpers
-    (name "docker-policy-helper")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:import-path _) "github.com/moby/policy-helpers/cmd/policy-helper")
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)
-       ((#:tests? _ #t) #f)
-       ((#:unpack-path _ "") "github.com/moby/policy-helpers")
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'install 'fix-bin-name
-              (lambda _
-                (rename-file (string-append #$output "/bin/policy-helper")
-                             (string-append #$output "/bin/docker-policy-helper"))))))))
-    (native-inputs (package-propagated-inputs go-github-com-moby-policy-helpers))
-    (propagated-inputs '())
-    (inputs '())))
-
-;;; Private package that shouldn't be used directly; its purposes is to be
-;;; used as a template for the various packages it contains.  It doesn't build
-;;; anyway, as it needs many dependencies that aren't being satisfied.
-(define docker-libnetwork
-  ;; There are no recent release for libnetwork, so choose the last commit of
-  ;; the branch that Docker uses, as can be seen in the 'vendor.conf' Docker
-  ;; source file.  NOTE - It is important that this version is kept in sync
-  ;; with the version of Docker being used.
-  (let ((commit "3797618f9a38372e8107d8c06f6ae199e1133ae8")
-        (version (version-major+minor %docker-version))
-        (revision "3"))
-    (package
-      (name "docker-libnetwork")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      ;; Redirected from github.com/docker/libnetwork.
-                      (url "https://github.com/moby/libnetwork")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1km3p6ya9az0ax2zww8wb5vbifr1gj5n9l82i273m9f3z9f2mq2p"))
-                ;; Delete bundled ("vendored") free software source code.
-                (modules '((guix build utils)))
-                (snippet '(delete-file-recursively "vendor"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/moby/libnetwork/"))
-      (home-page "https://github.com/moby/libnetwork/")
-      (synopsis "Networking for containers")
-      (description "Libnetwork provides a native Go implementation for
-connecting containers.  The goal of @code{libnetwork} is to deliver a robust
-container network model that provides a consistent programming interface and
-the required network abstractions for applications.")
-      (license license:asl2.0))))
-
-(define-public docker-registry
-  (package
-    (name "docker-registry")
-    ;; XXX: The project ships a "vendor" directory containing all
-    ;; dependencies, consider to review and package them.  The Golang library
-    ;; is packaged in (gnu packges golang-xyz) as
-    ;; go-github-com-docker-distribution.
-    (version "2.8.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/docker/distribution")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0dbaxmkhg53anhkzngyzlxm2bd4dwv0sv75zip1rkm0874wjbxzb"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/docker/distribution"
-      #:test-subdirs #~(list "configuration"
-                             "context"
-                             "health"
-                             "manifest"
-                             "notifications/..."
-                             "uuid")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir-to-src
-            (lambda _ (chdir "src/github.com/docker/distribution")))
-          (add-after 'chdir-to-src 'fix-versioning
-            (lambda _
-              ;; The Makefile use git to compute the version and the
-              ;; revision. This requires the .git directory that we don't have
-              ;; anymore in the unpacked source.
-              (substitute* "Makefile"
-                (("^VERSION=\\$\\(.*\\)")
-                 (string-append "VERSION=v" #$version))
-                ;; The revision originally used the git hash with .m appended
-                ;; if there was any local modifications.
-                (("^REVISION=\\$\\(.*\\)") "REVISION=0"))))
-          (replace 'build
-            (lambda _
-              (invoke "make" "binaries")))
-          (replace 'install
-            (lambda _
-              (let ((bin (string-append #$output "/bin")))
-                (mkdir-p bin)
-                (for-each
-                 (lambda (file)
-                   (install-file (string-append "bin/" file) bin))
-                 '("digest"
-                   "registry"
-                   "registry-api-descriptor-template")))
-              (let ((doc (string-append
-                          #$output "/share/doc/" #$name "-" #$version)))
-                (mkdir-p doc)
-                (for-each
-                 (lambda (file)
-                   (install-file file doc))
-                 '("BUILDING.md"
-                   "CONTRIBUTING.md"
-                   "LICENSE"
-                   "MAINTAINERS"
-                   "README.md"
-                   "ROADMAP.md"))
-                (copy-recursively "docs/" (string-append doc "/docs")))
-              (let ((examples
-                     (string-append
-                      #$output "/share/doc/" #$name "-" #$version
-                      "/registry-example-configs")))
-                (mkdir-p examples)
-                (for-each
-                 (lambda (file)
-                   (install-file (string-append "cmd/registry/" file) examples))
-                 '("config-cache.yml"
-                   "config-example.yml"
-                   "config-dev.yml")))))
-          (delete 'install-license-files))))
-    (home-page "https://github.com/docker/distribution")
-    (synopsis "Docker registry server and associated tools")
-    (description "The Docker registry server enable you to host your own
-docker registry.  With it, there is also two other utilities:
-@itemize
-@item The digest utility is a tool that generates checksums compatibles with
-various docker manifest files.
-@item The registry-api-descriptor-template is a tool for generating API
-specifications from the docs/spec/api.md.tmpl file.
-@end itemize")
-    (license license:asl2.0)))
-(define-public docker-libnetwork-cmd-proxy
-  (package
-    (inherit docker-libnetwork)
-    (name "docker-libnetwork-cmd-proxy")
-    (arguments
-     (list
-      ;; The tests are unsupported on all architectures except x86_64-linux.
-      #:tests? (and (not (%current-target-system)) (target-x86-64?))
-      #:install-source? #f
-      #:import-path "github.com/docker/libnetwork/cmd/proxy"
-      #:unpack-path "github.com/docker/libnetwork"))
-    (native-inputs
-     (list go-github-com-sirupsen-logrus ; for tests.
-           go-github-com-vishvananda-netlink
-           go-github-com-vishvananda-netns
-           go-golang-org-x-crypto
-           go-golang-org-x-sys
-           go-sctp))
-    (synopsis "Docker user-space proxy")
-    (description
-     "This package provides a proxy running in the user space.  It is used by
-the built-in registry server of Docker.")
-    (license license:asl2.0)))
 
 ;; TODO: Patch out modprobes for ip_vs, nf_conntrack,
 ;; brige, nf_conntrack_netlink, aufs.
@@ -2831,6 +2611,227 @@ provisioning etc.")
     (home-page "https://www.docker.com/")
     (license license:asl2.0)))
 
+;;; TODO: This package needs to be updated to its 2.x series, now authored in
+;;; Go.
+(define-public docker-compose
+  (package
+    (name "docker-compose")
+    (version "1.29.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "docker-compose" version))
+       (sha256
+        (base32
+         "1dq9kfak61xx7chjrzmkvbw9mvj9008k7g8q7mwi4x133p9dk32c"))))
+    (build-system pyproject-build-system)
+    ;; TODO: Tests require running Docker daemon.
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pyyaml
+            (lambda _
+              (substitute* "setup.py"
+                ((", < 6")
+                 "")))))))
+    (native-inputs (list python-setuptools))
+    (inputs
+     (list python-cached-property
+           python-distro
+           python-docker-5
+           python-dockerpty
+           python-docopt
+           python-dotenv-0.13.0
+           python-jsonschema-3
+           python-pyyaml
+           python-requests
+           python-six
+           python-texttable
+           python-websocket-client-0.59))
+    (home-page "https://www.docker.com/")
+    (synopsis "Multi-container orchestration for Docker")
+    (description "Docker Compose is a tool for defining and running
+multi-container Docker applications.  A Compose file is used to configure an
+application’s services.  Then, using a single command, the containers are
+created and all the services are started as specified in the configuration.")
+    (license license:asl2.0)))
+
+;;; Private package that shouldn't be used directly; its purposes is to be
+;;; used as a template for the various packages it contains.  It doesn't build
+;;; anyway, as it needs many dependencies that aren't being satisfied.
+(define docker-libnetwork
+  ;; There are no recent release for libnetwork, so choose the last commit of
+  ;; the branch that Docker uses, as can be seen in the 'vendor.conf' Docker
+  ;; source file.  NOTE - It is important that this version is kept in sync
+  ;; with the version of Docker being used.
+  (let ((commit "3797618f9a38372e8107d8c06f6ae199e1133ae8")
+        (version (version-major+minor %docker-version))
+        (revision "3"))
+    (package
+      (name "docker-libnetwork")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      ;; Redirected from github.com/docker/libnetwork.
+                      (url "https://github.com/moby/libnetwork")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1km3p6ya9az0ax2zww8wb5vbifr1gj5n9l82i273m9f3z9f2mq2p"))
+                ;; Delete bundled ("vendored") free software source code.
+                (modules '((guix build utils)))
+                (snippet '(delete-file-recursively "vendor"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/moby/libnetwork/"))
+      (home-page "https://github.com/moby/libnetwork/")
+      (synopsis "Networking for containers")
+      (description "Libnetwork provides a native Go implementation for
+connecting containers.  The goal of @code{libnetwork} is to deliver a robust
+container network model that provides a consistent programming interface and
+the required network abstractions for applications.")
+      (license license:asl2.0))))
+
+(define-public docker-libnetwork-cmd-proxy
+  (package
+    (inherit docker-libnetwork)
+    (name "docker-libnetwork-cmd-proxy")
+    (arguments
+     (list
+      ;; The tests are unsupported on all architectures except x86_64-linux.
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
+      #:install-source? #f
+      #:import-path "github.com/docker/libnetwork/cmd/proxy"
+      #:unpack-path "github.com/docker/libnetwork"))
+    (native-inputs
+     (list go-github-com-sirupsen-logrus ; for tests.
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-sctp))
+    (synopsis "Docker user-space proxy")
+    (description
+     "This package provides a proxy running in the user space.  It is used by
+the built-in registry server of Docker.")
+    (license license:asl2.0)))
+
+(define-public docker-policy-helper
+  (package/inherit go-github-com-moby-policy-helpers
+    (name "docker-policy-helper")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/moby/policy-helpers/cmd/policy-helper")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/moby/policy-helpers")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'fix-bin-name
+              (lambda _
+                (rename-file (string-append #$output "/bin/policy-helper")
+                             (string-append #$output "/bin/docker-policy-helper"))))))))
+    (native-inputs (package-propagated-inputs go-github-com-moby-policy-helpers))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public docker-registry
+  (package
+    (name "docker-registry")
+    ;; XXX: The project ships a "vendor" directory containing all
+    ;; dependencies, consider to review and package them.  The Golang library
+    ;; is packaged in (gnu packges golang-xyz) as
+    ;; go-github-com-docker-distribution.
+    (version "2.8.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/docker/distribution")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dbaxmkhg53anhkzngyzlxm2bd4dwv0sv75zip1rkm0874wjbxzb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/distribution"
+      #:test-subdirs #~(list "configuration"
+                             "context"
+                             "health"
+                             "manifest"
+                             "notifications/..."
+                             "uuid")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-src
+            (lambda _ (chdir "src/github.com/docker/distribution")))
+          (add-after 'chdir-to-src 'fix-versioning
+            (lambda _
+              ;; The Makefile use git to compute the version and the
+              ;; revision. This requires the .git directory that we don't have
+              ;; anymore in the unpacked source.
+              (substitute* "Makefile"
+                (("^VERSION=\\$\\(.*\\)")
+                 (string-append "VERSION=v" #$version))
+                ;; The revision originally used the git hash with .m appended
+                ;; if there was any local modifications.
+                (("^REVISION=\\$\\(.*\\)") "REVISION=0"))))
+          (replace 'build
+            (lambda _
+              (invoke "make" "binaries")))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (for-each
+                 (lambda (file)
+                   (install-file (string-append "bin/" file) bin))
+                 '("digest"
+                   "registry"
+                   "registry-api-descriptor-template")))
+              (let ((doc (string-append
+                          #$output "/share/doc/" #$name "-" #$version)))
+                (mkdir-p doc)
+                (for-each
+                 (lambda (file)
+                   (install-file file doc))
+                 '("BUILDING.md"
+                   "CONTRIBUTING.md"
+                   "LICENSE"
+                   "MAINTAINERS"
+                   "README.md"
+                   "ROADMAP.md"))
+                (copy-recursively "docs/" (string-append doc "/docs")))
+              (let ((examples
+                     (string-append
+                      #$output "/share/doc/" #$name "-" #$version
+                      "/registry-example-configs")))
+                (mkdir-p examples)
+                (for-each
+                 (lambda (file)
+                   (install-file (string-append "cmd/registry/" file) examples))
+                 '("config-cache.yml"
+                   "config-example.yml"
+                   "config-dev.yml")))))
+          (delete 'install-license-files))))
+    (home-page "https://github.com/docker/distribution")
+    (synopsis "Docker registry server and associated tools")
+    (description "The Docker registry server enable you to host your own
+docker registry.  With it, there is also two other utilities:
+@itemize
+@item The digest utility is a tool that generates checksums compatibles with
+various docker manifest files.
+@item The registry-api-descriptor-template is a tool for generating API
+specifications from the docs/spec/api.md.tmpl file.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public guix-compose
   (package
     (name "guix-compose")
@@ -2946,205 +2947,6 @@ Guix machinery.")
      "libslirp is a user-mode networking library used by virtual machines,
 containers or various tools.")
     (license license:bsd-3)))
-
-(define-public runc
-  ;; TODO: Inheerit form go-github-com-opencontainers-runc when it's moved
-  ;; here.
-  (package
-    (name "runc")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/opencontainers/runc")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0midvxwmj4fvhy5mqv616bhlx39j0gd6y890adx7dnz5in506ym1"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils))
-            (delete-file-recursively "vendor")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; XXX: 20/139 tests fail due to missing /var, cgroups and apparmor in
-      ;; the build environment.
-      #:tests? #f
-      #:install-source? #f
-      #:import-path "github.com/opencontainers/runc"
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key import-path #:allow-other-keys)
-             (substitute*  (string-append "src/" import-path "/Makefile")
-               (("/bin/bash") (which "bash")))))
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (invoke "make" "all" "man"))))
-          (replace 'install
-            (lambda* (#:key import-path outputs #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (invoke "make" "install" "install-bash" "install-man"
-                        (string-append "PREFIX=" #$output))))))))
-    (native-inputs
-     (list go-github-com-checkpoint-restore-go-criu-v6
-           go-github-com-containerd-console
-           go-github-com-coreos-go-systemd-v22
-           go-github-com-cyphar-filepath-securejoin-0.4.1
-           go-github-com-docker-go-units
-           go-github-com-godbus-dbus-v5
-           go-github-com-moby-sys-capability
-           go-github-com-moby-sys-mountinfo
-           go-github-com-moby-sys-user
-           go-github-com-moby-sys-userns
-           go-github-com-mrunalp-fileutils
-           go-github-com-opencontainers-cgroups-0.0.1
-           go-github-com-opencontainers-runtime-spec-1.2.1
-           go-github-com-opencontainers-selinux
-           go-github-com-seccomp-libseccomp-golang
-           go-github-com-sirupsen-logrus
-           go-github-com-urfave-cli
-           go-github-com-vishvananda-netlink
-           go-golang-org-x-net
-           go-golang-org-x-sys
-           go-google-golang-org-protobuf
-           go-md2man
-           pkg-config))
-    (inputs
-     (list libseccomp))
-    (synopsis "Open container initiative runtime")
-    (home-page "https://opencontainers.org/")
-    (description
-     "@command{runc} is a command line client for running applications
-packaged according to the
-@uref{https://github.com/opencontainers/runtime-spec/blob/master/spec.md, Open
-Container Initiative (OCI) format} and is a compliant implementation of the
-Open Container Initiative specification.")
-    (license license:asl2.0)))
-
-(define-public skopeo
-  (package
-    (name "skopeo")
-    (version "1.24.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/podman-container-tools/skopeo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list go
-           go-md2man
-           pkg-config))
-    (inputs
-     (list bash-minimal
-           btrfs-progs
-           eudev
-           libassuan
-           libselinux
-           libostree
-           lvm2
-           glib
-           gpgme))
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "PREFIX="
-              (string-append "DESTDIR=" #$output)
-              "GOGCFLAGS=-trimpath"
-              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
-      #:tests? #f                       ; The tests require Docker
-      #:test-target "test-unit"
-      #:imported-modules
-      (source-module-closure `(,@%default-gnu-imported-modules
-                               (guix build go-build-system)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'unpack 'set-env
-            (lambda _
-              ;; When running go, things fail because HOME=/homeless-shelter.
-              (setenv "HOME" "/tmp")
-              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
-              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
-              ;; calls.  Can be removed once we update to >4.3.
-              (setenv "CC" #$(cc-for-target))))
-          (add-after 'install 'wrap-skopeo
-            (lambda _
-              (wrap-program (string-append #$output "/bin/skopeo")
-                `("PATH" suffix
-                  ;; We need at least newuidmap, newgidmap and mount.
-                  ("/run/privileged/bin"))))))))
-    (home-page "https://github.com/podman-container-tools/skopeo")
-    (synopsis "Interact with container images and container image registries")
-    (description
-     "@command{skopeo} is a command line utility providing various operations
-with container images and container image registries.  It can:
-@enumerate
-
-@item Copy container images between various containers image stores,
-converting them as necessary.
-
-@item Convert a Docker schema 2 or schema 1 container image to an OCI image.
-
-@item Inspect a repository on a container registry without needlessly pulling
-the image.
-
-@item Sign and verify container images.
-
-@item Delete container images from a remote container registry.
-
-@end enumerate")
-    (license license:asl2.0)))
-
-(define-public slirp4netns
-  (package
-    (name "slirp4netns")
-    (version "1.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rootless-containers/slirp4netns")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "165z1ccsb8w901965rlzcrbln17l1jdg9k7vsiamlx0q06v24b96"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f ; XXX: open("/dev/net/tun"): No such file or directory
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-hardcoded-paths
-                    (lambda _
-                      (substitute* (find-files "tests" "\\.sh")
-                        (("ping") "/run/privileged/bin/ping")))))))
-    (inputs
-     (list glib
-           libcap
-           libseccomp
-           libslirp))
-    (native-inputs
-     (list automake
-           autoconf
-           iproute ; iproute, jq, nmap (ncat) and util-linux are for tests
-           jq
-           nmap
-           pkg-config
-           util-linux))
-    (home-page "https://github.com/rootless-containers/slirp4netns")
-    (synopsis "User-mode networking for unprivileged network namespaces")
-    (description
-     "slirp4netns provides user-mode networking (\"slirp\") for unprivileged
-network namespaces.")
-    (license license:gpl2+)))
 
 (define-public passt
   (package
@@ -3371,6 +3173,205 @@ being rootless and not requiring any daemon to be running.")
     (description
      "@code{containers-storage} is a command line tool for manipulating local
 layer/image/container stores.")))
+
+(define-public runc
+  ;; TODO: Inheerit form go-github-com-opencontainers-runc when it's moved
+  ;; here.
+  (package
+    (name "runc")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/runc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0midvxwmj4fvhy5mqv616bhlx39j0gd6y890adx7dnz5in506ym1"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: 20/139 tests fail due to missing /var, cgroups and apparmor in
+      ;; the build environment.
+      #:tests? #f
+      #:install-source? #f
+      #:import-path "github.com/opencontainers/runc"
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key import-path #:allow-other-keys)
+             (substitute*  (string-append "src/" import-path "/Makefile")
+               (("/bin/bash") (which "bash")))))
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "all" "man"))))
+          (replace 'install
+            (lambda* (#:key import-path outputs #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" "install" "install-bash" "install-man"
+                        (string-append "PREFIX=" #$output))))))))
+    (native-inputs
+     (list go-github-com-checkpoint-restore-go-criu-v6
+           go-github-com-containerd-console
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-cyphar-filepath-securejoin-0.4.1
+           go-github-com-docker-go-units
+           go-github-com-godbus-dbus-v5
+           go-github-com-moby-sys-capability
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-mrunalp-fileutils
+           go-github-com-opencontainers-cgroups-0.0.1
+           go-github-com-opencontainers-runtime-spec-1.2.1
+           go-github-com-opencontainers-selinux
+           go-github-com-seccomp-libseccomp-golang
+           go-github-com-sirupsen-logrus
+           go-github-com-urfave-cli
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf
+           go-md2man
+           pkg-config))
+    (inputs
+     (list libseccomp))
+    (synopsis "Open container initiative runtime")
+    (home-page "https://opencontainers.org/")
+    (description
+     "@command{runc} is a command line client for running applications
+packaged according to the
+@uref{https://github.com/opencontainers/runtime-spec/blob/master/spec.md, Open
+Container Initiative (OCI) format} and is a compliant implementation of the
+Open Container Initiative specification.")
+    (license license:asl2.0)))
+
+(define-public skopeo
+  (package
+    (name "skopeo")
+    (version "1.24.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/podman-container-tools/skopeo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list go
+           go-md2man
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           btrfs-progs
+           eudev
+           libassuan
+           libselinux
+           libostree
+           lvm2
+           glib
+           gpgme))
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "PREFIX="
+              (string-append "DESTDIR=" #$output)
+              "GOGCFLAGS=-trimpath"
+              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
+      #:tests? #f                       ; The tests require Docker
+      #:test-target "test-unit"
+      #:imported-modules
+      (source-module-closure `(,@%default-gnu-imported-modules
+                               (guix build go-build-system)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; When running go, things fail because HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
+              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
+              ;; calls.  Can be removed once we update to >4.3.
+              (setenv "CC" #$(cc-for-target))))
+          (add-after 'install 'wrap-skopeo
+            (lambda _
+              (wrap-program (string-append #$output "/bin/skopeo")
+                `("PATH" suffix
+                  ;; We need at least newuidmap, newgidmap and mount.
+                  ("/run/privileged/bin"))))))))
+    (home-page "https://github.com/podman-container-tools/skopeo")
+    (synopsis "Interact with container images and container image registries")
+    (description
+     "@command{skopeo} is a command line utility providing various operations
+with container images and container image registries.  It can:
+@enumerate
+
+@item Copy container images between various containers image stores,
+converting them as necessary.
+
+@item Convert a Docker schema 2 or schema 1 container image to an OCI image.
+
+@item Inspect a repository on a container registry without needlessly pulling
+the image.
+
+@item Sign and verify container images.
+
+@item Delete container images from a remote container registry.
+
+@end enumerate")
+    (license license:asl2.0)))
+
+(define-public slirp4netns
+  (package
+    (name "slirp4netns")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rootless-containers/slirp4netns")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "165z1ccsb8w901965rlzcrbln17l1jdg9k7vsiamlx0q06v24b96"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ; XXX: open("/dev/net/tun"): No such file or directory
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-hardcoded-paths
+                    (lambda _
+                      (substitute* (find-files "tests" "\\.sh")
+                        (("ping") "/run/privileged/bin/ping")))))))
+    (inputs
+     (list glib
+           libcap
+           libseccomp
+           libslirp))
+    (native-inputs
+     (list automake
+           autoconf
+           iproute ; iproute, jq, nmap (ncat) and util-linux are for tests
+           jq
+           nmap
+           pkg-config
+           util-linux))
+    (home-page "https://github.com/rootless-containers/slirp4netns")
+    (synopsis "User-mode networking for unprivileged network namespaces")
+    (description
+     "slirp4netns provides user-mode networking (\"slirp\") for unprivileged
+network namespaces.")
+    (license license:gpl2+)))
 
 (define-public tini
   (package
