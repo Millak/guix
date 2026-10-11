@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2017, 2018 Nikita <nikita@n0.is>
-# Copyright © 2025 Hilton Chain <hako@ultrarare.space>
+# Copyright © 2025-2026 Hilton Chain <hako@ultrarare.space>
 #
 # This file is part of GNU Guix.
 #
@@ -81,6 +81,7 @@ function __fish_guix_complete_subcommand
 end
 
 set -l guix_substitute_urls "https://bordeaux.guix.gnu.org https://ci.guix.gnu.org"
+set -l guix_verbosities     "0 1 2 3"
 
 complete -f -c guix -s h -l help    -d "display help message"
 complete -f -c guix -s V -l version -d "display version information"
@@ -163,7 +164,7 @@ complete -f -c guix -s V -l version -d "display version information"
 #     echo "complete -f -c guix -n \"__fish_guix_using_command home; and not __fish_seen_subcommand_from \$guix_home_commands\" -a \"$command\" -d \"$(echo $(guix home --help | string match -rg "^   $command +(.*)"))\""
 # end
 
-# Generated output
+# Generated from above commands.
 set -l guix_build_systems \
     aarch64-linux \
     armhf-linux \
@@ -339,10 +340,13 @@ set -l guix_repl_types \
     guile \
     machine
 set -l guix_style_stylings \
-    format \
-    inputs \
     arguments \
-    git-source
+    format \
+    git-source \
+    inputs \
+    remove-input \
+    remove-native-input \
+    remove-propagated-input
 set -l guix_commands \
     deploy \
     describe \
@@ -482,7 +486,7 @@ complete -f -c guix -n "__fish_guix_using_command home; and not __fish_seen_subc
 complete -f -c guix -n "__fish_guix_using_command home; and not __fish_seen_subcommand_from $guix_home_commands" -a "shepherd-graph" -d "emit the graph of shepherd services"
 
 
-# Standard build options
+# See also `show-build-options-help'.
 set -l guix_commands_with_build_options \
     archive \
     build \
@@ -494,6 +498,7 @@ set -l guix_commands_with_build_options \
     pack \
     package \
     pull \
+    remove \
     shell \
     system \
     time-machine \
@@ -502,7 +507,7 @@ set -l guix_commands_with_build_options \
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s L -l load-path=        -d "prepend DIR to the package module search path" -a "(__fish_complete_directories)"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s K -l keep-failed       -d "keep build tree of failed builds"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s k -l keep-going        -d "keep going when some of the derivations fail"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l rounds=           -d "build N times in a row to detect non-determinism"
+complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s n -l dry-run           -d "do not build the derivations"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l fallback          -d "fall back to building when the substituter fails"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l no-substitutes    -d "build instead of resorting to pre-built substitutes"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l substitute-urls=  -d "fetch substitute from URLS if they are authorized" -a "$guix_substitute_urls"
@@ -510,12 +515,13 @@ complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_opti
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l no-offload        -d "do not attempt to offload builds"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l max-silent-time=  -d "mark the build as failed after SECONDS of silence"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l timeout=          -d "mark the build as failed after SECONDS of activity"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l debug=            -d "produce debugging output at LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l rounds=           -d "build N times in a row to detect non-determinism"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s c -l cores=            -d "allow the use of up to N CPU cores for the build"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options" -s M -l max-jobs=         -d "allow at most N build jobs"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_options"      -l debug=            -d "produce debugging output at LEVEL" -a "0 1 2 3 4 5"
 
 
-# Cross build options.
+# See also `show-cross-build-options-help'.
 set -l guix_commands_with_cross_build_options \
     archive \
     build \
@@ -526,7 +532,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_cross_buil
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_cross_build_options" -l target=      -d "cross-build for TRIPLET" -a "$guix_build_targets"
 
 
-# Native build options.
+# See also `show-native-build-options-help'.
 set -l guix_commands_with_native_build_options \
     archive \
     build \
@@ -543,7 +549,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_native_bui
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_native_build_options" -l system=      -d "attempt to build for SYSTEM" -a "$guix_build_systems"
 
 
-# Transformation options.
+# See also `%transformation-options'.
 set -l guix_commands_with_transformation_options \
     build \
     environment \
@@ -560,18 +566,19 @@ complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transforma
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-branch=         -d "build PACKAGE from the latest commit of BRANCH"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-commit=         -d "build PACKAGE from COMMIT"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-git-url=        -d "build PACKAGE from the repository at URL"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-c-toolchain=    -d "add FILE to the list of patches of PACKAGE"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-c-toolchain=    -d "build PACKAGE and its dependents with TOOLCHAIN"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l tune                 -d "tune relevant packages for CPU--e.g., \"skylake\"" -a "native generic"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-debug-info=     -d "append FLAG to the configure flags of PACKAGE"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l without-tests=       -d "use the latest upstream release of PACKAGE"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-configure-flag= -d "use the given upstream VERSION of PACKAGE"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-patch=          -d "build PACKAGE and its dependents with TOOLCHAIN"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-latest=         -d "build PACKAGE and preserve its debug info"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-version=        -d "build PACKAGE without running its tests"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l amd-gpu=
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-debug-info=     -d "build PACKAGE and preserve its debug info"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l without-tests=       -d "build PACKAGE without running its tests"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-configure-flag= -d "append FLAG to the configure flags of PACKAGE"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-patch=          -d "add FILE to the list of patches of PACKAGE"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-latest=         -d "use the latest upstream release of PACKAGE"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l with-version=        -d "use the given upstream VERSION of PACKAGE"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_transformation_options" -l help-transform       -d "list package transformation options not shown here"
 
 
-# Environment options.
+# See also `show-environment-options-help'.
 set -l guix_commands_with_environment_options \
     environment \
     shell
@@ -581,7 +588,7 @@ complete -r -c guix -n "__fish_guix_using_command $guix_commands_with_environmen
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s p -l profile=      -d "create environment from profile at PATH" -a "(__fish_complete_directories)"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l check         -d "check if the shell clobbers environment variables"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l pure          -d "unset existing environment variables"
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s E -l preserve=     -d "preserve environment variables that match REGEXP"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s E -l preserve=     -d "preserve environment variables that match REGEXP; if REGEXP contains `=', set VAR to VALUE instead"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l search-paths  -d "display needed environment variable definitions"
 complete -r -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s r -l root=         -d "make FILE a symlink to the result, and register it as a garbage collector root"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s C -l container     -d "run command within an isolated container"
@@ -590,11 +597,12 @@ complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environmen
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s W -l nesting       -d "make Guix available within the container"
 complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s u -l user=         -d "instead of copying the name and home of the current user into an isolated container, use the name USER with home directory /home/USER" -a "(__fish_complete_users)"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l no-cwd        -d "do not share current working directory with an isolated container"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l cwd=          -d "change to DIRECTORY inside the container (default is current working directory--or \$HOME if --no-cwd is used)" -a "(__fish_complete_directories)"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l writable-root -d "make the container's root file system writable"
 complete -r -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l share=        -d "for containers, share writable host file system according to SPEC"
 complete -r -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l expose=       -d "for containers, expose read-only host file system according to SPEC"
 complete -r -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s S -l symlink=      -d "for containers, add symlinks to the profile according to SPEC, e.g. \"/usr/bin/env=bin/env\"."
-complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s v -l verbosity=    -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options" -s v -l verbosity=    -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -f -c guix -n "__fish_guix_using_command $guix_commands_with_environment_options"      -l bootstrap     -d "use bootstrap binaries to build the environment"
 
 
@@ -609,7 +617,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l generat
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l authorize     -d "authorize imports signed by the public key on stdin"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l expression=   -d "build the package or derivation EXPR evaluates to"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s S -l source        -d "build the packages' source derivations"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=    -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=    -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 
 
 set -l guix_command build
@@ -624,7 +632,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_command" -s d -l derivat
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l check       -d "rebuild items to check for non-determinism issues"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l repair      -d "repair the specified items"
 complete -r -c guix -n "__fish_guix_using_command $guix_command" -s r -l root=       -d "make FILE a symlink to the result, and register it as a garbage collector root"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=  -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=  -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s q -l quiet       -d "do not show the build log"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l log-file    -d "return the log file names for the given derivations"
 
@@ -632,7 +640,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l log-fil
 set -l guix_command challenge
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l substitute-urls= -d "compare build results with those at URLS" -a "$guix_substitute_urls"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbose          -d "show details about successful comparisons"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l diff=            -d "show differences according to MODE"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l diff=            -d "show differences according to MODE" -a "none simple diffoscope"
 
 
 set -l guix_command container
@@ -642,14 +650,14 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -d "execute a c
 set -l guix_command copy
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l to=        -d "send ITEMS to HOST" -a "(__fish_print_hostnames)"
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l from=      -d "receive ITEMS from HOST" -a "(__fish_print_hostnames)"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 
 
 set -l guix_command deploy
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l expression= -d "deploy the list of machines EXPR evaluates to"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s r -l roll-back   -d "switch to the previous operating system configuration"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s x -l execute     -d "execute the following command on all the machines"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=  -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=  -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 # guix deploy --execute --
 complete -f -c guix -n "__fish_guix_using_command $guix_command; and __fish_seen_subcommand_from --execute -x; and not __fish_seen_subcommand_from --" -a "--"
 complete -x -c guix -n "__fish_guix_using_command $guix_command; and __fish_seen_subcommand_from --execute -x; and __fish_seen_subcommand_from --"     -a "(__fish_guix_complete_subcommand)"
@@ -735,7 +743,7 @@ complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-d
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s N -l network          -d "allow containers to access the network"
 complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l share=           -d "for containers, share writable host file system according to SPEC"
 complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l expose=          -d "for containers, expose read-only host file system according to SPEC"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=       -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=       -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l graph-backend=   -d "use BACKEND for 'extension-graph' and 'shepherd-graph'" -a "$guix_graph_backends"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s I -l list-installed   -d "for 'describe' or 'list-generations', list installed packages matching REGEXP" -a "REGEXP"
 
@@ -758,16 +766,16 @@ complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_se
 
 set -l guix_importer crate
 complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer"      -l allow-yanked -d "allow importing yanked crates if no alternative satisfying the version requirement is found"
-complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s f -l lockfile=    -d "import dependencies from FILE, a 'Cargo.lock' file"
+complete -r -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s f -l lockfile=    -d "import dependencies from FILE, a 'Cargo.lock' file"
 
 set -l guix_importer egg
-complete -f -c guix -s r -l recursive -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -d "import packages recursively"
+complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s r -l recursive -d "import packages recursively"
 
 set -l guix_importer elm
-complete -f -c guix -s r -l recursive -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -d "import packages recursively"
+complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s r -l recursive -d "import packages recursively"
 
 set -l guix_importer elpa
-complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s a -l archive=      -d "specify the archive repository"
+complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s a -l archive=      -d "specify the archive repository" -a "gnu gnu-devel gnu/http nongnu melpa-stable melpa"
 complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s l -l list-archives -d "list ELPA repositories supported by the importer"
 complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s r -l recursive     -d "generate package expressions for all Emacs packages that are not yet in Guix"
 
@@ -797,6 +805,7 @@ complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_se
 
 set -l guix_importer npm-binary
 complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s r -l recursive -d "import packages recursively"
+complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s b -l binary    -d "prefer pre-built sources and skip building"
 
 set -l guix_importer nuget
 complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s a -l archive=        -d "specify the archive repository"
@@ -819,7 +828,7 @@ complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_se
 
 set -l guix_command install
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile=   -d "use PROFILE instead of the user's default profile" -a "(__fish_complete_directories)"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 
 
 set -l guix_command lint
@@ -827,7 +836,9 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -s c -l checker
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s x -l exclude=      -d "exclude the specified checkers" -a "$guix_lint_checker"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s n -l no-network    -d "only run checkers that do not access the network"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l expression=   -d "consider the package EXPR evaluates to"
+complete -r -c guix -n "__fish_guix_using_command $guix_command" -s m -l manifest=     -d "build the packages that the manifest given in FILE evaluates to"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s L -l load-path=    -d "prepend DIR to the package module search path" -a "(__fish_complete_directories)"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s f -l whole-file    -d "check the packages defined in the given file(s)"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s l -l list-checkers -d "display the list of available lint checkers"
 
 
@@ -849,13 +860,13 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l express
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s C -l compression=    -d "compress using TOOL" -a "gzip lzip xz bzip2 zstd none"
 complete -r -c guix -n "__fish_guix_using_command $guix_command" -s S -l symlink=        -d "create symlinks to the profile according to SPEC"
 complete -r -c guix -n "__fish_guix_using_command $guix_command" -s m -l manifest=       -d "create a pack with the manifest from FILE"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l entry-point=    -d "use PROGRAM as the entry point of the pack"
+complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l entry-point=    -d "use PROGRAM as the entry point of the pack"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l save-provenance -d "save provenance information"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l localstatedir   -d "include /var/guix in the resulting pack"
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l profile-name=   -d "populate /var/guix/profiles/.../NAME"
 complete -r -c guix -n "__fish_guix_using_command $guix_command" -s r -l root=           -d "make FILE a symlink to the result, and register it as a garbage collector root"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s d -l derivation      -d "return the derivation of the pack"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=      -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=      -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l bootstrap       -d "use the bootstrap binaries to build the pack"
 
 
@@ -878,7 +889,7 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l list-profiles           -d "list the user's profiles"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-collisions        -d "do not treat collisions in the profile as an error"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l bootstrap               -d "use the bootstrap Guile to build the profile"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=              -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=              -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s s -l search=                 -d "search in synopsis and description using REGEXP"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s I -l list-installed          -d "list installed packages matching REGEXP" -a "REGEXP"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s A -l list-available          -d "list available packages matching REGEXP" -a "REGEXP"
@@ -908,46 +919,51 @@ complete -f -c guix -n "__fish_guix_using_command $guix_command" -s r -l repl   
 
 
 set -l guix_command pull
-complete -r -c guix -n "__fish_guix_using_command $guix_command" -s C -l channels=              -d "deploy the channels defined in FILE"
-complete -f -c guix -n "__fish_guix_using_command $guix_command" -s q -l no-channel-files       -d "inhibit loading of user and system 'channels.scm'"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l url=                   -d "download \"guix\" channel from the Git repository at URL"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l commit=                -d "download the specified \"guix\" channel COMMIT"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l branch=                -d "download the tip of the specified \"guix\" channel BRANCH"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-downgrades       -d "allow downgrades to earlier channel revisions"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l disable-authentication -d "disable channel authentication"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l no-check-certificate   -d "do not validate the certificate of HTTPS servers"
-complete -f -c guix -n "__fish_guix_using_command $guix_command" -s N -l news                   -d "display news compared to the previous generation"
-complete -f -c guix -n "__fish_guix_using_command $guix_command" -s l -l list-generations       -d "list generations matching PATTERN" -a "PATTERN"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l details                -d "show details when listing generations"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l roll-back              -d "roll back to the previous generation"
-complete -f -c guix -n "__fish_guix_using_command $guix_command" -s d -l delete-generations     -d "delete generations matching PATTERN" -a "PATTERN"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s S -l switch-generation=     -d "switch to a generation matching PATTERN"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile=               -d "use PROFILE instead of ~/.config/guix/current" -a "(__fish_complete_directories)"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=             -d "use the given verbosity LEVEL"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l bootstrap              -d "use the bootstrap Guile to build the new Guix"
+complete -r -c guix -n "__fish_guix_using_command $guix_command" -s C -l channels=                 -d "deploy the channels defined in FILE"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s q -l no-channel-files          -d "inhibit loading of user and system 'channels.scm'"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l select=                   -d "select CHANNEL to update"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s x -l exclude=                  -d "exclude CHANNEL from being updated"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l url=                      -d "download \"guix\" channel from the Git repository at URL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l commit=                   -d "download the specified \"guix\" channel COMMIT"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l branch=                   -d "download the tip of the specified \"guix\" channel BRANCH"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l max-indirections=         -d "allow up to N channel indirections"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-downgrades          -d "allow downgrades to earlier channel revisions"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l disable-authentication    -d "disable channel authentication"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-untrusted-channels  -d "when downloading channels, allow untrusted channels"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l unsafe-channel-evaluation -d "evaluate channels file with the full user authority"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l no-check-certificate      -d "do not validate the certificate of HTTPS servers"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s N -l news                      -d "display news compared to the previous generation"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s l -l list-generations          -d "list generations matching PATTERN" -a "PATTERN"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l details                   -d "show details when listing generations"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l roll-back                 -d "roll back to the previous generation"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s d -l delete-generations        -d "delete generations matching PATTERN" -a "PATTERN"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s S -l switch-generation=        -d "switch to a generation matching PATTERN"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile=                  -d "use PROFILE instead of ~/.config/guix/current" -a "(__fish_complete_directories)"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=                -d "use the given verbosity LEVEL" -a "$guix_verbosities"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l bootstrap                 -d "use the bootstrap Guile to build the new Guix"
 
 
 set -l guix_command refresh
-complete -x -c guix -s e -l expression=     -n "__fish_guix_using_command $guix_command" -d "consider the package EXPR evaluates to"
-complete -f -c guix -s u -l update          -n "__fish_guix_using_command $guix_command" -d "update source files in place"
-complete -x -c guix -s s -l select=         -n "__fish_guix_using_command $guix_command" -d "select all the packages in SUBSET" -a "core non-core module:NAME"
-complete -r -c guix -s m -l manifest=       -n "__fish_guix_using_command $guix_command" -d "select all the packages from the manifest in FILE"
-complete -x -c guix      -l target-version= -n "__fish_guix_using_command $guix_command" -d "update the package or packages to VERSION, VERSION may be partially specified, e.g. as 6 or 6.4 instead of 6.4.3"
-complete -x -c guix -s t -l type=           -n "__fish_guix_using_command $guix_command" -d "restrict to updates from the specified updaters" -a "$guix_refresh_updaters"
-complete -f -c guix      -l list-updaters   -n "__fish_guix_using_command $guix_command" -d "list available updaters and exit"
-complete -f -c guix -s l -l list-dependent  -n "__fish_guix_using_command $guix_command" -d "list top-level dependent packages that would need to be rebuilt as a result of upgrading PACKAGE..."
-complete -f -c guix -s r -l recursive       -n "__fish_guix_using_command $guix_command" -d "check the PACKAGE and its inputs for upgrades"
-complete -f -c guix -s T -l list-transitive -n "__fish_guix_using_command $guix_command" -d "list all the packages that PACKAGE depends on"
-complete -r -c guix      -l keyring=        -n "__fish_guix_using_command $guix_command" -d "use FILE as the keyring of upstream OpenPGP keys"
-complete -x -c guix      -l key-server=     -n "__fish_guix_using_command $guix_command" -d "use HOST as the OpenPGP key server"
-complete -x -c guix      -l gpg=            -n "__fish_guix_using_command $guix_command" -d "use COMMAND as the GnuPG 2.x command"
-complete -x -c guix      -l key-download=   -n "__fish_guix_using_command $guix_command" -d "handle missing OpenPGP keys according to POLICY" -a "auto always never interactive"
-complete -x -c guix -s L -l load-path=      -n "__fish_guix_using_command $guix_command" -d "prepend DIR to the package module search path" -a "(__fish_complete_directories)"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l expression=     -d "consider the package EXPR evaluates to"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s u -l update          -d "update source files in place"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s s -l select=         -d "select all the packages in SUBSET" -a "core non-core module:NAME"
+complete -r -c guix -n "__fish_guix_using_command $guix_command" -s m -l manifest=       -d "select all the packages from the manifest in FILE"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l target-version= -d "update the package or packages to VERSION, VERSION may be partially specified, e.g. as 6 or 6.4 instead of 6.4.3"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s t -l type=           -d "restrict to updates from the specified updaters" -a "$guix_refresh_updaters"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l list-updaters   -d "list available updaters and exit"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s l -l list-dependent  -d "list top-level dependent packages that would need to be rebuilt as a result of upgrading PACKAGE..."
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s r -l recursive       -d "check the PACKAGE and its inputs for upgrades"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s T -l list-transitive -d "list all the packages that PACKAGE depends on"
+complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l keyring=        -d "use FILE as the keyring of upstream OpenPGP keys"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l key-server=     -d "use HOST as the OpenPGP key server"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l gpg=            -d "use COMMAND as the GnuPG 2.x command"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l key-download=   -d "handle missing OpenPGP keys according to POLICY" -a "auto always never interactive"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s L -l load-path=      -d "prepend DIR to the package module search path" -a "(__fish_complete_directories)"
 
 
 set -l guix_command remove
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile=   -d "use PROFILE instead of the user's default profile" -a "(__fish_complete_directories)"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity= -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 
 
 set -l guix_command repl
@@ -988,6 +1004,7 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -s L -l load-pa
 
 set -l guix_command style
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s S -l styling=              -d "apply RULE, a styling rule" -a "$guix_style_stylings"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l parameter=            -d "use PARAM, e.g. package name, as a parmeter for the styling RULE supporting it"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l list-stylings         -d "display the list of available style rules"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s n -l dry-run               -d "display files that would be edited but do nothing"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s L -l load-path=            -d "prepend DIR to the package module search path" -a "(__fish_complete_directories)"
@@ -1016,21 +1033,27 @@ complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l expose=
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s N -l network          -d "for 'container', allow containers to access the network"
 complete -r -c guix -n "__fish_guix_using_command $guix_command" -s r -l root=            -d "for 'vm', 'image', 'container' and 'build', make FILE a symlink to the result, and register it as a garbage collector root"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l full-boot        -d "for 'vm', make a full boot sequence"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l spice            -d "for 'vm', configure for Spice support"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l no-graphic       -d "for 'vm', use the tty that we are started in for IO"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l skip-checks      -d "skip file system and initrd module safety checks"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=       -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=       -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l graph-backend=   -d "use BACKEND for 'extension-graph' and 'shepherd-graph'" -a "$guix_graph_backends"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s I -l list-installed   -d "for 'describe' and 'list-generations', list installed packages matching REGEXP" -a "REGEXP"
 
 
 set -l guix_command time-machine
-complete -r -c guix -n "__fish_guix_using_command $guix_command" -s C -l channels=              -d "deploy the channels defined in FILE"
-complete -f -c guix -n "__fish_guix_using_command $guix_command" -s q -l no-channel-files       -d "inhibit loading of user and system 'channels.scm'"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l url=                   -d "use the Git repository at URL"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l commit=                -d "use the specified COMMIT"
-complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l branch=                -d "use the tip of the specified BRANCH"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l disable-authentication -d "disable channel authentication"
-complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l no-check-certificate   -d "do not validate the certificate of HTTPS servers"
+complete -r -c guix -n "__fish_guix_using_command $guix_command" -s C -l channels=                 -d "deploy the channels defined in FILE"
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s q -l no-channel-files          -d "inhibit loading of user and system 'channels.scm'"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l select=                   -d "select CHANNEL to update"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s x -l exclude=                  -d "exclude CHANNEL from being updated"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l url=                      -d "use the Git repository at URL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l commit=                   -d "use the specified COMMIT"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l branch=                   -d "use the tip of the specified BRANCH"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l max-indirections=         -d "allow up to N channel indirections"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l disable-authentication    -d "disable channel authentication"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-untrusted-channels  -d "when downloading channels, allow untrusted channels" -a "yes no"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l unsafe-channel-evaluation -d "evaluate channels file with the full user authority"
+complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l no-check-certificate      -d "do not validate the certificate of HTTPS servers"
 # guix time-machine --
 complete -x -c guix -n "__fish_guix_using_command $guix_command; and not __fish_seen_subcommand_from --" -a "--"
 complete -x -c guix -n "__fish_guix_using_command $guix_command; and __fish_seen_subcommand_from --"     -a "(__fish_guix_complete_subcommand)"
@@ -1038,7 +1061,7 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command; and __fish_seen
 
 set -l guix_command upgrade
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s p -l profile=       -d "use PROFILE instead of the user's default profile" -a "(__fish_complete_directories)"
-complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=     -d "use the given verbosity LEVEL"
+complete -x -c guix -n "__fish_guix_using_command $guix_command" -s v -l verbosity=     -d "use the given verbosity LEVEL" -a "$guix_verbosities"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l do-not-upgrade -d "do not upgrade any packages matching REGEXP" -a "REGEXP"
 
 
