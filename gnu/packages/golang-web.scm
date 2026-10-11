@@ -9553,7 +9553,7 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
 (define-public go-github-com-gofiber-fiber-v2
   (package
     (name "go-github-com-gofiber-fiber-v2")
-    (version "2.52.13")
+    (version "2.52.15")
     (source
      (origin
        (method git-fetch)
@@ -9562,7 +9562,7 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gf4n1ilkh2fdnwmdgrkchma1lzc3czwxvcw0j26kabsxywach1q"))))
+        (base32 "1wj3h0vp7l6x0rbnlf1lk64pv3zf422m72q710yd02cjq69d05w3"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -9577,7 +9577,11 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
                ;; (*fmt.wrapError)
                (list "TestAuthSources"
                      "TestMultipleKeyAuth"
+                     "Test_App_Errors"
+                     "Test_App_ServerErrorHandler_SmallReadBuffer"
                      "Test_CSRF_DeleteToken"
+                     "Test_Client_Agent_MaxRedirectsCount"
+                     "Test_Client_Agent_Timeout"
                      "Test_Client_Invalid_URL"
                      "Test_Ctx_Immutable_AfterHandler"
                      "Test_Ctx_Next"
@@ -9592,7 +9596,8 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
                      "Test_FileSystem_UsingParam_NonFile"
                      "Test_Next"
                      "Test_NoRules"
-                     "Test_Proxy_DoTimeout_Timeout"
+                     "Test_Proxy_DoRedirects_TooManyRedirects"
+                     "Test_Proxy_With_Timeout"
                      "Test_Redirect"
                      "Test_RegexRules"
                      "Test_Rewrite")
