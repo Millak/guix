@@ -7500,6 +7500,31 @@ Layer, SASL} library written in Go.")
 RFC 5321.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-varlink
+  (package
+    (name "go-github-com-emersion-go-varlink")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/emersion/go-varlink")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05csj47dij6294h8s2r2gsgv5z8nxqyl9sipivrky724assy7fn7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-varlink"))
+    (propagated-inputs (list go-github-com-dave-jennifer))
+    (home-page "https://github.com/emersion/go-varlink")
+    (synopsis "Go library for Varlink")
+    (description
+     "Package varlink implements the @url{https://varlink.org/, Varlink}
+protocol.")
+    (license license:expat)))
+
 (define-public go-github-com-emicklei-go-restful-v3
   (package
     (name "go-github-com-emicklei-go-restful-v3")
