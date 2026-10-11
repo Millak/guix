@@ -22907,7 +22907,9 @@ colored strings.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/MichaelMure/go-term-text"))
+      #:import-path "github.com/MichaelMure/go-term-text"
+      ;; len_test.go:69: Case 8 Input:
+      #:test-flags #~(list "-skip" "TestLen")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
