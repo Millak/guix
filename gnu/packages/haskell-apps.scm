@@ -517,7 +517,6 @@ to @code{cabal repl}).")
                   ghc-network-info
                   ghc-torrent
                   ghc-magic
-                  ghc-criterion
                   lsof
                   rsync
                   xdg-utils))
