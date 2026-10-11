@@ -14841,7 +14841,7 @@ It's an alternative fork of @url{https://github.com/gorilla/schema}.")
 (define-public go-github-com-gofiber-utils-v2
   (package
     (name "go-github-com-gofiber-utils-v2")
-    (version "2.0.4")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -14850,17 +14850,18 @@ It's an alternative fork of @url{https://github.com/gorilla/schema}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19arvlyx32fmd27152p3m5d24wk78zwscllw5272l5ynrs3yb50w"))))
+        (base32 "1sfpqqwcfjjg36g2l18v0rgwzj6yiiyx391ca7lfjp7whapy1mkw"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/gofiber/utils/v2"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           go-github-com-shamaton-msgpack-v3))
     (propagated-inputs
      (list go-github-com-fxamacker-cbor-v2
            go-github-com-google-uuid
-           go-github-com-shamaton-msgpack-v3))
+           go-golang-org-x-sys))
     (home-page "https://github.com/gofiber/utils")
     (synopsis "Fiber Utils")
     (description
