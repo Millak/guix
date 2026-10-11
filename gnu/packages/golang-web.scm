@@ -9630,7 +9630,7 @@ allocation and performance in mind.")
   (package
     (inherit go-github-com-gofiber-fiber-v2)
     (name "go-github-com-gofiber-fiber-v3")
-    (version "3.3.0")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -9639,7 +9639,7 @@ allocation and performance in mind.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189hqhbm9pvpl5g2n2yk3mvp0f4jx4s0w5ivmgh5li8plffc9iwk"))))
+        (base32 "12yxi5gf2wpadg5xvfy7kdhaib2a9naqrhcnliplg36m28pfl9dv"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:import-path _) "github.com/gofiber/fiber/v3")
