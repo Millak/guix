@@ -485,7 +485,7 @@ programming languages.")
 (define-public cvc5
   (package
     (name "cvc5")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -494,9 +494,7 @@ programming languages.")
              (commit (string-append "cvc5-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lpma6kfr5x1qk5yc227m98fvabn4c755y28gwd538cgc4cww420"))
-       (patches
-        (search-patches "cvc5-fix-test-failure.patch"))))
+        (base32 "1g0zy3vn5bj2lz3f2yi8fqansr195zdcn5rs29znilp76rhrh6hs"))))
     (build-system cmake-build-system)
     (arguments
      (list
