@@ -136,7 +136,7 @@ Neste exemplo, o arquivo de canal cria um aindireção, instruindo
 @command{pull} ou @command{time-machine} a baixar o arquivo de canal que
 @url{ci.guix.gnu.org} serve nesta URL no commit mais recente evaluado com
 sucesso.  Ao instalar isso como @file{~/.config/guix/channels.scm}, o comando
-@command{guix pull} sempre á buscar o canal assinalado nesta URL.
+@command{guix pull} sempre buscará o canal assinalado nesta URL.
 
 A nova opção @option{--max-indirections} fornece controle sobre o número de
 tais indireções.  Canais baixados ainda estão sijeitos à evaluação isolada, o
