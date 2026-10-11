@@ -18797,6 +18797,8 @@ elements from the @code{go/types} and @code{reflect} packages.")
     (license license:asl2.0)))
 
 (define-public go-github-com-jiangxin-multi-log
+  ;; XXX: This repo was archived by the owner on Nov 26, 2025. It is now
+  ;; read-only.
   (package
     (name "go-github-com-jiangxin-multi-log")
     (version "0.3.0")
@@ -18812,7 +18814,8 @@ elements from the @code{go/types} and @code{reflect} packages.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/jiangxin/multi-log"))
+      #:import-path "github.com/jiangxin/multi-log"
+      #:test-flags #~(list "-vet=off" "-skip" "TestFatal")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
