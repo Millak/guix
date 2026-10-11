@@ -3438,6 +3438,42 @@ Guix machinery.")
 containers or various tools.")
     (license license:bsd-3)))
 
+(define-public nydus-snapshotter
+  (package/inherit go-github-com-containerd-nydus-snapshotter
+    (name "nydus-snapshotter")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:embed-files _ #~(list)) #~(list "^none$"))
+       ((#:import-path _) "github.com/containerd/nydus-snapshotter/cmd/...")
+       ((#:install-source? _ #t) #f)
+       ((#:build-flags #~(list))
+        #~(list (string-append
+                 "-ldflags=-X github.com/containerd/nydus-snapshotter/version.Revision="
+                 #$(package-version this-package))))
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/containerd/nydus-snapshotter")))
+    (native-inputs
+     (append
+      (package-propagated-inputs go-github-com-containerd-nydus-snapshotter)
+      (package-native-inputs go-github-com-containerd-nydus-snapshotter)))
+    (propagated-inputs '())
+    (inputs '())
+    (home-page "https://nydus.dev/")
+    (description
+     "This package provides command line interface (CLI) acceleration
+framework for working with container images, includeing commands:
+
+@itemize
+@item @command{containerd-nydus-grpc}: Nydus remote snapshotter for containerd
+@item @command{nydus-overlayfs}:  FUSE mount helper for containerd to filter
+out Nydus specific options
+@item @command{optimizer-nri-plugin}: optimizer client for NRI plugin to
+manage optimizer server
+@item @command{prefetchfiles-nri-plugin}: NRI plugin for obtaining and
+transmitting prefetch files path
+@end itemize")))
+
 (define-public passt
   (package
     (name "passt")
