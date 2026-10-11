@@ -221,7 +221,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public spirv-llvm-translator
   (package
     (name "spirv-llvm-translator")
-    (version "18.1.10")
+    (version "22.1.6")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +230,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11gmb1kw6j90hwcf6wxjz4pki653lyd8v8kphk7jq67gvw8dkiwy"))))
+        (base32 "0ypliibg95qjls4brj8s75812yxyff65b25f3px89ybla2bylckw"))))
     (build-system cmake-build-system)
     (arguments
      ;; The test suite is known to fail on several architectures:
@@ -257,12 +257,12 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (lambda* (#:rest args)
                (apply (assoc-ref gnu:%standard-phases 'check)
                       #:test-target "test" args))))))
-    (inputs (list llvm-18))
+    (inputs (list llvm-22))
     (native-inputs
      (list
-      clang-18
+      clang-22
       libffi
-      llvm-18
+      llvm-22
       pkg-config
       python-lit
       spirv-headers))
