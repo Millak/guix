@@ -6868,6 +6868,7 @@ stored in an SQL database.")
     (arguments
      (list #:tests? #f ; No tests exist
            #:make-flags #~(list "PREFIX="
+                                (string-append "CC=" #$(cc-for-target))
                                 (string-append "DESTDIR=" #$output))
            #:phases
            #~(modify-phases %standard-phases
@@ -6875,6 +6876,10 @@ stored in an SQL database.")
                (add-after 'unpack 'patch-makefile
                  (lambda _
                    (substitute* "Makefile"
+                     (("pkg-config")
+                      (or (which "pkg-config")
+                          (which (string-append #$(%current-target-system)
+                                                "-pkg-config"))))
                      (("/usr/local")
                       #$output)
                      (("/usr/share")
