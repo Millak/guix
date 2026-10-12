@@ -701,7 +701,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
 (define-public go-github-com-prometheus-prometheus
   (package
     (name "go-github-com-prometheus-prometheus")
-    (version "0.308.0")
+    (version "3.15.0")
     (source
      (origin
        (method git-fetch)
@@ -710,7 +710,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n9yl2mk9nz57g8k4jnwlqssfrky6ahkqk1fpx8bq36g0g3rj6w5"))
+        (base32 "149r64nypq71iby7197p444jx8bzmp5q6fhgqq2nlma4ny568i8z"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -724,39 +724,38 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
       #:import-path "github.com/prometheus/prometheus"
       ;; XXX: Remove when all inputs are packaged.
       #:test-subdirs
-      #~(list "schema" "template" "discovery" "tsdb/wlog" "util/pool"
-              "util/stats" "tsdb/chunks" "tsdb/errors" "tsdb/record"
-              "util/almost" "model/labels" "util/fmtutil" "util/logging"
-              "util/strutil" "discovery/aws" "discovery/dns" "discovery/xds"
-              "model/relabel" "model/rulefmt" "promql/parser" "tsdb/chunkenc"
-              "tsdb/fileutil" "tsdb/tsdbutil" "util/httputil" "util/junitxml"
-              "util/zeropool" "discovery/file" "discovery/http"
-              "discovery/moby" "tsdb/goversion" "discovery/uyuni"
-              "model/histogram" "model/textparse" "prompb/rwcommon"
-              "tsdb/tombstones" "discovery/eureka" "discovery/triton"
+      #~(list "schema" "template" "tsdb/wlog" "util/pool" "util/stats"
+              "tsdb/chunks" "tsdb/record" "util/almost" "model/labels"
+              "util/fmtutil" "util/logging" "util/runtime" "util/strutil"
+              "util/testwal" "discovery/aws" "discovery/dns" "discovery/oci"
+              "discovery/xds" "model/relabel" "model/rulefmt" "promql/parser"
+              "tsdb/chunkenc" "tsdb/fileutil" "tsdb/tsdbutil" "util/httputil"
+              "util/junitxml" "util/kahansum" "util/zeropool" "discovery/file"
+              "discovery/http" "discovery/moby" "model/metadata"
+              "tsdb/goversion" "discovery/uyuni" "model/histogram"
+              "model/textparse" "prompb/rwcommon" "tsdb/tombstones"
+              "discovery/eureka" "discovery/triton" "util/annotations"
               "util/compression" "util/convertnhcb" "discovery/hetzner"
               "discovery/refresh" "util/netconnlimit" "discovery/marathon"
-              "discovery/puppetdb" "util/notifications" "discovery/kubernetes"
-              "discovery/targetgroup" "discovery/digitalocean"
-              "storage/remote/azuread" "util/namevalidationutil"
-              "prompb/io/prometheus/client" "prompb/io/prometheus/write/v2"
+              "discovery/puppetdb" "util/notifications"
+              "discovery/kubernetes" "discovery/targetgroup"
+              "discovery/digitalocean" "storage/remote/azuread"
+              "util/namevalidationutil" "prompb/io/prometheus/client"
+              "prompb/io/prometheus/write/v2"
               "documentation/examples/custom-sd/adapter")))
     (native-inputs
      ;; Tests and application dependency keep here.
      (list go-github-com-google-go-cmp
            go-github-com-google-pprof
            go-github-com-kimmachinegun-automemlimit
-           go-github-com-oklog-run
+           go-github-com-nsf-jsondiff
            go-github-com-stretchr-testify
            go-go-uber-org-automaxprocs
            go-go-uber-org-goleak
-           go-k8s-io-klog-v2
-           ;; go-github-com-nsf-jsondiff
-           #;go-k8s-io-klog))
+           go-k8s-io-klog-v2))
     (propagated-inputs
      (list go-github-com-alecthomas-kingpin-v2
            go-github-com-alecthomas-units
-           go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-credentials
@@ -765,15 +764,16 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
            go-github-com-aws-smithy-go
            go-github-com-azure-azure-sdk-for-go-sdk-azcore
            go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-cenkalti-backoff-v5
            go-github-com-cespare-xxhash-v2
            go-github-com-code-hex-go-generics-cache
            go-github-com-dennwc-varint
            go-github-com-digitalocean-godo
-           go-github-com-docker-docker
            go-github-com-edsrzf-mmap-go
            go-github-com-envoyproxy-go-control-plane-envoy
            go-github-com-envoyproxy-protoc-gen-validate
            go-github-com-facette-natsort
+           go-github-com-felixge-fgprof
            go-github-com-fsnotify-fsnotify
            go-github-com-go-openapi-strfmt
            go-github-com-gogo-protobuf
@@ -785,9 +785,12 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
            go-github-com-klauspost-compress
            go-github-com-kolo-xmlrpc
            go-github-com-miekg-dns
+           go-github-com-moby-moby-api
+           go-github-com-moby-moby-client
            go-github-com-munnerz-goautoneg
            go-github-com-mwitkow-go-conntrack
            go-github-com-oklog-ulid-v2
+           go-github-com-oracle-oci-go-sdk-v65
            go-github-com-prometheus-alertmanager
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
@@ -807,17 +810,18 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-trace
            go-go-uber-org-atomic
-           go-go-uber-org-multierr
            go-go-yaml-in-yaml-v2
+           go-go-yaml-in-yaml-v3
+           go-go-yaml-in-yaml-v4
            go-golang-org-x-oauth2
            go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-text
+           go-golang-org-x-time
            go-google-golang-org-api
            go-google-golang-org-genproto-googleapis-api
            go-google-golang-org-grpc
            go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3
            go-k8s-io-api
            go-k8s-io-apimachinery
            go-k8s-io-client-go
@@ -825,9 +829,12 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
            ;; TODO: Complete packaging.
            ;; go-github-com-aws-aws-sdk-go-v2-service-ec2
            ;; go-github-com-aws-aws-sdk-go-v2-service-ecs
+           ;; go-github-com-aws-aws-sdk-go-v2-service-elasticache
+           ;; go-github-com-aws-aws-sdk-go-v2-service-kafka
            ;; go-github-com-aws-aws-sdk-go-v2-service-lightsail
-           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-compute-armcompute-v5
-           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-network-armnetwork-v4
+           ;; go-github-com-aws-aws-sdk-go-v2-service-rds
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-compute-armcompute-v8
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-network-armnetwork-v8
            ;; go-github-com-bboreham-go-loser
            ;; go-github-com-go-zookeeper-zk
            ;; go-github-com-gophercloud-gophercloud-v2
@@ -836,17 +843,18 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
            ;; go-github-com-ionos-cloud-sdk-go-v6
            ;; go-github-com-linode-linodego
            ;; go-github-com-open-telemetry-opentelemetry-collector-contrib-processor-deltatocumulativeprocessor
+           ;; go-github-com-outscale-osc-sdk-go-v2
            ;; go-github-com-ovh-go-ovh
+           ;; go-github-com-pb33f-libopenapi
+           ;; go-github-com-pb33f-libopenapi-validator
            ;; go-github-com-prometheus-client-golang-exp
            ;; go-github-com-scaleway-scaleway-sdk-go
            ;; go-github-com-stackitcloud-stackit-sdk-go-core
-           ;; go-github-com-vultr-govultr-v2
+           ;; go-github-com-vultr-govultr-v3
            ;; go-go-opentelemetry-io-collector-component
            ;; go-go-opentelemetry-io-collector-consumer
            ;; go-go-opentelemetry-io-collector-pdata
-           ;; go-go-opentelemetry-io-collector-processor
-           ;; go-go-opentelemetry-io-collector-semconv
-           #;go-k8s-io-klog))
+           #;go-go-opentelemetry-io-collector-processor))
     (home-page "https://github.com/prometheus/prometheus")
     (synopsis "Monitoring system and time series database")
     (description
