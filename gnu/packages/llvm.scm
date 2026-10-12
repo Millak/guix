@@ -33,6 +33,7 @@
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1998,13 +1999,13 @@ use with Clang, targeting C++11, C++14 and above.")
 (define-public libclc
   (package
     (name "libclc")
-    (version (package-version llvm-18))
+    (version (package-version llvm-22))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "-DLLVM_CLANG="
+      #~(list (string-append "-DLLVM_TOOL_clang="
                              (assoc-ref %build-inputs "clang")
                              "/bin/clang")
               (string-append "-DLLVM_SPIRV="
@@ -2022,7 +2023,7 @@ use with Clang, targeting C++11, C++14 and above.")
     (propagated-inputs
      (list spirv-llvm-translator spirv-tools))
     (native-inputs
-     (list clang-18 llvm-18 python))
+     (list clang-22 llvm-22 python))
     (home-page "https://libclc.llvm.org")
     (synopsis "Libraries for the OpenCL programming language")
     (description
