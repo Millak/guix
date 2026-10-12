@@ -15096,7 +15096,7 @@ https://github.com/matrix-org/gomatrix project.")
 (define-public go-github-com-mattn-go-mastodon
   (package
     (name "go-github-com-mattn-go-mastodon")
-    (version "0.0.9")
+    (version "0.0.13")
     (source
      (origin
        (method git-fetch)
@@ -15105,18 +15105,17 @@ https://github.com/matrix-org/gomatrix project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05hnh5359awm5x7qbaf8fvf772p2hc781alfqnp7ymr4rjfk3pql"))
+        (base32 "05mqshjhfhbcz0narcmn49paw32z1km94l42yj1axfy838f30b64"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/mattn/go-mastodon/cmd/mstd
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "cmd")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/mattn/go-mastodon"))
+      #:import-path "github.com/mattn/go-mastodon"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-gorilla-websocket
            go-github-com-tomnomnom-linkheader))
