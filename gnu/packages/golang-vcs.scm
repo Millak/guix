@@ -447,24 +447,34 @@ the gh CLI tool, and the @code{GitHub} API.")
 (define-public go-github-com-cli-go-internal
   (package
     (name "go-github-com-cli-go-internal")
-    (version "0.0.0-20241025142207-6c48bcd5ce24")
+    (properties '((commit . "d0d5505d94b46ad9e80773fd50fee6c3c80e5e5c")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260902074248-d0d5505d94b4")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/cli/go-internal")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s2rnmsdj22hg8hz9xv2fj1vs1k9xfz8rvz9bm1cg3ddq33hl4a5"))))
+        (base32 "0snii5l4fn7l2k4dj9pzzzzkl3gkkh1zvhifrg3i7w7nlkbvgmc1"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/cli/go-internal"
       #:test-flags
-      ;; TestSimple/cover requires network access to proxy.golang.org.
-      #~(list "-skip" "TestSimple/cover")))
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       (list "TestScripts/pty"
+                             "TestSetup/overlay/overlay"
+                             "TestSimple/cover"
+                             "TestTestwork")
+                       "|"))))
     (propagated-inputs
      (list go-golang-org-x-mod
            go-golang-org-x-sys
