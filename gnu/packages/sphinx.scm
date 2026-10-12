@@ -755,7 +755,7 @@ Sphinx releases.")
 (define-public python-sphinxcontrib-mermaid
   (package
     (name "python-sphinxcontrib-mermaid")
-    (version "1.0.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -765,11 +765,12 @@ Sphinx releases.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cs5qcb48aigxba0g8va7xszq68d8fq2dlb843nbia3ns1p9zv9q"))))
+         "1j90xyrrka2w96a5bj6wlhyx292pv5ngr6h310qhxb33y46xj4wm"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-pyyaml python-sphinx))
     (native-inputs
-     (list python-myst-parser
+     (list python-hatchling
+           python-myst-parser
            python-pytest
            python-setuptools
            python-wheel))
