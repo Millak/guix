@@ -40,7 +40,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2025, 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
@@ -96,6 +96,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages engineering)
+  #:use-module (gnu packages erlang)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages haskell-xyz)
@@ -1942,6 +1943,61 @@ repositories.")
     (synopsis "Terminal UI for git")
     (description "This package provides a fast Terminal UI for git.")
     (license license:expat)))
+
+(define-public gleam
+  (package
+    (name "gleam")
+    (version "1.19.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gleam-lang/gleam")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c6grzc9qbvi5lnigm42ignm18ws7cs75x95zc1ix243f7z3bcrg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-test-flags
+           ''("--"
+              ;; Require network access.
+              "--skip=tests::output::echo_dict"
+              "--skip=tests::escript_success_with_dependency"
+              ;; Checks files to be gitignored.
+              "--skip=tests::all_files_have_copyright_notice"
+              ;; Require bun binary.
+              "--skip=tests::output::echo_nan_infinity"
+              "--skip=tests::output::echo_circular_reference"
+              "--skip=tests::output::echo_bitarray"
+              "--skip=tests::output::echo_string"
+              "--skip=tests::output::echo_bool"
+              "--skip=tests::output::echo_nil"
+              "--skip=tests::output::echo_tuple"
+              "--skip=tests::output::echo_int"
+              "--skip=tests::output::echo_charlist"
+              "--skip=tests::output::echo_function"
+              "--skip=tests::output::echo_with_message"
+              "--skip=tests::output::echo_list"
+              "--skip=tests::output::echo_singleton"
+              "--skip=tests::output::echo_float"
+              "--skip=tests::output::echo_importing_module_named_inspect"
+              "--skip=tests::output::echo_custom_type")
+           #:cargo-install-paths ''("gleam-bin")))
+    (native-inputs (list
+                    ;; for tests
+                    git-minimal/pinned))
+    (inputs (cons* erlang
+                   (cargo-inputs 'gleam)))
+    (home-page "https://gleam.run/")
+    (synopsis "Statically typed language for the BEAM VM and JavaScript")
+    (description
+     "Gleam is a functional statically typed language for the BEAM VM and
+JavaScript.  It includes the power of a type system, the expressiveness
+of functional programming, and the reliability of the highly concurrent,
+fault tolerant Erlang runtime, with a familiar and modern syntax.")
+    (license license:asl2.0)))
 
 (define-public helvum
   (package
