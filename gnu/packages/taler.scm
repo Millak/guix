@@ -98,8 +98,8 @@ processing tool.  It can be used for compliance processes in software such as
 
 (define-public taler-docs
   ;; No tag or commit; use the latest commit.
-  (let ((commit "1557e7a3547cfa04b111c40ce0feef9581121635")
-        (revision "0"))
+  (let ((commit "7944885e71fbf970d21e0d9f4fe88dcc08146457")
+        (revision "1"))
     (package
       (name "taler-docs")
       (version (git-version "0.0.0" revision commit))
@@ -111,7 +111,7 @@ processing tool.  It can be used for compliance processes in software such as
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lhcvqlazsqbj391d7dlp6rzblld4jij8z2vym2cbgz4mzb2vqj1"))
+                  "1bn9594qh8p88llglgvr71qwl27i8c5sjx0b49wsjfz93d9d0bsa"))
                 (modules '((guix build utils)
                            (ice-9 ftw)
                            (srfi srfi-26)))
@@ -142,12 +142,15 @@ processing tool.  It can be used for compliance processes in software such as
             (delete 'configure)         ;no configure phase
             (replace 'install
               (lambda _
-                (invoke "make" "-C" "_build/texinfo"
-                        "install-info" (string-append "infodir=" #$output
-                                                      "/share/info"))
+                ;; Take care to install the man pages before re-running make
+                ;; below again; it appears to remove some of the manpages like
+                ;; 'depolymerizer-bitcoin.1' otherwise.
                 (let ((mandir (string-append #$output "/share/man")))
                   (mkdir-p mandir)
-                  (copy-recursively "_build/man" mandir)))))))
+                  (copy-recursively "_build/man" mandir))
+                (invoke "make" "-C" "_build/texinfo"
+                        "install-info" (string-append "infodir=" #$output
+                                                      "/share/info")))))))
       (native-inputs
        (list python-minimal
              python-myst-parser
@@ -156,6 +159,7 @@ processing tool.  It can be used for compliance processes in software such as
              python-sphinx-multitoc-numbering
              python-sphinx-plantuml
              python-sphinxcontrib-httpdomain
+             python-sphinxcontrib-mermaid
              texinfo))
       (home-page "https://www.taler.net/")
       (synopsis "Documentation of the GNU Taler project")
