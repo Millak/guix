@@ -9373,6 +9373,33 @@ architecture.  The model supports multiple coordinate systems and efficiently
 evaluates all grid points and time frames simultaneously.")
     (license license:expat)))
 
+(define-public python-pykerr
+  (package
+    (name "python-pykerr")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cdcapano/pykerr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k2kwxp9x7iyywbxpds79dad8s083wv4yh1ms0s014h4vf24pnnn"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-h5py python-numpy python-scipy))
+    (home-page "https://github.com/cdcapano/pykerr")
+    (synopsis "QNM frequencies and spheroidal harmonics of Kerr black holes")
+    (description
+     "This package provides functions to get the frequency,
+damping time, and spheroidal harmonics of Kerr black holes.  Solutions for the
+@code{l=2} to @code{l=7} modes are provided, including all @code{m=[-l, ...,
+l]} and up to 7 overtones (where @code{n=0} is the fundamental mode), for
+dimensionless black hole spins up to +/- 0.9997.  Currently, only spin weights
+of @code{s=-2} are supported.")
+    (license license:gpl3)))
+
 (define-public python-pymcfost
   (package
     (name "python-pymcfost")
