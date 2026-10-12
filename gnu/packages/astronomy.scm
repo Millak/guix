@@ -6721,6 +6721,32 @@ default) to world coordinates.")
 ;; XXX: Deprecated on <2026-05-16>.
 (define-public python-gwcs-1 python-gwcs)
 
+(define-public python-gwdatafind
+  (package
+    (name "python-gwdatafind")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.ligo.org/computing/gwdatafind/client")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jhmywnk3nydczzn6byvba6iajc2afasrbmkvw589fvz8ivpi33w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-requests-mock python-setuptools))
+    (propagated-inputs
+     (list python-igwn-auth-utils python-igwn-segments))
+    (home-page "https://gwdatafind.readthedocs.io")
+    (synopsis "GWDataFind data discovery client")
+    (description
+     "The GWDataFind service allows users to query for the location of
+Gravitational-Wave Frame (GWF) files containing data from the current
+gravitational-wave detectors.")
+    (license license:lgpl3+)))
+
 (define-public python-halo-analysis
   (package
     (name "python-halo-analysis")
