@@ -17255,6 +17255,7 @@ standard library.")
     (license license:asl2.0)))
 
 (define-public go-github-com-openzipkin-zipkin-go
+  ;; XXX: Project has no upddates since <2024-04-29>.
   (package
     (name "go-github-com-openzipkin-zipkin-go")
     (version "0.4.3")
@@ -17262,8 +17263,8 @@ standard library.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/openzipkin/zipkin-go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/openzipkin/zipkin-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0780agn2bygi7i2nxng8n80mspaab17k95px1vf6nqil1kg8hh7m"))))
@@ -17271,10 +17272,11 @@ standard library.")
     (arguments
      (list
       #:import-path "github.com/openzipkin/zipkin-go"
-      ;; span_test.go:56: expected valid endpoint, got error: host lookup
-      ;; failure: lookup www.google.com on [::1]:53: read udp
-      ;; [::1]:56302->[::1]:53: read: connection refused
-      #:test-flags #~(list "-skip" "TestRemoteEndpoint|TestHTTPClient")))
+      #:test-subdirs
+      #~(list "model" "examples" "idgenerator" "reporter/amqp"
+              "reporter/http" "propagation/b3" "middleware/grpc"
+              "reporter/recorder" "propagation/baggage"
+              "proto/zipkin_proto3")))
     (native-inputs
      (list go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega))
