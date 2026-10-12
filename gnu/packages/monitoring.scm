@@ -452,7 +452,7 @@ other theme.")
 (define-public glances
   (package
     (name "glances")
-    (version "4.3.0")
+    (version "4.5.8")
     (source
      (origin
        (method git-fetch)
@@ -461,12 +461,12 @@ other theme.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v2rsffy99ilarl5vnsz4zwb0wp3s3jnsbcbiqx53qxv88whfz71"))))
+        (base32 "0nif1y83s9kkyj84iw66xjppyg0hmwisp08wz9pm9hxxrkj641f0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-backend #~'custom
-      #:test-flags #~(list "unittest-core.py")
+      #:test-flags #~(list "tests/test_core.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-update-checks
@@ -483,7 +483,6 @@ other theme.")
     (propagated-inputs
      (list python-defusedxml
            python-jinja2
-           python-orjson
            python-packaging
            python-psutil
            python-shtab))
