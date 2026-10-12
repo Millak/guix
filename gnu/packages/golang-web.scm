@@ -12446,7 +12446,7 @@ protocol) - used to discover UPnP services on a network
 (define-public go-github-com-ibm-sarama
   (package
     (name "go-github-com-ibm-sarama")
-    (version "1.48.0")
+    (version "1.61.1")
     (source
      (origin
        (method git-fetch)
@@ -12455,7 +12455,7 @@ protocol) - used to discover UPnP services on a network
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ak07aqb9hznvhbnkw34vak30pzbwvh2aff22lww8gcba4c9qdn7"))))
+        (base32 "0ga8p1kx2awj86r419914gz0yjwqb6g3nncvbp42ldms8xc1f4dv"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -12473,7 +12473,6 @@ protocol) - used to discover UPnP services on a network
            go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-eapache-go-resiliency
-           go-github-com-eapache-queue
            go-github-com-jcmturner-gofork
            go-github-com-jcmturner-gokrb5-v8
            go-github-com-klauspost-compress
