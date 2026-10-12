@@ -2226,6 +2226,44 @@ supports:
 identities.")
     (license license:asl2.0)))
 
+(define-public python-igwn-ligolw
+  (package
+    (name "python-igwn-ligolw")
+    (version "2.1.1")
+    ;; Source has no releases or tags, see:
+    ;; <https://git.ligo.org/duncanmmacleod/igwn-ligolw>.
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "igwn_ligolw" version))
+       (sha256
+        (base32 "0jxn6idviklhy0rxmafddypnk8imh3x2fkmffpajappcg478d8ac"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--benchmark-disable"
+              ;; Missing optional dependency - lalsuite (long journey).
+              "--deselect=test/test_array.py::test_dtt")))
+    (native-inputs
+     (list python-matplotlib
+           python-pytest
+           python-pytest-benchmark
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-igwn-segments
+           python-numpy
+           python-dateutil
+           python-pyyaml
+           python-tqdm))
+    (home-page "https://igwn-ligolw.readthedocs.io/en/stable/")
+    (synopsis "Python LIGO Light-Weight XML I/O Library")
+    (description
+     "This package provides a Python @acronym{Laser Interferometer
+Gravitational-Wave Observatory, LIGO} Light-Weight XML I/O Library.")
+    (license license:gpl3+)))
+
 (define-public python-igwn-segments
   (package
     (name "python-igwn-segments")
