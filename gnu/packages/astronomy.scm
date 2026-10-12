@@ -6747,6 +6747,47 @@ Gravitational-Wave Frame (GWF) files containing data from the current
 gravitational-wave detectors.")
     (license license:lgpl3+)))
 
+(define-public python-gwosc
+  (package
+    (name "python-gwosc")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.ligo.org/gwosc/client")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "091gq798br7n38xwc6cchgdqh90ffwbigcpm0icqhhnaca894l36"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 42 passed, 68 deselected
+      #:test-flags
+      #~(list "-m" "not remote"
+              #$@(map (lambda (test) (string-append "--deselect=gwosc/tests/"
+                                                    test))
+                      '("test_apiv1.py::test_fetch_filtered_events_json_local"
+                        "test_apiv1.py::test_fetch_filtered_events_json_bad_local"
+                        "test_datasets.py::test_query_events_local")))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-socket
+           python-responses
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs (list python-requests python-tenacity))
+    (home-page "https://gwosc.readthedocs.io")
+    (synopsis
+     "Python interface to the Gravitational-Wave Open Data Center archive")
+    (description
+     "The gwosc package provides an interface to querying the open data
+releases hosted on https://gwosc.org from the GEO, LIGO, and Virgo
+gravitational-wave observatories.")
+    (license license:expat)))
+
 (define-public python-halo-analysis
   (package
     (name "python-halo-analysis")
