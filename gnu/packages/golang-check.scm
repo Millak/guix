@@ -2205,23 +2205,27 @@ considered the same provided it exceeds the minimal token sequence size).")
 (define-public go-github-com-golangci-gofmt
   (package
     (name "go-github-com-golangci-gofmt")
-    (version "0.0.0-20250704145412-3e58ba0443c6")
+    (properties '((commit . "e84e05053792206a61ddc23292559a6b1c4bfe40")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260820135601-e84e05053792")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/golangci/gofmt")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1adhjibw3kdhrcyfcd903pd03z9akgpmm8yz7wmxpic7hpk8p5hb"))))
+        (base32 "1241nvw7kmxsfghvgq4lygy2ndygjcpb1b0wwq0shi06yjdqnghl"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:test-flags
-      #~(list "-skip" "TestGoToolLocation")
-      #:import-path "github.com/golangci/gofmt"))
+      #:import-path "github.com/golangci/gofmt"
+      #:test-flags #~(list "-skip" "TestGenerated")))
     (propagated-inputs
      (list go-golang-org-x-sync
            go-github-com-rogpeppe-go-internal))
