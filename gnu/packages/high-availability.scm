@@ -297,7 +297,7 @@ applications.")
 (define-public nats-server
   (package
     (name "nats-server")
-    (version "2.14.1")
+    (version "2.15.1")
     (source
      (origin
        (method git-fetch)
@@ -306,7 +306,7 @@ applications.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bnp17ddvpx0n8r7p4spfnhwhwwzff3f9w2h54pss8qvrsv0xy2a"))))
+        (base32 "134r04nmfvav1s682di1pn2nazqs15xm098v3jmc0v10iwv98c2n"))))
     (build-system go-build-system)
     (arguments
      (list
