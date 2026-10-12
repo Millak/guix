@@ -81,7 +81,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025-2026 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 John Khoo <johnkhootf@gmail.com>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -179,6 +179,7 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages music)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -215,6 +216,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages zig-xyz)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
@@ -291,6 +293,55 @@ the leaves of a full binary tree.")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
 single, maximized application.")
     (license license:expat)))
+
+(define-public cow
+  (package
+    (name "cow")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/cow-wm/cow")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04c3i4sb6b3lcmzsixnxj7gdhfk3mibkx2z3j863n927q05frfad"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-session-file
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "share/wayland-sessions/cow.desktop"
+                (("Exec=river -c cow-start")
+                 (string-append
+                  "Exec=" (search-input-file inputs "/bin/river")
+                  " -c " (string-append #$output "/bin/cow-start")))))))))
+    (inputs (list cairo
+                  libbsd
+                  libevent
+                  libxkbcommon
+                  ncurses
+                  pango
+                  river
+                  wayland))
+    (native-inputs (list bison
+                         cmake-minimal
+                         flex
+                         pkg-config
+                         scdoc))
+    (propagated-inputs (list wayland-protocols))
+    (home-page "https://cow-wm.codeberg.page/cow/")
+    (synopsis "Stacking window manager for river")
+    (description "@acronym{CoW, Compositor on Wayland} is a stacking window
+manager for River which aims to replicate the '90s look-and-feel of FVWM and
+MWM, while also allowing for more modern styles.  Its features include multiple
+desktops which may be larger than the physical screen, highly-customisable
+server-side decorations, and scripting via an integrated @acronym{DSL, Domain
+Specific Language}.")
+    (license license:isc)))
 
 (define-public dank-material-shell-minimal
   (package
