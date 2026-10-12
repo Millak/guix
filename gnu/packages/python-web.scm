@@ -4457,6 +4457,32 @@ resolution in a Python script without any changes to the hosts file or the use
 of a fake DNS resolver.")
     (license license:asl2.0)))
 
+(define-public python-htgettoken
+  (package
+    (name "python-htgettoken")
+    (version "2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fermitools/htgettoken")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10zf71i1j7w31j03lx1qn4g9kphygqpc5d8yd33s5ysrf578lwlc"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ;no unit tests are provided
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-gssapi python-paramiko python-urllib3))
+    (home-page "https://github.com/fermitools/htgettoken")
+    (synopsis "OIDC authentication tokens Python library")
+    (description
+     "@code{htgettoken} gets @acronym{OpenID Connect, OIDC} bearer access
+tokens by interacting with a Hashicorp vault server configured for retrieving
+and storing OIDC refresh tokens using the
+@url{https://github.com/fermitools/htvault-config, htvault-config package}.")
+    (license license:bsd-3)))
+
 (define-public python-httpcore2
   (package
     (name "python-httpcore2")
