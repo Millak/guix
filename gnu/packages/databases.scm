@@ -1291,15 +1291,14 @@ Specification v2.0 (PEP 249).")
 (define-public mariadb
   (package
     (name "mariadb")
-    (version "10.11.14")
+    (version "10.11.19")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://downloads.mariadb.com/MariaDB"
-                                  "/mariadb-" version "/source/mariadb-"
-                                  version ".tar.gz"))
+              (uri (string-append "https://archive.mariadb.org/mariadb-"
+                                  version "/source/mariadb-" version ".tar.gz"))
               (sha256
                (base32
-                "0bq5gn5yl3c6jnsamam4nb42y10c43ag764f7mkf7m5i9yqiqmwa"))
+                "0ri0xmla2575bq2akdz7cx6nxs8gkvs2ccjnzlfgp06kd7p47rdq"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1389,16 +1388,14 @@ Specification v2.0 (PEP 249).")
              (let ((disabled-tests
                     '(;; These fail because root@hostname == root@localhost in
                       ;; the build environment, causing a user count mismatch.
-                      ;; See <https://jira.mariadb.org/browse/MDEV-7761>.
+                      ;; They are fixed in version 11.8.3:
+                      ;; <https://jira.mariadb.org/browse/MDEV-7761>.
                       "main.explain_non_select"
                       "main.upgrade_MDEV-19650"
                       "roles.acl_statistics"
                       "main.stat_tables_innodb"
                       "main.stat_tables"
                       "main.mysql_upgrade"
-
-                      ;; Probably same as above, test failure reported upstream:
-                      ;; <https://jira.mariadb.org/browse/MDEV-26320>.
                       "main.selectivity_no_engine"
 
                       ;; FIXME: These tests check various table encodings and
@@ -1411,10 +1408,6 @@ Specification v2.0 (PEP 249).")
                       ;; These test sometimes fail.
                       "main.log_slow"
                       "main.mysqld--help-aria"
-                      ;; The upstream issue is closed but the issue remains,
-                      ;; as of 10.11.14 (see:
-                      ;; <https://jira.mariadb.org/browse/MDEV-12237>)
-                      "main.analyze_stmt_slow_query_log"
 
                       ;; XXX: This test occasionally fails on i686-linux:
                       ;; <https://jira.mariadb.org/browse/MDEV-24458>
@@ -1430,6 +1423,11 @@ Specification v2.0 (PEP 249).")
                                    test "Disabled in Guix"))
                          disabled-tests)
                (close-port unstable-tests)
+
+               (substitute* "tests/mysql_client_test.c"
+                 ;; The host is not blocked by handshake max_connect_errors
+                 ;; in the build environment.
+                 (("  test_proxy_header_connect_errors_reset\\(\\);.*") ""))
 
                (substitute* "mysql-test/suite/binlog/t/binlog_mysqlbinlog_stop_never.test"
                  (("/bin/bash")
