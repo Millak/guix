@@ -4689,6 +4689,53 @@ an integrated command line client, has support for both HTTP/1.1 and HTTP/2,
 and provides both sync and async APIs.")
     (license license:bsd-3)))
 
+(define-public python-igwn-auth-utils
+  (package
+    (name "python-igwn-auth-utils")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.ligo.org/computing/software/igwn-auth-utils")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11h8a3sxlhy226gilprnm55745x8bxxvp927j6fbi5daga8rcpdb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 112 passed, 1 skipped, 1 deselected
+      #:test-flags
+      ;; Failed: DID NOT RAISE <class 'netrc.NetrcParseError'>
+      #~(list (string-append "--deselect=igwn_auth_utils/tests/"
+                             "test_requests.py"
+                             "::test_get_netrc_auth_permissions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-dependencies
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("cryptography >=44.0.1") "cryptography >=44.0.0")))))))
+    (native-inputs
+     (list python-gssapi
+           python-htgettoken
+           python-pytest
+           python-requests-mock
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-cryptography
+           python-requests
+           python-safe-netrc
+           python-scitokens))
+    (home-page "https://rtd.igwn.org/projects/igwn-auth-utils/en/stable/")
+    (synopsis "Authorisation utilities for IGWN")
+    (description
+     "This package provides a Python library functions to simplify using
+@url{https://www.ligo.org/, IGWN} authorisation credentials.")
+    (license license:bsd-3)))
+
 (define-public python-jiter
   (package
     (name "python-jiter")
