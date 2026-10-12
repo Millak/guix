@@ -208,7 +208,7 @@ only some sub-packages of correct.")
 (define-public go-git-sr-ht-nelsam-hel
   (package
     (name "go-git-sr-ht-nelsam-hel")
-    (version "0.9.4")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -217,16 +217,20 @@ only some sub-packages of correct.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i9m31s84abwg4whqfkjmbj3g72kc00ikfpplz80768wzcmgf8bh"))))
+        (base32 "090rb4vrm4zyq3zs5qgrzz1xd5vnp0cbxrih2bw353b5l74fcvfr"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "git.sr.ht/~nelsam/hel"))
     (native-inputs
-     (list go-github-com-spf13-cobra)) ;for CLI
+     (list go-github-com-spf13-cobra ;for CLI
+           go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-git-sr-ht-nelsam-correct
-           go-github-com-poy-onpar))
+           go-github-com-fatih-color
+           go-github-com-google-uuid
+           go-github-com-poy-onpar
+           go-golang-org-x-tools))
     (home-page "https://git.sr.ht/~nelsam/hel")
     (synopsis "Mock generator for Golang")
     (description
