@@ -6738,6 +6738,51 @@ terms of data actions and HTTP/2 frames.  This is one building block of a full
 Python HTTP implementation.")
     (license license:expat)))
 
+(define-public python-scitokens
+  (package
+    (name "python-scitokens")
+    (version "1.9.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scitokens/scitokens")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yfgv6f6xx2s0bnbzhzs8hqpq6d1v5bkvqdza4zl4f375flb961m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(map (lambda (lst) (string-append "--deselect=tests/"
+                                          (string-join lst "::")))
+             ;; Network access is required.
+             '(("test_demo.py" "TestToken" "test_empty_payload")
+               ("test_demo.py" "TestToken" "test_valid_payload")
+               ("test_demo.py" "TestParsedToken" "test_empty_parsed")
+               ("test_demo.py" "TestParsedToken" "test_valid_parsed")
+               ("test_keycache_threadsafe.py" "TestKeyCache"
+                "test_clients_calling_valid_keys")
+               ("test_with_http.py" "TestDeserialization"
+                "test_deserialization")
+               ("test_with_http.py" "TestDeserialization"
+                "test_ec_deserialization")))))
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-cryptography python-pyjwt python-requests))
+    (home-page "https://scitokens.org")
+    (synopsis "SciToken reference implementation library")
+    (description
+     "This package provides a Python library aiming to be a reference
+implementation of the SciTokens' JSON Web Token (JWT) token format.
+
+SciTokens is built on top of the PyJWT and cryptography libraries.  It aims to
+provide a safe, high-level interface for token manipulation, avoiding common
+pitfalls of using the underling libraries directly.")
+    (license license:asl2.0)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
