@@ -12458,7 +12458,7 @@ with the value and the symbolic name.")
 (define-public tp-smapi-module
   (package
     (name "tp-smapi-module")
-    (version "0.44")
+    (version "0.45")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12467,7 +12467,8 @@ with the value and the symbolic name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kzbks07bh5jbi1n311zp9cbp1xxyzi7nys8wq1k0k5ig81h9w6k"))))
+                "1q67dk0sa9k0b3ns0s42fbm7ali5018q3hqn81ldspcl0lv867xc"))
+              (patches (search-patches "tp-smapi-module-linux-7.2-fix.patch"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f))                    ;there are none.

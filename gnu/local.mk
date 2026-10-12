@@ -2604,6 +2604,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/torbrowser-compare-paths.patch           \
   %D%/packages/patches/torbrowser-use-system-wide-dir.patch     \
   %D%/packages/patches/torbrowsers-add-store-to-rdd-allowlist.patch     \
+  %D%/packages/patches/tp-smapi-module-linux-7.2-fix.patch     \
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/trurl-fix-tests-for-newer-libcurl.patch \
   %D%/packages/patches/trurl-mark-additional-tests-case-sensitive.patch \
