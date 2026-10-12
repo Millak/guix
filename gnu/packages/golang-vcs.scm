@@ -646,9 +646,9 @@ It's a static checker for GitHub Actions workflow files.")
 (define-public go-github-com-sourcegraph-zoekt
   (package
     (name "go-github-com-sourcegraph-zoekt")
-    (properties '((commit . "c6cd01494dc04d60883f7ae4c4e02ccdc97647c3")
-                  (revision . "1")
-                  (go-pseudo-version . "0.0.0-20260812144518-c6cd01494dc0")))
+    (properties '((commit . "27517a30ae6df16c6e768623847fdab8f6a3bbcf")
+                  (revision . "2")
+                  (go-pseudo-version . "0.0.0-20261009114959-27517a30ae6d")))
     (version (git-version "0.0.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -660,7 +660,7 @@ It's a static checker for GitHub Actions workflow files.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17isqmp49gkl88i0f6gy9xqx6a8d2zqsvh6sx4blmic5fp9lvvzx"))))
+        (base32 "09ywsi8kdwyyzjm6jl8qp1lhrs8gwl4mvhzvygl4jljbw2nqa5ar"))))
     (build-system go-build-system)
     (arguments
      (list
