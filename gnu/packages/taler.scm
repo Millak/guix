@@ -90,10 +90,11 @@
                    python-lxml
                    (cargo-inputs 'robocop)))
     (home-page "https://www.taler.net/")
-    (synopsis "Counter Terrorist Financing (CTF) sanction processing tool")
-    (description "Robocop is a Counter Terrorist Financing (CTF) sanction
-processing tool.  It can be used for compliance processes in software such as
-@url{https://taler.net, GNU Taler}.")
+    (synopsis "@acronym{CTF, Counter Terrorist Financing} sanction \
+processing tool")
+    (description "Robocop is a @acronym{CTF, Counter Terrorist Financing}
+sanction processing tool.  It can be used for compliance processes in software
+such as @url{https://taler.net, GNU Taler}.")
     (license license:gpl3+)))
 
 (define-public taler-docs
