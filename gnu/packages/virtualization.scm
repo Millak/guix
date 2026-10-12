@@ -1547,7 +1547,8 @@ functionality to virtual machines.")
       #~(list "children"
               "form_post.html.tmpl"
               "nodes"
-              "text")
+              "text"
+              "VERSION")
       #:test-flags
       #~(list "-tags" "libsqlite3")
       #:phases
@@ -1660,7 +1661,7 @@ functionality to virtual machines.")
            go-github-com-spf13-pflag
            go-github-com-stretchr-testify
            go-github-com-vishvananda-netlink
-           go-github-com-zitadel-oidc-v3
+           go-github-com-zitadel-oidc-v3-3.45          ;temp
            go-go-starlark-net
            go-golang-org-x-crypto
            go-golang-org-x-exp

@@ -24108,6 +24108,36 @@ for the Go programming language.")
 https://openid.net/developers/how-connect-works/}.")
     (license license:asl2.0)))
 
+;; For incus@6.15.0; remove when no longer required.
+(define-public go-github-com-zitadel-oidc-v3-3.45
+  (hidden-package
+   (package
+     (inherit go-github-com-zitadel-oidc-v3)
+     (name "go-github-com-zitadel-oidc-v3")
+     (version "3.45.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/zitadel/oidc")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "14wqsrbyrd88czkjnl3x8b7cwaya7x2rvkks3pdm5d6l4aljg0r7"))))
+     (arguments
+      (list
+       #:tests? #f
+       #:import-path "github.com/zitadel/oidc/v3"))
+     (propagated-inputs
+      (list go-github-com-bmatcuk-doublestar-v4
+            go-github-com-gorilla-securecookie
+            go-github-com-muhlemmer-gu
+            go-github-com-muhlemmer-httpforwarded
+            go-github-com-rs-cors
+            go-github-com-zitadel-logging
+            go-github-com-zitadel-schema
+            go-golang-org-x-text)))))
+
 (define-public go-gitlab-com-gitlab-org-api-client-go
   (package
     (name "go-gitlab-com-gitlab-org-api-client-go")
