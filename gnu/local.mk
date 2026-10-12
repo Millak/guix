@@ -2488,6 +2488,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
+  %D%/packages/patches/ryzen-smu-fix-linux-7.2.patch		\
   %D%/packages/patches/s7-flint-3.patch                      	\
   %D%/packages/patches/safeint-disable-tests.patch		\
   %D%/packages/patches/sajson-for-gemmi-numbers-as-strings.patch	\

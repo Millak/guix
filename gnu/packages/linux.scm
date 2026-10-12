@@ -12870,7 +12870,8 @@ for instance by using the \"iomem=relaxed\" kernel argument.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "010la2a8zp7rljlg5ssc9ragzva4ca05gvzlicjagl508659d2wz"))))
+                "010la2a8zp7rljlg5ssc9ragzva4ca05gvzlicjagl508659d2wz"))
+              (patches (search-patches "ryzen-smu-fix-linux-7.2.patch"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f)) ; no tests

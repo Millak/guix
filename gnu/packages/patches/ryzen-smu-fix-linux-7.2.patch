@@ -1,0 +1,25 @@
+From ade6dc7f12d3d03ff93d10eed835b2ee66f22d46 Mon Sep 17 00:00:00 2001
+From: cupkejk <czarekbgs12@gmail.com>
+Date: Wed, 2 Sep 2026 22:07:43 +0200
+Subject: [PATCH] fix: include <asm/cpuid/api.h> for cpuid_eax/ebx on newer
+ kernels
+
+Source: https://patch-diff.githubusercontent.com/raw/leogx9r/ryzen_smu/pull/3.patch
+Upstream-Status: https://github.com/leogx9r/ryzen_smu/pull/3
+
+---
+ smu.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/smu.c b/smu.c
+index b186741..e177c94 100644
+--- a/smu.c
++++ b/smu.c
+@@ -7,6 +7,7 @@
+ #include <linux/time.h>
+ #include <linux/pci.h>
+ #include <asm/io.h>
++#include <asm/cpuid/api.h>
+ 
+ #include "smu.h"
+ 
