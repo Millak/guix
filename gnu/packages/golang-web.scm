@@ -28312,11 +28312,14 @@ snowflake-webext}.")))
     (name "swag")
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:tests? _ #t) #f)
+       ((#:import-path _) "github.com/swaggo/swag/cmd/swag")
        ((#:install-source? _ #t) #f)
-       ((#:import-path _ "github.com/swaggo/swag")
-        "github.com/swaggo/swag/cmd/swag")))
-    (native-inputs (package-propagated-inputs go-github-com-swaggo-swag))
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-swaggo-swag)
+      (package-propagated-inputs go-github-com-swaggo-swag)))
     (propagated-inputs '())
     (inputs '())))
 
