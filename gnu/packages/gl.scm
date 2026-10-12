@@ -321,7 +321,7 @@ also known as DXTn or DXTC) for Mesa.")
     (native-inputs
      (append
       (list bison
-            clang-18                    ;ensure rust-bindgen-cli uses the same
+            clang-22                    ;ensure rust-bindgen-cli uses the same
             flex
             gettext-minimal
             glslang
