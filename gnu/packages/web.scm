@@ -79,7 +79,7 @@
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025, 2026 gemmaro <gemmaro.dev@gmail.com>
-;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2025, 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Jonathan Frederickson <jonathan@terracrypt.net>
@@ -10722,7 +10722,7 @@ and read AWS CloudWatch logs.  The same functionality is available from
 (define-public lexbor
   (package
     (name "lexbor")
-    (version "2.6.0")
+    (version "3.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10731,7 +10731,7 @@ and read AWS CloudWatch logs.  The same functionality is available from
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "033hna4b9lh0675vri140nhnqbyj4vsa02j5r17fmdza6594islp"))))
+                "1krrwcfwr31ikxhm3lig7hhi8xlj5lfqdd8y0x2ibr7j79nvazxk"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DLEXBOR_BUILD_TESTS=ON"
