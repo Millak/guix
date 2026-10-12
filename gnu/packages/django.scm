@@ -67,13 +67,16 @@
 (define-public daphne
   (package
     (name "daphne")
-    (version "4.2.1")
+    (version "4.2.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "daphne" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django/daphne")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1crircpk2g26y02q8xmxlyb5wh86hqr7q7aly7fpmnhz19q8x2az"))))
+        (base32 "1pk87ayq72hycfs48r9i4a19id40h9wz7n9bll0mczc9kwjyzlf5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -83,16 +86,11 @@
       #:test-flags #~(list "-k" "not test_fd_endpoint_plugin_installed")))
     (propagated-inputs (list python-asgiref
                              python-autobahn
-                             ;; Twisted plugins should be propagated from
-                             ;; python-twisted.
-                             python-pyopenssl ; twisted plugin
-                             python-service-identity ; twisted plugin
                              python-twisted))
-    (native-inputs (list python-django
+    (native-inputs (list python-django-minimal
                          python-pytest
                          python-pytest-asyncio
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/django/daphne")
     (synopsis "Django ASGI (HTTP/WebSocket) server")
     (description "Daphne is a HTTP, HTTP2 and WebSocket protocol server for
