@@ -3793,6 +3793,29 @@ networks.  It enables the creation, interaction with, and study of graphs and
 networks.")
     (license license:asl2.0)))
 
+(define-public python-safe-netrc
+  (package
+    (name "python-safe-netrc")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.ligo.org/computing/software/safe-netrc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l60lxyachdblb5g17yhy1p0hwinxn3d85k9q6w66hqxkwnpz2nx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://git.ligo.org/computing/software/safe-netrc")
+    (synopsis "Safe netrc file parser")
+    (description
+     "This package provides a subclass of the Python standard library
+@code{netrc.netrc} class to add some custom behaviors.")
+    (license license:gpl2+)))
+
 (define-public python-safety-schemas
   (package
     (name "python-safety-schemas")
