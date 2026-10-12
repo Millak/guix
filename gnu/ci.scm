@@ -90,12 +90,14 @@
 
 (define* (derivation->job name drv
                           #:key
+                          (properties '())
                           (max-silent-time 3600)
                           (timeout (* 5 3600)))
   "Return a Cuirass job called NAME and describing DRV.
 
 MAX-SILENT-TIME and TIMEOUT are build options passed to the daemon when
-building the derivation."
+building the derivation.  PROPERTIES is an alist, with keyword as its keys,
+that gets appended to the result."
   `((#:job-name . ,name)
     (#:derivation . ,(derivation-file-name drv))
     (#:inputs . ,(map (compose derivation-file-name
@@ -110,7 +112,26 @@ building the derivation."
     (#:nix-name . ,(derivation-name drv))
     (#:system . ,(derivation-system drv))
     (#:max-silent-time . ,max-silent-time)
-    (#:timeout . ,timeout)))
+    (#:timeout . ,timeout)
+    ,@properties))
+
+(define* (package->job-properties package #:optional target)
+  "Return an alist suitable as the #:properties argument to 'derivation->job'
+providing metadata about PACKAGE.  When TARGET is true, add it as the #:target
+property."
+  `((#:job-type . package)
+    (#:package-name . ,(package-name package))
+    (#:package-version . ,(package-version package))
+    ,@(match (package-location package)
+        ((? location? location)
+         `((#:package-location . (,(location-file location)
+                                  ,(location-line location)
+                                  ,(location-column location)))))
+        (_
+         '()))
+    ,@(if target
+          `((#:target . ,target))
+          '())))
 
 (define* (package-job store job-name package system
                       #:key cross? target (suffix ""))
@@ -130,7 +151,9 @@ building the derivation."
                           72000)))
         (derivation->job job-name drv
                          #:max-silent-time max-silent-time
-                         #:timeout timeout)))))
+                         #:timeout timeout
+                         #:properties
+                         (package->job-properties package target))))))
 
 (define (package-cross-job store job-name package target system)
   "Return a job called TARGET.JOB-NAME that cross-builds PACKAGE for TARGET on
@@ -310,7 +333,8 @@ otherwise use the IMAGE name."
                   (set-guile-for-build (default-guile))
                   (lower-object (system-image image) system)))))
     (parameterize ((%graft? #f))
-      (derivation->job name drv))))
+      (derivation->job name drv
+                       #:properties `((#:job-type . image))))))
 
 (define* (image-jobs store system
                      #:key source commit)
@@ -377,7 +401,9 @@ otherwise use the IMAGE name."
   (define (->job name drv)
     (let ((name (string-append name "." system)))
       (parameterize ((%graft? #f))
-        (derivation->job name drv))))
+        (derivation->job name drv
+                         #:properties
+                         '((#:job-type . tarball))))))
 
   ;; XXX: Add a job for the stable Guix?
   (list
@@ -504,7 +530,10 @@ names, for each one of SYSTEMS."
                         (* 5 3600))))
       (derivation->job (manifest-entry-job-name entry) drv
                        #:max-silent-time max-silent-time
-                       #:timeout timeout)))
+                       #:timeout timeout
+                       #:properties (if (package? obj)
+                                        (package->job-properties obj)
+                                        '()))))
 
   (let ((entries (delete-duplicates
                   (append-map (compose manifest-entries load-manifest)
