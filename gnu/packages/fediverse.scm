@@ -27,6 +27,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
@@ -41,6 +42,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -113,6 +117,51 @@ PeerTube in general, via an efficient native application that can hook into
 the federation of interconnected video hosting services.")
     ;; Logo distributed under the Creative Commons CCBY license.
     (license license:gpl3+)))
+
+(define-public mstdn
+  (package
+    (name "mstdn")
+    (version "0.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-mastodon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05mqshjhfhbcz0narcmn49paw32z1km94l42yj1axfy838f30b64"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/mattn/go-mastodon/cmd/mstdn"
+      #:unpack-path "github.com/mattn/go-mastodon"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-mastodon
+           go-github-com-mattn-go-tty
+           go-github-com-puerkitobio-goquery
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-net))
+    (home-page "https://github.com/mattn/go-mastodon")
+    (synopsis "Mastadon client")
+    (description
+     "This package provides a command line interface (CLI) client to
+communicate with Mastodon web API.")
+    (license license:expat)))
 
 (define-public toot
   (package
