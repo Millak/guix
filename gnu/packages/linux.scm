@@ -2993,7 +2993,7 @@ of a binary file.")
 
 (define-public ddcci-driver-linux
   (let ((revision "0")
-        (commit "7f8f8e6c221a286d57a643c2909109a54e084eed"))
+        (commit "bbb7553373f815d78e93a4a9f071ce968563694a"))
     (package
       (name "ddcci-driver-linux")
       (version (git-version "0.4.5" revision commit))
@@ -3006,7 +3006,8 @@ of a binary file.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0sgldghd8n4qjm5nv9dgxjibj1hg4kkk1811wndf3vx3dacsmkl9"))))
+          (base32 "1kc2lf2206x1hhj04xyplkbkja40j7r1a0mms5nah57d6q7fq23x"))
+         (patches (search-patches "ddcci-driver-fix-linux-7.2.patch"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:tests? #f                  ; no tests
