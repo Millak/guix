@@ -7923,6 +7923,38 @@ supports only the basic features of the original.")
 @url{http://www.lofar.org/, LOFAR}} a large radio telescope Solution Tool.")
     (license license:gpl3)))
 
+(define-public python-lscsoft-glue
+  (package
+    (name "python-lscsoft-glue")
+    (version "4.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.ligo.org/lscsoft/glue")
+              (commit (string-append "glue-release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0902fb4xvck5xd2ds0qm0ff8224gcrp52fh1h54b6miyyd7d9znq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"
+      ;; XXX: Missing optional dependency - lalsuite (long journey).
+      #:tests? #f))
+    (native-inputs
+     (list ;; python-lalsuite                         ;not packed yet in Guix
+           python-pytest
+           python-setuptools))
+    (propagated-inputs (list python-igwn-segments))
+    (home-page "https://lscsoft.docs.ligo.org/glue/")
+    (synopsis "Grid LSC User Environment")
+    (description
+     "LSCSoft-GLUE is a collection of utilities for running data analysis
+pipelines for online and offline analysis as well as accessing various grid
+utilities.")
+    (license license:gpl2+)))
+
 (define-public python-lsstdesc-coord
   (package
     (name "python-lsstdesc-coord")
