@@ -16942,7 +16942,7 @@ github.com/ooni/probe-cli.")
 (define-public go-github-com-open-policy-agent-opa
   (package
     (name "go-github-com-open-policy-agent-opa")
-    (version "1.19.0")
+    (version "1.20.2")
     (source
      (origin
        (method git-fetch)
@@ -16951,13 +16951,15 @@ github.com/ooni/probe-cli.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c9n0fzx70081cyccyajwhdchh5rmap9hxf7vaz9gg4pjf4c4w00"))
+        (base32 "0rqab6sxaihcc7rs84rr7xq4jlfkbzls5xgqbfqvhjhh4zfisv0r"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; Submodules with their own go.mod files and packaged separately.
-            (delete-file-recursively "build/tools")
-            (delete-file-recursively "e2e")
+            (for-each delete-file-recursively
+                      (list "build/tools"
+                            "build/release"
+                            "e2e"))
             ;; Exit status 1 when run tests.
             (for-each delete-file-recursively
                       (list "v1/test/e2e/authz"
@@ -17016,6 +17018,7 @@ github.com/ooni/probe-cli.")
                              "TestEnable.*"
                              "TestExtraAuthorizerRoutes"
                              "TestExtraMiddleware"
+                             "TestGraphQLParseSchemaAlloc"
                              "TestOTLP.*"
                              "TestPolicies.*"
                              "TestPostPartialChecks"
