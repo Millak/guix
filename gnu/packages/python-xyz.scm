@@ -2226,6 +2226,31 @@ supports:
 identities.")
     (license license:asl2.0)))
 
+(define-public python-igwn-segments
+  (package
+    (name "python-igwn-segments")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://docs.ligo.org/computing/software/igwn-segments")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rmp7kk1ymm57brn88j14xnxjgdz7nzk5rxplbinl9bmac29f2fg"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://docs.ligo.org/computing/software/igwn-segments")
+    (synopsis "Representations of semi-open intervals")
+    (description
+     "This package is a part of @acronym{Laser Interferometer
+Gravitational-Wave Observatory, LIGO} software collection which defines the
+segment, segmentlist, and segmentlistdict objects for manipulating semi-open
+intervals.")
+    (license license:gpl3+)))
+
 (define-public python-iniparse
   (package
     (name "python-iniparse")
