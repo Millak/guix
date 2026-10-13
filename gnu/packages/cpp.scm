@@ -2588,14 +2588,26 @@ Google's C++ code base.")
                  ;; absl_time_test requires this environment variable.
                  (setenv "TZDIR" (string-append #$(package-source this-package)
                                                 "/absl/time/internal/cctz/testdata/zoneinfo"))))
-              #$@(if (target-riscv64?)
-                     #~((replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-                              (invoke "ctest" "-E"
-                                      "absl_symbolize_test|absl_log_format_test")))))
-                     #~())))))
+              #$@(cond
+                  ((target-riscv64?)
+                   #~((replace 'check
+                        (lambda* (#:key tests? #:allow-other-keys)
+                          (when tests?
+                            (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                            (invoke
+                             "ctest" "-E"
+                             "absl_symbolize_test|absl_log_format_test"))))))
+                  ((target-32bit?)
+                   #~((replace 'check
+                        (lambda* (#:key tests? #:allow-other-keys)
+                          (when tests?
+                            (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+                            (invoke
+                             "ctest" "-E"
+                             ;; This test was fixed on 2026-08-26 by commit
+                             ;; c521584590af5291ca576e625525c3b16ba05c8b.
+                             "absl_kernel_timeout_internal_test"))))))
+                  (else #~()))))))
       (native-inputs
        (modify-inputs native-inputs
          (replace "googletest" googletest))))))
