@@ -321,13 +321,13 @@ based on Qt.")
 (define-public ghc-hledger
   (package
     (name "ghc-hledger")
-    (version "1.43.2")
+    (version "1.52.4")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "hledger" version))
        (sha256
-        (base32 "043gw3amc29fbjxlzyc4m97bw5i5462352lmk61adlxcd12l47i1"))))
+        (base32 "0n4imqs0j2vp8i6vrhzyzxa3nvr8n43yvr402zc373d2ifbd7lbv"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hledger")))
     (inputs (list ghc-decimal
@@ -2280,13 +2280,13 @@ textual ledgers to Beancount files.")
 (define-public hledger-web
   (package
     (name "hledger-web")
-    (version "1.43.2")
+    (version "1.52.4")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "hledger-web" version))
        (sha256
-        (base32 "0d4sv9k3m7s0764lbq2l8w9p2p47cby177l0avl5w3fa9y8d0gyd"))))
+        (base32 "16h9b5al80mz1ahx8dzb2klp527x15r2l1gikfr7kl9wb15a8y3a"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hledger-web")))
     (inputs (list ghc-decimal

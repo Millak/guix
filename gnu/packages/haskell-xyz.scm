@@ -5240,13 +5240,13 @@ accessed or modified.")
 (define-public ghc-hledger-lib
   (package
     (name "ghc-hledger-lib")
-    (version "1.43.2")
+    (version "1.52.4")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "hledger-lib" version))
        (sha256
-        (base32 "18037qwz7d0h4i86ac0w3hkrvx22vdxf04fjbg0qjlizgb3dlazf"))))
+        (base32 "1kg63gxkg6d06rh8z6fb4qhvyijpbhgg7ha7xhi2x261y2vw82f7"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hledger-lib")))
     (arguments
