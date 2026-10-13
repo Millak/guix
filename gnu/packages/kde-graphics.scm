@@ -190,13 +190,13 @@ for scanner hardware.")
 (define-public digikam
   (package
     (name "digikam")
-    (version "9.0.0")
+    (version "9.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/digikam/"
                                   version "/digiKam-" version ".tar.xz"))
               (sha256
-               (base32 "1wwfs3phwknxxmv7bs657fcw78dlnzj5zr4hc34i03p09w1fm03n"))))
+               (base32 "1qbjbdi3fb22gqnc939k815h8z4d9xp17i1srd9phy54x68r2c57"))))
     (build-system qt-build-system)
     (home-page "https://www.digikam.org/download/git/")
     (arguments (list
@@ -216,9 +216,8 @@ for scanner hardware.")
                         (copy-recursively (assoc-ref inputs "digikam-test-data")
                                           "test-data")))
                     (add-after 'install 'wrap-binary
-                      (lambda* (#:key inputs outputs #:allow-other-keys)
-                        (wrap-program (string-append (assoc-ref outputs "out")
-                                                     "/bin/digikam")
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (wrap-program (string-append #$output "/bin/digikam")
                           `("PATH" ":" prefix
                             (,(dirname
                                (search-input-file inputs "/bin/exiftool"))))))))))
