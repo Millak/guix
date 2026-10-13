@@ -630,7 +630,7 @@ and a wide variety of other metadata.")
 (define-public libpano13
   (package
     (name "libpano13")
-    (version "2.9.22")
+    (version "2.9.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/panotools/libpano13/"
@@ -639,7 +639,7 @@ and a wide variety of other metadata.")
                                   "/libpano13-" version ".tar.gz"))
               (sha256
                (base32
-                "1qx8822cd81vpxnrqq6lzzcsdk9axa6vzp1i4y6w4wdyrlq6iz5g"))))
+                "0a7a2mccz9zgmbi41kp57p555171vdyy8591jqs99hqlgb9pdh77"))))
     (build-system cmake-build-system)
     (native-inputs
      (list perl))                       ; for pod2man
