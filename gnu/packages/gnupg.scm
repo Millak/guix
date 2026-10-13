@@ -159,6 +159,13 @@
                       (substitute* "tests/t-syserror.c"
                         (("(^| )main *\\(.*" all)
                          (string-append all "{\n  exit (77);//")))))))
+              ((target-arm32?)
+               ;; Skip as per: https://dev.gnupg.org/T8309
+               #~((add-after 'unpack 'skip-tests
+                    (lambda _
+                      (substitute* "tests/t-printf.c"
+                        (("ifdef HAVE_LONG_DOUBLE")
+                         "if FALSE"))))))
               (else #~())))))
     (home-page "https://gnupg.org/software/libgpg-error")
     (synopsis "Library of error values for GnuPG components")
