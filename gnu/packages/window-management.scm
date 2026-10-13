@@ -2774,7 +2774,7 @@ started automatically on the first call via D-Bus.")
 (define-public dwl
   (package
     (name "dwl")
-    (version "0.8")
+    (version "0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2783,7 +2783,7 @@ started automatically on the first call via D-Bus.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wlihgd289r18cjrvgzb01v98vrc2abiyc2gcgf0fql2jgjqpgi7"))))
+                "0i5knss5cnv54flabm0y7iz5529ypnanji3hsnsmx7rxy25lx01x"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
@@ -2797,7 +2797,7 @@ started automatically on the first call via D-Bus.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots-0.19))
+     (list wlroots-0.20))
     (home-page "https://codeberg.org/dwl/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
