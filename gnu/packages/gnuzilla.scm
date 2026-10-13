@@ -909,7 +909,7 @@ testing.")
 
 ;;;
 ;;; TEMPORARY old version of icecat-source and dependencies
-;;; for use by icedove until it is updated.
+;;; for use by mozjs and icedove until they are updated.
 ;;;
 
 (define mozilla-140.17.0-compare-locales
@@ -1885,8 +1885,8 @@ associated with their name."))
 (define-public mozjs
   (package
     (name "mozjs")
-    (version %icecat-version)
-    (source (origin (inherit icecat-source)
+    (version %icecat-140.17.0-version)
+    (source (origin (inherit icecat-140.17.0-source)
                     (patches (search-patches "mozjs-bug-1973994-fix-c-header.patch"))))
     (build-system gnu-build-system)
     (arguments
