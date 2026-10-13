@@ -569,11 +569,11 @@ This package provides the Emacs mode.")
       (license license:gpl2+))))
 
 (define-public emacs-hledger-mode
-  (let ((commit "400bde42a8d2712af80cd7c773c9cdfbb63a515a")
+  (let ((commit "77766869e03ce1ab0d810d8c6fb5d482a3017854")
         (revision "1"))
     (package
       (name "emacs-hledger-mode")
-      (version (git-version "20220515" revision commit))
+      (version (git-version "20251024" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -582,7 +582,7 @@ This package provides the Emacs mode.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0xmcfpr3rxli1adwypg18npl8hb8ak5rg6a6i26inzzqja6vr897"))))
+                  "0a11as90j49g9f8kwaah94i454mlx30hhc5kz4dwqv4f9qmv69b9"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-popup
