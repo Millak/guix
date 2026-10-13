@@ -345,7 +345,10 @@ PARAMETERS."
     (map json->forgejo-user (vector->list (json->scm port)))))
 
 (define-forgejo-request (add-team-member team user)
-  "Add USER (a string) to TEAM, a Forgejo team."
+  "Add USER (a string) to TEAM, a Forgejo team.
+
+With recent versions of Forgejo, this sends an invitation to USER.  This
+returns 409 when USER already got an invitation to join TEAM."
   (PUT "teams" (number->string (forgejo-team-id team))
        "members" user)
   => 204)
@@ -398,7 +401,22 @@ PARAMETERS."
     (for-each (lambda (user)
                 (format log-port "adding '~a' to team '~a'~%"
                         user (forgejo-team-name forgejo-team))
-                (add-team-member token forgejo-team user))
+                ;; As per
+                ;; <https://codeberg.org/Codeberg/Community/issues/3167>,
+                ;; Forgejo 16 sends an invitation to join a team, rather than
+                ;; really adding the person to the team.  When an invitation
+                ;; is already pending, it should return 409 (it would return
+                ;; 500 at one point).
+                (guard (c ((forgejo-error? c)
+                           (let* ((response (forgejo-error-response c))
+                                  (code (response-code response))
+                                  (phrase (response-reason-phrase response)))
+                             (if (= 409 code)
+                                 (format log-port "got ~a (~s): previous \
+membership invitation pending~%"
+                                         code phrase)
+                                 (raise c)))))
+                  (add-team-member token forgejo-team user)))
               to-add)
     (for-each (lambda (user)
                 (format log-port "removing '~a' from team '~a'~%"
