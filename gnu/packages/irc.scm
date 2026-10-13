@@ -600,7 +600,7 @@ highlighted.
 (define-public kirc
   (package
     (name "kirc")
-    (version "0.3.2")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -608,7 +608,7 @@ highlighted.
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1ighpinss3k6xyqk05wrs76wvp2ahhh0jkkg8h7bhg66b14fsws9"))))
+               (base32 "01z69h67j53myzlzy7lqxdhm0knwz51lyw8kqlhf6064ryrq83fh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
