@@ -4720,14 +4720,16 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public wallust
   (package
     (name "wallust")
-    (version "3.4.0")
+    (version "3.5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "wallust" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/explosion-mental/wallust")
+              (commit version)))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yh55l0pqmg0wciji6nlgvmpcfpi8kd7r3ay02gpi2vbhyhch3mx"))))
+        (base32 "0n4nc1zn626y4i2mabcvbqxqg4ks84ncfznlwk0x9hqcv0riw2b6"))))
     (build-system cargo-build-system)
     (arguments
      (list
