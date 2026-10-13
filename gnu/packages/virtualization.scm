@@ -30,7 +30,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -99,6 +99,7 @@
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages figlet)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fonts)
@@ -1552,8 +1553,8 @@ functionality to virtual machines.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-module-path
-           ;; go-github-com-ovn-kubernetes-libovsdb is a successor of
-           ;; go-github-com-ovn-org-libovsdb.
+            ;; go-github-com-ovn-kubernetes-libovsdb is a successor of
+            ;; go-github-com-ovn-org-libovsdb.
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (substitute* (find-files "." "\\.go$")
@@ -1564,9 +1565,50 @@ functionality to virtual machines.")
               (with-directory-excursion (string-append "src/" import-path)
                 (invoke "make" "build"
                         (string-append "CC=" #$(cc-for-target))
-                        "TAG_SQLITE3=libsqlite3")))))))
+                        "TAG_SQLITE3=libsqlite3"))))
+          (add-after 'install 'wrap-binaries
+            ;; Wrap the most of runtime programs, checked with:
+            ;;     grep -r RunCommand .
+            ;; from the project source. Also inspired by Debian package.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (file)
+                 (wrap-program file
+                   (list "PATH" ":" 'prefix
+                         (map (lambda (b)
+                                (dirname (search-input-file inputs b)))
+                              '("/bin/btrfs"
+                                "/bin/btrfstune"
+                                "/bin/getfattr"
+                                "/bin/rsync"
+                                "/bin/unsquashfs"
+                                "/bin/xdelta3"
+                                "/sbin/apparmor_parser"
+                                "/sbin/criu"
+                                "/sbin/ip"
+                                "/sbin/lvchange"
+                                "/sbin/lvcreate"
+                                "/sbin/lvdisplay"
+                                "/sbin/lvextend"
+                                "/sbin/lvm"
+                                "/sbin/lvremove"
+                                "/sbin/lvrename"
+                                "/sbin/lvresize"
+                                "/sbin/lvs"
+                                "/sbin/nft"
+                                "/sbin/pvcreate"
+                                "/sbin/pvremove"
+                                "/sbin/pvresize"
+                                "/sbin/pvs"
+                                "/sbin/vgchange"
+                                "/sbin/vgcreate"
+                                "/sbin/vgremove"
+                                "/sbin/vgrename"
+                                "/sbin/vgs"
+                                "/sbin/zfs"
+                                "/sbin/zpool")))))
+               (find-files (string-append #$output "/bin"))))))))
     ;; TODO:
-    ;; - Check and wrap runtime dependencies.
     ;; - Build documentation.
     ;; - Write shepherd service.
     (native-inputs
@@ -1634,14 +1676,34 @@ functionality to virtual machines.")
            pkg-config))
     (inputs
      (list acl
+           apparmor
+           attr
+           btrfs-progs
+           ;; ceph          ;maybe
            cowsql
+           criu
            dbus
+           dnsmasq
            eudev
+           gptfdisk
+           iproute
            libcap
            libdqlite
            libseccomp
            libselinux
-           lxc))
+           lvm2
+           lxc
+           nftables
+           qemu
+           rsync
+           shadow
+           skopeo
+           squashfs-tools
+           swtpm
+           ;; virtiofsd    ;not packaged yet in Guix
+           xdelta
+           xz
+           zfs))
     (home-page "https://github.com/lxc/incus")
     (synopsis "System container and virtual machine manager")
     (description
