@@ -4,20 +4,20 @@ This workaround for Gentoo interferes with our use of --no-compile during
 the 'install stage.
 
 diff --git a/setup.py b/setup.py
-index bd65109379..a97a310ea3 100755
+index 240e217..7802d9d 100755
 --- a/setup.py
 +++ b/setup.py
-@@ -1081,8 +1081,6 @@ if verbose_ENABLED and not os.environ.get("DISTUTILS_DEBUG"):
-
-
+@@ -1218,8 +1218,6 @@ if verbose_ENABLED and not os.environ.get("DISTUTILS_DEBUG"):
+ 
+ 
  def do_add_cython_ext(*args, **kwargs) -> None:
 -    if "--no-compile" in sys.argv and not ("build" in sys.argv and "install" in sys.argv):
 -        return
      if not cython_ENABLED:
          raise ValueError(f"cannot build {args}: cython compilation is disabled")
-     if cython_tracing_ENABLED:
-@@ -2301,11 +2299,6 @@ else:
-
+     define_macros = []
+@@ -2452,11 +2450,6 @@ else:
+ 
          def _get_root_prefix(self) -> str:
              root_prefix = ""
 -            for x in sys.argv:
@@ -28,10 +28,10 @@ index bd65109379..a97a310ea3 100755
              if not root_prefix:
                  install_dir = self._get_install_dir()
                  root_prefix = install_dir.rstrip("/")
-@@ -2466,13 +2459,6 @@ else:
+@@ -2649,14 +2642,6 @@ else:
              if uinput_ENABLED:
                  add_data_files("lib/udev/rules.d/", ["fs/lib/udev/rules.d/71-xpra-virtual-pointer.rules"])
-
+ 
 -    # gentoo does weird things, calls --no-compile with build *and* install
 -    # then expects to find the cython modules!? ie:
 -    #> python2.7 setup.py build -b build-2.7 install --no-compile \
@@ -39,6 +39,7 @@ index bd65109379..a97a310ea3 100755
 -    # otherwise we use the flags to skip pkgconfig
 -    if ("--no-compile" in sys.argv or "--skip-build" in sys.argv) and not ("build" in sys.argv and "install" in sys.argv):  # noqa: E501
 -        pkgconfig = no_pkgconfig
-
+-
      if OSX and "py2app" in sys.argv:
          import py2app    #@UnresolvedImport
+         assert py2app is not None
