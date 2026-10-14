@@ -16227,6 +16227,38 @@ reference object.  This object is not created until the first method dispatch.")
 expressiveness of the language with the parsing expressions.")
     (license license:expat)))
 
+(define-public ruby-cgi
+  (package
+    (name "ruby-cgi")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/cgi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072rjh1nrpn6nlqr2jsv5jca7mzlh3acn8139p117x3j3knpzvy7"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'delete-unused-rake-libs
+            (lambda _
+              ;; This requires the git executable.
+              (delete-file "rakelib/changelogs.rake"))))))
+    (native-inputs (list ruby-rake-compiler ruby-test-unit
+                         ruby-test-unit-ruby-core))
+    (synopsis "Common Gateway Interface protocol for Ruby")
+    (description
+     "This Ruby library supports the Common Gateway Interface (CGI)
+protocol.  It provides escaping utilities, web form parsers, cookie or
+session handlings, and HTML generations.")
+    (home-page "https://github.com/ruby/cgi")
+    (license (list license:ruby license:bsd-2))))
+
 (define-public ruby-cbor
   (package
     (name "ruby-cbor")
