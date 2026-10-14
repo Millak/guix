@@ -4344,18 +4344,19 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "2.5.1")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beets" version))
        (sha256
         (base32
-         "18p93p4sy6zxaa957v10irzagiilmhmlg7q82rjz5g2gh1qgvvkz"))))
+         "199ralkvapdgk2jq32wm5h4c20k9fc9q1s23w2vdi4yhiszwfpdj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1083 passed, 99 skipped, 1 deselected, 1828 warnings
+      ;; tests: 2780 passed, 138 skipped, 2 deselected, 11 xfailed, 93
+      ;;        warnings, 8 subtests
       #:test-flags
       ;; Network access is required.
       #~(list "-k" "not test_merge_duplicate_album")
@@ -4384,14 +4385,16 @@ websites such as Libre.fm.")
                                     "completion")))))))))
     (native-inputs
      (list gobject-introspection
+           python-factory-boy
            python-flask
+           python-hatchling
            python-mock
-           python-poetry-core
            python-py7zr
            python-pytest
            python-pytest-flask
-           python-setuptools
-           python-responses))
+           python-requests-mock
+           python-responses
+           python-setuptools))
     (inputs
      (list bash-minimal
            gst-plugins-base
@@ -4401,13 +4404,14 @@ websites such as Libre.fm.")
            python-jellyfish
            python-lap
            python-mediafile
-           python-munkres
            python-musicbrainzngs
+           python-numpy
+           python-packaging
            python-platformdirs
            python-pyyaml
            python-typing-extensions
            python-unidecode
-           ;; Optional dependencies for plugins. Some of these are also required by tests.
+           ;; [optional]
            python-beautifulsoup4 ; For lyrics.
            python-discogs-client ; For discogs.
            python-mpd2 ; For mpdstats.
@@ -4421,7 +4425,9 @@ websites such as Libre.fm.")
            python-rarfile ; For import.
            python-reflink ; For reflink.
            python-requests
-           python-requests-oauthlib)) ; For beatport.
+           python-requests-oauthlib ; For beatport.
+           python-requests-ratelimiter
+           python-titlecase)) ; For titlecase.
     (home-page "https://beets.io")
     (synopsis "Music organizer")
     (description "The purpose of beets is to get your music collection
