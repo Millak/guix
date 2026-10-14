@@ -459,7 +459,7 @@ preferences/advanced-scripts.dtd"
            ;; See <https://bugzilla.mozilla.org/show_bug.cgi?id=1962139>
            ffmpeg-6
            libvpx
-           icu4c-78
+           ;; UNBUNDLE-ME! icu4c-78 ; needs 78.3 with mozilla patches
            pixman
            pulseaudio
            mesa
@@ -556,7 +556,7 @@ preferences/advanced-scripts.dtd"
          ;; Avoid bundled libraries.
          "--enable-system-pixman"
          "--with-system-ffi"
-         "--with-system-icu"
+         ;; UNBUNDLE-ME! "--with-system-icu" ; needs 78.3 with mozilla patches
          "--with-system-jpeg"           ;must be libjpeg-turbo
          "--with-system-libevent"
          "--with-system-libvpx"
