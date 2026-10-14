@@ -4183,22 +4183,25 @@ streams on an individual packet/page level.")
 (define-public python-mediafile
   (package
     (name "python-mediafile")
-    (version "0.13.0")
+    (version "0.17.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mediafile" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/beetbox/mediafile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0vcsf9607jxh3bw2fn0hc3krr2mcgpm2dmfadhyp7sgz3cz0cwfy"))))
+        (base32 "0hj66q8cnh7wnlwyr6dzzl9yyq7jf2925w6xf7chils78qbfxs0n"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      ;; One test fails with: AssertionError: 88200 != 705600.
-      #:test-flags
-      #~(list "--deselect=test/test_mediafile.py::WAVETest::test_read_audio_properties")))
+     (list #:test-flags
+           #~(list
+              ;; See: <https://github.com/beetbox/mediafile/issues/109>
+              (string-append "--deselect=test/test_mediafile.py::OpusTest::"
+                             "test_read_audio_properties"))))
     (native-inputs
-     (list python-flit-core
+     (list python-poetry-core
            python-pytest))
     (propagated-inputs
      (list python-mutagen
