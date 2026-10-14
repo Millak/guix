@@ -5304,3 +5304,54 @@ $(which espanso)}.  On a Guix system, you can define the following in your
       #:features '(list "modulo" "vendored-tls" "wayland")))
     (inputs (modify-inputs inputs
               (append wl-clipboard)))))
+
+(define-public xdg-desktop-portal-logind
+  (package
+    (name "xdg-desktop-portal-logind")
+    (version "1.0")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://friendly-machines.com/git/xdg-desktop-portal-logind.git")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32
+        "0pc1wpvx2r95iv66h5xnknwjh1w2f1y0qdfnw50mbz807899ya5i"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (out-libexec (string-append out "/libexec"))
+                     (out-portal-configuration
+                      (string-append out
+                       "/share/xdg-desktop-portal/portals"))
+                     (out-dbus-service (string-append out
+                                       "/share/dbus-1/services")))
+                (install-file "target/release/xdg-desktop-portal-logind"
+                              out-libexec)
+                (install-file "data/logind.portal"
+                              out-portal-configuration)
+                (copy-file
+                 "data/org.freedesktop.impl.portal.desktop.logind.service.in"
+                 "org.freedesktop.impl.portal.desktop.logind.service")
+                (substitute*
+                 "org.freedesktop.impl.portal.desktop.logind.service"
+                 (("@executable@")
+                  (string-append out-libexec "/xdg-desktop-portal-logind")))
+                (install-file
+                 "org.freedesktop.impl.portal.desktop.logind.service"
+                 out-dbus-service)))))))
+    (inputs (cargo-inputs 'xdg-desktop-portal-logind))
+    (synopsis "XDG desktop portal for logind")
+    (description "This package provides a XDG desktop portal for
+@command{org.freedesktop.impl.portal.Inhibit}, especially for proxying sleep
+inhibition to @command{logind}.")
+    (home-page "https://github.com/friendly-machines-com/xdg-desktop-portal-logind")
+    (license license:expat)))
