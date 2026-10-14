@@ -74,11 +74,24 @@
       ;; it would fail with the "Too many vertices in ImDrawList using 16-bit
       ;; indices".
       #~(list "-DImDrawIdx=unsigned int"
-              "-DIMGUI_ENABLE_FREETYPE"
+              #$@(if (this-package-input "freetype")
+                     #~("-DIMGUI_ENABLE_FREETYPE"
+                        "-I" (search-input-directory %build-inputs
+                                                     "include/freetype2")
+                        "-lfreetype")
+                     #~())
+              #$@(if (this-package-input "glfw")
+                     #~("-lglfw")
+                     #~())
+              #$@(if (this-package-input "sdl2")
+                     #~("-lSDL2")
+                     #~())
+              #$@(if (this-package-input "sdl3")
+                     #~("-lSDL3")
+                     #~())
               "-I" (string-append (getcwd) "/source")
-              "-I" (search-input-directory %build-inputs "include/freetype2")
               "-g" "-O2" "-fPIC" "-shared"
-              "-lGL" "-lSDL3" "-lfreetype" "-lglfw"
+              "-lGL"
               "-o" "libimgui.so")
       #:phases
       #~(modify-phases %standard-phases
@@ -86,9 +99,19 @@
           (replace 'build
             (lambda* (#:key inputs make-flags #:allow-other-keys)
               ;; Build main library.
-              (define sdl3?
+              (define (has-lib? soname)
                 (false-if-exception
-                 (search-input-file inputs "lib/libSDL3.so")))
+                 (search-input-file inputs (string-append "lib/" soname))))
+              (define freetype?
+                (has-lib? "libfreetype.so"))
+              (define glfw?
+                (has-lib? "libglfw.so"))
+              (define sdl2?
+                (has-lib? "libSDL2.so"))
+              (define sdl3?
+                (has-lib? "libSDL3.so"))
+              (unless freetype?
+                (delete-file-recursively "misc/freetype"))
               (unless sdl3?
                 (substitute* (find-files "." "(\\.cpp|\\.mm)$")
                   (("#include <SDL")
@@ -100,10 +123,15 @@
                           "imgui_tables.cpp"
                           "imgui_widgets.cpp"
                           ;; Include the supported backends.
-                          "backends/imgui_impl_glfw.cpp"
-                          ,(if sdl3?
-                               "backends/imgui_impl_sdl3.cpp"
-                               "backends/imgui_impl_sdl2.cpp")
+                          ,@(if glfw?
+                                '("backends/imgui_impl_glfw.cpp")
+                                '())
+                          ,@(if sdl3?
+                                '("backends/imgui_impl_sdl3.cpp")
+                                '())
+                          ,@(if sdl2?
+                                '("backends/imgui_impl_sdl2.cpp")
+                                '())
                           "backends/imgui_impl_opengl2.cpp"
                           "backends/imgui_impl_opengl3.cpp"
                           ;; Include wrappers for C++ standard library
@@ -159,9 +187,6 @@ standard operating system features.")
 (define-public imgui-with-sdl2
   (package/inherit imgui
     (name "imgui-with-sdl2")
-    (arguments (substitute-keyword-arguments arguments
-                 ((#:make-flags flags ''())
-                  #~(cons* "-lSDL2" (delete "-lSDL3" #$flags)))))
     (inputs (modify-inputs inputs
               (replace "sdl3" sdl2)))))
 
