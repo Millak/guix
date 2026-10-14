@@ -1445,29 +1445,10 @@ customizing toolbars, notification centers, and other desktop environment
 tools in a live programming environment.")
     (license license:lgpl3)))
 
-(define noctalia-wayland-protocols
-  ;; From upstream's own noctalia.scm
-  ;; Delay to work around circular import problem.
-  (delay
-    (package
-      (inherit wayland-protocols)
-      (name "wayland-protocols")
-      (version "1.48")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://gitlab.freedesktop.org/wayland/wayland-protocols")
-               (commit version)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0zqnn7bwqzifchjhclrrcqnp39cpd3nnf6nbd9bav2hwhcx92mwy")))))))
-
 (define-public noctalia-shell
   (package
     (name "noctalia-shell")
-    (version "5.0.0-beta.9")
+    (version "5.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1476,20 +1457,14 @@ tools in a live programming environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "noctalia" version))
        (sha256
-        (base32 "0biah8xpnxnbv4pwy8yjn44ii789shgr6x7z2gbrz0bfmhgfskiv"))
+        (base32 "14i92npvw9brc3c1jiv7wfxb2nwx6qw0bsj7hzd36lzlv8zpa8c0"))
        (patches (search-patches
-                 "noctalia-enable-assertions-in-upower-test.patch"
                  "noctalia-system-libraries.patch"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; All bundled libraries are provided by package inputs.
-            (delete-file-recursively "third_party")
-            ;; These files are under the nonfree Pixabay Content License.  Free
-            ;; replacements are installed from sound-theme-freedesktop below.
-            (for-each delete-file
-                      '("assets/sounds/notification.wav"
-                        "assets/sounds/volume-change.wav"))))))
+            (delete-file-recursively "third_party")))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1503,33 +1478,13 @@ tools in a live programming environment.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((shell (search-input-file inputs "bin/sh")))
                 (substitute* '("src/core/process/process.cpp"
+                               "tests/template_undo_signal_test.sh"
                                "tests/app_identity_test.cpp"
                                "tests/process_test.cpp")
                   (("/bin/sh") shell))
                 (substitute* "assets/dev.noctalia.Noctalia.desktop"
                   (("Exec=sh ")
                    (string-append "Exec=" shell " "))))))
-          (add-after 'unpack 'install-free-sounds
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (for-each
-               (lambda (source target)
-                 (invoke "oggdec" "-Q" "-o" target
-                         (search-input-file (or native-inputs inputs) source)))
-               '("share/sounds/freedesktop/stereo/window-attention.oga"
-                 "share/sounds/freedesktop/stereo/audio-volume-change.oga")
-               '("assets/sounds/notification.wav"
-                 "assets/sounds/volume-change.wav"))
-              (substitute* "CREDITS.md"
-                (("^.*Universfield on Pixabay.*$")
-                 (string-append
-                  "- **[Ivica Bukvic on gnome-look]"
-                  "(http://gnome-look.org/content/show.php/"
-                  "%22Borealis%22+sound+theme?content=12584)**"
-                  "— Notification sound effect (CC BY-SA)\n"
-                  "- **[Lucas McCallister (?) SunnySideSound]"
-                  "(https://freesound.org/people/SunnySideSound/sounds/67091/)**"
-                  " — Volume-change sound effect "
-                  "(CC BY-SA)")))))
           (add-before 'check 'set-test-tmpdir
             (lambda _
               ;; Prevent test failure due to too long a socket path
@@ -1581,10 +1536,9 @@ tools in a live programming environment.")
                   `("PATH" ":" prefix
                     ,runtime-path))))))))
     (native-inputs
-     (list dbus                          ;run D-Bus integration test
-           pkg-config                    ;locate build dependencies
-           sound-theme-freedesktop       ;free notification sound source
-           vorbis-tools))                ;convert notification sound to WAV
+     (list dbus                         ;run D-Bus integration test
+           pkg-config                   ;locate build dependencies
+           tzdata-for-tests))                  
     (inputs
      (list
       bash-minimal                       ;generated wrapper and shell commands
@@ -1633,7 +1587,7 @@ tools in a live programming environment.")
       tomlplusplus                       ;configuration parsing
       upower                             ;UPower daemon; enabled separately
       wayland                            ;Wayland client library and scanner
-      (force noctalia-wayland-protocols) ;Wayland protocol definitions
+      wayland-protocols                  ;Wayland protocol definitions
       wireplumber-minimal                ;WirePlumber client library
       wlr-randr                          ;fallback display power control
       xdg-utils))                        ;Open links and OAuth pages.

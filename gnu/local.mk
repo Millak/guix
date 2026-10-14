@@ -2039,7 +2039,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ngit-cli-tests-libgit2-version.patch	\
   %D%/packages/patches/nlopt_CMake-Assume-working-c-compiler-597.patch \
   %D%/packages/patches/nnpack-system-libraries.patch		\
-  %D%/packages/patches/noctalia-enable-assertions-in-upower-test.patch	\
   %D%/packages/patches/noctalia-system-libraries.patch		\
   %D%/packages/patches/nsis-env-passthru.patch			\
   %D%/packages/patches/nss-getcwd-nonnull.patch			\
