@@ -33124,17 +33124,20 @@ has been created, and the visibility of the icon can be toggled.")
 (define-public python-confuse
   (package
     (name "python-confuse")
-    (version "2.0.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "confuse" version))
        (sha256
         (base32
-         "07v1s16nryls3zhaakwz6i6rgdy1c010gk00jsvn5a5a96ns4ybk"))))
+         "03ljar8a1qv8dacamjqpsxgj8r6p1w4plh6rdpirmv4dnga3n4k6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core python-pytest))
-    (propagated-inputs (list python-pyyaml))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs
+     (list python-pyyaml
+           ;; Required on Python versions before 3.13.
+           python-typing-extensions))
     (home-page "https://github.com/beetbox/confuse")
     (synopsis "Painless YAML configuration")
     (description "Confuse is a configuration library for Python that uses
