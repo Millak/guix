@@ -1033,7 +1033,7 @@ Once you are happy with the result, you are welcome to send your contribution to
 make it part of Guix.  This process is also detailed in the manual.  (@pxref{Contributing,,, guix, GNU Guix Reference Manual})
 
 
-It's a community effort so the more join in, the better Guix becomes!
+It's a community effort so the more that join in, the better Guix becomes!
 
 @node Extended example
 @subsection Extended example
@@ -1160,7 +1160,7 @@ these steps for you, just like it does for regular downloads.
 
 Snippets are quoted (i.e. non-evaluated) Scheme code that are a means of patching
 the source.  They are a Guix-y alternative to the traditional @file{.patch} files.
-Because of the quote, the code in only evaluated when passed to the Guix daemon
+Because of the quote, the code is only evaluated when passed to the Guix daemon
 for building.  There can be as many snippets as needed.
 
 Snippets might need additional Guile modules which can be imported from the
