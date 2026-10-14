@@ -1766,7 +1766,7 @@ the \"texlive\" importer."
 (define-member (person "Orahcio Felício de Sousa"
                        "orahcio@gmail.com"
                        "orahcio")
-  go python science)
+  go javascript python science)
 
 (define-member (person "Vivien Kraus"
                        "vivien@planete-kraus.eu"
