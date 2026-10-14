@@ -5821,6 +5821,84 @@ SRP} support.")
 Protocol (DAP, aka OPeNDAP).")
     (license license:expat)))
 
+(define-public python-pyrate-limiter
+  (package
+    (name "python-pyrate-limiter")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vutran1710/PyrateLimiter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hl1zv8r87dcpw68772xmy7x7q5nsb5bgdgk0iz9cwa2i5pmfhsi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--retries=0"
+              ;; These tests have fragile timing assumptions and may fail or
+              ;; hang under load.
+              ;; See: <https://github.com/vutran1710/PyrateLimiter#247>.
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/" test))
+                      '("test_bucket_all.py::test_bucket_leak[create_sqlite_bucket]"
+                        "test_bucket_all.py::test_bucket_flush[create_sqlite_bucket]"
+                        "test_bucket_all.py::test_bucket_waiting"
+                        "test_bucket_factory.py::test_factory_leak[create_sqlite_bucket]"
+                        "test_limiter.py::test_limiter_01"
+                        "test_multiprocessing.py::test_bucket_full"
+                        "test_multiprocessing.py::test_limiter_delay"
+                        ;; Covers the other test_mp_bucket variants as well.
+                        "test_multiprocessing.py::test_mp_bucket"
+                        "test_multiprocessing.py::test_sqlite_filelock_bucket"))
+              ;; Keep the separate weight-zero factory test enabled.
+              "-k" (string-append "not test_limiter_async_factory_get"
+                                  " or test_limiter_async_factory_get_weight0"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*uv-dynamic-versioning>.*") "")
+                (("source.*uv-dynamic-versioning.*") "source = 'vcs'"))))
+          (add-before 'check 'start-test-services
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes")
+                (let ((dbdir (string-append (getcwd) "/pgdata")))
+                  (invoke "initdb" "-D" dbdir "-A" "trust" "-U" "postgres")
+                  (invoke "pg_ctl" "-D" dbdir
+                          "-o" "-h 127.0.0.1 -p 5432 -k /tmp"
+                          "-l" (string-append dbdir "/server.log")
+                          "start"))))))))
+    (native-inputs
+     (list postgresql
+           python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-retry
+           python-schedule
+           redis))
+    (propagated-inputs
+     (list python-aiohttp
+           python-filelock
+           python-httpx
+           python-httpx2
+           python-psycopg
+           python-psycopg-pool
+           python-redis
+           python-requests))
+    (home-page "https://github.com/vutran1710/PyrateLimiter")
+    (synopsis "Rate limiting for Python applications")
+    (description
+     "PyrateLimiter implements rate limiting using a leaky bucket algorithm,
+with support for multiple limits and storage backends.")
+    (license license:expat)))
+
 (define-public python-python3-saml
   (package
     (name "python-python3-saml")
