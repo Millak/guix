@@ -6073,6 +6073,32 @@ files.")
 code asynchronously.")
     (license license:asl2.0)))
 
+(define-public python-requests-ratelimiter
+  (package
+    (name "python-requests-ratelimiter")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "requests_ratelimiter" version))
+       (sha256
+        (base32 "0cvs1rydmaca85508dcc5jz2klqnpld38v0s477mrakcckbph6lw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-requests-cache
+           python-requests-mock))
+    (propagated-inputs
+     (list python-pyrate-limiter
+           python-requests))
+    (home-page "https://github.com/JWCook/requests-ratelimiter")
+    (synopsis "Rate limiting for Python Requests")
+    (description
+     "Requests-Ratelimiter adds per-host rate limiting to Python's Requests
+library using PyrateLimiter.")
+    (license license:expat)))
+
 (define-public python-requests-unixsocket
   (package
     (name "python-requests-unixsocket")
