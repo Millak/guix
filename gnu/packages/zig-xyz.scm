@@ -72,7 +72,7 @@ performance of multiple commands with a colorful terminal user interface.")
 (define-public river
   (package
     (name "river")
-    (version "0.4.8")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -81,7 +81,14 @@ performance of multiple commands with a colorful terminal user interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xj31k5hjdll01rq0z47r61whc3zcv0krwcfczcdhx9cvp4qd8xy"))))
+        (base32 "0xkcs76s81kqwvhh51zrp1y0846w3lpbnmc7az4f6kyc8dbkwzb2"))
+       (snippet
+        (rename-zig-dependencies
+         '(("wlroots" . "zig-wlroots")
+           ("translate_c" . "zig-translate-c")
+           ("pixman" . "zig-pixman")
+           ("xkbcommon" . "zig-xkbcommon")
+           ("wayland" . "zig-wayland"))))))
     (build-system zig-build-system)
     (arguments
      (list #:zig zig-0.16
@@ -101,22 +108,11 @@ performance of multiple commands with a colorful terminal user interface.")
                  (lambda _
                    (substitute* "build.zig"
                      (("/bin/sh") (which "sh")))))
-               (add-after 'unpack 'prepare-build.zig.zon
+               (add-after 'unpack 'fix-import-zig-deps
                  (lambda _
-                   (substitute* "build.zig.zon"
-                     (("\\.pixman") ".@\"zig-pixman\"")
-                     (("\\.translate_c") ".@\"zig-translate-c\"")
-                     (("\\.wayland") ".@\"zig-wayland\"")
-                     (("\\.wlroots") ".@\"zig-wlroots\"")
-                     (("\\.xkbcommon") ".@\"zig-xkbcommon\""))))
-               (add-before 'build+install 'revert-build.zig.zon
-                 (lambda _
-                   (substitute* "build.zig.zon"
-                     (("\\.@\"zig-pixman\"") ".pixman")
-                     (("\\.@\"zig-translate-c\"") ".translate_c")
-                     (("\\.@\"zig-wayland\"") ".wayland")
-                     (("\\.@\"zig-wlroots\"") ".wlroots")
-                     (("\\.@\"zig-xkbcommon\"") ".xkbcommon"))))
+                   (substitute* "build.zig"
+                     (("@import\\(\"wayland\"\\)") "@import(\"zig-wayland\")")
+                     (("@import\\(\"translate_c\"\\)") "@import(\"zig-translate-c\")"))))
                (add-after 'build+install 'install-wayland-session
                  (lambda _
                    (let ((wayland-sessions
