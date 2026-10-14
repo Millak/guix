@@ -287,7 +287,7 @@ This package tracks the Extended Support Release (ESR) channel.")
   (package
    (inherit nss)
    (name "nss-rapid")
-   (version "3.129")
+   (version "3.130")
    (source
     (origin
       (inherit (package-source nss))
@@ -298,7 +298,7 @@ This package tracks the Extended Support Release (ESR) channel.")
               "releases/NSS_" version-with-underscores "_RTM/src/"
               "nss-" version ".tar.gz")))
       (sha256
-       (base32 "11877m4y0k11kdx1xg8s2nh1jr69afbm8fs78d46fgwal6qa7fiq"))
+       (base32 "1ifmkgzgfkbila2z6zzn0f1cax96j8qsqqaaidz3xylbqy19zaxg"))
       (patches
        (search-patches "nss-3.56-pkgconfig.patch"
                        "nss-getcwd-nonnull.patch"
