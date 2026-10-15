@@ -882,6 +882,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/emacs.scm				\
   %D%/tests/file-sharing.scm			\
   %D%/tests/foreign.scm				\
+  %D%/tests/games.scm				\
   %D%/tests/ganeti.scm				\
   %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
