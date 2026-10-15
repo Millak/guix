@@ -264,7 +264,7 @@ dependencies."
     (invoke npm "--prefix" out
             "--global"
             "--loglevel" "info"
-            "--production"
+            "--omit=dev"
             "install" "../package.tgz")))
 
 (define* (link-bins #:key outputs #:allow-other-keys)
