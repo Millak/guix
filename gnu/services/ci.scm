@@ -3,6 +3,7 @@
 ;;; Copyright © 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,10 @@
             forgejo-runner-configuration
             forgejo-runner-configuration?
             forgejo-runner-configuration-package
+            forgejo-runner-configuration-extra-shepherd-requirement
+            forgejo-runner-configuration-user
+            forgejo-runner-configuration-group
+            forgejo-runner-configuration-supplementary-groups
             forgejo-runner-configuration-data-directory
             forgejo-runner-configuration-run-directory
             forgejo-runner-configuration-name
@@ -176,6 +181,16 @@
   forgejo-runner-configuration?
   (package         forgejo-runner-configuration-package
                    (default forgejo-runner))
+  (extra-shepherd-requirement
+                   forgejo-runner-configuration-extra-shepherd-requirement
+                   (default '(dockerd)))
+  (user            forgejo-runner-configuration-user
+                   (default "forgejo-runner"))
+  (group           forgejo-runner-configuration-group
+                   (default "forgejo-runner"))
+  (supplementary-groups
+                   forgejo-runner-configuration-supplementary-groups
+                   (default '("docker")))
   (data-directory  forgejo-runner-configuration-data-directory
                    (default "/var/lib/forgejo-runner"))
   (run-directory   forgejo-runner-configuration-run-directory
@@ -202,20 +217,22 @@
 
 (define (create-forgejo-runner-account config)
   (list (user-account
-          (name "forgejo-runner")
-          (group "forgejo-runner")
+          (name (forgejo-runner-configuration-user config))
+          (group (forgejo-runner-configuration-group config))
+          (supplementary-groups
+           (forgejo-runner-configuration-supplementary-groups config))
           (system? #t)
           (comment "Forgejo Runner user")
           (home-directory
            (forgejo-runner-configuration-data-directory config)))
         (user-group
-          (name "forgejo-runner")
+          (name (forgejo-runner-configuration-group config))
           (system? #t))))
 
 (define (forgejo-runner-activation config)
   (match-record config <forgejo-runner-configuration>
-    (data-directory run-directory)
-    #~(let* ((user (getpwnam "forgejo-runner")))
+    (user data-directory run-directory)
+    #~(let* ((user (getpwnam #$user)))
         (mkdir-p #$run-directory)
         (chown #$run-directory (passwd:uid user) (passwd:gid user)))))
 
@@ -261,8 +278,9 @@
 
 (define (forgejo-runner-shepherd-service config)
   (match-record config <forgejo-runner-configuration>
-    (package data-directory run-directory log-file name
-             capacity timeout fetch-timeout fetch-interval report-interval
+    (package extra-shepherd-requirement user group supplementary-groups
+             data-directory run-directory log-file name capacity
+             timeout fetch-timeout fetch-interval report-interval
              labels)
     (define runner (file-append package "/bin/forgejo-runner"))
     (define runner-file (string-append data-directory "/runner"))
@@ -282,11 +300,12 @@
 
     (list (shepherd-service
             (provision '(forgejo-runner))
-            (requirement '(user-processes networking))
+            (requirement `(user-processes networking ,@extra-shepherd-requirement))
             (start #~(make-forkexec-constructor
                       (list #$runner "daemon" "--config" #$config)
-                      #:user "forgejo-runner"
-                      #:group "forgejo-runner"
+                      #:user #$user
+                      #:group #$group
+                      #:supplementary-groups '#$supplementary-groups
                       #:directory #$run-directory
                       #:log-file #$log-file
                       #:environment-variables
@@ -312,8 +331,8 @@
                                             "--name" #$name
                                             "--instance" instance
                                             "--token" token)
-                                      #:user "forgejo-runner"
-                                      #:group "forgejo-runner"))
+                                      #:user #$user
+                                      #:group #$group))
 
                      (if (zero? status)
                          (format #t "Successfully registered runner \
