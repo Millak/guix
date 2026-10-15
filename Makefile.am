@@ -537,8 +537,6 @@ clean-go:
 # Test extensions; has to be unconditional.
 TEST_EXTENSIONS = .scm .sh
 
-if CAN_RUN_TESTS
-
 SCM_TESTS =					\
   tests/accounts.scm				\
   tests/base16.scm				\
@@ -694,6 +692,8 @@ SH_TESTS =					\
   tests/guix-repl.sh     			\
   tests/guix-lint.sh
 
+if CAN_RUN_TESTS
+
 TESTS = $(SCM_TESTS) $(SH_TESTS)
 
 AM_TESTS_ENVIRONMENT = abs_top_srcdir="$(abs_top_srcdir)" GUILE_AUTO_COMPILE=0
@@ -720,8 +720,9 @@ tests/store.log: $(filter-out tests/guix-gc.log tests/store.log,$(TEST_LOGS))
 else !CAN_RUN_TESTS
 
 TESTS =
-SH_TESTS =
-SCM_TESTS =
+
+# 'TESTS' is empty: distribute the tests explicitly.
+EXTRA_DIST += $(SCM_TESTS) $(SH_TESTS)
 
 # Automake always generates a 'check' target, so better not override it.
 check-local:

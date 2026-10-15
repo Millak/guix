@@ -226,7 +226,13 @@ AM_TESTS_ENVIRONMENT +=				\
 TESTS +=					\
   tests/guix-daemon.sh
 
-endif CAN_RUN_TESTS
+else !CAN_RUN_TESTS
+
+# Distribute it anyway; see 'Makefile.am'.
+EXTRA_DIST +=					\
+  tests/guix-daemon.sh
+
+endif !CAN_RUN_TESTS
 
 clean-local:
 	-if test -d "$(GUIX_TEST_ROOT)"; then		\
