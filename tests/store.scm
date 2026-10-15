@@ -33,6 +33,9 @@
   #:use-module ((guix serialization)
                 #:hide (store-path read-string))
   #:use-module (guix build utils)
+  #:use-module ((gnu build accounts)
+                #:select (read-subgid subid-entry-name
+                          subid-entry-start subid-entry-count))
   #:use-module ((gnu build linux-container)
                 #:select (unprivileged-user-namespace-supported?))
   #:use-module (guix gexp)
@@ -515,11 +518,29 @@
     (build-derivations %store (list d))
     (call-with-input-file (derivation->output-path d) read)))
 
+(define (kvm-gid-mappable?)
+  "Return true if the daemon can map the \"kvm\" GID for the current user: the
+user must have \"kvm\" among its supplementary groups, and 'newgidmap' requires
+an /etc/subgid range for that user that includes it."
+  (let ((kvm  (group:gid (getgrnam "kvm")))
+        (uid  (getuid))
+        (user (passwd:name (getpwuid (getuid)))))
+    (and (member kvm (vector->list (getgroups)))
+         (any (lambda (entry)
+                (and (member (subid-entry-name entry)
+                             (list user (number->string uid)))
+                     (<= (subid-entry-start entry)
+                         kvm
+                         (+ (subid-entry-start entry)
+                            (subid-entry-count entry) -1))))
+              (read-subgid)))))
+
 (unless (and (unprivileged-user-namespace-supported?)
              (false-if-exception
               (= (stat:gid (stat "/dev/kvm"))
                  (group:gid (getgrnam "kvm"))))
-             (= 1 (status:exit-val (system* "newgidmap"))))
+             (= 1 (status:exit-val (system* "newgidmap")))
+             (false-if-exception (kvm-gid-mappable?)))
   (test-skip 1))
 (test-assert "kvm GID is mapped"
   ;; Ensure that the "kvm" GID is mapped into the build user namespace such
