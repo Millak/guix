@@ -956,6 +956,10 @@ text differences, similar to Unix diff.")
             (lambda _
               (modify-json "package.json"
                 (delete-json-fields '("scripts.prepare")))))
+          (add-after 'unpack 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src"))))))
           (add-after 'patch-dependencies 'delete-dev-dependencies
             (lambda _
               (modify-json "package.json"
