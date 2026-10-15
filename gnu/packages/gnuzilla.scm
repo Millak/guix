@@ -298,7 +298,7 @@ in the case of Firefox, it is browser/locales/all-locales."
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
          (makeicecat-patch
           (local-file (assume-valid-file-name
-                       (search-patch "icecat-makeicecat.patch")))))
+                       (search-patch "icecat-153-makeicecat.patch")))))
 
     (origin
       (method computed-origin-method)

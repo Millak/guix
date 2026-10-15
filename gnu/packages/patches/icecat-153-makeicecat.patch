@@ -1,0 +1,50 @@
+Make some of the changes needed to the 'makeicecat' script, to allow it to run
+in a snippet without network access.  After this patch is applied, some
+additional changes will be made using 'substitute*'.
+
+diff --git a/makeicecat b/makeicecat
+index bf2b7a6..bc3b19b 100755
+--- a/makeicecat
++++ b/makeicecat
+@@ -645,7 +645,15 @@ s|www\\.gnu\\.org/software/gnuzilla/icecat-help|libreplanet.org/wiki/Group:IceCa
+     find . -type f -not -iregex '.*changelog.*' -not -iregex '.*copyright.*' \
+          -not -iregex '.*/third_party/rust/.*' -not -name Cargo.lock \
+          -not -iregex '.*/\.cargo/.*' \
+-         -execdir /bin/sed --follow-symlinks -i "${sed_script}" '{}' ';'
++         -execdir /bin/sed --follow-symlinks -i "${sed_script}" '{}' ';' \
++         -print |
++        (n=0;
++         while read name; do
++             if ((++n == 10000)); then
++                 echo -n .; n=0;
++             fi;
++         done;
++         echo)
+ 
+     find l10n -type f -execdir /bin/sed --follow-symlinks -i "s/from GNU/from Mozilla/g" '{}' ';'
+ 
+@@ -876,12 +884,12 @@ finalize_sourceball()
+ # entry point
+ ###############################################################################
+ 
+-validate_env || exit 1
+-prepare_env
+-fetch_source
+-verify_sources
+-extract_sources
+-fetch_l10n
++# validate_env || exit 1
++# prepare_env
++# fetch_source
++# verify_sources
++# extract_sources
++# fetch_l10n
+ apply_patches
+ configure
+ configure_search
+@@ -893,4 +901,4 @@ prepare_macos_packaging
+ configure_extensions
+ configure_onboarding
+ apply_bugfixes
+-finalize_sourceball
++# finalize_sourceball
