@@ -482,7 +482,7 @@ edges."
 (test-equal "shortest-path, reverse packages"
   '("libffi" "guile" "guile-json")
   (run-with-store %store
-    (mlet %store-monad ((path (shortest-path (specification->package "libffi")
+    (mlet %store-monad ((path (shortest-path (specification->package "libffi@3.4")
                                              guile-json-1
                                              %reverse-package-node-type)))
       (return (map package-name path)))))

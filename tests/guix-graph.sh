@@ -89,8 +89,8 @@ emacs
 cairo
 gobject-introspection
 libffi"
-test "`guix graph --path emacs libffi | cut -d '@' -f1`" = "$path"
+test "`guix graph --path emacs libffi@3.4 | cut -d '@' -f1`" = "$path"
 
 # At the derivation level, there's a direct path because libffi is propagated
 # via gtk+.
-test "`guix graph --path -t derivation emacs libffi | wc -l`" -ge 2
+test "`guix graph --path -t derivation emacs libffi@3.4 | wc -l`" -ge 2
