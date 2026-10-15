@@ -296,7 +296,7 @@ provenance."
                 (native-inputs
                  (modify-inputs (package-native-inputs guix)
                    ;; graphviz-minimal -> graphviz
-                   (replace "graphviz" graphviz)
+                   (replace "graphviz-minimal" graphviz)
                    (append imagemagick)
                    (append perl))))))
     (manifest-entry
