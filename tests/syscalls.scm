@@ -185,7 +185,11 @@
     (0   (child-thunk))
     (pid (parent-proc pid))))
 
-(unless perform-container-tests?
+;; XXX: The child can deadlock with Guile > 3.0.9; see
+;; <https://codeberg.org/guix/guix/issues/11613> and
+;; <https://codeberg.org/guix/guix/issues/7690>.
+(unless (and perform-container-tests?
+             (not (guile-version>? "3.0.9")))
   (test-skip 1))
 (test-equal "safe-clone and unshare succeeds"
   0
