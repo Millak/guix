@@ -3068,27 +3068,35 @@ varies in similar way among cells which are nearby in the given metric.")
 
 (define-public python-htsget
   (package
-   (name "python-htsget")
-   (version "0.2.6")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "htsget" version))
-            (sha256
-             (base32
-              "111q4pzkav26aa3hkgh948wqlyrq7dq6sjml9z63n3blw8s6b0c4"))))
-   (build-system pyproject-build-system)
-   (arguments
-    (list #:tests? #f)) ;they depend on Nose test runner
-   (native-inputs
-    (list python-setuptools-scm python-setuptools))
-   (propagated-inputs
-    (list python-humanize python-requests python-six))
-   (home-page "https://pypi.org/project/htsget/")
-   (synopsis "Python API and command line interface for the GA4GH htsget API")
-   (description "This package is a client implementation of the GA4GH htsget
-protocol.  It provides a simple and reliable way to retrieve genomic data from
-servers supporting the protocol.")
-   (license license:asl2.0)))
+    (name "python-htsget")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ga4gh/htsget")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0000h4wkcwdandd4rqizvgn2hrnzcyv17k51zkis1h9cg4jpxr55"))))
+    (build-system pyproject-build-system)
+    (arguments
+      ;; Network access is required.
+     (list #:test-flags #~(list "--exclude=test_data_truncation")))
+    (native-inputs
+     (list python-mock
+           python-pynose
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-humanize python-requests python-six))
+    (home-page "https://github.com/ga4gh/htsget")
+    (synopsis "Python API and command line interface for the GA4GH htsget API")
+    (description
+     "This package is a client implementation of the GA4GH htsget protocol.
+It provides a simple and reliable way to retrieve genomic data from servers
+supporting the protocol.")
+    (license license:asl2.0)))
 
 (define-public python-liana-py
   (package
