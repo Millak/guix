@@ -1669,7 +1669,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
 (define-public mimalloc
   (package
     (name "mimalloc")
-    (version "3.3.2")
+    (version "3.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1678,7 +1678,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ibx9hnpfsrfj593jr197cnimy1ad3pa20my67hdhys30nlzp78r"))))
+                "1d92pi0y5255y1iwrliij8a7v1f2dpbg3h4f4mbzbnqismcwqqhs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:build-type "Release"
