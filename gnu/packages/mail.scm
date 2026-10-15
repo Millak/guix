@@ -55,7 +55,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023, 2026 Wilko Meyer <w@wmeyer.eu>
-;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2024, 2026 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024-2026 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
@@ -101,8 +101,10 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -171,6 +173,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1328,7 +1331,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.14.3")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch)
@@ -1337,16 +1340,27 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07pr2vicjddnxk3fml4n2yh7cn4lvj74sbml50icaaia0dx2sc4w"))))
+        (base32 "152f0rr82azhzjwhs8jf63vjj3bsrrj4k9ckyg69zzb1skjdr5q5"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config
+     (list cmake-minimal     ; need to find tl-expected (=libexpected)
+           pkg-config
            emacs-minimal
-           gnupg                      ; for tests
-           tzdata-for-tests           ; for tests
-           texinfo))
+           gnupg             ; for tests
+           texinfo-7
+           tzdata-for-tests))
     (inputs
-     (list glib gmime guile-3.0-latest xapian readline python))
+     (list bash-minimal ; avoid bundled version
+           cli11
+           fmt
+           glib
+           gmime
+           guile-3.0-latest
+           libexpected
+           python
+           readline
+           tl-optional  ; avoid bundled version
+           xapian))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
