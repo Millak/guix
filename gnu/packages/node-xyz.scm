@@ -4723,11 +4723,37 @@ function with browser support.")
       #:tests? #f                       ;requires jest
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "l10n")
+              (copy-file "../LICENSE" "LICENSE")))
+          (add-after 'chdir 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields
+                 '(("compilerOptions.rootDir" . "src")
+                   ("compilerOptions.types" . #("node")))))))
           (add-after 'patch-dependencies 'delete-dev-dependencies
             (lambda _
-              (modify-json (delete-dev-dependencies)
-                           (replace-json-fields
-                            '(("scripts.install:l10n-dev" . "true")))))))))
+              (modify-json "package.json"
+                (delete-dev-dependencies/except
+                 '("@types/node" "typescript")))))
+          (replace 'build
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "bin/esbuild"))
+                    (tsc (search-input-file (or native-inputs inputs)
+                                            "bin/tsc")))
+                ;; Instead of node .esbuild.config.js.
+                (invoke esbuild "src/main.ts" "--bundle"
+                        "--platform=node" "--outfile=dist/main.js")
+                (invoke esbuild "src/main.ts" "--bundle"
+                        "--format=esm" "--global-name=l10n"
+                        "--platform=browser" "--outfile=dist/browser.js")
+                ;; Instead of the unpackaged api-extractor.
+                (invoke tsc "--emitDeclarationOnly" "--declarationMap" "false"
+                        "--outDir" "dist")))))))
+    (native-inputs (list esbuild node-types-node node-typescript))
     (home-page "https://github.com/Microsoft/vscode-l10n")
     (synopsis "Helper library to assist in localizing VS Code subprocesses")
     (description"This package provides a helper library to assist in
