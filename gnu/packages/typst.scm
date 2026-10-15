@@ -3,6 +3,7 @@
 ;;; Copyright © 2025 Alexis Simon <alexis.simon@runbox.com>
 ;;; Copyright © 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2026 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2026 Orahcio Felício de Sousa <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,11 +28,14 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system typst)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls))
@@ -58,6 +62,66 @@
      "Prettypst is a configurable source file formatter for the Typst
 typesetting system.")
     (license license:expat)))
+
+(define-public python-typst
+  (package
+    (name "python-typst")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/messense/typst-py/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06f1cyic20x21cgbridycx5dr9fivbjhi9517l5nbzcz8f5d80gp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(prepare-rust-crates
+                 unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'prepare-cargo-build-system 'disable-openssl-vendoring
+            (lambda _
+              ;; Remove dependency on boringssl and vendor openssl source.
+              (substitute* "Cargo.toml"
+                (("\\s+\"vendor-openssl\",") "")))))))
+    (inputs (cons* maturin openssl (cargo-inputs 'typst-py)))
+    (native-inputs
+     (append
+      (list maturin
+            pkg-config
+            python-pytest
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (home-page "https://github.com/messense/typst-py/")
+    (synopsis "Python binding to Typst")
+    (description
+      "This package provides a Python binding to Typst, a markup-based
+typesetting system.  It exposes the Typst compiler API to Python,
+allowing documents to be compiled to PDF, PNG or SVG from Python code.")
+    (license license:asl2.0)))
 
 (define-public typst
   (package
