@@ -3700,12 +3700,7 @@ it to make a new binding for a different platform or underling technology.")))
              (modify-json (delete-dependencies '("prebuild-install"
                                                  ;; devDependencies
                                                  "@serialport/binding-mock"
-                                                 "node-abi")))))
-         (add-after 'chdir 'avoid-prebuild-install
-           (lambda args
-             (modify-json "package.json"
-               (delete-json-fields '(("scripts" "install")))
-               (replace-json-fields '(("gypfile" . #f)))))))
+                                                 "node-abi"))))))
        #:tests? #f))
     (synopsis "Abstract base class for Node SerialPort bindings")
     (description "Node SerialPort is a modular suite of Node.js packages for
