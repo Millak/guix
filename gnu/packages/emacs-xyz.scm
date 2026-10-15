@@ -43309,9 +43309,8 @@ add popup descriptions to existing keymaps
     (license license:gpl3+)))
 
 (define-public emacs-forgejo
-  ;; Project went unmantained with no last tag.
-  (let ((commit "7eb8b9a58efbb28f0f79d5bcce748f9639cb3556")
-        (revision "0"))
+  (let ((commit "5340cb83468c5d261bb8d0f866c45ed4427faeb3")
+        (revision "1"))
     (package
       (name "emacs-forgejo")
       (version (git-version "0.2.3" revision commit))
@@ -43324,7 +43323,7 @@ add popup descriptions to existing keymaps
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0fynpq0kshkbk4xfrbk6igwr4j5zrch2gssqxi43q03jr041p071"))))
+           "0gjjx6v9g6crd70hzf8pg0x10js0nl195iaqp8gkjps8yi5aw4r2"))))
       (build-system emacs-build-system)
       (arguments
        (list #:lisp-directory "lisp"
