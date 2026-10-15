@@ -45,7 +45,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "36cd50d97249f100065d9b6b8b536fd91fddca37")
+ (entry (commit "f013a062f636b0c8f4b30e7aca305c0621070cf7")
         (title
          (en "@code{home-dotfiles-configuration-excluded}
 also exclude directories")
