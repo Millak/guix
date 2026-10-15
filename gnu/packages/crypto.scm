@@ -14,7 +14,7 @@
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2026 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Hendur Saga <hendursaga@yahoo.com>
@@ -300,30 +300,21 @@ communication, encryption, decryption, signatures, etc.")
     (name "libmd")
     (version "1.2.0")
     (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                   (url "https://gitlab.freedesktop.org/libbsd/libmd")
-                   (commit version)))
-            (file-name (git-file-name name version))
+            (method url-fetch)
+            (uri
+             (list
+              (string-append "https://archive.hadrons.org/software/libmd/libmd-"
+                             version ".tar.xz")
+              (string-append "https://libbsd.freedesktop.org/releases/libmd-"
+                             version ".tar.xz")))
             (sha256
              (base32
-              "1pysafldxl9h9rw701l55141lkwyhhk7xn8cmrc7rv5055vvjqah"))))
+              "186h2gmxzshgf5bdy832yfqb1sp05slcarpcrnngn0h58fwgy5dc"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "--disable-static")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'add-version-file
-            (lambda _
-              (call-with-output-file ".dist-version"
-                (lambda (port) (display #$version port)))))
-          (add-before 'bootstrap 'patch-bootstrap-shebang
-            (lambda _
-              (patch-shebang "get-version"))))))
-    (native-inputs
-     (list autoconf-2.72 automake libtool))
+      #~(list "--disable-static")))
     (synopsis "Message Digest functions from BSD systems")
     (description
      "The currently provided message digest algorithms are:
