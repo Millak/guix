@@ -621,6 +621,7 @@ SCM_TESTS =					\
   tests/services/pam-mount.scm			\
   tests/services/telephony.scm			\
   tests/services/vpn.scm			\
+  tests/services/xorg.scm			\
   tests/sets.scm				\
   tests/size.scm				\
   tests/status.scm				\
