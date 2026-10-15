@@ -708,10 +708,8 @@ AM_SH_LOG_FLAGS = -x -e
 
 # Make sure `tests/guix-gc.sh' runs last, after all the others.  Otherwise it
 # could end up removing files from the store while they are being used by
-# other instances of the daemon.
-tests/guix-gc.log:							\
-  $(patsubst %.sh,%.log,$(filter-out tests/guix-gc.sh,$(SH_TESTS)))	\
-  $(SCM_TESTS:%.scm=%.log)
+# other instances of the daemon.  Only depend on the tests being run.
+tests/guix-gc.log: $(filter-out tests/guix-gc.log,$(TEST_LOGS))
 
 else !CAN_RUN_TESTS
 
