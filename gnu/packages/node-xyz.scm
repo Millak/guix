@@ -2457,7 +2457,25 @@ This is not a through or through2 stream. It doesn't transform the data, it just
       #~(modify-phases %standard-phases
           (add-after 'patch-dependencies 'delete-dev-dependencies
             (lambda _
-              (modify-json (delete-dev-dependencies)))))))
+              (modify-json "package.json"
+                (delete-dev-dependencies/except
+                 '("@types/node" "typescript")))))
+          (add-after 'unpack 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig-base.json"
+                (add-json-fields
+                 '(("compilerOptions.ignoreDeprecations" . "6.0")
+                   ("compilerOptions.types" . #("node")))))
+              (modify-json "tsconfig-esm.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src"))))))
+          (replace 'build
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((tsc (search-input-file (or native-inputs inputs)
+                                            "bin/tsc")))
+                (invoke tsc "-p" "tsconfig.json")
+                (invoke tsc "-p" "tsconfig-esm.json")
+                (invoke "bash" "fixup.sh")))))))
+    (native-inputs (list node-types-node node-typescript))
     (home-page "https://github.com/isaacs/node-mkdirp")
     (synopsis "mkdir command implementation in Node.js")
     (description "This package provides a recursive @command{mkdir} command
