@@ -5966,20 +5966,28 @@ on a GUI toolkit.")
 (define-public tuigreet
   (package
     (name "tuigreet")
-    (version "0.9.1")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/apognu/tuigreet")
+                     (url "https://github.com/tuigreet/tuigreet")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15h2b97clllbhlw5jc4lwkmir18njnyk56zghafsas84m6jjsikv"))))
+                "1j3gw113gxjy9nq8168snj4fif5rync0x9p5dka01jv5hriik6cx"))))
     (build-system cargo-build-system)
-    (arguments (list #:install-source? #f))
+    (arguments
+     (list #:install-source? #f
+           #:cargo-package-crates ''("tuigreet-config"
+                                     "tuigreet-locales"
+                                     "tuigreet-system"
+                                     "tuigreet-theme"
+                                     "tuigreet-types"
+                                     "tuigreet")
+           #:cargo-install-paths ''("crates/tuigreet")))
     (inputs (cargo-inputs 'tuigreet))
-    (home-page "https://github.com/apognu/tuigreet")
+    (home-page "https://github.com/tuigreet/tuigreet")
     (synopsis "Graphical console greeter for @code{greetd}")
     (description
      "This package provides a graphical console greeter for @code{greetd}.  It
