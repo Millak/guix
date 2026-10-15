@@ -711,6 +711,10 @@ AM_SH_LOG_FLAGS = -x -e
 # other instances of the daemon.  Only depend on the tests being run.
 tests/guix-gc.log: $(filter-out tests/guix-gc.log,$(TEST_LOGS))
 
+# Likewise, 'verify-store' in `tests/store.scm' removes paths being added by
+# other tests from the database.  Run it right before `tests/guix-gc.sh'.
+tests/store.log: $(filter-out tests/guix-gc.log tests/store.log,$(TEST_LOGS))
+
 else !CAN_RUN_TESTS
 
 TESTS =
