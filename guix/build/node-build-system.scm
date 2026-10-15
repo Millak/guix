@@ -143,6 +143,7 @@ dependencies."
               (setenv "npm_config_fetch_retries" "0")
               (setenv "npm_config_audit" "false")
               (setenv "npm_config_ignore_scripts" "true")
+              (setenv "npm_config_bin_links" "false")
               (setenv "npm_config_offline" "true")
               (format #t "set HOME to ~s~%" (getenv "HOME"))))))))
 
@@ -210,7 +211,7 @@ dependencies."
 
 (define* (configure #:key inputs #:allow-other-keys)
   (let ((npm (string-append (assoc-ref inputs "node") "/bin/npm")))
-    (invoke npm "--install-links" "install")))
+    (invoke npm "install")))
 
 (define* (build #:key inputs #:allow-other-keys)
   (let* ((package-meta (call-with-input-file "package.json" json->scm))
@@ -264,8 +265,27 @@ dependencies."
             "--global"
             "--loglevel" "info"
             "--production"
-            "--install-links"
             "install" "../package.tgz")))
+
+(define* (link-bins #:key outputs #:allow-other-keys)
+  "Create symlinks in OUTPUT/bin as declared in package.json's bin field."
+  (let* ((out (assoc-ref outputs "out"))
+         (pkg (call-with-input-file "package.json" json->scm))
+         (pkg-name (assoc-ref pkg "name"))
+         (pkg-dir (string-append out "/lib/node_modules/" pkg-name)))
+    (define (link-bin name file)
+      (let ((file (if (string-prefix? "./" file)
+                      (string-drop file 2)
+                      file)))
+        (mkdir-p (string-append out "/bin"))
+        (symlink (string-append pkg-dir "/" file)
+                 (string-append out "/bin/" (basename name)))))
+    (match (assoc-ref pkg "bin")
+      ((? string? file)
+       (link-bin pkg-name file))
+      (((names . files) ...)
+       (for-each link-bin names files))
+      (#f #t))))
 
 (define* (build-addon #:key inputs outputs #:allow-other-keys)
   "Build the native addon of the installed package, as 'npm install' would
@@ -351,7 +371,8 @@ would try to run 'node-gyp rebuild'."
     (add-before 'install 'repack repack)
     (replace 'install install)
     (add-after 'install 'build-addon build-addon)
-    (add-after 'build-addon 'avoid-node-gyp-rebuild avoid-node-gyp-rebuild)))
+    (add-after 'build-addon 'link-bins link-bins)
+    (add-after 'link-bins 'avoid-node-gyp-rebuild avoid-node-gyp-rebuild)))
 
 (define* (node-build #:key inputs (phases %standard-phases)
                      #:allow-other-keys #:rest args)
