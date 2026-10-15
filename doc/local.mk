@@ -112,7 +112,11 @@ endef
 # because the path extension is not 'pot'.
 dummy_pot = $(shell mktemp --suffix=.pot)
 
-$(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi guix/build/po.go
+# A newly compiled 'po.go' is no reason to regenerate these, which may be in
+# a read-only source tree.
+$(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi \
+  $(srcdir)/guix/build/po.scm $(srcdir)/build-aux/convert-xref.scm	\
+  | guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A) --no-update			\
 	    --variable localized="$@.tmp"			\
 	    --variable master="$(srcdir)/%D%/guix.texi"		\
@@ -123,7 +127,9 @@ $(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
-$(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
+$(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po		\
+  $(srcdir)/guix/build/po.scm $(srcdir)/build-aux/convert-xref.scm	\
+  | guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A) --no-update				\
 	    --variable localized="$@.tmp"				\
 	    --variable master="$(srcdir)/%D%/guix-cookbook.texi"	\
@@ -134,7 +140,9 @@ $(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
-$(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po guix/build/po.go
+$(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po		\
+  $(srcdir)/guix/build/po.scm $(srcdir)/build-aux/convert-xref.scm	\
+  | guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A) --no-update			\
 	    --variable localized="$@.tmp"			\
 	    --variable master="$(srcdir)/%D%/contributing.texi"		\
