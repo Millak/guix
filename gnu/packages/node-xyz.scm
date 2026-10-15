@@ -4053,8 +4053,9 @@ connection.")))
            ;; We need this step even if we do replace @mapbox/node-pre-gyp
            ;; because the package expects to build its bundled sqlite
            (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "npm_config_sqlite" (assoc-ref inputs "sqlite"))))
-         (add-after 'install 'patch-binding-path
+             (setenv "npm_package_config_node_gyp_sqlite"
+                     (assoc-ref inputs "sqlite"))))
+         (add-after 'build-addon 'patch-binding-path
            ;; We replace a file that dynamic searches for the addon using
            ;; node-pre-gyp (which we don't have) with a version that
            ;; simply uses the path to the addon we built directly.

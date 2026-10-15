@@ -245,6 +245,32 @@ dependencies."
             "--install-links"
             "install" "../package.tgz")))
 
+(define* (build-addon #:key inputs outputs #:allow-other-keys)
+  "Build the native addon of the installed package, as 'npm install' would
+when running scripts."
+  (let* ((node (assoc-ref inputs "node"))
+         (pkg-dir (string-append (assoc-ref outputs "out") "/lib/node_modules/"
+                                 (module-name ".")))
+         (pkg-meta (call-with-input-file
+                       (string-append pkg-dir "/package.json")
+                     json->scm)))
+    (define (delete-except dir keep?)
+      (for-each (lambda (file)
+                  (unless (keep? file)
+                    (delete-file-recursively (string-append dir "/" file))))
+                (scandir dir (negate (cut member <> '("." ".."))))))
+    (when (and (file-exists? (string-append pkg-dir "/binding.gyp"))
+               (not (equal? (assoc "gypfile" pkg-meta) '("gypfile" . #f))))
+      (with-directory-excursion pkg-dir
+        (invoke (string-append node "/bin/node")
+                (string-append node "/lib/node_modules/npm/node_modules"
+                               "/node-gyp/bin/node-gyp.js")
+                "rebuild"
+                (string-append "--nodedir=" node))
+        ;; Keep only the addons.
+        (delete-except "build" (cut string=? <> "Release"))
+        (delete-except "build/Release" (cut string-suffix? ".node" <>))))))
+
 (define* (avoid-node-gyp-rebuild #:key outputs #:allow-other-keys)
   "Adjust the installed 'package.json' to remove an 'install' script that
 would try to run 'node-gyp rebuild'."
@@ -302,7 +328,8 @@ would try to run 'node-gyp rebuild'."
     (replace 'check check)
     (add-before 'install 'repack repack)
     (replace 'install install)
-    (add-after 'install 'avoid-node-gyp-rebuild avoid-node-gyp-rebuild)))
+    (add-after 'install 'build-addon build-addon)
+    (add-after 'build-addon 'avoid-node-gyp-rebuild avoid-node-gyp-rebuild)))
 
 (define* (node-build #:key inputs (phases %standard-phases)
                      #:allow-other-keys #:rest args)

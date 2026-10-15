@@ -146,6 +146,7 @@ and replace development dependencies with tree-sitter grammar node modules."
     (replace 'build build)
     (replace 'check check)
     (replace 'install install)
+    (delete 'build-addon)
     (add-after 'install 'install-js install-js)))
 
 (define* (tree-sitter-build #:key inputs (phases %standard-phases)
