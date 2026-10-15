@@ -30,6 +30,8 @@
   #:use-module (guix build utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 textual-ports)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match)
   #:use-module (json)
@@ -226,14 +228,33 @@ dependencies."
       (format #t "test suite not run~%")))
 
 (define* (repack #:key inputs #:allow-other-keys)
-  (invoke "tar"
-          ;; Add options suggested by https://reproducible-builds.org/docs/archives/
-          "--sort=name"
-          (string-append "--mtime=@" (getenv "SOURCE_DATE_EPOCH"))
-          "--owner=0"
-          "--group=0"
-          "--numeric-owner"
-          "-czf" "../package.tgz" "."))
+  ;; Use 'npm pack --dry-run --json' to get the canonical file list,
+  ;; respecting .npmignore, the 'files' field, and default exclusions (such as
+  ;; node_modules/).  This prevents build artifacts and store path references
+  ;; leaking into the installed package closure.
+  (let* ((npm (string-append (assoc-ref inputs "node") "/bin/npm"))
+         (port (open-pipe* OPEN_READ npm "pack" "--dry-run" "--json"))
+         (json-str (get-string-all port))
+         (_ (close-pipe port))
+         (pack-info (json->scm (open-input-string json-str)))
+         (files (map (lambda (f) (string-append "./" (assoc-ref f "path")))
+                     (vector->list
+                      (assoc-ref (vector-ref pack-info 0) "files")))))
+    ;; Remove dev dependencies from package.json before repacking.
+    ;; node_modules/ is excluded from the tarball via npm's file list, so lock
+    ;; file cleanup is not needed."
+    (modify-json "package.json" (delete-dev-dependencies))
+    (apply invoke
+           "tar"
+           ;; Options suggested by https://reproducible-builds.org/docs/archives/
+           "--sort=name"
+           (string-append "--mtime=@" (getenv "SOURCE_DATE_EPOCH"))
+           "--owner=0"
+           "--group=0"
+           "--numeric-owner"
+           "-czf" "../package.tgz"
+           "--"
+           files)))
 
 (define* (install #:key outputs inputs #:allow-other-keys)
   "Install the node module to the output store item."
