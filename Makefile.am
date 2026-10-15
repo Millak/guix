@@ -1024,7 +1024,7 @@ dist-doc-pot-update: auto-clean
 	$(MAKE) -C po/packages all
 	$(MAKE) doc-pot-update
 
-dist-hook: gen-ChangeLog gen-AUTHORS
+dist_hook_git = gen-ChangeLog gen-AUTHORS
 
 # Assert that Autotools cache is up to date with Git, by checking
 # PACKAGE_VERSION against HEAD.  Indented to get past Automake.
@@ -1052,7 +1052,7 @@ $(warning Not using Git, tarball will likely be irreproducible!)
  endif # MAKECMDGOALS dist
 endif # !in_git_p
 
-dist-hook: gen-tarball-version
+dist-hook: $(dist_hook_git) gen-tarball-version
 dist-hook: assert-no-store-file-names
 
 distcheck-hook: assert-binaries-available assert-final-inputs-self-contained
@@ -1315,7 +1315,6 @@ git_hooks_checks = [ -n "$(GIT_HOOKS_DIR)" ] && [ -z "$(GIT_CORE_HOOKS_PATH)" ]
 
 # Special-case the pre-push hook installation, to ensure it is always
 # up-to-date with its source.
-.PHONY: $(GIT_HOOKS_DIR)/pre-push
 $(GIT_HOOKS_DIR)/pre-push: etc/git/pre-push | $(GIT_HOOKS_DIR)
 	@if $(git_hooks_checks); then \
 	  cmp "--silent" "$<" "$@" || cp "$<" "$@"; \
@@ -1329,7 +1328,6 @@ $(GIT_CONFIG_FILE): etc/git/gitconfig
 
 # Convenience targets.
 GIT_HOOKS_SOURCE_FILES := $(shell find etc/git -type f -executable)
-.PHONY: git-config git-hooks invalidate-hooks
 git-hooks: $(addprefix $(GIT_HOOKS_DIR)/,$(notdir $(GIT_HOOKS_SOURCE_FILES)))
 git-config: $(GIT_CONFIG_FILE) git-hooks
 
@@ -1341,6 +1339,9 @@ nodist_noinst_DATA =				\
   $(GIT_HOOKS_DIR)/post-merge			\
   $(GIT_CONFIG_FILE)
 endif
+
+# Not under 'if in_git_p', which Automake warns about.
+.PHONY: $(GIT_HOOKS_DIR)/pre-push git-config git-hooks invalidate-hooks
 
 # Downloading up-to-date PO files.
 
