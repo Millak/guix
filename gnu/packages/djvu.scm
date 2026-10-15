@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2025 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2025, 2026 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -54,6 +54,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -145,43 +146,67 @@ a continuous layout.")
     (license license:gpl2+)))
 
 (define-public pdf2djvu
-  (package
-    (name "pdf2djvu")
-    (version "0.9.19")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/jwilk/pdf2djvu/releases/download/" version
-             "/pdf2djvu-" version ".tar.xz"))
-       (sha256
-        (base32 "16ma6z62mqpb9q4cg784m3vqc1jx987g6kg8gyghg50m2f0a8igb"))))
-    (build-system gnu-build-system)
-    (native-inputs (list gettext-minimal pkg-config))
-    (inputs
-     (list djvulibre
-           exiv2
-           graphicsmagick
-           poppler
-           poppler-data
-           `(,util-linux "lib")))       ;for libuuid
-    (arguments
-     `(#:test-target "test"
-       #:tests? #f                                ;requires Python 2
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/test-xmp-broken.py"
-               ;; Error message changed in recent versions of XML parser
-               (("XML parsing failure")
-                "Error in XMLValidator"))))
-         (add-before 'check 'set-home-for-tests
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
-    (synopsis "PDF to DjVu converter")
-    (description
-     "@code{pdf2djvu} creates DjVu files from PDF files.
+  (let ((commit "1c3f38173ebcb8563a694db15bbf54d25b08b01d")
+        (revision "1"))
+    (package
+      (name "pdf2djvu")
+      (version (git-version "0.9.19" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/FriedrichFroebel/pdf2djvu")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "04pfdqgjxkdnrlg6f0yc1lngw3n4pagwwjvh66gjicwhmixz8bf6"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf
+             automake
+             bash-minimal
+             gettext-minimal
+             libtool
+             pkg-config
+             python-minimal
+             python-pillow
+             (texlive-local-tree (list texlive-luatex85
+                                       texlive-times))))
+      (inputs
+       (list djvulibre
+             exiv2
+             graphicsmagick
+             poppler
+             poppler-data
+             `(,util-linux "lib")))       ;for libuuid
+      (arguments
+       (list #:configure-flags #~(list "CXXFLAGS=-std=gnu++20")
+             #:test-target "test"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda _
+                     (substitute* '("tests/test_dpi_detection.jpeg.in"
+                                    "tests/test_interpolation.png.in"
+                                    "tests/test_monochrome.jpeg.in"
+                                    "tests/test_rotated_page.jpeg.in"
+                                    "tests/test_subsample.jpeg.in")
+                       (("/usr/bin/env python")
+                        "/usr/bin/env python3"))))
+                 (replace 'bootstrap
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "private/autogen"
+                       (("/usr/share/libtool")
+                        (search-input-directory inputs "/share/libtool"))
+                       (("/usr/share/gettext")
+                        (search-input-directory inputs "/share/gettext")))
+                     (invoke "bash" "private/autogen")))
+                 (add-before 'check 'set-home-for-tests
+                   (lambda _
+                     (setenv "HOME" "/tmp"))))))
+      (synopsis "PDF to DjVu converter")
+      (description
+       "@code{pdf2djvu} creates DjVu files from PDF files.
 It is able to extract:
 @itemize
 @item graphics,
@@ -190,8 +215,8 @@ It is able to extract:
 @item document outline (bookmarks),
 @item metadata (including XMP metadata).
 @end itemize\n")
-    (home-page "https://jwilk.net/software/pdf2djvu")
-    (license license:gpl2)))
+      (home-page "https://jwilk.net/software/pdf2djvu")
+      (license license:gpl2))))
 
 (define-public djvu2pdf
   (package
