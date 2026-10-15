@@ -188,12 +188,12 @@ C/C++ part.")
   (package
     (inherit icu4c-77)
     (name "icu4c")
-    (version "78.2")
+    (version "78.3")
     (source
      (origin
        (inherit (package-source icu4c-77))
        (uri (icu4c-uri->=78 version))
-       (sha256 (base32 "0dfzi4yf0wmng1866y2yd22cj1lrnzmx5qihjqh4npa3bixni69y"))
+       (sha256 (base32 "1h70pzx5ay9f49glmkwmx0p63jpyzvk0i0w78prh59sbc13plbis"))
        (patches
         (search-patches
          "icu4c-bug-1706949-wasi-workaround.patch"
