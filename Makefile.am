@@ -470,6 +470,7 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/7.1-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.18-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.18-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.18-riscv.conf	\
   gnu/packages/aux-files/linux-libre/6.18-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.12-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.12-arm64.conf	\
