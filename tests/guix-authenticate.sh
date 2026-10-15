@@ -67,7 +67,7 @@ test "$code" -ne 0
 # encoded independently of the current locale: <https://bugs.gnu.org/43421>.
 hash="636166e9636166e9636166e9636166e9636166e9636166e9636166e9636166e9"
 latin1_cafe="caf$(printf '\351')"
-echo "sign 34:tests/keys/openpgp/signing-key.sec 64:$hash" | guix authenticate \
+echo "sign $key_len:$key 64:$hash" | guix authenticate \
     | LC_ALL=C grep "hash sha256 \"$latin1_cafe"
 
 # Test for <http://bugs.gnu.org/17312>: make sure 'guix authenticate' produces
