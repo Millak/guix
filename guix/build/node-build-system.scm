@@ -136,6 +136,12 @@ dependencies."
             (begin
               (mkdir dir)
               (setenv "HOME" (string-append (getcwd) "/" dir))
+              (setenv "npm_config_update_notifier" "false")
+              (setenv "npm_config_fund" "false")
+              (setenv "npm_config_fetch_retries" "0")
+              (setenv "npm_config_audit" "false")
+              (setenv "npm_config_ignore_scripts" "true")
+              (setenv "npm_config_offline" "true")
               (format #t "set HOME to ~s~%" (getenv "HOME"))))))))
 
 (define (module-name module)
@@ -202,11 +208,7 @@ dependencies."
 
 (define* (configure #:key inputs #:allow-other-keys)
   (let ((npm (string-append (assoc-ref inputs "node") "/bin/npm")))
-    (invoke npm "--offline"
-            "--ignore-scripts"
-            "--install-links"
-            "--no-audit"
-            "install")))
+    (invoke npm "--install-links" "install")))
 
 (define* (build #:key inputs #:allow-other-keys)
   (let* ((package-meta (call-with-input-file "package.json" json->scm))
@@ -239,7 +241,6 @@ dependencies."
         (npm (string-append (assoc-ref inputs "node") "/bin/npm")))
     (invoke npm "--prefix" out
             "--global"
-            "--offline"
             "--loglevel" "info"
             "--production"
             "--install-links"
