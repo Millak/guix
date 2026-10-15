@@ -686,7 +686,7 @@ interface.")
 (define-public zig-wlroots
   (package
     (name "zig-wlroots")
-    (version "0.20.1")
+    (version "0.20.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -695,7 +695,7 @@ interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16cy0a65jddfhsvgvcmbj5ln7wx37nia6j6rr062k272dhkwgz3i"))))
+                "1cn2v4ijg969n2s0gnlzbhv9dr85z6xavjhclaj9zdpc2qdzhy3a"))))
     (build-system zig-build-system)
     (arguments
      (list #:zig zig-0.16
