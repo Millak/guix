@@ -1945,16 +1945,18 @@ System: x86_64-linux~%"
          (file2 (add-text-to-store %store "bar" (random-text)
                                    (list file1))))
     (and (pk 'verify1 (verify-store %store))    ;hopefully OK ;
-         (begin
-           (delete-file file1)
-           (not (pk 'verify2 (verify-store %store)))) ;bad! ;
-         (begin
-           ;; Using 'add-text-to-store' here wouldn't work: It would succeed ;
-           ;; without actually creating the file. ;
-           (call-with-output-file file1
-             (lambda (port)
-               (display text port)))
-           (pk 'verify3 (verify-store %store)))))) ;OK again
+         (dynamic-wind
+           (lambda ()
+             (delete-file file1))
+           (lambda ()
+             (not (pk 'verify2 (verify-store %store)))) ;bad! ;
+           (lambda ()
+             ;; Using 'add-text-to-store' here wouldn't work: It would succeed ;
+             ;; without actually creating the file. ;
+             (call-with-output-file file1
+               (lambda (port)
+                 (display text port)))))
+         (pk 'verify3 (verify-store %store))))) ;OK again
 
 (test-assert "verify-store + check-contents"
   ;; XXX: This test is I/O intensive.
@@ -1973,25 +1975,26 @@ System: x86_64-linux~%"
       (with-derivation-substitute drv text
         (and (build-derivations s (list drv))
              (verify-store s #:check-contents? #t) ;should be OK
-             (begin
-               (chmod file #o644)
-               (call-with-output-file file
-                 (lambda (port)
-                   (display "corrupt!" port)))
-               #t)
-
-             ;; Make sure the corruption is detected.  We don't test repairing
-             ;; because only "trusted" users are allowed to do it, but we
-             ;; don't expose that notion of trusted users that nix-daemon
-             ;; supports because it seems dubious and redundant with what the
-             ;; OS provides (in Nix "trusted" users have additional
-             ;; privileges, such as overriding the set of substitute URLs, but
-             ;; we instead want to allow anyone to modify them, provided
-             ;; substitutes are signed by a root-approved key.)
-             (not (verify-store s #:check-contents? #t))
-
-             ;; Delete the corrupt item to leave the store in a clean state.
-             (delete-paths s (list file)))))))
+             (dynamic-wind
+               (lambda ()
+                 (chmod file #o644)
+                 (call-with-output-file file
+                   (lambda (port)
+                     (display "corrupt!" port))))
+               (lambda ()
+                 ;; Make sure the corruption is detected.  We don't test
+                 ;; repairing because only "trusted" users are allowed to do
+                 ;; it, but we don't expose that notion of trusted users that
+                 ;; nix-daemon supports because it seems dubious and redundant
+                 ;; with what the OS provides (in Nix "trusted" users have
+                 ;; additional privileges, such as overriding the set of
+                 ;; substitute URLs, but we instead want to allow anyone to
+                 ;; modify them, provided substitutes are signed by a
+                 ;; root-approved key.)
+                 (not (verify-store s #:check-contents? #t)))
+               (lambda ()
+                 ;; Delete the corrupt item to leave the store in a clean state.
+                 (delete-paths s (list file)))))))))
 
 (test-assert "build-things, check mode"
   (with-store store
