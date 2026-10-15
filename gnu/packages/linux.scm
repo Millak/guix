@@ -594,7 +594,7 @@ GEXP)."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-7.2-version "7.2.8")
+(define-public linux-libre-7.2-version "7.2.11")
 (define-public linux-libre-7.2-gnu-revision "gnu")
 (define deblob-scripts-7.2
   (linux-libre-deblob-scripts
@@ -604,7 +604,7 @@ GEXP)."
    (base32 "1cwpmi4hxsn01pf7vpkcfda4da146hsa82jjbqwr25pymryzdz9x")))
 (define-public linux-libre-7.2-pristine-source
   (let ((version linux-libre-7.2-version)
-        (hash (base32 "0h8rwp1zipb0szf3y05pbmqyscdi4902x239bid7rbfifflxbs0j")))
+        (hash (base32 "1976l4zxjp0dqi46ff95ywf6brhg6cv9qgpi2d9w1a43z5ww83zx")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-7.2)))
