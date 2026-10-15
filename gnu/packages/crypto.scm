@@ -298,7 +298,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public libmd
   (package
     (name "libmd")
-    (version "1.3.0")
+    (version "1.2.0")
     (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -307,7 +307,7 @@ communication, encryption, decryption, signatures, etc.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0p9fr67p9g1kvky90fp0rqd1mvfw54z2gax2m5ksd9jjpp1ibrws"))))
+              "1pysafldxl9h9rw701l55141lkwyhhk7xn8cmrc7rv5055vvjqah"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -334,7 +334,6 @@ communication, encryption, decryption, signatures, etc.")
 @item RIPEMD-160
 @item SHA-1
 @item SHA-2 (SHA-256, SHA-384 and SHA-512)
-@item SHA-3 (SHA3-224, SHA3-256, SHA3-384, SHA3-512, SHAKE-128, SHAKE-256)
 @end itemize")
     (license (list license:bsd-3
                    license:bsd-2
