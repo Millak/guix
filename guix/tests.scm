@@ -135,9 +135,13 @@ found."
                                       (bootstrap-executable file-name system))))
               (mbegin %store-monad
                 (built-derivations (list drv))
-                (begin
+                (let ((temporary (string-append file "."
+                                                (number->string (getpid)))))
+                  ;; Tests run in parallel may get here at the same time.
                   (mkdir-p (dirname file))
-                  (copy-file (derivation->output-path drv) file)
+                  (false-if-exception (delete-file temporary))
+                  (copy-file (derivation->output-path drv) temporary)
+                  (rename-file temporary file)
                   (return file)))))))))
 
 (define (call-with-external-store proc)
