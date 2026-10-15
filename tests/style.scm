@@ -24,7 +24,7 @@
   #:use-module ((guix utils)
                 #:select (guile-version>?
                           call-with-temporary-directory))
-  #:use-module ((guix build utils) #:select (substitute*))
+  #:use-module ((guix build utils) #:select (invoke substitute*))
   #:use-module (guix gexp)                        ;for the reader extension
   #:use-module (guix diagnostics)
   #:use-module (guix git)
@@ -713,7 +713,8 @@
 
 (test-assert "url-fetch->git-fetch, already git-fetch unchanged"
   (call-with-test-package
-      '((home-page "https://github.com/foo/bar")
+      '((version "1.0")
+        (home-page "https://github.com/foo/bar")
         (source
          (origin
            (method git-fetch)
@@ -729,8 +730,8 @@
       (define before-hash
         (call-with-input-file file port-sha256))
 
-      (system* "guix" "style" "-L" directory "-S" "git-source"
-               "my-coreutils")
+      (invoke "guix" "style" "-L" directory "-S" "git-source"
+              "my-coreutils")
 
       ;; File should be unchanged
       (equal? (call-with-input-file file port-sha256) before-hash))))
