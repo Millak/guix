@@ -4093,11 +4093,7 @@ connection.")))
                    (assoc-ref binary-alist "module_name")
                    " module_path="
                    (assoc-ref binary-alist "module_path"))))
-                 pkg-meta-alist)
-               ;; We need to remove the install script from "package.json",
-               ;; as it would try to use node-pre-gyp and would block the
-               ;; automatic building performed by `npm install`.
-               (delete-json-fields `(("scripts" "install")))))))))
+                 pkg-meta-alist)))))))
     (home-page "https://github.com/mapbox/node-sqlite3")
     (synopsis "Node.js bindings for SQLite3")
     (description
