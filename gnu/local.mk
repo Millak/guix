@@ -990,29 +990,37 @@ MODULES_NOT_COMPILED +=				\
 
 patchdir = $(guilemoduledir)/%D%/packages/patches
 
-# Setting dist_patch_DATA = %D%/packages/patches/ is not enough for make
-# install, so use distinct dist-hook and install-data-local rules.
-install-data-local: install-data-patches
-install-data-patches:
-	$(AM_V_at)$(MKDIR_P) "$(DESTDIR)$(patchdir)"
+# Listing the patches in a '_DATA' variable would exceed the kernel's
+# per-argument length limit (MAX_ARG_STRLEN) in the generated recipes.
 if in_git_p
-	$(AM_V_at)(cd $(top_srcdir) && \
-	  git ls-files -- 'gnu/packages/patches/*.patch') | \
-	  xargs -I{} $(INSTALL_DATA) $(top_srcdir)/{} "$(DESTDIR)$(patchdir)"
+list_patches = cd $(top_srcdir) && git ls-files -- '%D%/packages/patches'
 else !in_git_p
-	$(AM_V_at)cp -pR $(top_srcdir)/gnu/packages/patches/. "$(DESTDIR)$(patchdir)"
+list_patches = cd $(top_srcdir) && find '%D%/packages/patches' -type f
 endif !in_git_p
 
 dist-hook: dist-hook-patches
 dist-hook-patches:
-	$(AM_V_at)$(MKDIR_P) "$(distdir)/gnu/packages/patches"
-if in_git_p
-	$(AM_V_at)(cd $(top_srcdir) && \
-	  git ls-files -- 'gnu/packages/patches/*.patch') | \
-	  xargs -I{} cp -p $(top_srcdir)/{} "$(distdir)/gnu/packages/patches"
-else !in_git_p
-	$(AM_V_at)cp -pR $(top_srcdir)/gnu/packages/patches/. "$(distdir)/gnu/packages/patches"
-endif !in_git_p
+	$(AM_V_at)$(MKDIR_P) "$(distdir)/%D%/packages/patches"
+	$(AM_V_at)($(list_patches)) | sed 's|^|$(top_srcdir)/|' |	\
+	  xargs cp -p -t "$(distdir)/%D%/packages/patches"
+
+# Scan the patches too.
+assert-no-store-file-names: dist-hook-patches
+
+install-data-local: install-data-patches
+install-data-patches:
+	$(AM_V_at)$(MKDIR_P) "$(DESTDIR)$(patchdir)"
+	$(AM_V_at)($(list_patches)) | sed 's|^|$(top_srcdir)/|' |	\
+	  xargs $(INSTALL_DATA) -t "$(DESTDIR)$(patchdir)"
+
+uninstall-local: uninstall-data-patches
+uninstall-data-patches:
+	$(AM_V_at)if test -d "$(DESTDIR)$(patchdir)"; then		\
+	  ($(list_patches)) | sed 's|.*/||' |				\
+	    (cd "$(DESTDIR)$(patchdir)" && xargs rm -f);		\
+	fi
+
+.PHONY: dist-hook-patches install-data-patches uninstall-data-patches
 
 MISC_DISTRO_FILES =				\
   %D%/packages/ld-wrapper.in
