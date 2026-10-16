@@ -1294,7 +1294,7 @@ devices.")
 (define-public ausweisapp
   (package
     (name "ausweisapp")
-    (version "2.4.0")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -1303,12 +1303,13 @@ devices.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fm98wzf3l498yjg8y6p4rp3c0i7b1fpabka9j22xvx3hjfw5jxw"))))
+        (base32 "1nk2gqhyp8y51k60hf0h85vxnd7qrabsz5qxcfjymlr97h5xn3d8"))))
     (build-system qt-build-system)
     (native-inputs
      (list qttools pkg-config python-wrapper))
     (inputs
-     (list qtbase
+     (list llhttp
+           qtbase
            qtsvg
            qtscxml
            qtdeclarative
