@@ -933,14 +933,14 @@ def contents() -> str:
 (define-public python-3.12
   (package
     (name "python")
-    (version "3.12.12")
+    (version "3.12.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.python.org/ftp/python/" version
                            "/Python-" version ".tar.xz"))
        (sha256
-        (base32 "1i2nqvnm2b7aakj2rf8qdfsk0nh55ly55gcbl6dw8a5h2hsa31gv"))
+        (base32 "0npxjh86qc4ym4z8g4kr9jcv6ahwab7wxq36knczpc7sc4ck5i62"))
        (patches (search-patches "python-3-deterministic-build-info.patch"
                                 "python-3.12-fix-tests.patch"
                                 "python-3-hurd-configure.patch"))
