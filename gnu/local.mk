@@ -2040,6 +2040,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/netsurf-system-utf8proc.patch		\
   %D%/packages/patches/netsurf-y2038-tests.patch		\
   %D%/packages/patches/netsurf-longer-test-timeout.patch	\
+  %D%/packages/patches/nextcloud-desktop-qt-6.10.patch          \
   %D%/packages/patches/nhc98-c-update.patch			\
   %D%/packages/patches/nheko-0-12-1-fix-rendering-replies.patch	\
   %D%/packages/patches/nheko-qt-6.10.patch                      \

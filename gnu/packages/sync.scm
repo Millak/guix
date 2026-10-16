@@ -85,7 +85,7 @@
 (define-public nextcloud-client
   (package
     (name "nextcloud-client")
-    (version "3.17.2")
+    (version "3.17.5")
     (source
      (origin
        (method git-fetch)
@@ -96,7 +96,7 @@
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0y03yldgyazqds691dzgaginnpys6alnlc9j4aimmi3zcnk93hk3"))
+        (base32 "18vv81i0mcljbw4pnyza1qsrd2i5xc83wiz25nh5irsz8iiqabi0"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -126,8 +126,8 @@
                ;; no longer are post-vendoring.
                (("KF6::Archive")
                 (string-append "KF6::Archive "
-                               "KF6WidgetsAddons"))))
-           #t))))
+                               "KF6WidgetsAddons"))))))
+       (patches (search-patches "nextcloud-desktop-qt-6.10.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
