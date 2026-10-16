@@ -5785,7 +5785,7 @@ bindings for C++ libraries.")
 (define-public python-shiboken
   (package
     (inherit python-shiboken-generator)
-    (version "6.11.2")
+    (version "6.12.0")
     (name "python-shiboken")
     (inputs
      (list clang
@@ -5857,8 +5857,9 @@ source code.")))
                   (srfi srfi-1))
       #:configure-flags
       #~(list "-DBUILD_TESTS=FALSE"
-              (string-append "-DPYTHON_EXECUTABLE="
-                             (search-input-file %build-inputs "/bin/python")))
+              ;; The following option is necessary to have the build system
+              ;; consider system-provided Qt headers.
+              "-DPYSIDE_TREAT_QT_INCLUDE_DIRS_AS_NON_SYSTEM=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
@@ -5881,11 +5882,11 @@ Requires-Dist: shiboken6==~a~%" #$version #$version)))))))
               (substitute* "CMakeLists.txt"
                 (("CMAKE_INSTALL_RPATH")
                  (string-append "CMAKE_INSTALL_RPATH " #$output "/lib")))))
-          (add-after 'go-to-source-dir 'fix-qt-module-detection
+          (add-after 'go-to-source-dir 'register-qt-module-includes
+            ;; PySide6 does not support a modular Qt with its modules in
+            ;; distinct install prefixes, so we must register their locations
+            ;; ourselves.
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "cmake/PySideHelpers.cmake"
-                (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
-                 "true"))
               (define (search-input-directories dir)
                 (filter-map
                  (match-lambda
@@ -5895,14 +5896,8 @@ Requires-Dist: shiboken6==~a~%" #$version #$version)))))))
                  inputs))
               (let ((dirs (search-input-directories "include/qt6")))
                 (substitute* "cmake/Macros/PySideModules.cmake"
-                  (("set\\(shiboken_include_dir_list " all)
-                   (string-append all (string-join dirs ";") " ")))
-                (setenv "CXXFLAGS"
-                        (string-join
-                         (map (lambda (dir)
-                                (string-append "-I" dir))
-                              dirs)
-                         " "))))))))
+                  (("\\$\\{qt_module_includes}")
+                   (string-join dirs ";")))))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "The Qt for Python product enables the use of Qt6 APIs in Python applications")
