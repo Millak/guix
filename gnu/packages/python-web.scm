@@ -15137,35 +15137,6 @@ Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
 pattern.")
     (license license:expat)))
 
-(define-public python-fastapi-pagination-minimal
-  (package
-    (name "python-fastapi-pagination-minimal")
-    (version "0.15.15")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/uriyyo/fastapi-pagination")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0jfmk5m2yrki9rw9izci2fxamam45mk36gl77rwbd5hnngkqbahv"))))
-    (build-system pyproject-build-system)
-    ;; We run the tests in python-fastapi-pagination only.
-    (arguments (list #:tests? #false))
-    ;; These are the only required dependencies,
-    ;; please add all optional dependencies to the
-    ;; full python-fastapi-pagination below.
-    (propagated-inputs (list python-fastapi python-pydantic))
-    (native-inputs (list python-hatchling))
-    (home-page "https://github.com/uriyyo/fastapi-pagination")
-    (synopsis "FastAPI pagination library")
-    (description "@code{fastapi-pagination} is a Python library designed to
-simplify pagination in FastAPI applications.  It provides a set of utility
-functions and data models to help you paginate your database queries and
-return paginated responses to your clients.")
-    (license license:expat)))
-
 (define-public python-fastapi-pagination
   (package
     (name "python-fastapi-pagination")
@@ -15231,6 +15202,10 @@ pagination in FastAPI applications.  It provides a set of utility functions
 and data models to help you paginate your database queries and return
 paginated responses to your clients.")
     (license license:expat)))
+
+;;; Deprecated on <2026-10-15>.
+(define-deprecated-package python-fastapi-pagination-minimal
+  python-fastapi-pagination)
 
 (define-public python-fastapi-cli
   (package
