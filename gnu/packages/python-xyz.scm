@@ -6440,16 +6440,21 @@ human-prettifier based on the @code{rich} Python library.")
 (define-public python-rich-toolkit
   (package
     (name "python-rich-toolkit")
-    (version "0.12.0")
+    (version "0.20.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rich_toolkit" version))
        (sha256
-        (base32 "0h3cda068xc0v8jqcp7fyrb6d4xlhcjlxm5bfygk04408500pjzs"))))
+        (base32 "0bj70dxpzn9q50qarwvybkzmz2yqn256cvly4z37gy4d8ccqyxh4"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-click python-rich python-typing-extensions))
-    (native-inputs (list python-hatchling python-inline-snapshot python-pytest))
+    (propagated-inputs
+     (list python-click python-rich python-typing-extensions))
+    (native-inputs
+     (list python-hatchling
+           python-inline-snapshot
+           python-pydantic
+           python-pytest))
     (home-page "https://pypi.org/project/rich-toolkit/")
     (synopsis "Rich toolkit for building command-line applications")
     (description "This package provides the Rich toolkit for building
