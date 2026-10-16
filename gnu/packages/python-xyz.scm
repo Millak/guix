@@ -25019,34 +25019,6 @@ should be noted that the code is a exact port of the original
 implementation} from Facebook.")
     (license license:expat)))
 
-(define-public python-graphene
-  (package
-    (name "python-graphene")
-    (version "3.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "graphene" version))
-       (sha256
-        (base32 "1aha3bnrafxd823q4swdmlvbprfb17v3fga4g3hffpz7ija8cdra"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;XXX: tests fail to load
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-dateutil
-           python-graphql-core
-           python-graphql-relay
-           python-typing-extensions))
-    (home-page "https://graphene-python.org/")
-    (synopsis "GraphQL Framework for Python")
-    (description
-     "Graphene is a Python library for building GraphQL schemas/types.  A
-GraphQL schema describes your data model, and provides a GraphQL server with
-an associated set of resolve methods that know how to fetch data.")
-    (license license:expat)))
-
 (define-public python-rodi
   (package
     (name "python-rodi")
