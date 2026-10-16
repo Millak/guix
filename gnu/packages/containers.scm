@@ -3003,14 +3003,14 @@ containers or various tools.")
 (define-public passt
   (package
     (name "passt")
-    (version "2024_12_11.09478d5")
+    (version "2026_10_02.cba3570")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://passt.top/passt/snapshot/passt-" version
                            ".tar.gz"))
        (sha256
-        (base32 "1arkir4784chw9x37174rc12cp353501m43p6iwvk5mqrlq02k90"))))
+        (base32 "1dl4qjd92qrb9z80r1bgdr1kfyixwkf2qryy2z91wlkh20mqk0bv"))))
     (build-system gnu-build-system)
     (arguments
      (list
