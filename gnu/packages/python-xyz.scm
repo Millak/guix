@@ -24985,40 +24985,6 @@ This library is a port of @url{https://github.com/graphql/graphql-js,
 graphql-js} to Python.")
     (license license:expat)))
 
-(define-public python-graphql-relay
-  (package
-    (name "python-graphql-relay")
-    (properties '((commit . "611c0333eeca53663d9b47f7994098edda81b087")
-                  (revision . "0")))
-    (version (git-version "3.1.5"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/graphql-python/graphql-relay-py")
-             (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bghnmyn6rsqji7j70yhvd6z0s4p71pdrm5144rn95dha3pdxih9"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-pytest-describe
-           python-poetry-core))
-    (propagated-inputs (list python-graphql-core))
-    (home-page "https://github.com/graphql-python/graphql-relay-py")
-    (synopsis "Relay implementation for Python")
-    (description
-     "This is a library to allow the easy creation of Relay-compliant servers
-using the GraphQL Python reference implementation of a GraphQL server.  It
-should be noted that the code is a exact port of the original
-@url{https://github.com/graphql/graphql-relay-js,graphql-relay js
-implementation} from Facebook.")
-    (license license:expat)))
-
 (define-public python-rodi
   (package
     (name "python-rodi")
