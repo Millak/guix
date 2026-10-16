@@ -4441,21 +4441,24 @@ your music.")
 (define-public beets-beetcamp
   (package
     (name "beets-beetcamp")
-    (version "0.24.3")
+    (version "0.25.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "beetcamp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/snejus/beetcamp")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00kbjvbqspmcx51cxgi67nw6a0cscbj4dz2ap9szyihdza5q1icj"))))
+        (base32 "1nqnacj2q3kvzb1gl4qsmw2a1a34m2y7cia4c11bxb9x9mrpmnxq"))))
     (build-system pyproject-build-system)
+    ;; Tests need access to https://bandcamp.com/album/hello.
+    (arguments (list #:tests? #f))
     (propagated-inputs (list beets
                              python-httpx
                              python-packaging
                              python-pycountry))
-    (native-inputs (list python-poetry-core python-pytest))
-    ;; Tests are weird and can't be run properly.
-    (arguments (list #:tests? #f))
+    (native-inputs (list python-poetry-core))
     (home-page "https://github.com/snejus/beetcamp")
     (synopsis "Bandcamp plugin for beets")
     (description
