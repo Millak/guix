@@ -3419,13 +3419,13 @@ message.")
 (define-public qtvirtualkeyboard
   (package
     (name "qtvirtualkeyboard")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0bvwci70c4ng5zgzj621a723p22v58cmzbprbz6llkjw99rjcsjc"))))
+                "0w016mngzpmpcbxpljdm3dznms8fyphyflvqknaqd3v4yhl3dbia"))))
     (build-system cmake-build-system)
     (arguments
      (list
