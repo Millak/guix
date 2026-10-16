@@ -782,7 +782,14 @@ qgenericunixservices.cpp")
                 (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
                  (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
                 (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
-                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))))
+                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))
+              ;; Use shared-mime-info as the default MIME type database.
+              (substitute* "src/corelib/mimetypes/qmimedatabase.cpp"
+                (("return dirs;" all)
+                 (string-append
+                  "dirs.append(\""
+                  #$(this-package-input "shared-mime-info") "/share/mime"
+                  "\");\n" all)))))
           (add-after 'install 'do-not-capture-python
             (lambda* (#:key outputs #:allow-other-keys)
               ;; For some reason, patching the file after the
@@ -837,6 +844,7 @@ qgenericunixservices.cpp")
            pcre2
            postgresql
            pulseaudio
+           shared-mime-info
            sqlite
            unixodbc
            xcb-util
@@ -1013,15 +1021,7 @@ tst_qt_cmake_create.cpp"
                 ;; Patch the added reference for libvulkan.so
                 (substitute* "src/gui/vulkan/qbasicvulkanplatforminstance.cpp"
                   (("libvulkan\\.so\\.1")
-                   (search-input-file inputs "lib/libvulkan.so.1")))
-
-                ;; Use shared-mime-info as the default MIME type database.
-                (substitute* "src/corelib/mimetypes/qmimedatabase.cpp"
-                  (("return dirs;" all)
-                   (string-append
-                    "dirs.append(\""
-                    #$(this-package-input "shared-mime-info") "/share/mime"
-                    "\");\n" all)))))
+                   (search-input-file inputs "lib/libvulkan.so.1")))))
             (delete 'do-not-capture-python) ;move after patch-source-shebangs
             (add-after 'patch-source-shebangs 'do-not-capture-python
               (lambda _
@@ -1368,7 +1368,6 @@ tst_qt_cmake_create.cpp"
                 libsm
                 libxcb
                 libxext
-                shared-mime-info
                 vulkan-loader
                 xcb-util-cursor
                 `(,zstd "lib"))))
