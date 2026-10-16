@@ -5410,18 +5410,19 @@ multipart}.")
 (define-public python-opentelemetry-api
   (package
     (name "python-opentelemetry-api")
-    (version "1.37.0")
+    (version "1.45.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "opentelemetry_api" version))
        (sha256
-        (base32 "19yr3hfwdc9sv8df4vydxcsxnpld3xi57siq4w8xanrm42qka1sl"))))
+        (base32 "0xgvmmlrw64mcsyxsvddsz73wa426mdjawrag11bm160phcysf5a"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata
-                             python-typing-extensions))
-    (native-inputs (list python-hatchling
-                         python-opentelemetry-test-utils-bootstrap))
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-opentelemetry-test-utils-bootstrap))
     (home-page "https://opentelemetry.io/docs/languages/python/")
     (synopsis "OpenTelemetry Python API")
     (description "@code{OpenTelemetry} Python API.")
