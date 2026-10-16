@@ -2595,7 +2595,7 @@ printers.")
 (define-public cutter
   (package
     (name "cutter")
-    (version "2.4.1")                   ;keep in sync with rizin
+    (version "2.5.0")                   ;keep in sync with rizin
     (source
      (origin
        (method git-fetch)
@@ -2608,7 +2608,7 @@ printers.")
        (snippet #~(delete-file-recursively "rizin"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090gfg90k0fn3jiyssdigjgb7xn473hxfm7gpl1rwn3kl6fv7lvw"))))
+        (base32 "0qq2df831dqhhliydg6nr4qmfsig6yp78ahy8g7qlkkv1as5nxbn"))))
     (build-system qt-build-system)
     (arguments
      (list
