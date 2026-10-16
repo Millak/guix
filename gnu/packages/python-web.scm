@@ -15235,20 +15235,37 @@ paginated responses to your clients.")
 (define-public python-fastapi-cli
   (package
     (name "python-fastapi-cli")
-    (version "0.0.7")
+    (version "0.0.32")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastapi_cli" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fastapi/fastapi-cli")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pk0ldmymc25ys4v6mslzd5vsjh9r69hfylh2ljl29pmarcvdcq2"))))
+        (base32 "0q8z9qdqja812s845lscws744jf7smldlbpi7jlmbld1js744y28"))))
     (build-system pyproject-build-system)
-    ;; Tests require fastapi, which depends on this package.
-    (arguments (list #:tests? #false))
-    (propagated-inputs (list python-rich-toolkit python-typer python-uvicorn))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_cli.py::test_script"   ;coverage test
+              ;; Neds optional python-fastapi-cloud-cli.
+              "--deselect=tests/test_cli.py::test_version")))
     (native-inputs
-     (list python-inline-snapshot python-pdm-backend python-pytest))
-    (home-page "https://pypi.org/project/fastapi-cli/")
+     (list python-fastapi-minimal
+           python-httpx
+           python-inline-snapshot
+           python-pdm-backend
+           python-pytest))
+    (propagated-inputs
+     (list python-rich-toolkit
+           python-typer
+           python-uvicorn
+           ;; [optinal]
+           ;; python-fastapi-cloud-cli              ;not packaged yet in Guix
+           #;python-fastapi-new))                   ;not packaged yet in Guix
+    (home-page "https://github.com/fastapi/fastapi-cli")
     (synopsis
      "Run and manage FastAPI apps from the command line with FastAPI CLI")
     (description
