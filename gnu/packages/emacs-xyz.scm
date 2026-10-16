@@ -2213,19 +2213,22 @@ such as @code{eat}, @code{vterm} or @code{ghostel}.")
     (version "1.3.0")
     (source
      (origin
-       (uri (git-reference
-             (url "https://github.com/tilmanrassy/emacs-treeview")
-             (commit (string-append "v" version))))
        (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tilmanrassy/emacs-treeview")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0blggaqzz7rwycpp6v0n0fig1d9prdp63w25cprnq59ymczr7w85"))
-       (file-name (git-file-name name version))))
+        (base32 "0blggaqzz7rwycpp6v0n0fig1d9prdp63w25cprnq59ymczr7w85"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/tilmanrassy/emacs-treeview/")
-    (synopsis "Emacs Lisp framework for tree navigation")
+    (arguments
+     (list #:tests? #f))                ; No tests.
+    (home-page "https://github.com/tilmanrassy/emacs-treeview")
+    (synopsis "Abstract Emacs Lisp framework for tree navigation")
     (description
      "This package provides an abstract Emacs Lisp framework for tree
-navigation.")
+navigation.  Based on this framework, specific libraries for particular
+hierarchical data can be implemented, for example, file systems.")
     (license license:gpl3+)))
 
 (define-public emacs-hide-lines
