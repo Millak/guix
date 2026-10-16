@@ -5714,7 +5714,7 @@ color-related widgets.")
 (define-public python-shiboken-generator
   (package
     (name "python-shiboken-generator")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://qt/QtForPython/pyside6/PySide6-"
@@ -5722,7 +5722,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1y7xgbyny1xvvwz7pw36jfhwfmpi457c3jr5jx9dvgnimbxpx96b"))))
+                "0lbp1kqr80vjzip750dz0aw6y89dp2h6ikqi1q01ng7kgicim709"))))
     (build-system cmake-build-system)
     (inputs (list clang python qtbase))
     (arguments
