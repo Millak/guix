@@ -1342,7 +1342,7 @@ high a score as possible.")
 (define-public cataclysm-dda
   (package
     (name "cataclysm-dda")
-    (version "0.I")
+    (version "0.I-1")
     (source
      (origin
        (method git-fetch)
@@ -1350,7 +1350,7 @@ high a score as possible.")
              (url "https://github.com/CleverRaven/Cataclysm-DDA")
              (commit version)))
        (sha256
-        (base32 "0lk9akkwxjd06739qyhg8iypaw13y9xd2yc249sy91m3llvylccz"))
+        (base32 "1054almj6ya2jv9rc56ibh5vlywy2f86x20231ikv6yvlygldvql"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
