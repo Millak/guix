@@ -3779,7 +3779,7 @@ growing set of geoscientific methods.")
     (name "qgis")
     ;; 3.44 is the LTR series,
     ;; see https://www.qgis.org/resources/roadmap/
-    (version "3.44.13")
+    (version "3.44.15")
     (source
      (origin
       (method git-fetch)
@@ -3791,7 +3791,7 @@ growing set of geoscientific methods.")
                   (string-replace-substring version "." "_")))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1biqs2cn0gdhnb7d7iz0jz9gw7zgy4i2gf663h6gn6rz2d2j8b3m"))))
+       (base32 "13d0zidpwmqhdzjs4kbbm12cc9461vbqha3bx02ivn0ma3b58zqx"))))
     (build-system cmake-build-system)
     (arguments
      (list
