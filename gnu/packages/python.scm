@@ -1330,6 +1330,10 @@ data types.")
 ;; Minimal variant of Python, mostly used to break the cycle between Tk and
 ;; Python (Tk -> libxcb -> Python.)
 
+;; XXX: Consider to slim down tests and #:make-flags or break inheritance from
+;; current default variant. Any change to default python affect python-minimal
+;; and tigers the whole bootstrap chain rebuild.
+
 (define-public python-minimal
   (package/inherit python
     (name "python-minimal")
