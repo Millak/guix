@@ -7923,6 +7923,30 @@ files, which are used in the context of graph databases.")
 completion at point function.")
       (license license:gpl3+))))
 
+(define-public emacs-dir-treeview
+  (package
+    (name "emacs-dir-treeview")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tilmanrassy/emacs-dir-treeview")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "020ywr028af4kqy4n1hh3m7j9gg2c10118bwr37q3dcwy6mg1dm2"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-treeview))
+    (arguments
+     (list #:tests? #f))                ; No tests.
+    (home-page "https://github.com/tilmanrassy/emacs-dir-treeview")
+    (synopsis "Tree navigator and file manager for Emacs")
+    (description
+     "This package provides a tree navigator and file manager for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-direnv
   (package
     (name "emacs-direnv")
