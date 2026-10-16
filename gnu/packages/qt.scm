@@ -1828,14 +1828,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.11.2")
+    (version "6.12.0")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0c5lqr8kbrfvaxh147d92vqbcirw7wj94sxwx8ih2f3ya5q7nnr1"))
+                "0q4jkj41ws23w0p7im2p65qxwxm382kxzydfkfskp5z10ck3l7ri"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
@@ -1976,6 +1976,8 @@ with JavaScript and C++.")))
                     "tst_snippets"
                     ;; <https://qt-project.atlassian.net/browse/QTBUG-149021>
                     "test_duplicate_files_qml_files"
+                    ;; <https://qt-project.atlassian.net/browse/QTBUG-151641>
+                    "RunCMake.aot_lookup_validation"
                     
                     ;; This test fail due to not being able to decode
                     ;; test SVG images, despite the qtsvg plugin being made
