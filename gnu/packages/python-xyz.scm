@@ -24826,35 +24826,32 @@ numbers, real numbers, mixed types and more, and comes with a shell command
     (license license:expat)))
 
 (define-public python-graphql-core
+  ;; TODO: Move to (gnu packages python-web).
   (package
     (name "python-graphql-core")
-    (version "3.2.7")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/graphql-python/graphql-core")
-             (commit (string-append "v" version))))
+              (url "https://github.com/graphql-python/graphql-core")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jq23vm7lvy6h7rrhfa9iss50vh5anmk0n8kvdbqgrxnzqak43va"))))
+        (base32 "0zy7v876g7vangkp60fk5p46kwdma57q5ya1gbrr6qc7ahr0zm8a"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-gevent
-           python-mock
-           python-poetry-core
-           python-pytest
+     (list python-pytest
            python-pytest-benchmark
-           python-pytest-mock))
-    (propagated-inputs
-     (list python-promise python-six))
+           python-pytest-mock
+           python-uv-build))
     (home-page "https://github.com/graphql-python/graphql-core")
     (synopsis "GraphQL implementation for Python")
     (description
      "GraphQL implementation for Python.  GraphQL is a data query language and
-     runtime designed and used to request and deliver data to mobile and web apps.
-     This library is a port of @url{https://github.com/graphql/graphql-js,graphql-js}
-     to Python.")
+runtime designed and used to request and deliver data to mobile and web apps.
+This library is a port of @url{https://github.com/graphql/graphql-js,
+graphql-js} to Python.")
     (license license:expat)))
 
 (define-public python-graphql-relay
