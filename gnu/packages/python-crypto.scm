@@ -674,6 +674,31 @@ ciphers, message digests and key derivation functions.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
+(define-public python-pwdlib
+  (package
+    (name "python-pwdlib")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/frankie567/pwdlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vsymvwrnw1k5f3xmzqzfy6xdzcfb05cz4hxd7nrqggdw20rvyp1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-regex-commit python-hatchling python-pytest))
+    (propagated-inputs
+     (list python-argon2-cffi python-bcrypt))
+    (home-page "https://github.com/frankie567/pwdlib")
+    (synopsis "Password hashing for Python")
+    (description
+     "This package provides an alternative to @code{passlib} password hashing
+library for Python.")
+    (license license:expat)))
+
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
