@@ -5206,7 +5206,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.8.2")                   ;keep in sync with cutter
+    (version "0.9.1")                   ;keep in sync with cutter
     (source
      (origin
        (method url-fetch)
@@ -5215,7 +5215,7 @@ form, numpad.
              version "/rizin-src-v" version ".tar.xz"))
        (sha256
         (base32
-         "159ddi96mlqdynixy3h831dip59gr2gnj85jgvrjyvz8p99clc0n"))))
+         "1jixajg107lxhdqywvs97s0izz27yyqphm718akxvbx7miywvhbs"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5238,7 +5238,6 @@ form, numpad.
               "-Duse_zlib=true"
               "-Duse_lzma=true"
               "-Dinstall_sigdb=false"
-              "-Duse_swift_demangler=true"
               "-Duse_gpl=true")
       #:phases
       #~(modify-phases %standard-phases
@@ -5248,9 +5247,11 @@ form, numpad.
               ;; <https://github.com/rizinorg/rizin-testbins>.
               (substitute* "test/meson.build"
                 (("subdir\\('integration'\\)") ""))
-              ;;; Skip failing tests.
+              ;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'tokens',\n") "")))))))
+                ;; The hash token fails unexpectedly (see:
+                ;; <https://github.com/rizinorg/rizin/issues/6896>).
+                ((".*'(hash|tokens)',.*") "")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list capstone
