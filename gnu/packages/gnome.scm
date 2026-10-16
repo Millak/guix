@@ -1804,8 +1804,8 @@ and system administrators.")
 (define-public dia
   ;; There are no recent releases; use the latest commit from the master
   ;; branch.
-  (let ((commit "c99c6e2c85ce28e82a89384a83800d6efb91dfb1")
-        (revision "6"))
+  (let ((commit "ad68cc378b7a187706bc2648c48b44d16fb80819")
+        (revision "7"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -1817,7 +1817,8 @@ and system administrators.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "11ak07pw1d9bgrkmpzlk287aphqscdnh4l36vc821v0srkas9335"))))
+          (base32 "0b7czm78xfzimdr0sn5kkdy64k6vag6sd4dpn533wp46s5rx4f3s"))
+         (patches (search-patches "dia-with-poppler-26.06.patch"))))
       (build-system meson-build-system)
       (arguments
        (list
@@ -1829,14 +1830,20 @@ and system administrators.")
                   (("gtk_update_icon_cache: true")
                    "gtk_update_icon_cache: false")
                   (("update_desktop_database: true")
-                   "update_desktop_database: false")))))))
+                   "update_desktop_database: false"))))
+            (add-before 'check 'pre-check
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Tests require a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1"))))))
       (native-inputs
        (list appstream
              docbook-xml-4.5
              docbook-xsl
              `(,glib "bin")
              gettext-minimal
-             pkg-config))
+             pkg-config
+             xorg-server-for-tests))
       (inputs
        (list graphene
              gtk+

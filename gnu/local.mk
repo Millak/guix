@@ -1204,6 +1204,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/decibels-set-root-dir.patch		\
   %D%/packages/patches/dee-vapi.patch			\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
+  %D%/packages/patches/dia-with-poppler-26.06.patch		\
   %D%/packages/patches/dicedb-remove-init-from-config-subpkg.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/django-compressor-build-with-beautifulsoup-4.14+.patch	\
