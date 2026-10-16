@@ -3021,40 +3021,47 @@ to produce high quality figures that can be used in publications.")
     (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hotspotsc" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/yoseflab/hotspot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1phbd49nb0ivfcgfi6yxd2masgd0v6133mki9vd5pkrhx0a7wb5d"))))
+        (base32 "0w61bk81c9zkhxjzh3n2q21q8kwk2fgcjgk5i2q4b1apa5d47agf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false                   ;there are none
+      #:build-backend "poetry.core.masonry.api"
+      #:test-flags
+      ;; ValueError: underlying array is read-only
+      #~(list "--deselect=tests/test_validations.py::test_models")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
+          (add-after 'unpack 'fix-pyproject-toml
+            ;; tool.poetry.extras.docs[2] must match pattern ^[a-zA-Z-_.0-9]+$
             (lambda _
-              ;; Patch to use the core poetry API.
               (substitute* "pyproject.toml"
-                (("poetry.masonry.api")
-                 "poetry.core.masonry.api")
-                ;; Fix syntax error
-                (("sphinx>") "sphinx")))))))
-    (propagated-inputs (list python-anndata
-                             python-ipython
-                             python-matplotlib
-                             python-nbsphinx
-                             python-numba
-                             python-numpy
-                             python-pandas
-                             python-pynndescent
-                             python-scanpy
-                             python-scikit-learn
-                             python-scipy
-                             python-seaborn
-                             python-statsmodels
-                             python-tqdm))
+                (("docs=.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; <...> no locator available for file <...>
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
-     (list python-poetry-core python-pytest python-sphinx))
+     (list python-poetry-core python-pytest))
+    (propagated-inputs
+     (list python-anndata
+           python-matplotlib
+           python-nbsphinx
+           python-numba
+           python-numpy
+           python-pandas
+           python-pynndescent
+           python-scanpy
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-tqdm))
     (home-page "https://github.com/yoseflab/hotspot")
     (synopsis
      "Identifying informative genes in a single-cell dataset")
