@@ -4399,8 +4399,9 @@ websites such as Libre.fm.")
      (list bash-minimal
            gst-plugins-base
            gst-plugins-good
-           gstreamer
-           python-confuse
+           gstreamer))
+    (propagated-inputs
+     (list python-confuse
            python-jellyfish
            python-lap
            python-mediafile
