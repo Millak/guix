@@ -7355,6 +7355,95 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
 @url{https://tenacity.readthedocs.io/en/latest/, Tenacity} package.")
     (license license:expat)))
 
+(define-public python-strawberry-graphql
+  (package
+    (name "python-strawberry-graphql")
+    (version "0.332.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/strawberry-graphql/strawberry")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ch0lvsqx918mzasnp23xyppgdfclyz28ji627xnv5c1lvflxj64"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 5052 passed, 227 skipped, 105 xfailed, 19 xpassed, 4274 warnings
+      #:test-flags
+      #~(list "-m" "not channels"
+              "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=tests/benchmarks/"
+              "--ignore=tests/experimental/pydantic/test_fields.py"
+              "--ignore=tests/test_benchmark_contracts.py"
+              ;; TypeError: expected str, bytes or os.PathLike object, not
+              ;; NoneType
+              (string-append "--deselect=tests/schema/test_lazy/"
+                             "test_lazy_generic.py"
+                             "::test_lazy_types_loaded_from_same_module[cli]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYTHONPATH" ".")
+              (setenv "DJANGO_SETTINGS_MODULE"
+                      "tests.django.django_settings"))))))
+    (native-inputs
+     (list python-asgiref
+           python-freezegun
+           python-inline-snapshot
+           python-libcst
+           python-multipart
+           python-opentelemetry-sdk
+           python-pyinstrument
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-django
+           python-pytest-emoji
+           python-pytest-mock
+           python-pytest-snapshot
+           python-pytest-xdist
+           python-sanic-testing
+           python-setuptools
+           python-typer
+           python-uv-build
+           python-uvicorn
+           ;; Test with minimal variants of Web frameworks.
+           python-django-minimal
+           python-fastapi-minimal
+           python-litestar-minimal
+           python-sanic-minimal))
+    (propagated-inputs
+     (list python-cross-web
+           python-graphql-core
+           python-packaging
+           python-dateutil
+           python-typing-extensions))
+    (home-page "https://strawberry.rocks/")
+    (synopsis "Python GraphQL library based on dataclasses")
+    (description
+     "Strawberry is a Python library for GraphQL that aims to stay close to
+the GraphQL specification and allow for a more natural way of defining GraphQL
+schemas.")
+    (license license:expat)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-strawberry-graphql-minimal
+  (package/inherit python-strawberry-graphql
+    (name "python-strawberry-graphql-minimal")
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-uv-build))
+    (propagated-inputs
+     (list python-cross-web-minimal
+           python-graphql-core
+           python-packaging
+           python-dateutil
+           python-typing-extensions))))
+
 (define-public python-stripe
   (package
     (name "python-stripe")
