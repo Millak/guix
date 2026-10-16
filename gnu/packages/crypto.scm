@@ -98,6 +98,7 @@
   #:use-module (gnu packages xml)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -188,9 +189,9 @@ provided out-of-the-box, such as CRC-32 (used in PKZip and Ethernet),
 CRC-XMODEM, and CRC-CCITT.")
     (license license:bsd-3)))
 
-(define-public libblake3
+(define-public blake3
   (package
-    (name "libblake3")
+    (name "blake3")
     (version "1.8.2")
     (source
      (origin
@@ -217,6 +218,9 @@ CRC-XMODEM, and CRC-CCITT.")
     (description "This package provides a cryptographic hash function that is
 fast, secure, parallelizable, capable of incremental updates.")
     (license (list license:asl2.0 license:cc0)))) ; dual licensed
+
+;; XXX: Remove when May 2027 comes.
+(define-deprecated/public-alias libblake3 blake3)
 
 (define-public libdecaf
   ;; The 1.0.2 release fails due to some compiler warning treated as an error
