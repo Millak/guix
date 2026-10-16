@@ -111,16 +111,16 @@ KDSoap.")
   (package
     (name "qxmpp")
     ;; kaidan requires a precise version
-    (version "1.15.1")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://invent.kde.org/libraries/qxmpp")
-             (commit (string-append "v" version))))
+              (url "https://invent.kde.org/libraries/qxmpp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1shy183868wlaka4s092nlbsga1950hzk21wpj5xil48088p6iry"))))
+        (base32 "154bma8i6c8c7ms58n06jsfmgg13q58scq4hvzp8sa0zb8cqw6va"))))
     (build-system qt-build-system)
     (arguments
      `(#:qtbase ,qtbase
@@ -128,20 +128,12 @@ KDSoap.")
                                "-DWITH_GSTREAMER=true"
                                "-DBUILD_OMEMO=ON") ;needed by kaidan
        #:test-exclude
-        (string-join ;; These tests use the network.
-         (list "tst_qxmppiceconnection"
-               "tst_qxmppcallmanager"
-               "tst_qxmpptransfermanager")
-         "|")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list
-       gstreamer
-       libomemo-c
-       openssl
-       qca-qt6
-       qt5compat))
+       (string-join ;; These tests use the network.
+        (list "tst_FileSharing"
+              "tst_IceConnection")
+        "|")))
+    (native-inputs (list extra-cmake-modules qttools pkg-config))
+    (inputs (list gstreamer libomemo-c openssl qca-qt6 qt5compat))
     (home-page "https://invent.kde.org/libraries/qxmpp")
     (synopsis "XMPP client and server library")
     (description
