@@ -5440,13 +5440,13 @@ multipart}.")
 (define-public python-opentelemetry-sdk
   (package
     (name "python-opentelemetry-sdk")
-    (version "1.37.0")
+    (version "1.45.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "opentelemetry_sdk" version))
        (sha256
-        (base32 "19fx8vf35kcss43i17zqngqhmglb36dnddasbdvfsgcm22f0i3nc"))))
+        (base32 "1wrbfv27r2p7i85n9jln26ndqfp9fff9jlba3rirl0a5lrn4mlk3"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-opentelemetry-api
                              python-opentelemetry-semantic-conventions
