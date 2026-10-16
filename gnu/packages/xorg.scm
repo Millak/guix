@@ -6469,7 +6469,7 @@ direct replacement for @command{xvfb-run} specifically.
 (define-public xwayland-satellite
   (package
     (name "xwayland-satellite")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6478,7 +6478,7 @@ direct replacement for @command{xvfb-run} specifically.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j86a6lk8c7p0n4gpi452mipgr560x4j4b926ngq0wgbm6kf7gii"))
+                "1phn1s7kswlr8vim6b0j9xxxil7sdy9p23sdb6g24c7254426lbq"))
               (modules '((guix build utils)))
               (snippet '(delete-file "OpenSans-Regular.ttf"))))
     (build-system cargo-build-system)
