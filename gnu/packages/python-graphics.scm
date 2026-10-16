@@ -14,6 +14,7 @@
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sisiutl <sisiutl@egregore.fun>
 ;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastor-perez@inria.fr>
+;;; Copyright © 2026 Orahcio Felício de Sousa <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -75,6 +77,7 @@
   #:use-module (gnu packages simulation)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages typst)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -398,7 +401,7 @@ Design spec without sacrificing ease of use or application performance.")
 (define-public python-manim
   (package
     (name "python-manim")
-    (version "0.20.1")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -407,7 +410,7 @@ Design spec without sacrificing ease of use or application performance.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ifgcsz9dhb7qyqsi60q840wqcqfmqxf19r8qlncakziyqlfmwxd"))))
+        (base32 "1mvwg4zqpq8vsz68j2szzdl26v74gmvs27fa8n0yzscz2y2v08gw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -436,13 +439,15 @@ Design spec without sacrificing ease of use or application performance.")
      (list python-hatchling
            python-pytest
            python-pytest-xdist
-           (texlive-local-tree
+           python-typst                 ;for tests
+           python-uv-build
+           (texlive-local-tree          ;for tests
             (list texlive-dvisvgm
                   texlive-fontspec
                   texlive-preview
                   texlive-standalone
                   texlive-xcolor))
-           xorg-server))
+           xorg-server-for-tests))
     (propagated-inputs
      (list ffmpeg
            python-av
@@ -474,8 +479,11 @@ Design spec without sacrificing ease of use or application performance.")
     (description
      "Manim is a Python library for creating mathematical animations.  The
 animations are written as Python code which is based on predefined objects.
-You can make animations with maths formulas (LaTeX-based), simple shapes, 3D
-objects, function graphs and more.")
+You can make animations with maths formulas (renderd via LaTeX or Typst),
+simple shapes, 3D objects, function graphs and more.
+
+To render maths formulas, install either @code{texlive} or @code{python-typst}
+in the user profile.")
     (license license:expat)))
 
 (define-public python-mapbox-earcut
