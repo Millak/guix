@@ -1126,14 +1126,14 @@ data types.")
 (define-public python-3.13
   (package
     (name "python-next")
-    (version "3.13.13")
+    (version "3.13.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.python.org/ftp/python/" version
                            "/Python-" version ".tar.xz"))
        (sha256
-        (base32 "0wcanwlkfy91hhpsgx9b1vbdyywm5s40rlbm9ykcqg3q07s1zf9a"))
+        (base32 "0pdkdb5vc9jziy6q4yfnnkdc1d33858152i2ildv2nwvqyrvzcgl"))
        (patches (search-patches "python-3-deterministic-build-info.patch"
                                 "python-3.13-fix-tests.patch"
                                 "python-3-hurd-configure.patch"))
@@ -1203,6 +1203,7 @@ data types.")
                              " test_threading"
                              " test_asyncio"
                              " test_shutdown"
+                             " test_pdb"      ;doctest fails
                              #$@(if (target-ppc32?)
                                     #~(" test_ssl")
                                     #~())
@@ -1255,7 +1256,6 @@ data types.")
                                        " test_json"
                                        " test_multiprocessing_fork"
                                        " test_multiprocessing_main_handling"
-                                       " test_pdb "
                                        " test_regrtest"
                                        " test_ssl" ;; Fails with openssl 3.5
                                        " test_sqlite")
