@@ -42,32 +42,25 @@
 (define-public python-orange-canvas-core
   (package
     (name "python-orange-canvas-core")
-    (version "0.2.6")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange_canvas_core" version))
        (sha256
-        (base32 "1h0p6p36h9vwmgs7xa7x0qa06zjxjyj8pr1p8d4iykbvl60s3dq0"))))
+        (base32 "09yvri7jh7wl53v9m2qybn0ldznlqag5nryqkcvr6qp33bd4h48n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 227 passed, 4 skipped, 13 deselected, 15 warnings
       #:test-flags
       #~(list "-k" (string-join
-                    ;; Tests fail with error: Failed: CALL ERROR: Exceptions
-                    ;; caught in Qt event loop.
-                    (list "not test_create_new_window"
-                          "test_dont_load_swp_on_new_window"
-                          "test_editlinksnode"
-                          "test_links_edit"
-                          "test_links_edit_widget"
-                          "test_new_window"
-                          "test_toolbox"
-                          "test_widgettoolgrid"
-                          ;; AssertionError: Lists differ
-                          "test_create_normal"
-                          "test_create_on_demand")
+                    ;; There is no CanvasIcon.png icon file.
+                    (list "not test_loader"
+                          ;; This test fails with "AssertionError:
+                          ;; <PyQt6.QtWidgets.QWidget object at
+                          ;; 0x7ffed655df90> is not None".
+                          "test_garbage_collect_widgets")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
