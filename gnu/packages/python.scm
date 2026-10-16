@@ -739,7 +739,7 @@ def contents() -> str:
   (package
     (inherit python-3.10)
     (name "python")
-    (version "3.11.14")
+    (version "3.11.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.python.org/ftp/python/"
@@ -751,7 +751,7 @@ def contents() -> str:
                         "python-3-search-paths.patch"))
               (sha256
                (base32
-                "0y4v42qm66nvizjxbnixh59283a54nki51jmbrgwkhc8bkndhgld"))
+                "168ml5nn9dfdn70cylb8qn99j3z012s4l4qga7d7rqpskv9lmdxz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
