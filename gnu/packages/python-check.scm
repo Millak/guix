@@ -3081,6 +3081,37 @@ doctest to render the object representations.")
 advanced doctest support and enables the testing of reStructuredText files.")
     (license license:bsd-3)))
 
+(define-public python-pytest-emoji
+  (package
+    (name "python-pytest-emoji")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hackebrot/pytest-emoji")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vk32j4vv5lpspijcrmyn9qkg5z0s5y5y36nig63j30fh9n83qhs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(map (lambda (test) (string-append "--deselect=tests/test_emoji.py"
+                                           test))
+             ;; Tests fail comparing terminal outputs.
+             (list "::test_emoji_disabled_by_default_verbose"
+                   "::test_emoji_enabled_verbose"
+                   "::test_emoji_enabled_custom_verbose"))))
+    (native-inputs (list python-pytest-bootstrap python-setuptools))
+    (home-page "https://github.com/hackebrot/pytest-emoji")
+    (synopsis "Pytest plugin that adds emojis to test result report")
+    (description
+     "This package provides a pytest plugin that adds emojis to your test
+result report.")
+    (license license:expat)))
+
 (define-public python-pytest-env
   (package
     (name "python-pytest-env")
