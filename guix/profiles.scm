@@ -1251,6 +1251,7 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
             (with-directory-excursion destdir
               (call-with-output-file "subdirs.el"
                 (lambda (port)
+                  (display ";; -*- lexical-binding: t; -*-\n" port)
                   (write
                    `(normal-top-level-add-to-load-path
                      (list ,@(delete-duplicates subdirs)))
