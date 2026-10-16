@@ -5213,6 +5213,34 @@ form, numpad.
        (uri (string-append
              "https://github.com/rizinorg/rizin/releases/download/v"
              version "/rizin-src-v" version ".tar.xz"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        ;; Delete bundled libraries.
+        '(begin
+           (define (delete-all-but directory . preserve)
+             (with-directory-excursion directory
+               (let* ((pred (negate (cut member <>
+                                         (cons* "." ".." preserve))))
+                      (items (scandir "." pred)))
+                 (for-each (cut delete-file-recursively <>) items))))
+           (delete-all-but "subprojects"
+                           "libdemangle" ;no use_sys option
+                           "nettle"      ;needed by rzheap
+                           "ptrace-wrap" ;no use_sys option
+                           "softfloat"   ;no package
+                           ;; These are internals without support to build
+                           ;; externally.
+                           "rizin-grammar-c"
+                           "rizin-shell-parser"
+                           "rzar"
+                           "rzgdb"
+                           "rzheap"
+                           "rzqnx"
+                           "rzspp"
+                           "rzwinkd"
+                           "yxml")))
        (sha256
         (base32
          "1jixajg107lxhdqywvs97s0izz27yyqphm718akxvbx7miywvhbs"))))
@@ -5223,6 +5251,8 @@ form, numpad.
       #~(list "--wrap-mode=nodownload"  ;for rzgdb, rzheap, etc.
               "-Dpackager=guix"
               (string-append "-Dpackager_version=" #$version)
+              "-Duse_sys_blake2=enabled"
+              "-Duse_sys_blake3=enabled"
               "-Duse_sys_capstone=enabled"
               "-Duse_sys_magic=enabled"
               "-Duse_sys_libzip=enabled"
@@ -5235,6 +5265,8 @@ form, numpad.
               "-Duse_sys_lzma=enabled"
               "-Duse_sys_libmspack=enabled"
               "-Duse_sys_pcre2=enabled"
+              "-Duse_sys_softfloat=disabled" ;TODO: package & enable
+              "-Duse_sys_zydis=enabled"
               "-Duse_zlib=true"
               "-Duse_lzma=true"
               "-Dinstall_sigdb=false"
@@ -5256,6 +5288,8 @@ form, numpad.
     (inputs
      (list capstone
            file
+           blake2
+           blake3
            libuv
            libzip
            lz4
@@ -5264,6 +5298,7 @@ form, numpad.
            tree-sitter
            xxhash
            zlib
+           zydis
            (list zstd "lib")
            libmspack))
     (home-page "https://rizin.re")
