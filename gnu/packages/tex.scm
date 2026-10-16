@@ -77750,7 +77750,7 @@ PDF documents.")
 (define-public texmaker
   (package
     (name "texmaker")
-    (version "6.0.1")
+    (version "6.0.2")
     ;; TODO: Remove "3rdparty" directory contents:
     ;;   encodingprober, hunspell, pdfium, singleapp, and synctex
     ;; as at least some of those are packaged by Guix directly.
@@ -77762,7 +77762,7 @@ PDF documents.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1xna8qp0x3qvg2093slx98jv0qri6vpbblvhrla7gzfq1kgkbhmq"))))
+                "1krra5zzaxy8gzqqg2rjxwnqm1d7kmyd648mncl1bvans4bbpv15"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ; no tests
