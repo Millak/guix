@@ -1116,7 +1116,8 @@ fonts to gEDA.")
                 (sha256
                  (base32
                   "1zzq831gxhr6d79glvkhmcfxsq8liagg5hfix0yaqn1nfqdrqrdj"))
-                (file-name (git-file-name name version))))
+                (file-name (git-file-name name version))
+                (patches (search-patches "libfive-quaternion-header.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
