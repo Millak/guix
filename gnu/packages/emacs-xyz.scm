@@ -7947,6 +7947,37 @@ completion at point function.")
      "This package provides a tree navigator and file manager for Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-dir-treeview-themes
+  (let ((commit "8e28c2501a978e6ff733fc9cf43a826fd8e7b87e")
+        (revision "1"))
+    (package
+      (name "emacs-dir-treeview-themes")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/tilmanrassy/emacs-dir-treeview-themes")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16hmp0wp8a1ahhsqy2s7wkbz9fkjfdi5wa0hjrwc2rfg3xprf449"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dir-treeview))
+      (arguments
+       (list
+        #:tests? #f                     ; No tests.
+        #:include
+        #~(cons* "icons"
+                 %default-include)))
+      (home-page "https://github.com/tilmanrassy/emacs-dir-treeview-themes")
+      (synopsis "Themes for emacs-dir-treeview")
+      (description
+       "This package provides two extra themes for emacs-dir-treeview, namely
+Petunia and Hortensia.")
+      (license license:gpl3+))))
+
 (define-public emacs-direnv
   (package
     (name "emacs-direnv")
