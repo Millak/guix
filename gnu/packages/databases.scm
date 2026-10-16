@@ -5577,6 +5577,20 @@ Python code, with Python objects.  It is based on Python type
 annotations, and powered by Pydantic and SQLAlchemy.")
     (license license:expat)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-sqlmodel-minimal
+  (package/inherit python-sqlmodel
+    (name "python-sqlmodel-minimal")
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:tests? #t #t) #f)))
+    (native-inputs
+     (list python-pdm-backend))
+    (propagated-inputs
+     (list python-pydantic python-sqlalchemy-2 python-typing-extensions))))
+
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
