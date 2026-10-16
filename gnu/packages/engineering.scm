@@ -1103,8 +1103,8 @@ fonts to gEDA.")
       (license license:gpl2+))))
 
 (define-public libfive
-  (let ((commit "b1ea998d8adb3884ab52798f7388f4354145f452")
-        (revision "5"))
+  (let ((commit "8d7e15dcb1aa77deaba771856a3dc10ec0ca46b1")
+        (revision "6"))
     (package
       (name "libfive")
       (version (git-version "0" revision commit))
@@ -1115,7 +1115,7 @@ fonts to gEDA.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0j91qq9d7949d2zs5wxyqd0ly644nb5690s8xnr6pchjl9z6pqxv"))
+                  "1zzq831gxhr6d79glvkhmcfxsq8liagg5hfix0yaqn1nfqdrqrdj"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
