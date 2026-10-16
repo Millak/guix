@@ -15168,68 +15168,69 @@ return paginated responses to your clients.")
 
 (define-public python-fastapi-pagination
   (package
-    (inherit python-fastapi-pagination-minimal)
     (name "python-fastapi-pagination")
+    (version "0.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uriyyo/fastapi-pagination")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01ipwc7nlx9ryk1c9n3c7gjqx33m4vzhwmqx9b8ghqy5dv6p6vy5"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--asyncio-mode=auto"
-              "--ignore=tests/ext"
-              ;; Netwok access is required.
-              "-k" (string-join
-                    (list "not test_optional_params[postgres-default]"
-                          "test_optional_params[postgres-limit-offset]"
-                          "test_optional_params[sqlite-default]"
-                          "test_optional_params[sqlite-limit-offset]")
-                    " and not "))
+      #~(list "--ignore=tests/ext")   ;run unit tests only
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; We don't have a package for python-cassandra or motor, but we
-             ;; also don't need them as we only run the unit tests anyway.
-             (substitute* "tests/conftest.py"
-               (("from cassandra.*") "")
-               (("from motor.*") "")))))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs
-                     python-fastapi-pagination-minimal)
-       (prepend python-asyncpg
-                python-databases
-                python-django
-                python-fastapi
-                python-pydantic
-                python-sqlalchemy
-                (package
-                  (inherit python-tortoise-orm)
-                  (arguments
-                   (substitute-keyword-arguments (package-arguments
-                                                  python-tortoise-orm)
-                     ((#:phases phases '%standard-phases)
-                      `(modify-phases ,phases
-                         (delete 'sanity-check)))))
-                  (propagated-inputs
-                   (modify-inputs propagated-inputs
-                     (replace "python-aiosqlite" python-aiosqlite)))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; We don't have a package for python-cassandra or motor, but we
+              ;; also don't need them as we only run the unit tests anyway.
+              (substitute* "tests/conftest.py"
+                (("from cassandra.*") "")
+                (("from motor.*") "")))))))
     (native-inputs
-     (list python-aiosqlite
-           python-asgi-lifespan
-           python-asyncpg
+     (list python-asgi-lifespan
+           ;; python-cassandra                      ;not packaged yet in Guix
            python-dirty-equals
            python-faker
            python-hatchling
-           python-httpx
            python-pytest
-           python-pytest-asyncio
-           python-sqlalchemy
-           python-typing-extensions))
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-fastapi
+           python-pydantic
+           python-typing-extensions
+           ;; [optional]
+           python-aiosqlite
+           python-asyncpg
+           ;; python-beanie                         ;not packaged yet in Guix
+           python-django
+           python-elasticsearch
+           ;; python-google-cloud-firestore         ;not packaged yet in Guix
+           python-greenlet
+           ;; python-mongoengine                    ;not packaged yet in Guix
+           ;; python-ormar                          ;not packaged yet in Guix
+           python-peewee
+           python-piccolo
+           python-psycopg
+           ;; python-scylla-driver                  ;not packaged yet in Guix
+           ;; python-sqlakeyset                     ;not packaged yet in Guix
+           python-sqlalchemy-2
+           python-sqlmodel
+           python-tortoise-orm))
+    (home-page "https://uriyyo-fastapi-pagination.netlify.app/")
+    (synopsis "FastAPI pagination library")
     (description
-     (string-append (package-description python-fastapi-pagination-minimal)
-                    "
-
-This package, as opposed to @code{python-fastapi-pagination-minimal}, depends on
-all available optional dependencies supported by mainline
-@code{fastapi-pagination}."))))
+     "@code{fastapi-pagination} is a Python library designed to simplify
+pagination in FastAPI applications.  It provides a set of utility functions
+and data models to help you paginate your database queries and return
+paginated responses to your clients.")
+    (license license:expat)))
 
 (define-public python-fastapi-cli
   (package
