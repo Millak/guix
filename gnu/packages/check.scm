@@ -1358,7 +1358,7 @@ with the @code{klee} package.")
 (define-public klee
   (package
    (name "klee")
-   (version "3.2")
+   (version "3.3")
    (source
     (origin
      (method git-fetch)
@@ -1367,7 +1367,7 @@ with the @code{klee} package.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "0rvvdbv0c6b2jhsdxhzcbm0smzndd4ibsg1bxwjw0mwkpk21yfph"))))
+      (base32 "00fp6wk45a08i422s67v2wygg35528bg9jrgmmvsvyq0rvalnb3y"))))
    (arguments
     (list
      #:strip-directories #~(list "bin") ;don't strip LLVM bitcode in /lib
@@ -1418,7 +1418,7 @@ with the @code{klee} package.")
              (string-append "-DKLEE_UCLIBC_PATH="
                             (search-input-file %build-inputs "/lib/klee/libc.a"))
              "-DENABLE_POSIX_RUNTIME=ON")))
-   (native-inputs (list clang-16 llvm-16 python-lit))
+   (native-inputs (list clang-18 llvm-18 python-lit))
    (inputs (list bash-minimal klee-uclibc gperftools sqlite z3 python python-tabulate))
    (build-system cmake-build-system)
    (supported-systems '("x86_64-linux"))
