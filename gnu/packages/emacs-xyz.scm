@@ -46182,7 +46182,12 @@ detected language.")
      (list
       #:test-command #~(list "make" "test")
       ;; some tests require emacs built with libxml2
-      #:emacs emacs-no-x))
+      #:emacs emacs-no-x
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _ (emacs-makeinfo))))))
+    (native-inputs (list texinfo))
     (home-page "https://github.com/benthamite/annas-archive")
     (synopsis "Search and download from Anna's Archive")
     (description
