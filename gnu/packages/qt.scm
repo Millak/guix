@@ -2734,13 +2734,13 @@ positioning and geolocation plugins.")))
   (package
     (inherit qtsvg)
     (name "qtlocation")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0fn2clzz2wmc3lwzqlkwk07scvmmdhim1ihpxkv7dg8zw3nafl2d"))))
+                "03gmn32419mri9p5znq7qnnlpydbiqmadzg9as3mxfcygkard1i1"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
