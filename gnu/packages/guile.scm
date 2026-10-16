@@ -687,20 +687,20 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                            #:deep? #f))
 
 (define-public guile-for-guile-emacs
-  (let ((commit "e62c0d1b32f625fcbaa733c32a88622846aee905")
-        (revision "2"))
-    (package/inherit guile-next
+  (let ((commit "2e9edb7717ca09d964f564236443d87d407ffad9")
+        (revision "0"))
+    (package/inherit guile-with-gmp
       (name "guile-for-guile-emacs")
-      (version (git-version "3.0.7-81" revision commit))
+      (version (git-version "3.0.8" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                       (url "https://codeberg.org/lyrra/guile")
+                       (url "https://codeberg.org/lyrra/guile-oldfork")
                        (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0xfnd99iws9dwk5va8bmqpysmb8pnb1w91rw7rbfzzklyfvpibh6"))))
+                  "09hifrv81rn4scvmdjlsc103amgri145sykvcvp2q5lmld5ld58r"))))
       (arguments
        (substitute-keyword-arguments arguments
          ((#:configure-flags flags #~'())
@@ -708,12 +708,11 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
              #$(string-append
                 "CFLAGS=-g -O2"
                 " -Wno-error=implicit-function-declaration")
-             #$flags))
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-before 'check 'skip-failing-tests
-                (lambda _
-                  (delete-file "test-suite/tests/version.test"))))))))))
+             #$flags))))
+      (native-inputs
+       (modify-inputs native-inputs
+         (prepend autoconf automake flex gettext-minimal gperf libtool
+                  texinfo))))))
 
 
 ;;;
