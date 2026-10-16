@@ -3226,13 +3226,13 @@ graphs by selecting one of the charts themes.")
 (define-public qtgraphs
   (package
     (name "qtgraphs")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "08cbzc0146j4d18dlqsw0qbilhcwk1hi9h8n84adsigs9a2hj8cz"))))
+                "132d79sm1k6f8ds7gh35c32dscayjwy8w7xhjhfhaislg1lfki0q"))))
     (build-system cmake-build-system)
     (arguments
      ;; XXX: The 'tst_qgqmltest' test hangs for unknown reasons; skip it for
