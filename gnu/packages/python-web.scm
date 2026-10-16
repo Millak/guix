@@ -5498,13 +5498,13 @@ multipart}.")
 (define-public python-opentelemetry-test-utils
   (package
     (name "python-opentelemetry-test-utils")
-    (version "0.58b0")
+    (version "0.66b1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "opentelemetry_test_utils" version))
        (sha256
-        (base32 "0xjp04zjn7m79xsda9wp79rqyzy2c10347s967vp7xvmndwwa0ds"))))
+        (base32 "0hsrp9mzm33dag96rxh068ahplng9fnyngxxg2hkh7sbdxcz16kx"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; No tests in the wheel.
     (propagated-inputs
