@@ -38761,6 +38761,20 @@ install @code{python-pandas}.")
        (sha256
         (base32 "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           ;; This package provides a 'tabulate' executable that does not
+           ;; depend on its native-inputs.  Thus, customize the wrap phase to
+           ;; avoid adding pytest and friends in order to save closure size.
+           ;;
+           ;; See: <https://bugs.gnu.org/25235>.
+           (replace 'wrap
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (wrap-program (in-vicinity #$output "/bin/tabulate")
+                                    `("GUIX_PYTHONPATH" ":" suffix
+                                      ,(list (site-packages inputs outputs)))))))))
     (native-inputs
      (list python-pytest
            python-setuptools-scm
