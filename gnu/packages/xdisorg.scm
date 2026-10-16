@@ -521,7 +521,7 @@ and preserve leading and trailing whitespace.")
 (define-public copyq
   (package
     (name "copyq")
-    (version "13.0.0")
+    (version "17.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -530,7 +530,7 @@ and preserve leading and trailing whitespace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fl5d4jniv32rsyraw7m1svkvc9nfl479zk3ah6h6p46k4px8663"))))
+                "07q0pdw6g2dgiayl84d966g7xndkv79qz15yqqn3b4gaspm3glyg"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -540,9 +540,12 @@ and preserve leading and trailing whitespace.")
                            "-DCMAKE_BUILD_TYPE=Release")
       #:tests? #f)) ; Test suite is a rather manual process.
     (inputs
-     (list libxkbcommon
-           qtsvg
+     (list qca-qt6
+           libxkbcommon
+           miniaudio
            qtdeclarative
+           qtkeychain-qt6
+           qtsvg
            qtwayland
            wayland
            knotifications
