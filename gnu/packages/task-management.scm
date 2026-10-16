@@ -385,7 +385,7 @@ to finish tasks, not organize them.")
 (define-public taskwarrior
   (package
     (name "taskwarrior")
-    (version "3.4.2")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
@@ -394,7 +394,7 @@ to finish tasks, not organize them.")
              "/releases/download/v" version
              "/task-" version ".tar.gz"))
        (sha256
-        (base32 "05p70bfjimv87qxxxamwq18bs6n6d0mklqa5lnjy8s0jrlgpc0nk"))
+        (base32 "0yhm65mxpwygc0ppxx4x2pvck1jsvzgnbiqf8i7l25433x0lp9ly"))
        (patches (search-patches
                  "taskwarrior-link-taskchampion-cpp-with-sqlite3.patch"))
        (snippet
