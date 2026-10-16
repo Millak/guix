@@ -3261,7 +3261,7 @@ manipulating bytes.  It is extracted from the Node.js core.")
 (define-public cli11
   (package
     (name "cli11")
-    (version "2.4.2")
+    (version "2.7.2")
     (source
       (origin
         (method git-fetch)
@@ -3270,19 +3270,19 @@ manipulating bytes.  It is extracted from the Node.js core.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1kxggvgbdjx73rx9d91dm9imzcacf5jjfnjn2vaq6h6lvwlcdf04"))))
+         (base32 "0s4jin8w42nnprrpgxmp03yq8kv2j1zb8g9v8sjzy6pzc7njylwl"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DCLI11_SINGLE_FILE=OFF"
                    "-DCLI11_BUILD_EXAMPLES=OFF")))
     (native-inputs
-     (list catch2-2 doxygen googletest))
+     (list catch2 doxygen googletest))
     (synopsis "Command line parser for C++11")
     (description
      "CLI11 is a command line parser for C++11 and beyond that provides a rich
 feature set with a simple and intuitive interface.")
-    (home-page "https://cliutils.github.io/CLI11/book/")
+    (home-page "https://cliutils.github.io/CLI11/")
     (license license:bsd-3)))
 
 (define-public caf
