@@ -2500,7 +2500,7 @@ and a fallback for environments without libc for Zydis.")
                              "-DZYDIS_BUILD_SHARED_LIB=ON"
                              "-DZYDIS_BUILD_MAN=ON")))
     (native-inputs (list python-minimal ronn-ng))
-    (inputs (list zycore))
+    (propagated-inputs (list zycore))   ;included in zydis headers
     (home-page "https://zydis.re")
     (synopsis "Disassembler and code generation library for x86 and AMD64")
     (description
