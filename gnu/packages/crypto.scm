@@ -222,6 +222,73 @@ fast, secure, parallelizable, capable of incremental updates.")
 ;; XXX: Remove when May 2027 comes.
 (define-deprecated/public-alias libblake3 blake3)
 
+(define-public blake2
+  (let ((commit "ed1974ea83433eba7b2d95c5dcd9ac33cb847913")
+        (revision "0"))
+    (package
+      (name "blake2")
+      (version (git-version "20190724" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/BLAKE2/BLAKE2")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yx6kh0yvg8kpxw3v2r13faar0a0wx2102n57hshqi33ydvbwhqa"))))
+      (build-system gnu-build-system)
+      (home-page "https://github.com/BLAKE2/BLAKE2")
+      (arguments
+       (list
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "ref")))
+            (delete 'configure)         ;no configure script
+            (replace 'install           ;no install target
+              (lambda _
+                  ;; The build system only build test binaries, not a shared
+                  ;; library.
+                  (invoke #$(cc-for-target)
+                          "-g" "-O2" "-fPIC" "-shared"
+                          "-o" "libblake2.so"
+                          "blake2b-ref.c"
+                          "blake2s-ref.c"
+                          "blake2bp-ref.c"
+                          "blake2sp-ref.c"
+                          "blake2xb-ref.c"
+                          "blake2xs-ref.c")
+                (let ((libdir (string-append #$output "/lib")))
+                  (install-file "libblake2.so" libdir)
+                  (install-file "blake2.h"
+                                (string-append #$output "/include"))
+                  (mkdir (string-append libdir "/pkgconfig"))
+                  ;; 'libblake2' is the pkg-config name used by its sole user,
+                  ;; Rizin.
+                  (call-with-output-file (string-append
+                                          libdir "/pkgconfig/libblake2.pc")
+                    (lambda (port)
+                      (format port "\
+prefix=~a
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libblake2
+Description: BLAKE2 cryptographic hash function
+Version: ~a
+Libs: -L${libdir} -lblake2
+Cflags: -I${includedir}~%" #$output #$version)))))))))
+      (synopsis "Official C implementation of BLAKE2")
+      (description "This package provides a cryptographic hash function that is
+fast, secure, parallelizable, capable of incremental updates.")
+      (license (list license:asl2.0     ;triple-licensed
+                     license:openssl
+                     license:cc0)))))
+
 (define-public libdecaf
   ;; The 1.0.2 release fails due to some compiler warning treated as an error
   ;; (see: https://sourceforge.net/p/ed448goldilocks/tickets/16/). Use the
