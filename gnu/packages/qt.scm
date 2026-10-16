@@ -2252,13 +2252,13 @@ Vulkan, OpenGL and other main graphic APIs.")
 (define-public qtmultimedia
   (package
     (name "qtmultimedia")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "17yd17qm0jxfimkqs843z5m86ciif1pcs8h66vdkqybbxh15wywn"))))
+                "0bd6jgm59zawwinm2szq3y3pav27rrfhz52wd2ha4yr5chxzahri"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2282,9 +2282,20 @@ Vulkan, OpenGL and other main graphic APIs.")
               ;; https://bugreports.qt.io/browse/QTBUG-123749).
               (substitute* "tests/auto/unit/multimedia/CMakeLists.txt"
                 (("add_subdirectory\\(qvideoframecolormanagement\\)") ""))))
+          (delete 'check)               ;moved after install
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
           (add-before 'check 'prepare-for-tests
             (lambda _
               (setenv "HOME" (getcwd))
+              ;; The tests expect to find the modules provided by this
+              ;; package; extend the environment variables needed to do so.
+              (setenv "QML_IMPORT_PATH"
+                      (string-append #$output "/lib/qt6/qml:"
+                                     (getenv "QML_IMPORT_PATH")))
+              (setenv "QT_PLUGIN_PATH"
+                      (string-append #$output "/lib/qt6/plugins:"
+                                     (getenv "QT_PLUGIN_PATH")))
               (setenv "QT_QPA_PLATFORM" "offscreen")))
           (add-after 'install 'delete-installed-tests
             (lambda _
