@@ -4894,7 +4894,7 @@ background file post-processing.")
 (define-public supercollider
   (package
     (name "supercollider")
-    (version "3.14.0")
+    (version "3.14.1")
     (source
      (origin
        (method git-fetch)
@@ -4906,7 +4906,7 @@ background file post-processing.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qp163c6mg1d8c59ar3v1yixryr1paa9bs8pkz6yd3c86qz24n0h"))
+         "07r88qwh44fdqfxpa33xfxdcbi4a7v26026jvik8flil7a7gm67q"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
