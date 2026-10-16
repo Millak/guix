@@ -1428,8 +1428,8 @@ and the unversioned commands available.")))
 
 (define-public pythoncapi-compat
   ;; No release nor tags: use the latest commit.
-  (let ((commit "ab72af8b1a9adfccb3578eea8e9b6d5c6449f409")
-        (revision "1"))
+  (let ((commit "b8fe76f597af6593dfcb43a6dd388bab98938b91")
+        (revision "2"))
     (package
       (name "pythoncapi-compat")
       (version (git-version "0.0.0" revision commit))
@@ -1441,7 +1441,7 @@ and the unversioned commands available.")))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0dfzfs399ik10125kvs5s8rid93lm50wray8s7b8bv90a61zjxiv"))))
+                  "1br8adfqr8m3lsjrmzxkhx2q4rxzlmvyww6cxn8m7q5gh1w61432"))))
       (build-system copy-build-system)
       (arguments (list #:install-plan
                        #~'(("pythoncapi_compat.h" "include/"))))
