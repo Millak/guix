@@ -15396,16 +15396,16 @@ any machine that can run Python.")
 (define-public python-manimpango
   (package
     (name "python-manimpango")
-    (version "0.5.0")
+    (version "0.7.0")
     (source
      (origin
-       (method git-fetch) ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ManimCommunity/ManimPango")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00mrvswk8yly0m13jq0f432pr19sy3j6w37lrv78ah1j6jz9n50h"))))
+        (base32 "03plgiif3bwz999qdfpabqf2j66xq3wjdzznmd0l72cnkqq8ash0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -15418,8 +15418,7 @@ any machine that can run Python.")
       (list pkg-config
             python-cython
             python-pytest
-            python-setuptools
-            python-wheel))
+            python-setuptools))
     (inputs
      (list pango))
     (home-page "https://manimpango.manim.community/")
