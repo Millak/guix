@@ -2738,7 +2738,8 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
        ;; Release 0.12.1 has a major bug which prevents replies
        ;; from rendering: https://github.com/Nheko-Reborn/nheko/issues/1944
        ;; TODO: revaluate for future versions.
-       (patches (search-patches "nheko-0-12-1-fix-rendering-replies.patch"))))
+       (patches (search-patches "nheko-0-12-1-fix-rendering-replies.patch"
+                                "nheko-qt-6.10.patch"))))
     (arguments
      (list
       #:tests? #f                       ;no test target
