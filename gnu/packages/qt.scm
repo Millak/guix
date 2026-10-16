@@ -2548,13 +2548,13 @@ interacting with serial ports from within Qt.")))
 (define-public qtserialport
   (package
     (name "qtserialport")
-    (version "6.11.2")
+    (version "6.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
-        (base32 "13md2wdypib4wjw3mai8hqfyjjs4l67232dnxjr32ks42qv76fnz"))))
+        (base32 "1hvipnycsrwxn7kkxaxshhn4d760bhjl24zsr5bnwipf9sjqd25s"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
