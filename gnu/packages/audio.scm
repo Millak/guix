@@ -4927,7 +4927,8 @@ background file post-processing.")
               (("include\\(\\.\\./external_libraries/link/\
 AbletonLinkConfig\\.cmake\\)")
                "find_package(AbletonLink NAMES AbletonLink ableton-link \
-link REQUIRED)"))))))
+link REQUIRED)"))))
+       (patches (search-patches "supercollider-qt-6.10.patch"))))
     (build-system qt-build-system)
     (outputs
      '("out"                            ;core language
