@@ -557,7 +557,7 @@ data types.")
   (package
     (inherit python-2)
     (name "python")
-    (version "3.10.19")
+    (version "3.10.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.python.org/ftp/python/"
@@ -571,7 +571,7 @@ data types.")
                         "python-3-search-paths.patch"))
               (sha256
                (base32
-                "0xn0jydg5fsz9fsni6a83l7sf6by2w7gg4fzswfxh092aybabx68"))
+                "0hr5rgybvxdb4390cdlym0jm72ipghc69rl80c5jmv57l6qyj7y6"))
               (modules '((guix build utils)))
               (snippet
                '(begin
