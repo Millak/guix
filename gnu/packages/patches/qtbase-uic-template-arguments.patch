@@ -1,0 +1,185 @@
+From 7368673cc7cdf41324e75eb440263f5aca5e80e9 Mon Sep 17 00:00:00 2001
+From: Jarek Kobus <jaroslaw.kobus@qt.io>
+Date: Thu, 15 Oct 2026 09:10:14 +0200
+Subject: [PATCH] uic: Allow template arguments in widget class names
+
+The stricter class name validation rejected promoted widgets with
+template arguments, such as "ItemViewSized<QListView>", which uic
+accepted before. Allow '<', '>', ',' and space in the class of a
+widget. The class of the form and the pixmap function stay strict, and
+characters that could be used for code injection remain rejected.
+
+Add a baseline test with a templated custom widget and an invalid file
+test with an injection attempt.
+
+Fixes: QTBUG-151379
+Pick-to: 6.12
+Change-Id: I23529e12d87ed0f028a1b71724b0159ca6c14ec1
+Reviewed-by: Friedemann Kleint <Friedemann.Kleint@qt.io>
+---
+ src/tools/uic/validator.cpp                   | 14 ++++-
+ .../auto/tools/uic/baseline/templatewidget.ui | 20 +++++++
+ .../tools/uic/baseline/templatewidget.ui.h    | 56 +++++++++++++++++++
+ .../tools/uic/invalid/bad_templateclass.ui    |  5 ++
+ tests/auto/tools/uic/tst_uic.cpp              |  5 +-
+ 5 files changed, 95 insertions(+), 5 deletions(-)
+ create mode 100644 tests/auto/tools/uic/baseline/templatewidget.ui
+ create mode 100644 tests/auto/tools/uic/baseline/templatewidget.ui.h
+ create mode 100644 tests/auto/tools/uic/invalid/bad_templateclass.ui
+
+diff --git a/src/tools/uic/validator.cpp b/src/tools/uic/validator.cpp
+index d976bbfbb5ff..41c73c83d196 100644
+--- a/src/tools/uic/validator.cpp
++++ b/src/tools/uic/validator.cpp
+@@ -79,10 +79,18 @@ static bool isClassNameContinuation(QChar c)
+     return c == u':' || c == u'.' || isIdContinuation(c);
+ }
+ 
+-static bool checkClassName(QStringView name)
++// Template arguments of promoted widgets, e.g. "ItemViewSized<QListView>"
++static bool isTemplateClassNameContinuation(QChar c)
+ {
++    return c == u'<' || c == u'>' || c == u',' || c == u' ' || isClassNameContinuation(c);
++}
++
++static bool checkClassName(QStringView name, bool allowTemplates = false)
++{
++    const auto isValid = allowTemplates ? isTemplateClassNameContinuation
++                                        : isClassNameContinuation;
+     return !name.isEmpty() && isIdStart(name.at(0))
+-            && std::all_of(name.cbegin() + 1, name.cend(), isClassNameContinuation);
++            && std::all_of(name.cbegin() + 1, name.cend(), isValid);
+ }
+ 
+ // Sanity check: A coarse check for any characters that would allow a code injection (C++/Python)
+@@ -189,7 +197,7 @@ void Validator::acceptWidget(DomWidget *node)
+ 
+     checkProperties(node->elementProperty(), &m_errors);
+ 
+-    if (!checkClassName(node->attributeClass()))
++    if (!checkClassName(node->attributeClass(), true))
+         m_errors.append(msgInvalidClassName(node->attributeClass()));
+ 
+     TreeWalker::acceptWidget(node);
+diff --git a/tests/auto/tools/uic/baseline/templatewidget.ui b/tests/auto/tools/uic/baseline/templatewidget.ui
+new file mode 100644
+index 000000000000..8821994fdeaf
+--- /dev/null
++++ b/tests/auto/tools/uic/baseline/templatewidget.ui
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<ui version="4.0">
++ <class>TemplateWidget</class>
++ <widget class="QWidget" name="TemplateWidget">
++  <layout class="QVBoxLayout" name="verticalLayout">
++   <item>
++    <widget class="ItemViewSized&lt;QListView&gt;" name="listView"/>
++   </item>
++  </layout>
++ </widget>
++ <customwidgets>
++  <customwidget>
++   <class>ItemViewSized&lt;QListView&gt;</class>
++   <extends>QListView</extends>
++   <header>itemviewsized.h</header>
++  </customwidget>
++ </customwidgets>
++ <resources/>
++ <connections/>
++</ui>
+diff --git a/tests/auto/tools/uic/baseline/templatewidget.ui.h b/tests/auto/tools/uic/baseline/templatewidget.ui.h
+new file mode 100644
+index 000000000000..da2030018153
+--- /dev/null
++++ b/tests/auto/tools/uic/baseline/templatewidget.ui.h
+@@ -0,0 +1,56 @@
++/********************************************************************************
++** Form generated from reading UI file 'templatewidget.ui'
++**
++** Created by: Qt User Interface Compiler version 6.13.0
++**
++** WARNING! All changes made in this file will be lost when recompiling UI file!
++********************************************************************************/
++
++#ifndef TEMPLATEWIDGET_H
++#define TEMPLATEWIDGET_H
++
++#include <QtCore/QVariant>
++#include <QtWidgets/QApplication>
++#include <QtWidgets/QVBoxLayout>
++#include <QtWidgets/QWidget>
++#include "itemviewsized.h"
++
++QT_BEGIN_NAMESPACE
++
++class Ui_TemplateWidget
++{
++public:
++    QVBoxLayout *verticalLayout;
++    ItemViewSized<QListView> *listView;
++
++    void setupUi(QWidget *TemplateWidget)
++    {
++        if (TemplateWidget->objectName().isEmpty())
++            TemplateWidget->setObjectName("TemplateWidget");
++        verticalLayout = new QVBoxLayout(TemplateWidget);
++        verticalLayout->setObjectName("verticalLayout");
++        listView = new ItemViewSized<QListView>(TemplateWidget);
++        listView->setObjectName("listView");
++
++        verticalLayout->addWidget(listView);
++
++
++        retranslateUi(TemplateWidget);
++
++        QMetaObject::connectSlotsByName(TemplateWidget);
++    } // setupUi
++
++    void retranslateUi(QWidget *TemplateWidget)
++    {
++        (void)TemplateWidget;
++    } // retranslateUi
++
++};
++
++namespace Ui {
++    class TemplateWidget: public Ui_TemplateWidget {};
++} // namespace Ui
++
++QT_END_NAMESPACE
++
++#endif // TEMPLATEWIDGET_H
+diff --git a/tests/auto/tools/uic/invalid/bad_templateclass.ui b/tests/auto/tools/uic/invalid/bad_templateclass.ui
+new file mode 100644
+index 000000000000..f1d9e8abbcf2
+--- /dev/null
++++ b/tests/auto/tools/uic/invalid/bad_templateclass.ui
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<ui version="4.0">
++ <class>Form</class>
++ <widget class="Foo&lt;Bar&gt;; system(&quot;x&quot;)" name="Form"/>
++</ui>
+diff --git a/tests/auto/tools/uic/tst_uic.cpp b/tests/auto/tools/uic/tst_uic.cpp
+index 126e6d589588..88f68ed574c8 100644
+--- a/tests/auto/tools/uic/tst_uic.cpp
++++ b/tests/auto/tools/uic/tst_uic.cpp
+@@ -167,7 +167,7 @@ void tst_uic::populateTestEntries()
+         const QString baseName = baselineFile.baseName();
+         TestEntry entry;
+         // qprintsettingsoutput: variable named 'from' clashes with Python
+-        if (baseName == "qprintsettingsoutput"_L1)
++        if (baseName == "qprintsettingsoutput"_L1 || baseName == "templatewidget"_L1)
+             entry.flags.setFlag(TestEntry::DontTestPythonCompile);
+         else if (baseName  == "qttrid"_L1)
+             entry.flags.setFlag(TestEntry::IdBasedTranslation);
+@@ -416,7 +416,8 @@ static inline QByteArray msgCompilePythonFailed(const QByteArray &error)
+ void tst_uic::invalidFiles_data() const
+ {
+     QTest::addColumn<QString>("file");
+-    for (const auto &f : { "property"_L1, "enum"_L1, "class"_L1, "pixmapfunction"_L1 })
++    for (const auto &f : { "property"_L1, "enum"_L1, "class"_L1, "pixmapfunction"_L1,
++                           "templateclass"_L1 })
+         QTest::newRow(f.constData()) << (m_invalid + "/bad_"_L1 + f + ".ui"_L1);
+ }
+ 

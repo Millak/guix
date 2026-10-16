@@ -881,13 +881,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.11.2")
+    (version "6.12.0")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "08ng4gns21a3za3qszzw3yp3a2pxipma1zrl870xi97mrbn00bjv"))
+                "01qk2cw34xk60v0i6gipab0r3gvann7ndmw8iimzr03v7hbbsld9"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -903,7 +903,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 "qtbase-qmake-use-libname.patch"
                 "qtbase-qmlimportscanner-qml-import-path.patch"
                 "qtbase-qmake-fix-includedir.patch"
-                "qtbase-patch-libvulkan.patch"))))
+                "qtbase-patch-libvulkan.patch"
+                "qtbase-uic-template-arguments.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments arguments
@@ -1260,7 +1261,20 @@ tst_qt_cmake_create.cpp"
 
                        ;; Several 'plugin_class_name' tests fail for unknown
                        ;; reasons, and only in the guix-daemon container.
-                       "test_plugin_class_name")
+                       "test_plugin_class_name"
+
+                       ;; These fail with a double free error (seems related
+                       ;; to:
+                       ;; <https://qt-project.atlassian.net/browse/QTBUG-148575>).
+                       "tst_qcryptographichash"
+                       "tst_qmessageauthenticationcode"
+
+                       ;; The
+                       ;; 'indexedIndirectMultiDrawShaderDrawParams(OpenGL)'
+                       ;; test fails with ''pipeline->create()' returned
+                       ;; FALSE' (see:
+                       ;; <https://qt-project.atlassian.net/browse/QTBUG-151639>)
+                       "tst_qrhi")
                       #$@(cond
                            ((target-ppc64le?)
                              #~((list
