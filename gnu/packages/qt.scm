@@ -631,12 +631,176 @@ system, and the core design of Django is reused in Grantlee.")
                               (list "double-conversion" "freetype" "harfbuzz-ng"
                                     "libpng" "libjpeg" "pcre2" "sqlite" "xcb"
                                     "zlib")))))))
-    (build-system gnu-build-system)
     (outputs '("out" "debug"))
-    (propagated-inputs
-     (list mesa
-           ;; Use which the package, not the function
-           (@ (gnu packages base) which)))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:disallowed-references (list (this-package-native-input "python"))
+      #:configure-flags
+      #~(list "-verbose"
+              "-prefix" #$output
+              "-docdir" (string-append #$output "/share/doc/qt5")
+              "-headerdir" (string-append #$output "/include/qt5")
+              "-archdatadir" (string-append #$output "/lib/qt5")
+              "-datadir" (string-append #$output "/share/qt5")
+              "-examplesdir" (string-append #$output
+                                            "/share/doc/qt5/examples")
+              "-opensource"
+              "-confirm-license"
+
+              ;; Later stripped into the :debug output.
+              "-force-debug-info"
+
+              ;; These features require higher versions of Linux than the
+              ;; minimum version of the glibc.  See
+              ;; src/corelib/global/minimum-linux_p.h.  By disabling these
+              ;; features Qt5 applications can be used on the oldest
+              ;; kernels that the glibc supports, including the RHEL6
+              ;; (2.6.32) and RHEL7 (3.10) kernels.
+              "-no-feature-getentropy"  ; requires Linux 3.17
+              "-no-feature-renameat2"   ; requires Linux 3.16
+
+              ;; Do not build examples; if desired, these could go
+              ;; into a separate output, but for the time being, we
+              ;; prefer to save the space and build time.
+              "-no-compile-examples"
+              ;; Most "-system-..." are automatic, but some use
+              ;; the bundled copy by default.
+              "-system-sqlite"
+              "-system-harfbuzz"
+              "-system-pcre"
+              ;; explicitly link with openssl instead of dlopening it
+              "-openssl-linked"
+              ;; explicitly link with dbus instead of dlopening it
+              "-dbus-linked"
+              ;; don't use the precompiled headers
+              "-no-pch"
+              ;; drop special machine instructions that do not have
+              ;; runtime detection
+              #$@(if (string-prefix? "x86_64"
+                                     (or (%current-target-system)
+                                         (%current-system)))
+                     '()
+                     '("-no-sse2"))
+              "-no-mips_dsp"
+              "-no-mips_dspr2")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-bin-sh
+            (lambda _
+              (substitute* '("config.status"
+                             "configure"
+                             "mkspecs/features/qt_functions.prf"
+                             "qmake/library/qmakebuiltins.cpp")
+                (("/bin/sh") (which "sh")))))
+          (add-after 'configure 'patch-xdg-open
+            (lambda _
+              (substitute* '("src/platformsupport/services/genericunix/\
+qgenericunixservices.cpp")
+                (("^.*const char \\*browsers.*$" all)
+                 (string-append "*browser = QStringLiteral(\""
+                                (which "xdg-open")
+                                "\"); return true; \n" all)))))
+          (replace 'configure
+            ;; Overridden to not pass "--enable-fast-install", which makes the
+            ;; configure process fail.
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (substitute* "configure"
+                (("/bin/pwd") (which "pwd")))
+              (substitute* "src/corelib/global/global.pri"
+                (("/bin/ls") (which "ls")))
+              ;; The configuration files for other Qt5 packages are searched
+              ;; through a call to "find_package" in Qt5Config.cmake, which
+              ;; disables the use of CMAKE_PREFIX_PATH via the parameter
+              ;; "NO_DEFAULT_PATH". Re-enable it so that the different
+              ;; components can be installed in different places.
+              (substitute* (find-files "." ".*\\.cmake")
+                (("NO_DEFAULT_PATH") ""))
+              (format #t "build directory: ~s~%" (getcwd))
+              (format #t "configure flags: ~s~%" configure-flags)
+              (apply invoke "./configure" configure-flags)))
+          (add-after 'install 'patch-mkspecs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (archdata (string-append out "/lib/qt5"))
+                     (mkspecs (string-append archdata "/mkspecs"))
+                     (qt_config.prf (string-append
+                                     mkspecs "/features/qt_config.prf")))
+                ;; For each Qt module, let `qmake' uses search paths in the
+                ;; module directory instead of all in QT_INSTALL_PREFIX.
+                (substitute* qt_config.prf
+                  (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
+                   "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt5))")
+                  (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                   "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                  (("\\$\\$\\[QT_HOST_LIBS\\]")
+                   "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                  (("\\$\\$\\[QT_INSTALL_BINS\\]")
+                   "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
+
+                ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
+                (substitute* (string-append mkspecs "/features/qt_functions.prf")
+                  (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
+                   "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
+
+                ;; Resolve qmake spec files within qtbase by absolute paths.
+                (substitute*
+                    (map (lambda (file)
+                           (string-append mkspecs "/features/" file))
+                         '("device_config.prf" "moc.prf" "qt_build_config.prf"
+                           "qt_config.prf" "winrt/package_manifest.prf"))
+                  (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
+                  (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
+          (add-after 'patch-mkspecs 'patch-prl-files
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                ;; Insert absolute references to the qtbase libraries because
+                ;; QT_INSTALL_LIBS does not always resolve correctly, depending
+                ;; on context.  See <https://bugs.gnu.org/38405>
+                (substitute* (find-files (string-append out "/lib") "\\.prl$")
+                  (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                   (string-append out "/lib"))))))
+          (add-after 'unpack 'patch-paths
+            ;; Use the absolute paths for dynamically loaded libs, otherwise
+            ;; the lib will be searched in LD_LIBRARY_PATH which typically is
+            ;; not set in guix.
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; libresolve
+              (let ((glibc (assoc-ref inputs #$(if (%current-target-system)
+                                                   "cross-libc"
+                                                   "libc"))))
+                (substitute* '("src/network/kernel/qdnslookup_unix.cpp"
+                               "src/network/kernel/qhostinfo_unix.cpp")
+                  (("^\\s*(lib.setFileName\\(QLatin1String\\(\")(resolv\"\\)\\);)" _ a b)
+                   (string-append a glibc "/lib/lib" b))))
+              ;; libGL
+              (substitute* "src/plugins/platforms/xcb/gl_integrations/xcb_glx/qglxintegration.cpp"
+                (("^\\s*(QLibrary lib\\(QLatin1String\\(\")(GL\"\\)\\);)" _ a b)
+                 (string-append a (assoc-ref inputs "mesa") "/lib/lib" b)))
+              ;; libXcursor
+              (substitute* "src/plugins/platforms/xcb/qxcbcursor.cpp"
+                (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
+                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
+                (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
+                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))))
+          (add-after 'install 'do-not-capture-python
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; For some reason, patching the file after the
+              ;; patch-source-shebangs phase doesn't work for Qt 5.
+              (substitute*
+                  (search-input-file
+                   outputs "lib/qt5/mkspecs/features/uikit/devices.py")
+                (((which "python3"))
+                 "/usr/bin/env python3")))))))
+    (native-inputs
+     (list bison
+           flex
+           gperf
+           perl
+           pkg-config
+           python
+           vulkan-headers
+           ruby-3.4))
     (inputs
      (list alsa-lib
            cups
@@ -682,189 +846,23 @@ system, and the core design of Django is reused in Grantlee.")
            xcb-util-wm
            xdg-utils
            zlib))
-    (native-inputs
-     (list bison
-           flex
-           gperf
-           perl
-           pkg-config
-           python
-           vulkan-headers
-           ruby-3.4))
-    (arguments
-     `(#:disallowed-references ,(list (this-package-native-input "python"))
-       #:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "-verbose"
-               "-prefix" out
-               "-docdir" (string-append out "/share/doc/qt5")
-               "-headerdir" (string-append out "/include/qt5")
-               "-archdatadir" (string-append out "/lib/qt5")
-               "-datadir" (string-append out "/share/qt5")
-               "-examplesdir" (string-append
-                               out "/share/doc/qt5/examples")
-               "-opensource"
-               "-confirm-license"
-
-               ;; Later stripped into the :debug output.
-               "-force-debug-info"
-
-               ;; These features require higher versions of Linux than the
-               ;; minimum version of the glibc.  See
-               ;; src/corelib/global/minimum-linux_p.h.  By disabling these
-               ;; features Qt5 applications can be used on the oldest
-               ;; kernels that the glibc supports, including the RHEL6
-               ;; (2.6.32) and RHEL7 (3.10) kernels.
-               "-no-feature-getentropy" ; requires Linux 3.17
-               "-no-feature-renameat2"  ; requires Linux 3.16
-
-               ;; Do not build examples; if desired, these could go
-               ;; into a separate output, but for the time being, we
-               ;; prefer to save the space and build time.
-               "-no-compile-examples"
-               ;; Most "-system-..." are automatic, but some use
-               ;; the bundled copy by default.
-               "-system-sqlite"
-               "-system-harfbuzz"
-               "-system-pcre"
-               ;; explicitly link with openssl instead of dlopening it
-               "-openssl-linked"
-               ;; explicitly link with dbus instead of dlopening it
-               "-dbus-linked"
-               ;; don't use the precompiled headers
-               "-no-pch"
-               ;; drop special machine instructions that do not have
-               ;; runtime detection
-               ,@(if (string-prefix? "x86_64"
-                                     (or (%current-target-system)
-                                         (%current-system)))
-                     '()
-                     '("-no-sse2"))
-               "-no-mips_dsp"
-               "-no-mips_dspr2"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-bin-sh
-           (lambda _
-             (substitute* '("config.status"
-                            "configure"
-                            "mkspecs/features/qt_functions.prf"
-                            "qmake/library/qmakebuiltins.cpp")
-               (("/bin/sh") (which "sh")))))
-         (add-after 'configure 'patch-xdg-open
-           (lambda _
-             (substitute* '("src/platformsupport/services/genericunix/qgenericunixservices.cpp")
-               (("^.*const char \\*browsers.*$" all)
-                (string-append "*browser = QStringLiteral(\""
-                               (which "xdg-open")
-                               "\"); return true; \n" all)))))
-         (replace 'configure
-           ;; Overridden to not pass "--enable-fast-install", which makes the
-           ;; configure process fail.
-           (lambda* (#:key outputs configure-flags #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "configure"
-                 (("/bin/pwd") (which "pwd")))
-               (substitute* "src/corelib/global/global.pri"
-                 (("/bin/ls") (which "ls")))
-               ;; The configuration files for other Qt5 packages are searched
-               ;; through a call to "find_package" in Qt5Config.cmake, which
-               ;; disables the use of CMAKE_PREFIX_PATH via the parameter
-               ;; "NO_DEFAULT_PATH". Re-enable it so that the different
-               ;; components can be installed in different places.
-               (substitute* (find-files "." ".*\\.cmake")
-                 (("NO_DEFAULT_PATH") ""))
-               (format #t "build directory: ~s~%" (getcwd))
-               (format #t "configure flags: ~s~%" configure-flags)
-               (apply invoke "./configure" configure-flags))))
-         (add-after 'install 'patch-mkspecs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (archdata (string-append out "/lib/qt5"))
-                    (mkspecs (string-append archdata "/mkspecs"))
-                    (qt_config.prf (string-append
-                                    mkspecs "/features/qt_config.prf")))
-               ;; For each Qt module, let `qmake' uses search paths in the
-               ;; module directory instead of all in QT_INSTALL_PREFIX.
-               (substitute* qt_config.prf
-                 (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
-                  "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt5))")
-                 (("\\$\\$\\[QT_INSTALL_LIBS\\]")
-                  "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                 (("\\$\\$\\[QT_HOST_LIBS\\]")
-                  "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                 (("\\$\\$\\[QT_INSTALL_BINS\\]")
-                  "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
-
-               ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
-               (substitute* (string-append mkspecs "/features/qt_functions.prf")
-                 (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
-                  "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
-
-               ;; Resolve qmake spec files within qtbase by absolute paths.
-               (substitute*
-                   (map (lambda (file)
-                          (string-append mkspecs "/features/" file))
-                        '("device_config.prf" "moc.prf" "qt_build_config.prf"
-                          "qt_config.prf" "winrt/package_manifest.prf"))
-                 (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
-                 (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
-         (add-after 'patch-mkspecs 'patch-prl-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Insert absolute references to the qtbase libraries because
-               ;; QT_INSTALL_LIBS does not always resolve correctly, depending
-               ;; on context.  See <https://bugs.gnu.org/38405>
-               (substitute* (find-files (string-append out "/lib") "\\.prl$")
-                 (("\\$\\$\\[QT_INSTALL_LIBS\\]")
-                  (string-append out "/lib"))))))
-         (add-after 'unpack 'patch-paths
-           ;; Use the absolute paths for dynamically loaded libs, otherwise
-           ;; the lib will be searched in LD_LIBRARY_PATH which typically is
-           ;; not set in guix.
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; libresolve
-             (let ((glibc (assoc-ref inputs ,(if (%current-target-system)
-                                                 "cross-libc" "libc"))))
-               (substitute* '("src/network/kernel/qdnslookup_unix.cpp"
-                              "src/network/kernel/qhostinfo_unix.cpp")
-                 (("^\\s*(lib.setFileName\\(QLatin1String\\(\")(resolv\"\\)\\);)" _ a b)
-                  (string-append a glibc "/lib/lib" b))))
-             ;; libGL
-             (substitute* "src/plugins/platforms/xcb/gl_integrations/xcb_glx/qglxintegration.cpp"
-               (("^\\s*(QLibrary lib\\(QLatin1String\\(\")(GL\"\\)\\);)" _ a b)
-                (string-append a (assoc-ref inputs "mesa") "/lib/lib" b)))
-             ;; libXcursor
-             (substitute* "src/plugins/platforms/xcb/qxcbcursor.cpp"
-               (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
-                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
-               (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
-                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))))
-         (add-after 'install 'do-not-capture-python
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; For some reason, patching the file after the
-             ;; patch-source-shebangs phase doesn't work for Qt 5.
-             (substitute*
-                 (search-input-file
-                  outputs "lib/qt5/mkspecs/features/uikit/devices.py")
-               (((which "python3"))
-                "/usr/bin/env python3")))))))
+    (propagated-inputs (list mesa which))
     (native-search-paths
      (list (search-path-specification
-            (variable "QMAKEPATH")
-            (files '("lib/qt5")))
+             (variable "QMAKEPATH")
+             (files '("lib/qt5")))
            (search-path-specification
-            (variable "QML2_IMPORT_PATH")
-            (files '("lib/qt5/qml")))
+             (variable "QML2_IMPORT_PATH")
+             (files '("lib/qt5/qml")))
            (search-path-specification
-            (variable "QT_PLUGIN_PATH")
-            (files '("lib/qt5/plugins")))
+             (variable "QT_PLUGIN_PATH")
+             (files '("lib/qt5/plugins")))
            (search-path-specification
-            (variable "XDG_DATA_DIRS")
-            (files '("share")))
+             (variable "XDG_DATA_DIRS")
+             (files '("share")))
            (search-path-specification
-            (variable "XDG_CONFIG_DIRS")
-            (files '("etc/xdg")))))
+             (variable "XDG_CONFIG_DIRS")
+             (files '("etc/xdg")))))
     (home-page "https://www.qt.io/")
     (synopsis "Cross-platform GUI library")
     (description "Qt is a cross-platform application and UI framework for
