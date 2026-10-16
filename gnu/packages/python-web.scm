@@ -15016,46 +15016,57 @@ Amazon S3 or any other external service.")
 (define-public python-fastapi
   (package
     (name "python-fastapi")
-    (version "0.137.1")
+    (version "0.142.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fastapi" version))
        (sha256
-        (base32 "072lzn48rwf9rjix4nqb5ym6hnaj2fb3jxclilym7n9h89q608w2"))))
+        (base32 "1lcjaw6qrnwrwbf7sivq7i0rq49kq85xwk105w3c5b5cz1wa972i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1126 passed, 12 skipped, 2 deselected
-      #:test-backend #~'custom
+      ;; tests: 3322 passed, 6 skipped, 5 xfailed
       #:test-flags
-      #~(list
-         ;; Cannot import 'scripts' with just 'pytest'.
-         "-m" "pytest"
-         ;; Needs strawberry and sqlmodel.
-         "--ignore=tests/test_tutorial/"
-         ;; Fails due to failure to capture stdout.
-         "--ignore=tests/test_fastapi_cli.py")))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=scripts"               ;not a part of FastAPI package
+              ;; ImportError: cannot import name 'InMemoryLogRecordExporter'
+              ;; from 'opentelemetry.sdk._logs.export'
+              "--ignore=tests/test_telemetry"
+              "--ignore=tests/test_tutorial/test_opentelemetry"
+              ;; Failed: some snapshots in this test have incorrect values.
+              (string-append "--ignore=tests/test_tutorial/"
+                             "test_header_param_models/test_tutorial001.py")
+              (string-append "--ignore=tests/test_tutorial/"
+                             "test_header_param_models/test_tutorial003.py")
+              ;; Test needs Git.
+              (string-append "--deselect=tests/test_translate.py"
+                             "::test_commit_translation_changes")
+              ;; AssertionError: 'Path does not exist non_existent_file.py'
+              "--deselect=tests/test_fastapi_cli.py::test_fastapi_cli")))
     (native-inputs
      (list python-anyio
            python-dirty-equals
            python-flask
            python-inline-snapshot
            python-pdm-backend
-           ;; python-pwdlib
+           python-pwdlib
            python-pyjwt
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
            python-sqlalchemy-2
-           ;; python-sqlmodel
+           python-sqlmodel-minimal
+           python-strawberry-graphql-minimal
            python-types-orjson
            python-types-ujson))
     (propagated-inputs
-     (list python-starlette
+     (list python-annotated-doc
+           python-opentelemetry-api
            python-pydantic
+           python-starlette
            python-typing-extensions
-           python-annotated-doc
+           python-typing-inspection
            ;; [optional]
            python-email-validator
            python-fastapi-cli
@@ -15064,6 +15075,8 @@ Amazon S3 or any other external service.")
            python-itsdangerous
            python-jinja2
            python-multipart
+           python-opentelemetry-sdk
+           ;; python-opentelemetry-exporter-otlp-proto-http
            python-orjson
            python-pydantic
            python-pydantic-extra-types
