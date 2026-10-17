@@ -6974,7 +6974,7 @@ Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
 (define-public python-healpy
   (package
     (name "python-healpy")
-    (version "1.20.0")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
@@ -6982,13 +6982,10 @@ Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
        ;; up the ones from Guix, build from Git and unbundle them.
        (uri (pypi-uri "healpy" version))
        (sha256
-        (base32 "1v82c615vc943661jldylbw99hfdm6gzdzcv1qlwfdg239ay3c03"))))
+        (base32 "1zhp0ysdyz9bhk00p8fvm7wa01dlc6331f27863cpxh9zpd060h0"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      ;; tests: 11 passed
-      #:test-flags
-      #~(list "--pyargs" "healpy")))
+     (list #:test-flags #~(list "--pyargs" "healpy")))
     (native-inputs
      (list nss-certs-for-test
            pkg-config
