@@ -8299,25 +8299,19 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "0nqsscpfdrvdiil0nb7zd5wp6p2r93pq5y07c9izyry8bjqjmzba"))))
+        (base32 "0h422z2c87yvcwkjmwlg5zvg4x3vbf4ifhc9459pq4ckidibhh59"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 554 passed, 9 skipped, 27 deselected, 10 xfailed, 2 warnings
+      ;; tests: 555 passed, 9 skipped, 27 deselected, 10 xfailed, 2 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-reproject-compatibility
-            (lambda _
-              (substitute* "ndcube/ndcube.py"
-                ;; It will be a part of 2.4.2, see
-                ;; <https://github.com/sunpy/ndcube/milestone/45>.
-                (("from reproject.wcs_utils") "from reproject._wcs_utils"))))
           (add-before 'sanity-check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
