@@ -1720,7 +1720,7 @@ the \"texlive\" importer."
 (define-member (person "Spencer King"
                        "spencer.king@wustl.edu"
                        "spencerking")
-  julia)
+  bioinformatics julia)
 
 (define-member (person "Peter Polidoro"
                        "peter@polidoro.io"
