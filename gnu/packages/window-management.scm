@@ -1387,7 +1387,7 @@ your own layouts, widgets, and built-in commands.")
 (define-public quickshell
   (package
     (name "quickshell")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1396,7 +1396,7 @@ your own layouts, widgets, and built-in commands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rmr5lh2byj1l9lpkf2ypgcbx6wgdyjn5ba9hgpnn9q6khd9akw1"))))
+        (base32 "1q8kq5gc1a7kbsz1rhjdzrwdyhjd4nh7lxf62h39mr8342rymxll"))))
     (build-system qt-build-system)
     (arguments
      (list
