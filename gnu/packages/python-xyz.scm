@@ -22090,8 +22090,8 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
               ;; XXX: Requires google-cloud-firestore
               "--ignore=t/unit/backends/test_gcs.py"
               "-k" (string-join
-                    (list ;; AssertionError.
-                          "not test_check_privileges_no_fchown"
+                    ;; AssertionError.
+                    (list "not test_check_privileges_no_fchown"
                           ;; These 3 tests error out on ci.guix.gnu.org with
                           ;; OSError: [Errno 24] Too many open files
                           "test_register_with_event_loop__no_on_tick_dupes"
@@ -22102,7 +22102,24 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
                           ;; assert 'No such option: --ini' in <...>
                           "test_preload_options[subcommand_with_params0]"
                           "test_preload_options[subcommand_with_params1]")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'increase-resource-limits
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; XXX: Copied from ungoogled-chromium.  Try increasing the
+                ;; soft resource limit of max open files to 2048, or equal to
+                ;; the hard limit, whichever is lower.
+                (call-with-values (lambda () (getrlimit 'nofile))
+                  (lambda (soft hard)
+                    (when (and soft (< soft 2048))
+                      (if hard
+                          (setrlimit 'nofile (min hard 2048) hard)
+                          (setrlimit 'nofile 2048 #f))
+                      (format #t
+                              "increased maximum number of open files from ~d to ~d~%"
+                              soft (if hard (min hard 2048) 2048)))))))))))
     (native-inputs
      (list python-azure-core
            python-dnspython
