@@ -99,7 +99,7 @@
 (define-public flashrom
   (package
     (name "flashrom")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -108,7 +108,7 @@
              version ".tar.xz"))
        (sha256
         (base32
-         "0kxbydmskyw3kqa01k16k20qd0ny5i477pab6dygwzizhglsqa23"))))
+         "18kmd7b3j1j24220fpiaz606krryqipybl6cnp9hq9awfihrqk35"))))
     (build-system meson-build-system)
     (arguments
      (list
