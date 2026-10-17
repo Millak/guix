@@ -2068,7 +2068,7 @@ used to bring up authentication dialogs.")
                   mate-menus
                   mate-panel
                   python
-                  python-pygobject))
+                  python-pygobject-3.50))
     (home-page "https://mate-desktop.org/")
     (synopsis "Menu editor for MATE")
     (description "Mozo is a menu editor for MATE using the freedesktop.org
