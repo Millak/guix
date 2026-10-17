@@ -6407,7 +6407,11 @@ authentication on behalf of its clients.")
                 "18lmmkzzaqv4fkiakkmqiac3ssqgis2v37vcpq0415ihlp3xwfhs"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     ;; The 'qenums' test fails with Qt 6.12.0 due to the deprecation of
+     ;; Q_ENUMS causing a change in the expected message (see:
+     ;; <https://bugs.kde.org/show_bug.cgi?id=527278>).
+     (list #:test-exclude "qenums"
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'set-CI_JOB_NAME_SLUG
                  (lambda _
