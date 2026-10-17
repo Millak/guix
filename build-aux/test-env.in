@@ -160,6 +160,9 @@ unset LANGUAGE
 LC_MESSAGES=C
 export LC_MESSAGES
 
+# Hints are filled to the terminal width; use the default width.
+unset COLUMNS
+
 # Disable grafts by default because they can cause things to be built
 # regardless of '--dry-run'.
 GUIX_BUILD_OPTIONS="--no-grafts"
