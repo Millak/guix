@@ -2885,17 +2885,17 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-astrocut
   (package
     (name "python-astrocut")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astrocut" version))
        (sha256
-        (base32 "1w9r48wdq2x6z6gmzr36nlqvm30hcdrrxn395hf21rxdqjiklh9w"))))
+        (base32 "1v8z1svw90yq3zxaljfspv62y76x3ffjv50fpbyz643m88c78ahr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 119 passed, 1 skipped, 39 deselected, 3 warnings
+      ;; tests: 168 passed, 1 skipped, 39 deselected
       #:test-flags
       #~(list "--deselect=docs/astrocut/index.rst::index.rst"
               #$@(map (lambda (ls)
