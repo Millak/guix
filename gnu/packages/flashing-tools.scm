@@ -876,34 +876,26 @@ production use.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public qdl
-  (let ((commit "13681fcb359c9f9c32a17a91d3dd20df2e413b6d")
-        (revision "1"))
-    (package
-      (name "qdl")
-      (version (git-version "1.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://git.linaro.org/landing-teams/working/qualcomm/qdl.git")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32 "0m6wdhfwbf7gzlckxx21bvbv33qjahpzqbg1pdqdd1lifx5f51mj"))))
-      (build-system gnu-build-system)
-      (native-inputs (list libxml2))
-      (inputs (list eudev))
-      (arguments
-       (list
-        #:tests? #f  ; No tests implemented
-        #:make-flags
-        #~(list (string-append "CC=" #$(cc-for-target))
-                (string-append "prefix=" #$output))
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure))))
-      (home-page "https://git.linaro.org/landing-teams/working/qualcomm/qdl")
-      (synopsis "Qualcomm EDL mode flashing tool")
-      (description "This tool communicates with USB devices of id 05c6:9008 to
-upload a flash loader and use this to flash images.")
-      (license license:bsd-3))))
+  (package
+    (name "qdl")
+    (version "2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linux-msm/qdl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w038zzgl52n0clpn7268f8j8vri8v535cqphzlzqaj6xnsgvhna"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list libxml2 pkg-config zip))
+    (inputs
+     (list libusb libzip))
+    (home-page "https://github.com/linux-msm/qdl")
+    (synopsis "Qualcomm EDL mode flashing tool")
+    (description "This tool communicates with Qualcomm EDL USB devices (Vendor
+ID `05c6`, Product IDs `9008`, `900e`, `901d`, `90db`) to upload a flash
+loader and use it to flash images.")
+    (license license:bsd-3)))
