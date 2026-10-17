@@ -45,6 +45,11 @@ gnu/packages/cpp\.scm                              @guix/cpp
 gnu/packages/ninja\.scm                            @guix/cpp
 gnu/packages/valgrind\.scm                         @guix/cpp
 
+gnu/build-system/chicken\.scm                      @guix/chicken
+gnu/build/chicken-build-system\.scm                @guix/chicken
+gnu/packages/chicken\.scm                          @guix/chicken
+guix/import/egg\.scm                               @guix/chicken
+
 etc/teams\.scm                                     @guix/core
 guix/avahi\.scm                                    @guix/core
 guix/base16\.scm                                   @guix/core
