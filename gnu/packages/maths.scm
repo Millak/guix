@@ -4762,7 +4762,7 @@ programming language.")
 (define-public python-ducc0
   (package
     (name "python-ducc0")
-    (version "0.37.1")
+    (version "0.41.1")
     (source
      (origin
        (method git-fetch)
@@ -4772,7 +4772,7 @@ programming language.")
                       "ducc0_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pckbip2ffmiwm73wrpvif3gy0a09v9b9kbyallp520l6l69n4k8"))))
+        (base32 "0yziixvxl66qq2v8d1kb97bli12a4d93j8xlvvvzdq68qym4wn1v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4786,7 +4786,7 @@ programming language.")
               (setenv "DUCC0_OPTIMIZATION" "portable-strip"))))))
     (native-inputs
      (list cmake-minimal
-           pybind11-2
+           pybind11
            python-nanobind
            python-pytest
            python-pytest-xdist
