@@ -12828,7 +12828,7 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method git-fetch)
@@ -12837,11 +12837,11 @@ SunPy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q5a57lz63l96lw0j069qjhvw90dgvmc8d7pmvsk54ici6y0a7am"))))
+        (base32 "04133ahzdzagm9v8xhxvphz8bdm6ryh0rbzrmns2a6f1r1iz78dk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2969 passed, 15 skipped, 3 xfailed, 3017 warnings
+      ;; tests: 2981 passed, 15 skipped, 3 xfailed, 3029 warnings
       #:test-flags
       #~(list "-m" "not remote_data"
               "--pyargs" "sunpy"
