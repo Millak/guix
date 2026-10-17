@@ -7100,8 +7100,7 @@ MS Graph APIs.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.58.1")
-    (replacement gvfs/fixed)
+    (version "1.58.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -7109,7 +7108,7 @@ MS Graph APIs.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "0fywnla2xwyi44jfipyixcczxh5h34c4lzfzf9lsgzxip9mpslzw"))))
+                "1r1cj5mmdh9apgv1z6qiqznlslpp5bbpx378vkkqvm1ykkrms5xy"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7185,19 +7184,6 @@ GVFS mounts to non-GIO applications using FUSE.
 GVFS comes with a set of backends, including trash support, SFTP, SMB, HTTP,
 DAV, and others.")
     (license license:lgpl2.0+)))
-
-(define gvfs/fixed
-  (package
-    (inherit gvfs)
-    (version "1.58.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/gvfs/"
-                                  (version-major+minor version) "/"
-                                  "gvfs-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1r1cj5mmdh9apgv1z6qiqznlslpp5bbpx378vkkqvm1ykkrms5xy"))))))
 
 (define-public gusb-minimal
   (package
