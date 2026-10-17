@@ -477,7 +477,7 @@ RK3036, RK3066, RK312X, RK3168, RK3188, RK3288, RK3368.")
 (define-public heimdall
   (package
     (name "heimdall")
-    (version "2.2.1")
+    (version "2.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -486,30 +486,29 @@ RK3036, RK3066, RK312X, RK3168, RK3188, RK3288, RK3368.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08sxn48jljrcily77g8yj89rhzwk0gjrz9lkglgrwl587x6q7sf7"))))
+                "0112hnj6a9gk8ax2mhq7vdi4ky6nzr3mrspz3c28nakck00s3bc1"))))
     (build-system qt-build-system)
     (arguments
-     `(#:build-type "Release"
-       #:qtbase ,qtbase
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-invocations
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("heimdall-frontend/source/aboutform.cpp"
-                            "heimdall-frontend/source/mainwindow.cpp")
-               (("start[(]\"heimdall\"")
-                (string-append "start(\"" (assoc-ref outputs "out")
-                               "/bin/heimdall\"")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
-                   (lib (string-append (assoc-ref outputs "out") "/lib")))
-               (install-file "bin/heimdall" bin)
-               (install-file "bin/heimdall-frontend" bin)
-               (install-file "libpit/libpit.a" lib)
-               #t))))))
+     (list
+      #:build-type "Release"
+      #:qtbase qtbase
+      #:tests? #f                      ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-invocations
+            (lambda _
+              (substitute* '("heimdall-frontend/source/aboutform.cpp"
+                             "heimdall-frontend/source/mainwindow.cpp")
+                (("start[(]\"heimdall\"")
+                 (string-append "start(\"" #$output "/bin/heimdall\"")))))
+          (replace 'install
+            (lambda _
+              (install-file "bin/heimdall"
+                            (string-append #$output "/bin"))
+              (install-file "bin/heimdall-frontend"
+                            (string-append #$output "/bin"))
+              (install-file "libpit/libpit.a"
+                            (string-append #$output "/lib")))))))
     (inputs
      (list libusb qtwayland zlib))
     (native-inputs (list pkg-config))
