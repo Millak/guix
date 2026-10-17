@@ -1458,8 +1458,7 @@ tools in a live programming environment.")
        (file-name (git-file-name "noctalia" version))
        (sha256
         (base32 "14i92npvw9brc3c1jiv7wfxb2nwx6qw0bsj7hzd36lzlv8zpa8c0"))
-       (patches (search-patches
-                 "noctalia-system-libraries.patch"))
+       (patches (search-patches "noctalia-shell-system-libraries.patch"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1538,7 +1537,7 @@ tools in a live programming environment.")
     (native-inputs
      (list dbus                         ;run D-Bus integration test
            pkg-config                   ;locate build dependencies
-           tzdata-for-tests))                  
+           tzdata-for-tests))
     (inputs
      (list
       bash-minimal                       ;generated wrapper and shell commands
@@ -1592,7 +1591,7 @@ tools in a live programming environment.")
       wlr-randr                          ;fallback display power control
       xdg-utils))                        ;Open links and OAuth pages.
     (home-page "https://github.com/noctalia-dev/noctalia")
-    (synopsis "A sleek, customizable desktop shell crafted for Wayland")
+    (synopsis "Wayland desktop shell")
     (description
      "Noctalia is a full Wayland desktop shell providing bars, a dock,
 launcher, notifications, a lock screen, wallpaper management, and settings.")
