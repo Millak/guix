@@ -487,10 +487,13 @@ destructors.  It is the core memory allocator used in Samba.")
         `(modify-phases ,phases
            (replace 'build
              (lambda _
-               (invoke "gcc" "-c" "-Ibin/default" "-I" "lib/replace"
-                       "-I." "-Wall" "-g" "-D__STDC_WANT_LIB_EXT1__=1"
-                       "talloc.c")
-               (invoke "ar" "rc" "libtalloc.a" "talloc.o")))
+               ;; Include lib/replace for 'rep_memset_s'.
+               (for-each (lambda (file)
+                           (invoke "gcc" "-c" "-Ibin/default" "-I" "lib/replace"
+                                   "-I." "-Wall" "-g"
+                                   "-D__STDC_WANT_LIB_EXT1__=1" file))
+                         '("talloc.c" "lib/replace/replace.c"))
+               (invoke "ar" "rc" "libtalloc.a" "talloc.o" "replace.o")))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out     (assoc-ref outputs "out"))
