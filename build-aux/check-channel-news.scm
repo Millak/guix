@@ -24,6 +24,7 @@
              (guix git)
              (guix ui)
              (guix channels)
+             (srfi srfi-1)
              (srfi srfi-26)
              (rnrs bytevectors)
              (ice-9 match))
@@ -52,33 +53,41 @@
       (display str (current-error-port))
       (exit 1))))
 
-(define (validate-news-entry repository entry)
+(define (validate-news-entry repository commit entry)
   "Validate ENTRY, a <channel-news-entry>, making sure it refers to an
-existent commit of REPOSITORY and contains only valid Texinfo."
-  (catch 'git-error
-    (lambda ()
-      (let ((commit (commit-lookup repository
-                                   (string->oid
-                                    (channel-news-entry-commit entry)))))
-        (for-each (match-lambda
-                    ((language . title)
-                     (validate-texinfo title 'title language)))
-                  (channel-news-entry-title entry))
-        (for-each (match-lambda
-                    ((language . body)
-                     (validate-texinfo body 'body language)))
-                  (channel-news-entry-body entry))))
-    (lambda (key error . rest)
-      (if (= GIT_ENOTFOUND (git-error-code error))
-          (leave (G_ "commit '~a' of entry '~a' does not exist~%")
-                 (channel-news-entry-commit entry)
-                 (channel-news-entry-title entry))
-          (apply throw key error rest)))))
+ancestor of COMMIT, at which the channel news are read from REPOSITORY,
+and contains only valid Texinfo."
+  (let ((entry-title (channel-news-entry-title entry))
+        (entry-commit (channel-news-entry-commit entry)))
+    (for-each (match-lambda
+                ((language . title)
+                 (validate-texinfo title 'title language)))
+              entry-title)
+    (for-each (match-lambda
+                ((language . body)
+                 (validate-texinfo body 'body language)))
+              (channel-news-entry-body entry))
+    (unless (catch 'git-error
+              (cut graph-descendant?
+                   repository commit (string->oid entry-commit))
+              (lambda (key err . rest)
+                ;; A commit with an unmatched ID in the object database
+                ;; is obviously not an ancestor of anything.
+                (not (or (= GITERR_ODB (git-error-class err))
+                         (apply throw key err rest)))))
+      (leave (G_ "commit ~a of entry ~s is not an ancestor of ~a~%")
+             entry-commit
+             (string-trim-both
+              (texi->plain-text (cdr (or (assoc (current-message-language)
+                                                entry-title string=?)
+                                         (assoc (%default-message-language)
+                                                entry-title string=?)))))
+             (oid->string commit)))))
 
 (with-repository (dirname (dirname (current-filename))) repository
   (let* ((head (reference-target (repository-head repository)))
          (entries (channel-news-entries (all-the-news repository head))))
-    (for-each (cut validate-news-entry repository <>)
+    (for-each (cut validate-news-entry repository head <>)
               entries)
     (info (G_ "All ~a channel news entries are valid at commit ~a.~%")
           (length entries)
