@@ -45,6 +45,34 @@
 (channel-news
  (version 0)
 
+ (entry (commit "fb0bf8a0d1e6f0f3fae31a4d0a2d70e76a4a069d")
+        (title
+         (en "New @code{transformation} field for @code{operating-system} and
+@code{home-environment}"))
+        (body
+         (en "If you use Guix System and/or Guix Home, it is now possible to
+specify a @code{transformation} field in the corresponding configuration.  The
+new field specifies a transformation to apply on everything that makes up the
+final result, typically a package transformation.
+
+In the example below, the relevant packages of the operating system are tuned
+for the @code{x86-64-v4} micro-architecture:
+
+@lisp
+(use-modules (guix transformations))
+
+(operating-system
+  ;; @dots{}
+  (transformation
+    (options->transformation '((tune . \"x86-64-v4\"))
+                             ;; Don't warn about non-tunable
+                             ;; packages.
+                             #:warn? #f)))
+@end lisp
+
+See @samp{info \"(guix) operating-system Reference\"} and @samp{info \"(guix)
+home-environment Reference\"} for more info.")))
+
  (entry (commit "f013a062f636b0c8f4b30e7aca305c0621070cf7")
         (title
          (en "@code{home-dotfiles-configuration-excluded}
