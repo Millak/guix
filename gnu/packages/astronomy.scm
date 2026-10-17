@@ -4438,7 +4438,7 @@ application.")
 (define-public python-chiantipy
   (package
     (name "python-chiantipy")
-    (version "0.16.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -4447,7 +4447,7 @@ application.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h0vxmfcnc04bsj7mz2r6n2g23a2rpcg2sav3ldjgksw41sd42q3"))))
+        (base32 "0x8wr1bfc0721az4xa7rjkx06idpy2mwq83wmmycnv4vllqnxpg9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
