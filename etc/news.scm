@@ -48,6 +48,8 @@
  (entry (commit "fb0bf8a0d1e6f0f3fae31a4d0a2d70e76a4a069d")
         (title
          (en "New @code{transformation} field for @code{operating-system} and
+@code{home-environment}")
+         (pt "Novo campo @code{transformation} para @code{operating-system} e
 @code{home-environment}"))
         (body
          (en "If you use Guix System and/or Guix Home, it is now possible to
@@ -71,7 +73,29 @@ for the @code{x86-64-v4} micro-architecture:
 @end lisp
 
 See @samp{info \"(guix) operating-system Reference\"} and @samp{info \"(guix)
-home-environment Reference\"} for more info.")))
+home-environment Reference\"} for more info.")
+         (pt "Se você usa Guix System e/ou Guix Home, agora é possível
+especificar um campo @code{transformation} na configuração correspondente.  O
+novo campo especifica a transformação a aplicar em tudo que compuser o
+resultado final, tipicamente uma transformação de pacote.
+
+No exemplo abaixo, os pacotes relevantes do sistema operacional são ajustados
+para a microarquitetura @code{x86-64-v4}:
+
+@lisp
+(use-modules (guix transformations))
+
+(operating-system
+  ;; @dots{}
+  (transformation
+    (options->transformation '((tune . \"x86-64-v4\"))
+                             ;; Don't warn about non-tunable
+                             ;; packages.
+                             #:warn? #f)))
+@end lisp
+
+Veja @samp{info \"(guix) operating-system Reference\"} e @samp{info \"(guix)
+home-environment Reference\"} para mais informação.")))
 
  (entry (commit "f013a062f636b0c8f4b30e7aca305c0621070cf7")
         (title
@@ -80,7 +104,8 @@ also exclude directories")
          (de "@code{home-dotfiles-configuration-excluded}
 wird auch Verzeichnisse ausschließen")
          (fr "@code{home-dotfiles-configuration-excluded}
-exclut aussi les dossiers"))
+exclut aussi les dossiers")
+         (pt "@code{home-dotfiles-configuration-excluded} também exclui diretórios"))
         (body
          (en "All files, including directories, matching a pattern in
 @code{home-dotfiles-configuration-excluded} are now excluded.  Making it behave
@@ -90,7 +115,10 @@ like @code{stow}'s @code{--ignore}.")
 Dadurch verhält es sich wie @code{--ignore} bei @code{stow}.")
          (fr "Tous les fichiers, y compris les dossiers, correspondant à un
 motif présent dans @code{home-dotfiles-configuration-excluded} sont exclus.
-Rendant son comportement similaire au @code{--ignore} de @code{stow}.")))
+Rendant son comportement similaire au @code{--ignore} de @code{stow}.")
+         (pt "Todos os arquivos, incluindo diretórios, casando um padrão em
+@code{home-dotfiles-configuration-excluded} agora são excluídos, agindo como
+@code{--ignore} de @code{stow}.")))
 
  (entry (commit "a6292be30be14986c3bb5dcc89d7b833c080483e")
         (title
