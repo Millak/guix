@@ -172,6 +172,33 @@ integrations.")
 Service.")
     (license %cirq-license)))
 
+(define-public python-cirq-ionq
+  (package
+    (name "python-cirq-ionq")
+    (version %cirq-version)
+    (source %cirq-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f     ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "cirq-ionq"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-cirq-core
+           python-requests))
+    (home-page %cirq-home-page)
+    (synopsis
+     "Cirq package to simulate and connect to IonQ quantum computers")
+    (description
+     "This is the Cirq-IonQ integration module.  It provides an interface that
+allows Cirq quantum algorithms to run on quantum computers made by IonQ Inc.")
+    (license %cirq-license)))
+
 (define-public python-quimb
   (package
     (name "python-quimb")
