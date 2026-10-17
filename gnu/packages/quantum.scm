@@ -181,6 +181,26 @@ Service.")
 allows Cirq quantum algorithms to run on quantum computers made by IonQ Inc.")
     (license %cirq-license)))
 
+(define-public python-cirq-pasqal
+  (package
+    (name "python-cirq-pasqal")
+    (version %cirq-version)
+    (source (cirq-source name))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-benchmark
+           python-setuptools))
+    (propagated-inputs
+     (list python-cirq-core
+           python-requests))
+    (home-page %cirq-home-page)
+    (synopsis "Interface to Pasqal quantum computers")
+    (description
+     "This package provides an interface for Cirq to quantum computers made
+by @url{https://www.pasqal.com, Pasqal}.")
+    (license %cirq-license)))
+
 (define-public python-quimb
   (package
     (name "python-quimb")
