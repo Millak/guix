@@ -4543,7 +4543,7 @@ list of currently supported likelihoods).")
 (define-public python-cmyt
   (package
     (name "python-cmyt")
-    (version "2.0.2")
+    (version "2.0.4")
     (source
      (origin
        (method git-fetch)
@@ -4552,13 +4552,13 @@ list of currently supported likelihoods).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d257xlgxc06x47k07xn5ml2kjqzc7dgjal4bl9x2w6b90xn0pm1"))))
+        (base32 "16bs6nflqyyjxg0gjsf12f0ia6i69vpi9995jz812abnimzd6kma"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-colorspacious
+           python-flit-core
            python-pytest
-           python-pytest-mpl
-           python-hatchling))
+           python-pytest-mpl))
     (propagated-inputs
      (list python-matplotlib
            python-numpy))
