@@ -4833,7 +4833,7 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "14.0.0")
+    (version "14.0.3")
     (source
      (origin
        (method git-fetch)
@@ -4842,7 +4842,7 @@ Spectrograph}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xy4111ysk3h3wigmfh39q2h98ds5r3lh20m7d6zb0hkld4gkm9d"))))
+        (base32 "1vb4dhj73azfcswsczwh5zh02p30frybxkjj0iix40haaww9vbhg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
