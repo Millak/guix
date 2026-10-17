@@ -1053,13 +1053,13 @@ module.")
 (define-public ghc-aeson
   (package
     (name "ghc-aeson")
-    (version "2.2.3.0")
+    (version "2.2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "aeson" version))
        (sha256
-        (base32 "1akbrh8iz47f0ai30yabg1n4vcf1fx0a9gzj45fx0si553s5r8ns"))))
+        (base32 "0xdfpvsv9b2fbgz8qkjzlva7xgp3madkp80kpxyqgn5vq18dd0pa"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "aeson")))
     (inputs (list ghc-generically
@@ -1098,9 +1098,6 @@ module.")
                          ghc-tasty-hunit
                          ghc-tasty-quickcheck
                          ghc-nothunks))
-    (arguments
-     `(#:cabal-revision ("4"
-                         "0yw5kahz82kls4svn0qssckvx143k73h5nqg0z1d4s7ibqww4j3x")))
     (home-page "https://github.com/haskell/aeson")
     (synopsis "Fast JSON parsing and encoding")
     (description
