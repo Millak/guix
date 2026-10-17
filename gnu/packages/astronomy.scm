@@ -1700,7 +1700,7 @@ release from 2013.")
   ;; to use the system package instead of it.
   (package
     (name "java-cds-healpix")
-    (version "0.30.3")
+    (version "0.30.4")
     (source
      (origin
        (method git-fetch)
@@ -1709,7 +1709,7 @@ release from 2013.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wi5ni6j0rvjyhz80g1gglxdimf7gnfa1kx8a3c2przzbwya0j8d"))))
+        (base32 "15rsafxhawaars5m7wkys3y2cs1hfqpgczy7vqzag9b0dscli81c"))))
     (build-system ant-build-system)
     (arguments
      (list
