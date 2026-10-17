@@ -4094,21 +4094,21 @@ with models.")
 (define-public python-casa-formats-io
   (package
     (name "python-casa-formats-io")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "casa-formats-io" version))
-              (sha256
-               (base32
-                "16qwr6yq86qgdb0lvnmfm5mn6g2d29b1vrmfv26v77kxm6szxr8h"))))
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/radio-astro-tools/casa-formats-io")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d0gq1disyy42ghx09pg708y8fmn0ymk2hdghw1n7ydq53786hrk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 17 passed, 58 skipped, 1 deselected, 1 xfailed, 25 warnings
       #:test-flags
-      #~(list "--pyargs" "casa_formats_io"
-              ;; AttributeError: module 'numpy' has no attribute 'product'
-              "-k" "not test_ms_tables[.]")
+      #~(list "--pyargs" "casa_formats_io")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'remove-local-source
