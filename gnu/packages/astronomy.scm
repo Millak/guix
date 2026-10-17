@@ -14493,6 +14493,75 @@ stack typically requires post-processing, including sharpening (e.g. via
 deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
 
+(define-public statcont
+  (let ((commit "54786adababe822de1971a713d4860637dd3a9f4")
+        (revision "0"))
+    (package
+      (name "statcont")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/radio-astro-tools/statcont")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09m97fz57yn17smqp5b28b50hv93naqcvpnqkfnk2yjg4mxmvl5a"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              ;; statcont expects .dat files (ispec) under "data/" directory
+              ;; and accepts file name without ".dat" extension.
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp")
+                  (mkdir "data")
+                  (for-each
+                   (lambda (dat)
+                     (let* ((file (basename dat))
+                            (ispec (substring file 0 (- (string-length file) 4))))
+                       (copy-file dat (string-append "data/" file))
+                       (invoke "statcont" "--ispec" ispec "--noise" "1")))
+                   (find-files "tests" "\\.dat$"))))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-astropy
+             python-pytest-doctestplus
+             python-setuptools
+             python-setuptools-scm))
+      (inputs
+       (list python-astropy
+             python-numpy
+             python-scipy
+             python-matplotlib))
+      (home-page "https://hera.ph1.uni-koeln.de/~sanchez/statcont")
+      (synopsis "Continuum measurement tools for crowded-line spectra")
+      (description
+       "STATCONT is a python-based tool designed to determine the continuum
+emission level in line-rich spectral data.  The tool inspects the intensity
+distribution of a given spectrum and automatically determines the continuum
+level by using differeng statistical approaches.  The different methods
+included in STATCONT have been tested against synthetic data.  We conclude
+that the sigma-clipping algorithm provides the most accurate continuum level
+determination, together with information on the uncertainty in its
+determination.
+
+ This uncertainty is used to correct the final continuum emission level,
+resulting in the here-called 'corrected sigma-clipping method' or cSCM.  The
+cSCM has been tested against synthetic data cubes reproducing typical
+conditions found in astronomical line-rich sources.  In general, we obtain
+accuracies of < 10 % in the continuum determination, and < 5 % in most cases.
+The main products of STATCONT are the continuum emission level, together with
+its uncertainty, and data cubes containing only spectral line emission, i.e.
+continuum-subtracted data cubes.  STATCONT also includes the option to
+estimate the spectral index or variation of the continuum emission with
+frequency.")
+      (license license:bsd-3))))
+
 (define-public stellarium
   (package
     (name "stellarium")
