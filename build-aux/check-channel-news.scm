@@ -25,17 +25,20 @@
              (guix ui)
              (guix channels)
              (srfi srfi-26)
+             (rnrs bytevectors)
              (ice-9 match))
 
 ;; XXX: These two things are currently private.
 (define read-channel-news (@@ (guix channels) read-channel-news))
 (define channel-news-entries (cut struct-ref <> 0))
 
-(define (all-the-news directory)
-  "Return the <channel-news> read from DIRECTORY, a checkout of the 'guix'
-channel."
-  (call-with-input-file (string-append directory "/etc/news.scm")
-    read-channel-news))
+(define (all-the-news repository commit)
+  "Return the <channel-news> read from the 'guix' channel REPOSITORY at COMMIT."
+  (let* ((tree (commit-tree (commit-lookup repository commit)))
+         (oid (tree-entry-id (tree-entry-bypath tree "etc/news.scm")))
+         (blob (blob-lookup repository oid)))
+    (call-with-input-string (utf8->string (blob-content blob))
+      read-channel-news)))
 
 (define (validate-texinfo str type language)
   "Parse STR as a Texinfo fragment and raise an error if that fails."
@@ -72,11 +75,11 @@ existent commit of REPOSITORY and contains only valid Texinfo."
                  (channel-news-entry-title entry))
           (apply throw key error rest)))))
 
-(let* ((this-directory (dirname (current-filename)))
-       (top-directory  (string-append this-directory "/.."))
-       (entries        (channel-news-entries (all-the-news top-directory))))
-  (with-repository top-directory repository
+(with-repository (dirname (dirname (current-filename))) repository
+  (let* ((head (reference-target (repository-head repository)))
+         (entries (channel-news-entries (all-the-news repository head))))
     (for-each (cut validate-news-entry repository <>)
               entries)
-    (info (G_ "All ~a channel news entries are valid.~%")
-          (length entries))))
+    (info (G_ "All ~a channel news entries are valid at commit ~a.~%")
+          (length entries)
+          (oid->string head))))
