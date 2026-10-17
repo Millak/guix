@@ -952,10 +952,10 @@ It also includes runtime support libraries for these languages.")
        (if (and (target-hurd64?) (version-prefix? "11" (package-version this-package)))
            #~(modify-phases #$phases
                (add-after 'unpack 'apply-x86_64-hurd-patch
-                 (lambda _
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (invoke "patch" "--force" "-p1" "-i"
-                             #$(search-patch "gcc-11-x86_64-gnu.patch"))))))
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (invoke "patch" "--force" "-p1" "-i"
+                           #$(local-file
+                              (search-patch "gcc-11-x86_64-gnu.patch"))))))
            phases))))
    (properties
     `((compiler-cpu-architectures
