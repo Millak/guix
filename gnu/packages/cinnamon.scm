@@ -230,6 +230,37 @@ cross-DE solutions.")
 persist XApp settings windows using GSettings.")
     (license license:lgpl2.0+)))
 
+(define-public xdg-desktop-portal-xapp
+  (package
+    (name "xdg-desktop-portal-xapp")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/linuxmint/xdg-desktop-portal-xapp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0crmxnkcysmaqzdhcyjxq65dawbrgzlqrz17hi34b3br7md6c0p6"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Dsystemduserunitdir=lib/systemd/user")))
+    (native-inputs (list (list glib "bin") pkg-config))
+    (inputs (list glib gtk+))
+    (propagated-inputs (list gsettings-desktop-schemas xdg-desktop-portal))
+    (home-page "https://github.com/linuxmint/xdg-desktop-portal-xapp")
+    (synopsis "XApp portal backend for xdg-desktop-portal")
+    (description
+     "This package provides a backend implementation for
+@code{xdg-desktop-portal} used by the Cinnamon, MATE and Xfce desktop
+environments.  It implements the wallpaper, inhibit, screenshot, lockdown,
+settings and background portal interfaces.")
+    (license license:lgpl2.1+)))
+
 (define-public timezonemap
   (package
     (name "timezonemap")
