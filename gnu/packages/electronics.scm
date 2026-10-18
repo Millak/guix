@@ -3758,7 +3758,7 @@ parser library for Python.")
 (define-public python-pyrtl
   (package
     (name "python-pyrtl")
-    (version "1.0.0")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -3767,8 +3767,36 @@ parser library for Python.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r42yh9ncrb6k9z35skw35dba4173lmb7xxka13iwwwghnl935vy"))))
+        (base32 "0ckf9pdi8d1642yv1792djwcxqfzmhxh058cnr1n702avk5p9av3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Require uv
+         #$@(map (lambda (test)
+                   (string-append
+                    "--deselect=tests/test_examples.py::test_all_examples"
+                    test))
+                 (list "[example1-combologic.py]"
+                       "[example2-counter.py]"
+                       "[example3-statemachine.py]"
+                       "[example8-verilog.py]"
+                       "[example1.1-signed-numbers.py]"
+                       "[introduction-to-hardware.py]"
+                       "[example7-synth-timing.py]"
+                       "[example1.2-wire-struct.py]"
+                       "[example4-debuggingtools.py]"
+                       "[example0-minimum-viable-hardware.py]"
+                       "[example5-introspection.py]"
+                       "[renderer-demo.py]"
+                       "[example6-memory.py]"
+                       "[example-gcd.py]"
+                       "[example-fir.py]"
+                       "[example-mul.py]"
+                       "[example-adder.py]"
+                       "[example-maxn.py]"
+                       "[example-ripple-carry.py]")))))
     (native-inputs
      (list python-hatchling python-hatch-vcs python-pytest))
     (propagated-inputs
