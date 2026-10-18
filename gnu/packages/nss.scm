@@ -399,7 +399,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
 (define-public nsncd
   (package
     (name "nsncd")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
      (origin
        (method git-fetch)
@@ -408,13 +408,12 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kzwd5vlz5paal8k79dkamjqczz7k8azyc8zwjyhalcxzsjkdn0w"))))
+        (base32 "0ysw1zfr516gyp6agdjss0n8dvy7myrl5a41kkqk6g7w42zna9hb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--"
          ;; These tests fail with the current builder network setup
-         "--skip=ffi::test_gethostbyaddr_r"
          "--skip=ffi::test_gethostbyname2_r"
          "--skip=handlers::test::test_handle_getservbyname_name"
          "--skip=handlers::test::test_handle_getservbyname_name_proto"
