@@ -233,6 +233,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages emulators)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -34245,6 +34246,7 @@ mangled symbols, which can be used for directly extracting type information.")
               (setenv "CC" #$(cc-for-target)))))))
     (propagated-inputs (list python-archinfo ;sync version with python-angr
                              python-cachetools
+                             python-capstone-5.0.3
                              python-cffi
                              python-claripy  ;sync version with python-angr
                              python-cle      ;sync version with python-angr
