@@ -1276,6 +1276,9 @@ or user activity.")
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; TODO: Remove test-exclude when updating the package; the
+      ;; test_loadPageInitialPropertyNotExistFails was removed upstream.
+      #:test-exclude "tst_pagepool"
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-offscreen-display
