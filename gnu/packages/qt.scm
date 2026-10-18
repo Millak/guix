@@ -3888,14 +3888,16 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.11.2")
+    (version "6.140.0-beta2")           ;no release yet
     (source
      (origin
        (method url-fetch)
-       (uri (qt-url name version))
+       (uri (string-append
+             "https://download.qt.io/development_releases/qtwebengine/"
+             version "/" name "-everywhere-src-" version ".tar.xz"))
        (sha256
         (base32
-         "0qy1lyykwwkp288v0y5kqnd1pmz8frzicpgfcldkv4zz02mc20b1"))
+         "11xspfaqiiaw6pazbrk3b855n58jzpkl3yialrx6zspm71y1n7jn"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -4205,7 +4207,8 @@ linux/libcurl_wrapper.h"
                     "enable_widevine=false"
                     ;; Link pulseaudio directly instead of using dlopen.
                     "link_pulseaudio=true")
-                  "\n"))))))))
+                  "\n"))))))
+       (patches (search-patches "qtwebengine-logging-header.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4281,15 +4284,18 @@ libdrm/BUILD.gn"
               ;; with the full path to the qtwebengine translations and
               ;; locales in the store.
               (substitute* "src/core/web_engine_library_info.cpp"
-                (("QLibraryInfo::path\\(QLibraryInfo::TranslationsPath)")
-                 (string-append "QLatin1String(\"" #$output
-                                "/share/qt6/translations\")"))
-                (("QLibraryInfo::path\\(QLibraryInfo::DataPath)")
-                 (string-append "QLatin1String(\"" #$output
-                                "/share/qt6\")"))
-                (("QLibraryInfo::path\\(QLibraryInfo::LibraryExecutablesPath)")
-                 (string-append "QLatin1String(\"" #$output
-                                "/lib/qt6/libexec\")")))
+                (("QLibraryInfo::paths\\(QLibraryInfo::TranslationsPath)")
+                 (string-append "QStringList{QLatin1String(\"" #$output
+                                "/share/qt6/translations\")}"))
+                (("QLibraryInfo::paths\\(QLibraryInfo::DataPath)")
+                 (string-append "QStringList{QLatin1String(\"" #$output
+                                "/share/qt6\")}"))
+                ;; This fixes the location of the QtWebEngineProcess
+                ;; executable, removing the need to set
+                ;; QTWEBENGINEPROCESS_PATH.
+                (("QLibraryInfo::paths\\(QLibraryInfo::LibraryExecutablesPath)")
+                 (string-append "QStringList{QLatin1String(\""
+                                #$output "/lib/qt6/libexec\")}")))
               ;; Substitute full dynamic library path for nss.
               (substitute* "src/3rdparty/chromium/crypto/nss_util.cc"
                 (("libnssckbi.so")

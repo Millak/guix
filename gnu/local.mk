@@ -2439,6 +2439,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtwayland-5-0054-Client-Avoid-locking-resizing-in-QWaylandShmBackingS.patch  \
   %D%/packages/patches/qtwayland-5-0055-bradient-Use-QWaylandWindow-actual-window-title.patch       \
   %D%/packages/patches/qtwayland-update-wayland-xml.patch	\
+  %D%/packages/patches/qtwebengine-logging-header.patch         \
   %D%/packages/patches/rabbitmq-defaults.patch		\
   %D%/packages/patches/radare2-fix-meson-build-to-use-sys-qjs.patch	\
   %D%/packages/patches/radare2-fix-meson-build-to-use-sys-sdb.patch	\

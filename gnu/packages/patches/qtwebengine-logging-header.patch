@@ -1,0 +1,14 @@
+Upstream-status: https://qt-project.atlassian.net/browse/QTBUG-151657
+
+diff --git a/src/3rdparty/chromium/media/filters/ffmpeg_glue.cc b/src/3rdparty/chromium/media/filters/ffmpeg_glue.cc
+index f5934c04a16..8b2457197ef 100644
+--- a/src/3rdparty/chromium/media/filters/ffmpeg_glue.cc
++++ b/src/3rdparty/chromium/media/filters/ffmpeg_glue.cc
+@@ -10,6 +10,7 @@
+ #include "media/filters/ffmpeg_glue.h"
+ 
+ #include "base/check_op.h"
++#include "base/logging.h"
+ #include "base/metrics/histogram_functions.h"
+ #include "base/no_destructor.h"
+ #include "base/notreached.h"
