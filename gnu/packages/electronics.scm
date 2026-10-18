@@ -4415,7 +4415,7 @@ Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.13") ;v4.7.0 dates back from 2023.
+    (version "5.0.0-dev.15") ;v4.7.0 dates back from 2023.
     (source
      (origin
        (method git-fetch)
@@ -4424,7 +4424,7 @@ Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jsx593qp16a76k5aydp47p9704w4crhh389g6qba310xzrl8ph6"))))
+        (base32 "0qyg51hqv43xqswkm75c3nybd583d2pr4mi0m61izkw2cvfj05lv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
