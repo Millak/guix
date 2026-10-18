@@ -2770,14 +2770,14 @@ the official client.")
 (define-public netavark
   (package
     (name "netavark")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "netavark" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12ibyylgnwps6f298jjb49qnr3q9prahzdb4jskhx1gzxhyfxxil"))))
+        (base32 "0q5h9c7n7wi8dynb4nqikvgdlpp38g1j0y260810sw6nyxk9p9m7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f))
