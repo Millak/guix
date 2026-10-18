@@ -968,7 +968,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.5.3")
+    (version "0.18.5.4")
     (source
      (origin
        (method git-fetch)
@@ -984,7 +984,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "0c49ni16r9vr14b6rwhr1261xgykyf1nr5y1g2d6zz1wbns2jh0g"))))
+        (base32 "14lvqxiwcgnqik32nsnq3848hdyfgpi3bk4mz89xh8a8k1lg4zn3"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
