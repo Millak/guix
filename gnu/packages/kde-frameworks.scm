@@ -3251,11 +3251,16 @@ KCModules can be created with the KConfigWidgets framework.")
      (list
       #:qtbase qtbase
       #:test-exclude
-      (string-append "("
-                     (string-join '("kstandardactiontest"
-                                    "klanguagenametest")
-                                  "|")
-                     ")")
+      (string-append
+       "("
+       (string-join '("kstandardactiontest"
+                      "klanguagenametest"
+                      ;; The '' test fails since Qt 6.12.0 (see:
+                      ;; <https://bugs.kde.org/show_bug.cgi?id=527315>).
+                      "khamburgermenutest"
+                      )
+                    "|")
+       ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
