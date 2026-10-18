@@ -3043,7 +3043,7 @@ Layer-4 sockets.")
 (define-public podman
   (package
     (name "podman")
-    (version "6.1.3")
+    (version "6.1.4")
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")))
@@ -3054,7 +3054,7 @@ Layer-4 sockets.")
              (url "https://github.com/podman-container-tools/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "17wqxxw0jkqgzf6w68qichxi7hsj709p3hnn7a8yypi6l1vnqnxn"))
+        (base32 "1qz94yyccqgsnpg7c1azldk01l5hvc1m61s62j1m3a4ih8vg2cs5"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
