@@ -3273,14 +3273,14 @@ browsers.")
 (define-public rust-cargo-edit
   (package
     (name "rust-cargo-edit")
-    (version "0.13.10")
+    (version "0.13.13")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-edit" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0m0bbrkk8lpliwji19cd7jxzgv7i7fcdimbv52icqyr9nl0xlnba"))))
+                "01jv9skza4rvddl4wd6c8d7yjj01rc9fzwb46qca5s62r76dgvr5"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
