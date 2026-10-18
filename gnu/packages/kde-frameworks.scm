@@ -4458,11 +4458,15 @@ Items.")
            sonnet))
     (arguments
      (list #:test-exclude
-           (string-append "("
-                          (string-join '("exiv2extractortest"
-                                         "usermetadatawritertest")
-                                       "|")
-                          ")")
+           (string-append
+            "("
+            (string-join '("exiv2extractortest"
+                           "usermetadatawritertest"
+                           ;; This test fails since Qt 6.12.0 (see:
+                           ;; <https://bugs.kde.org/show_bug.cgi?id=527388>)
+                           "scripttester_test")
+                         "|")
+            ")")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
