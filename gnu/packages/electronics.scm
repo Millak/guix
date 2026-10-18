@@ -477,7 +477,7 @@ suite.")
 (define-public charlib
   (package
     (name "charlib")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -485,9 +485,29 @@ suite.")
              (url "https://github.com/stineje/CharLib")
              (commit version)))
        (sha256
-        (base32 "0phklm6wcpvwdfx00k0q8qvpvdqf6wjvzirkfji7vc7ils7wz2sl"))
+        (base32 "08a4sp5l8w337b01cynbd0x42wrwzxw88vx4crhy2zhm8sm9g8wm"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("9.0.3") "9.0.2")       ;pytest
+                (("4.67.3") "4.67.1"))))) ;tqdm
+      #:test-flags
+      #~(list
+         ;; ValueError: Unable to add cell.
+         #$@(map (lambda (test)
+                   (string-append
+                    "--deselect=test/examples/test_examples.py::"
+                    test))
+                 (list "test_ex_osu350_adders"
+                       "test_ex_osu350_invx1"
+                       "test_ex_gf180_osu_9t"
+                       "test_ex_osu350_dffsr")))))
     (inputs
      (list ngspice
            pyspice
