@@ -2016,6 +2016,22 @@ such as x86, x86_64, arm, arm64, mips, ppc, sparc, sysz and xcore.  It provides
 bindings for Python, Java, OCaml and more.")
     (license license:bsd-3)))
 
+(define-public capstone-5.0.3
+  (package
+    (inherit capstone)
+    (name "capstone")
+    (version "5.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/capstone-engine/capstone")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fv8j1nzzbc5x9pg90641gpmlmp9h85wcg3l6258drk761rp979d"))))))
+
 ;; FIXME: This package has a timestamp embedded in
 ;; lib/python3.5/site-packages/capstone/__pycache__/__iti__.cpython-35.pyc
 (define-public python-capstone
