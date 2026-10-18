@@ -948,6 +948,8 @@ countdown from the text user interface.")
     (arguments
      (list
       #:install-source? #f
+      ;; V8 uses the zoneinfo64 provider.
+      #:cargo-build-flags ''("--release" "--features" "zoneinfo64")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'adjust-for-cdylib
