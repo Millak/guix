@@ -1,0 +1,53 @@
+From 6c0a03a8fade7386d202dde1b2ace76dd6897417 Mon Sep 17 00:00:00 2001
+From: Yaakov Selkowitz <yselkowi@redhat.com>
+Date: Thu, 9 Jul 2026 17:02:36 -0400
+Subject: [PATCH] doc: add option to not build the book
+
+mdbook is not available in all distributions, and other documentation does
+not require it.
+
+Signed-off-by: Yaakov Selkowitz <yselkowi@redhat.com>
+---
+ doc/meson.build   | 6 ++++--
+ meson_options.txt | 4 ++++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/doc/meson.build b/doc/meson.build
+index b9f6fcba7..7b3d7d830 100644
+--- a/doc/meson.build
++++ b/doc/meson.build
+@@ -6,7 +6,7 @@ dot = find_program('dot')
+ doxygen = find_program('doxygen')
+ xsltproc = find_program('xsltproc')
+ xmlto = find_program('xmlto')
+-mdbook = find_program('mdbook')
++mdbook = find_program('mdbook', required: get_option('book'))
+ 
+ cmd = run_command(doxygen, '--version', check: true)
+ message('doxygen: ' + cmd.stdout().strip())
+@@ -40,4 +40,6 @@ publican_html_dir = 'html'
+ 
+ subdir('doxygen')
+ subdir('publican')
+-subdir('book')
++if mdbook.found()
++	subdir('book')
++endif
+diff --git a/meson_options.txt b/meson_options.txt
+index 02c2346a6..3445f3fed 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -22,6 +22,10 @@ option('dtd_validation',
+   description: 'Validate the protocol DTD (requires libxml2)',
+   type: 'boolean',
+   value: true)
++option('book',
++  description: 'Build the Wayland Book (requires mdbook)',
++  type: 'boolean',
++  value: true)
+ option('icon_directory',
+   description: 'Location used to look for cursors (defaults to ${datadir}/icons if unset)',
+   type: 'string',
+-- 
+GitLab
+
