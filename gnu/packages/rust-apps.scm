@@ -2346,64 +2346,55 @@ with other physical backends.")
                (base32 "0knp4767n7qqysybv2qrw20vlnx7kb6v7v859xdry4lw3j8w2iky"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--"
+     (list
+      #:cargo-test-flags
+      ''("--"
          "--skip=backticks::trailing_newlines_are_stripped"
          "--skip=directories::runtime_directory"
          "--skip=functions::env_var_functions_unix"
          "--skip=string::shebang_backtick")
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'replace-hardcoded-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (cons "src/justfile.rs"
-                                (find-files "tests/" "\\.rs$"))
-               (("/bin/sh")
-                (search-input-file inputs "/bin/sh"))
-               (("/usr/bin/env sh")
-                (search-input-file inputs "/bin/sh"))
-               (("/usr/bin/env")
-                (search-input-file inputs "/bin/env"))
-               (("/bin/echo")
-                (search-input-file inputs "/bin/echo")))))
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'replace-hardcoded-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (cons "src/justfile.rs"
+                                 (find-files "tests/" "\\.rs$"))
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh"))
+                (("/usr/bin/env sh")
+                 (search-input-file inputs "/bin/sh"))
+                (("/usr/bin/env")
+                 (search-input-file inputs "/bin/env"))
+                (("/bin/echo")
+                 (search-input-file inputs "/bin/echo")))))
          (add-after 'install 'install-extras
-           (lambda* (#:key native-inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (man1 (string-append share "/man/man1"))
-                    (bash-completions-dir
-                     (string-append out "/etc/bash_completion.d/"))
-                    (zsh-completions-dir
-                     (string-append share "/zsh/site-functions"))
-                    (fish-completions-dir
-                     (string-append share "/fish/vendor_completions.d"))
-                    (elvish-completions-dir
-                     (string-append share "/elvish/lib"))
-                    (just (if ,(%current-target-system)
-                          (search-input-file native-inputs "/bin/just")
-                          (string-append out "/bin/just"))))
+           (lambda* (#:key native-inputs #:allow-other-keys)
+             (let ((binary
+                     (if #$(%current-target-system)
+                         (search-input-file native-inputs "bin/just")
+                         (in-vicinity #$output "bin/just"))))
+               (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (with-output-to-file (in-vicinity #$output path)
+                     (lambda _
+                       (invoke binary "--completions" shell)))))
+                '(("bash"    . "share/bash-completion/completions/just")
+                  ("elvish"  . "share/elvish/lib/just")
+                  ("fish"    . "share/fish/vendor_completions.d/just.fish")
+                  ("nushell" . "share/nushell/vendor/autoload/just")
+                  ("zsh"     . "share/zsh/site-functions/_just")))
                (mkdir "man")
                (with-output-to-file "man/just.1"
-                 (lambda _ (invoke just "--man")))
-               (install-file "man/just.1" man1)
-
-               (mkdir-p bash-completions-dir)
-               (with-output-to-file
-                 (string-append bash-completions-dir "/just")
-                 (lambda _ (invoke just "--completions" "bash")))
-               (mkdir-p zsh-completions-dir)
-               (with-output-to-file
-                 (string-append zsh-completions-dir "/_just")
-                 (lambda _ (invoke just "--completions" "zsh")))
-               (mkdir-p fish-completions-dir)
-               (with-output-to-file
-                 (string-append fish-completions-dir "/just.fish")
-                 (lambda _ (invoke just "--completions" "fish")))
-               (mkdir-p elvish-completions-dir)
-               (with-output-to-file
-                 (string-append elvish-completions-dir "/just")
-                 (lambda _ (invoke just "--completions" "elvish")))))))))
+                 (lambda _ (invoke binary "--man")))
+               (install-file "man/just.1"
+                             (string-append #$output "/share/man/man1"))))))))
     (native-inputs (if (%current-target-system)
                        (list this-package)
                        '()))
