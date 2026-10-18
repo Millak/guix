@@ -318,14 +318,14 @@ parser definition into a C output.")
 (define-public node-lts
   (package
     (name "node")
-    (version "24.21.0")
+    (version "24.22.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "1z4lxmf5zh0mjzr63kqj2ybf1d79g0gdc4xs3ps88z7xnvplvxd6"))
+                "0a833vp35plyskmrzza3dg0hbmldbv38apywjf11yvv65kzprya1"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-26)))
