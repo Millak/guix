@@ -1185,8 +1185,11 @@ files.")
             (lambda _
               (invoke "bash" "build.sh"
                       "-prefix" "output"
-                      "-option"
-                      (string-append "-j" (number->string (parallel-job-count))))))
+                      ;; The Qt bindings are maintained as a best effort, do
+                      ;; not work with every Qt version.
+                      "-without-qtbinding"
+                      (string-append "-j" (number->string
+                                           (parallel-job-count))))))
           (add-after 'install 'patch-elfs
             (lambda _
               (let* ((lib (string-append #$output "/lib"))
