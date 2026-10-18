@@ -2066,6 +2066,38 @@ bindings for Python, Java, OCaml and more.")
     (propagated-inputs
      (list capstone))))
 
+(define-public python-capstone-5.0.3
+  (package
+    (inherit capstone-5.0.3)
+    (name "python-capstone")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-and-fix-setup-py
+            (lambda _
+              (chdir "bindings/python")
+              ;; Do not build the library again, because we already have it.
+              (substitute* "setup.py" ((".*   build_libraries.*") ""))
+              ;; This substitution tells python-capstone where to find the
+              ;; library.
+              (substitute* "capstone/__init__.py"
+                (("resources\\.files\\(__name__\\)")
+                 (string-append "PurePath(\"" #$(this-package-input "capstone") "\")")))
+              ;; Fix the path to the tests scripts in the Makefile.
+              (substitute* "Makefile"
+                (("./\\$\\$t") "./tests/$$t"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "check")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list capstone-5.0.3))))
+
 (define-public python-platypush
   (package
     (name "python-platypush")
