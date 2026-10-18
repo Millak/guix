@@ -2763,6 +2763,43 @@ limited size and a few external dependencies.  It is configurable via
     ;;             LICENSE       LICENSE.dwm   LICENSE.tinywl
     (license (list license:gpl3+ license:expat license:cc0))))
 
+(define-public mangobar
+  (package
+    (name "mangobar")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mangowm/mangobar")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "042a1p5wk030pawnzhkrbnpl8jznqlf62kpx1aw1vxirk2yzrpd2"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config
+           python
+           wayland))
+    (inputs
+     (list cairo
+           cjson
+           elogind
+           eudev
+           fcft
+           gdk-pixbuf
+           pango
+           pixman
+           pulseaudio
+           tllist
+           wayland-protocols))
+    (home-page "https://github.com/mangowm/mangobar")
+    (synopsis "Simple bar for mango")
+    (description
+     "@command{mangobar} provides a Wayland status bar for mangowm, built on
+wlr-layer-shell.")
+    (license license:gpl3)))
+
 (define-public mangowm
   (package
     (name "mangowm")
