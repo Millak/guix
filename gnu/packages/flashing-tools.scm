@@ -646,7 +646,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
 (define-public openfpgaloader
   (package
     (name "openfpgaloader")
-    (version "1.1.1")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -655,16 +655,8 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00wbf7z5f55422fmqczxc6f7a2lmr52m1qx8m3ky5gl006rkf0sm"))))
+                "0ziyaisv1xb7j2dphl2if211jv1xfrs2y3v74sngaiabj9q5lgn7"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs (list eudev
-                  hidapi
-                  libftdi
-                  libgpiod
-                  libusb
-                  zlib))
     (arguments
      (list #:tests? #f                  ;no test suite
            #:phases
@@ -676,6 +668,14 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
                       (install-file
                        f (string-append #$output "/lib/udev/rules.d/")))
                     (find-files "../source" "\\.rules$")))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs (list eudev
+                  hidapi
+                  libftdi
+                  libgpiod
+                  libusb
+                  zlib))
     (synopsis "Utility for programming FPGA")
     (description "This package provides a program to transfer a bitstream
 to an FPGA.  To use @code{openfpgaloader} without root privileges it is
@@ -686,8 +686,8 @@ this package, as in:
 (udev-rules-service 'openfpgaloader openfpgaloader #:groups '(\"plugdev\")
 @end lisp
 Additionally, the @samp{plugdev} group should be registered in the
-@code{supplementary-groups} field of your @code{user-account} declaration. Refer
-to @samp{info \"(guix) Base Services\"} for examples.")
+@code{supplementary-groups} field of your @code{user-account} declaration.
+Refer to @samp{info \"(guix) Base Services\"} for examples.")
     (home-page "https://trabucayre.github.io/openFPGALoader/")
     (license license:asl2.0)))
 
