@@ -2337,20 +2337,20 @@ with other physical backends.")
 (define-public just
   (package
     (name "just")
-    (version "1.43.0")
+    (version "1.59.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "139l2pqnzhlmmn4frcp4j4a81vnv42w2470sf23rrsilid11dd6i"))))
+               (base32 "0knp4767n7qqysybv2qrw20vlnx7kb6v7v859xdry4lw3j8w2iky"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--"
          "--skip=backticks::trailing_newlines_are_stripped"
-         "--skip=completions::bash"
-         "--skip=functions::env_var_functions"
+         "--skip=directories::runtime_directory"
+         "--skip=functions::env_var_functions_unix"
          "--skip=string::shebang_backtick")
        #:install-source? #f
        #:phases
