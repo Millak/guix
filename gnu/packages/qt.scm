@@ -5881,18 +5881,32 @@ source code.")))
     (version (package-version python-shiboken))
     (source (package-source python-shiboken))
     (build-system cmake-build-system)
-    ;; TODO: Add more Qt components if available.
     (inputs
-     (list qtbase
+     (list qt3d
+           qtbase
+           qtcharts
+           qtconnectivity
            qtdeclarative
+           qtgraphs
+           qthttpserver
            qtmultimedia
            qtnetworkauth
+           qtquick3d
+           qtquick3dphysics
            qtpositioning
+           qtremoteobjects
+           qtscxml
+           qtsensors
+           qtserialbus
+           qtserialport
+           qtshadertools
+           qtspeech
            qtsvg
            qttools
            qtwebchannel
            qtwebengine
-           qtwebsockets))
+           qtwebsockets
+           qtwebview))
     (propagated-inputs
      (list python-shiboken))
     (native-inputs
