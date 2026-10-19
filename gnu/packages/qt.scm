@@ -3836,6 +3836,9 @@ linux/libcurl_wrapper.h")
                   (("QLibraryInfo::location\\(QLibraryInfo::DataPath\\)")
                    (string-append "QLatin1String(\"" #$output
                                   "/share/qt5\")"))
+                  ;; This fixes the location of the QtWebEngineProcess
+                  ;; executable, removing the need to set
+                  ;; QTWEBENGINEPROCESS_PATH.
                   (("QLibraryInfo::location\\(QLibraryInfo::LibraryExecutablesPath)")
                    (string-append "QLatin1String(\"" #$output
                                   "/lib/qt5/libexec\")")))
