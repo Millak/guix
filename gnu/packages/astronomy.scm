@@ -5243,7 +5243,7 @@ help you search, obtain and use DKIST data as part of your Python software.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "2.2.0")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5252,24 +5252,45 @@ help you search, obtain and use DKIST data as part of your Python software.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1chy80svnbj2z215slxvnih097gh4c08wwchv2nk2ydmgra1bvli"))))
+        (base32 "1d5qkzr7l1ghbc2fqdrzl44a6wncgfziy6qlbii4s8s3vkpkm21q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 257 passed, 9 xfailed
+      #:test-flags
+      #~(list "--pyargs" "drizzle"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
+      ;; Test data is excluded in MANIFEST but required for tests. Make sure
+      ;; it's available within installed package than drop it to reduce
+      ;; closure size from 356.3 MiB to 158.7 MiB.
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; XXX: "drizzle/tests/data" is not part of the final package
-              ;; which blocks using "--pyargs".
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+          (add-after 'unpack 'fix-data-dir-path
+            (lambda* (#:key inputs tests? outputs #:allow-other-keys)
+              (when tests?
+                (substitute* '("drizzle/tests/helpers.py"
+                               "drizzle/tests/test_resample.py")
+                  (("DATA_DIR =.*")
+                   (string-append "DATA_DIR = '" (site-packages inputs outputs)
+                                  "drizzle/tests/data'"))))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs tests? outputs #:allow-other-keys)
+              (when tests?
+                (copy-recursively "drizzle/tests/data"
+                                  (string-append (site-packages inputs outputs)
+                                                 "drizzle/tests/data"))
+                (delete-file-recursively "drizzle"))))
+          (add-after 'check 'remove-tests
+            (lambda* (#:key inputs tests? outputs #:allow-other-keys)
+              (when tests?
+                (delete-file-recursively
+                 (string-append (site-packages inputs outputs)
+                                "drizzle/tests/data"))))))))
     (native-inputs
      (list python-astropy-minimal
            python-gwcs
            python-pytest
            python-pytest-doctestplus
+           python-pytest-xdist
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
