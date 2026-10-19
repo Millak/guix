@@ -5138,7 +5138,7 @@ such as CTA.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "3.3.1")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5149,19 +5149,12 @@ such as CTA.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hnlqn0jyazkkc6p81f9dsn7jgm37b7bmnvykxn1m7xchkhzc2hr"))))
+        (base32 "0pycr3pr22ccfkfnsm7j4x4m4vi0ppndxckv91cr756j9g7ckmj1"))))
     (build-system pyproject-build-system)
-    ;; tests: 255 passed, 1 xfailed, 1 warning
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-numpy python-pytest python-setuptools))
     (propagated-inputs
-     (list python-dateutil
-           python-numpy
-           python-pydantic
-           python-strenum
-           python-typing-extensions
-           python-w3lib))
+     (list python-dateutil python-pydantic))
     (home-page "https://github.com/Stoops-ML/czml3")
     (synopsis "Python library to write CZML")
     (description
