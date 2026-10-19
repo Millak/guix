@@ -4866,16 +4866,16 @@ visual integration of spatially referenced datasets.")
 (define-public python-pyvistaqt
   (package
     (name "python-pyvistaqt")
-    (version "0.11.3")
+    (version "0.13.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/pyvista/pyvistaqt")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04f9cd98k463pdrpi8jby411x9mc0ih62gl0nv0h9w3r7pwl61yl"))))
+        (base32 "1kb4fg6kd01b5nynld9gz8gfrypw0xvn6210i2l28m34bc7mygf2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4900,6 +4900,7 @@ visual integration of spatially referenced datasets.")
                          python-pyqt-6
                          python-pytest
                          python-pytest-qt
+                         python-refleak
                          python-setuptools
                          python-sphinx-gallery
                          xorg-server))
