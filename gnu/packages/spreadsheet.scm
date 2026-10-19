@@ -100,7 +100,7 @@
 (define-public visidata
   (package
     (name "visidata")
-    (version "3.3")
+    (version "3.4")
     (source
      ;; PyPI tarball is missing the requirements.txt file.
      (origin
@@ -112,16 +112,22 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1c5nd7klc3rdnjyvza7nrqwiiiadnr31yn13gac6y5iz1i3ymqfb"))))
+         "0zjmvcsyirakpaplwvl79b5vlpbx2w341mxvcypgwh4zyrfsv6w7"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'set-home-directory
                  (lambda _ (setenv "HOME" "/tmp")))
+               (add-after 'unpack 'fix-test-editor-shebang
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "visidata/tests/test_editor.py"
+                     (("#!/bin/sh")
+                      (string-append "#!" (search-input-file inputs "/bin/sh"))))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? (invoke "pytest")))))))
+                   (when tests?
+                     (invoke "pytest" "visidata/tests")))))))
     (inputs
      (list python-dateutil
            python-requests
@@ -130,8 +136,7 @@
            python-xlrd))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (synopsis "Terminal spreadsheet multitool for discovering and arranging data")
     (description
      "VisiData is an interactive multitool for tabular data.  It combines the
