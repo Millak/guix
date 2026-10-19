@@ -709,21 +709,21 @@ package.")))
                (base32
                 "1017rd0wsjfyq2jvpjjhpszaa7kmig6q1nimw76qx3cjz2868lrn"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list unzip)) ; for unpacking the source
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
-       #:tests? #f ; No test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'enter-source
-           (lambda _ (chdir "build/gmake.unix") #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "../../bin/release/premake4"
-                           (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:tests?
+           #f                           ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+             (delete 'configure)
+             (add-before 'build 'enter-build-dir
+               (lambda _ (chdir "build/gmake.unix")))
+             (replace 'install
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (install-file "../../bin/release/premake4"
+                               (string-append #$output "/bin")))))))
+    (native-inputs (list unzip))        ;for unpacking the source
     (synopsis "Portable software build tool")
     (description "@code{premake4} is a command line utility that reads a
 scripted definition of a software project and outputs @file{Makefile}s or
