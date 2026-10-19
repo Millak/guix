@@ -3316,7 +3316,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method git-fetch)
@@ -3326,7 +3326,8 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
              (recursive? #t)))          ;needed for the AddonManager
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lhi9haf3gf0x8h927krd917v1i76labjkry1hh7xhbxvnnvrzj4"))
+        (base32 "1g87sy815janc9by5a3h3qmmjcqghrxbi350apg95dhilz2s67al"))
+       (patches (search-patches "freecad-pyside-6.12.patch"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
