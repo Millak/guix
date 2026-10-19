@@ -4017,7 +4017,7 @@ formatted dump file, such as produced by xwd.")
 (define-public libxtst
   (package
     (name "libxtst")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
       (origin
         (method url-fetch)
@@ -4027,7 +4027,7 @@ formatted dump file, such as produced by xwd.")
                ".tar.xz"))
         (sha256
           (base32
-            "0hljblisw72fk60y7zf9214ydn7lk32kj43cf12af2bhp4jlq3dm"))))
+            "1ragdbbf6jd398si0qrghjljmrn7bi0c58pdydvxi03xq0vhnkzr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")
