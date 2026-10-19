@@ -29,6 +29,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)  ; glibc
+  #:use-module (gnu packages check) ; libfaketime
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages hardware)
@@ -264,6 +265,26 @@ This Guix package is built to use the nettle cryptographic library.")
        #:cargo-install-paths ''("tools")
        #:phases
        #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? parallel-build? parallel-tests?
+                       (cargo-test-flags '()) #:allow-other-keys)
+               (when tests?
+                 ;; The tests have a time bomb in them.
+                 ;; https://gitlab.com/sequoia-pgp/sequoia-wot/-/work_items/62
+                 (apply invoke
+                        `("faketime" "2026-09-20"
+                          "cargo" "test" "--offline"
+                          ,@(if parallel-build?
+                                (list "-j" (number->string (parallel-job-count)))
+                                (list "-j" "1"))
+                          ,@cargo-test-flags
+                          ,@(if (member "--" cargo-test-flags)
+                                '()
+                                '("--"))
+                          ,@(if parallel-tests?
+                                (list "--test-threads"
+                                      (number->string (parallel-job-count)))
+                                (list "--test-threads" "1")))))))
            (add-after 'install 'install-more
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out   (assoc-ref outputs "out"))
@@ -289,7 +310,7 @@ This Guix package is built to use the nettle cryptographic library.")
     (inputs
      (cons* nettle openssl sqlite (cargo-inputs 'sequoia-wot-tools)))
     (native-inputs
-     (list clang gnupg pkg-config))
+     (list clang gnupg libfaketime pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Implementation of OpenPGP's web of trust")
     (description
