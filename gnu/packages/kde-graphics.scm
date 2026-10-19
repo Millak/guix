@@ -805,14 +805,14 @@ picture metadata as EXIF/IPTC and XMP.")
 (define-public okular
   (package
     (name "okular")
-    (version "26.04.1")
+    (version "26.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "19mvqvzxqsh4i50dlbnf09mfqnypxnks141ij5d46qpyx7cs11rx"))))
+        (base32 "1xf9bw3xifraprm8nalkgfmg6z6lgvx6kxmcszjsrhy6nyy9mczr"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -885,7 +885,7 @@ picture metadata as EXIF/IPTC and XMP.")
            libxkbcommon
            phonon
            poppler-qt6
-           qca
+           qca-qt6
            qtdeclarative
            qtsvg
            qtwayland
