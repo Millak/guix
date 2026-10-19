@@ -2265,7 +2265,8 @@ Vulkan, OpenGL and other main graphic APIs.")
       ;; The gstreamer tests appear to be fragile, with a few failing with
       ;; 'Compared values are not the same'.
       #:test-exclude "tst_gstreamer_backend"
-      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON"
+      #:configure-flags #~(list "-GNinja"
+                                "-DQT_BUILD_TESTS=ON"
                                 "-DQT_FEATURE_pulseaudio=ON"
                                 ;; Do not dlopen pipewire.
                                 "-DFEATURE_pipewire_symbolloader=OFF")
@@ -2306,7 +2307,8 @@ Vulkan, OpenGL and other main graphic APIs.")
             (lambda _
               (delete-file-recursively (string-append #$output "/tests")))))))
     (native-inputs
-     (list perl
+     (list ninja
+           perl
            pkg-config
            qtshadertools
            vulkan-headers))
