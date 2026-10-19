@@ -4280,7 +4280,7 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxi
   (package
     (name "libxi")
-    (version "1.8.2")
+    (version "1.8.4")
     (source
       (origin
         (method url-fetch)
@@ -4290,7 +4290,7 @@ new API's in libXft, or the legacy API's in libX11.")
                ".tar.xz"))
         (sha256
           (base32
-            "0161qsac0dgvkkcihpm2062p1lk2l5mj4i7smd713qnnadg5bq6h"))))
+            "1z0scqlgy3968xjw70p48mlr0h3l8v45akc85yy066d9i5xhbmnx"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))             ;man pages represent 28% of the total
     (arguments
