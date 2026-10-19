@@ -3972,7 +3972,7 @@ formatted dump file, such as produced by xwd.")
 (define-public libxrender
   (package
     (name "libxrender")
-    (version "0.9.12")
+    (version "0.9.13")
     (source
       (origin
         (method url-fetch)
@@ -3982,7 +3982,7 @@ formatted dump file, such as produced by xwd.")
                ".tar.xz"))
         (sha256
           (base32
-            "15qv3lbxyx61x55lwmafpy8idb836is82i1213bchfcblj6i4cmq"))))
+            "0r5v294xc6jnv8fcnzgzf36p0gann8vdxr7jg8g2wy7nkmh8rs1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
