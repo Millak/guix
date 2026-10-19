@@ -128,6 +128,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/music.scm			\
   %D%/home/services/niri.scm			\
   %D%/home/services/pm.scm			\
+  %D%/home/services/river.scm			\
   %D%/home/services/secrets.scm			\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\

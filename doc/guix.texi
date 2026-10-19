@@ -505,6 +505,7 @@ Home Services
 * Media Home Services::   Services for managing media.
 * mpv Media Player::
 * Niri window manager::    Setting up the Niri.
+* River Wayland compositor::   Setting up the River.
 * Sway window manager::    Setting up the Sway configuration.
 * Networking Home Services::  Networking services.
 * Secrets Home Services::  Services for storing secrets.
@@ -54104,6 +54105,7 @@ services)}.
 * Media Home Services::   Services for managing media.
 * mpv Media Player::
 * Niri window manager::    Setting up the Niri.
+* River Wayland compositor::   Setting up the River.
 * Sway window manager::    Setting up the Sway configuration.
 * Networking Home Services::  Networking services.
 * Secrets Home Services::  Services for storing secrets.
@@ -57109,6 +57111,55 @@ Here is a minimal example service declaration for your
 For more advanced configurations, you can customize the service with a
 @code{niri-configuration} record to specify additional environment
 variables.
+
+@quotation Warning
+@code{home-niri-service-type} service will not work together with services
+such as @code{gdm-service-type}.
+@end quotation
+
+@node River Wayland compositor
+@subsection River Wayland compositor
+
+@cindex river, Home Service
+@cindex river, configuration
+@cindex non-monolithic Wayland compositor
+The @code{(gnu home services river)} module provides the
+@code{home-river-service-type} service, which installs and configures
+@uref{https://codeberg.org/river/river, River}, a non-monolithic Wayland
+compositor.  Unlike other Wayland compositors, River does not combine
+the compositor and window manager into one program.  Instead, users
+can choose any window manager implementing the
+@uref{https://isaacfreund.com/docs/wayland/river-window-management-v1/,
+river-window-management-v1} protocol.
+
+This service starts River as a user-level desktop session with proper
+environment variables configured for Wayland compatibility, including
+@code{XDG_CURRENT_DESKTOP}, @code{XDG_SESSION_DESKTOP}, and
+@code{DESKTOP_SESSION}.
+
+Here is a full example of service declaration for your @code{home-environment}
+configuration, that uses @uref{https://codeberg.org/river/tinyrwm, tinyrwm} as
+a window manager, adds extra packages to the River profile and sets additional
+environment variables:
+
+@lisp
+(service home-river-service-type
+         (river-configuration
+          (init-file
+           (program-file "river-init"
+                         #~(system*
+                            (string-append #$tinyrwm "/bin/tinyrwm"))))
+          (extra-packages (list brightnessctl
+                                swayidle
+                                swaylock))
+          (environment-variables '("ENV_VAR1=value1"
+                                   "ENV_VAR2=value2"))))
+@end lisp
+
+@quotation Warning
+@code{home-river-service-type} service will not work together with services
+such as @code{gdm-service-type}.
+@end quotation
 
 @node Sway window manager
 @subsection Sway window manager
