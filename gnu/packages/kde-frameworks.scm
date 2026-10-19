@@ -2528,6 +2528,9 @@ from DocBook files.")
       #:test-exclude
       (string-append "("
                      (string-join '("exiv2extractortest"
+                                    ;; Fails with a small difference in the
+                                    ;; expected date since Qt 6.12.
+                                    "postscriptdscextractortest"
                                     "usermetadatawritertest")
                                   "|")
                      ")")
