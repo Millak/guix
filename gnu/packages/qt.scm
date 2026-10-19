@@ -4725,7 +4725,8 @@ contain over 620 classes.")
        (uri (pypi-uri "pyqt6" version))
        (file-name (string-append "pyqt6-" version ".tar.gz"))
        (sha256
-        (base32 "12c8f5vcqvl2smgyzv0rm79an9bagd76pvawif8y2vcpd6m61pa5"))))
+        (base32 "12c8f5vcqvl2smgyzv0rm79an9bagd76pvawif8y2vcpd6m61pa5"))
+       (patches (search-patches "python-pyqt-qt-6.12.patch"))))
     (inputs ;Qt5 dependencies only in python-pyqt:
             ;; (qt)connectivity, location, sensors, serialport, x11extras, xmlpatterns.
             (list python-wrapper
