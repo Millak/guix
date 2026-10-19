@@ -1429,11 +1429,15 @@ want what you have.")
       (build-system qt-build-system)
       (arguments
        (list
-         #:qtbase qtbase
-         #:configure-flags #~(list "-DWITH_SERVER=1"
-                                   "-DWITH_CLIENT=1"
-                                   "-DWITH_ORACLE=1"
-                                   "-DTEST=1")))
+        ;; This test is susceptible to timing out (5 s) when the machine is
+        ;; under load.
+        ;; TODO: Re-instate after #11911 is merged.
+        #:test-exclude "deck_hash_performance_test"
+        #:qtbase qtbase
+        #:configure-flags #~(list "-DWITH_SERVER=1"
+                                  "-DWITH_CLIENT=1"
+                                  "-DWITH_ORACLE=1"
+                                  "-DTEST=1")))
       (native-inputs
        (list googletest pkg-config))
       (inputs
