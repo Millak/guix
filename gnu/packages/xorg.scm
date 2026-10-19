@@ -4994,7 +4994,7 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.8.12")
+    (version "1.8.14")
     (source
      (origin
        (method url-fetch)
@@ -5002,7 +5002,7 @@ Wayland.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "16lspc3bw2pg3jal7zyq6mxmxmmaax0fz6lgh1n4skqjn2dny0ps"))))
+         "0l69myqs8xr6785lv2w0a1gw2flz26nkic9j5df6ax3i4538rixv"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;8 MiB of man pages + XML
