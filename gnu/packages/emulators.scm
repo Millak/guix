@@ -1953,7 +1953,7 @@ to avoid macro conflicts.")
 (define-public eden
   (package
     (name "eden")
-    (version "0.1.1")
+    (version "0.2.1")
      (source
       (origin
         (method git-fetch)
@@ -1962,13 +1962,14 @@ to avoid macro conflicts.")
                (commit (string-append "v" version))))
         (file-name (git-file-name "eden" version))
         (sha256
-         (base32 "013594cqgagawpss2h1j5ixsrs7qp6wgqpsbyls6z7z0j7nyhjmn"))))
-    (build-system cmake-build-system)
+         (base32 "1jdhw8xqjnnkgm4miqfq6j13dmw8fb0sh2cvvqfcmjjnhjcckpzg"))))
+    (build-system qt-build-system)
     (arguments
      (list
       ;; Tests require packaging additional dependencies (oaknut) and fail
       ;; to build on x86 systems.
       #:tests? #f
+      #:qtbase qtbase
       #:configure-flags
       #~(list
          ;; Use system libraries instead of bundled copies.
@@ -1984,18 +1985,14 @@ to avoid macro conflicts.")
          "-DENABLE_WEB_SERVICE=OFF"
          ;; Update checker is not useful in Guix.
          "-DENABLE_UPDATE_CHECKER=OFF"
-         ;; Disable OpenSSL to avoid the cpp-httplib dependency.  This means
-         ;; the emulator will use the 'none' SSL backend, which returns errors
-         ;; for all SSL/TLS operations.  Games requiring online connectivity
-         ;; (multiplayer, leaderboards, DLC checks) will not function, but
-         ;; offline/single-player games are unaffected.
-         "-DENABLE_OPENSSL=OFF"
          ;; Use our nx-tzdb package for timezone data.
          (string-append "-DYUZU_TZDB_PATH="
                         #$(this-package-input "nx-tzdb")))))
     (inputs
      (list
       boost
+      brotli
+      cpp-httplib
       cubeb
       enet
       ffmpeg
@@ -2009,10 +2006,11 @@ to avoid macro conflicts.")
       mcl-cpp-for-eden
       nlohmann-json
       nx-tzdb
+      openssl
       opus
       qt5compat
-      qtbase
-      qttools
+      qtcharts
+      qtwayland
       qtwebengine
       quazip
       sdl2
@@ -2029,7 +2027,8 @@ to avoid macro conflicts.")
       zlib
       (list zstd "lib")))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           qttools))
     (synopsis "Nintendo Switch emulator")
     (description "Eden is a Nintendo Switch emulator derived from Yuzu and
 Sudachi.  It is written in C++ with portability in mind and is capable of
