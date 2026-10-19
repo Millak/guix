@@ -505,15 +505,6 @@ ASTBuilder when building \"from string\" Groovy statements."))))
   (let ((base (groovy-subproject "groovy-bsf")))
     (package
       (inherit base)
-      (arguments
-       `(#:test-exclude (list
-;; exception from Groovy: org.codehaus.groovy.runtime.InvokerInvocationException:
-;; groovy.lang.MissingMethodException: No signature of method:
-;; java.util.ArrayList.each() is applicable for argument types:
-;; (groovy.script.MapFromList$_doit_closure1) values:
-;; [groovy.script.MapFromList$_doit_closure1@17e554d5]
-                        "**/BSFTest.java")
-         ,@(package-arguments base)))
       (inputs
        `(("java-commons-bsf" ,java-commons-bsf)
          ,@(package-inputs base)))
