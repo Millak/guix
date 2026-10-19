@@ -707,16 +707,15 @@ devices.")
 (define-public node-latest
   (package
     (inherit node-lts)
-    (version "26.10.0")
+    (version "26.12.0")
     (source (origin
               (inherit (package-source node-lts))
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "1i90pbq6cgh3430y9rjkqpzxapsxpvh5fynx7fj1aznb6dnm8fkv"))
-              (patches (search-patches "node-latest-i686.patch"
-                                       "node-latest-lief-1.0.0.patch"))))
+                "0ddxmwlw2bmsvccx90gx49wn6z60ab7kc77varv663nsil1zjnff"))
+              (patches (search-patches "node-latest-i686.patch"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
