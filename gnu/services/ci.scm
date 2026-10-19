@@ -4,6 +4,7 @@
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -203,7 +204,7 @@
   (name            forgejo-runner-configuration-name
                    (default #~(gethostname)))
   (labels          forgejo-runner-configuration-labels
-                   (default '("guix")))
+                   (default '("guix:host")))
   (capacity        forgejo-runner-configuration-job-capacity
                    (default 1))
   (timeout         forgejo-runner-configuration-timeout

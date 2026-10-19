@@ -105,7 +105,7 @@ Copyright @copyright{} 2021-2023 Josselin Poiret@*
 Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
-Copyright @copyright{} 2022 Remco van 't Veer@*
+Copyright @copyright{} 2022, 2026 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
 Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 Copyright @copyright{} 2022 Karl Hallsby@*
@@ -41084,7 +41084,7 @@ Supplementary groups for the Forgejo Runner user account.
 Name of the runner as will be shown in the runner management interface
 of Forgejo.
 
-@item @code{labels} (default: @code{'("guix")})
+@item @code{labels} (default: @code{'("guix:host")})
 List of
 @uref{https://forgejo.org/docs/latest/admin/actions/#choosing-labels,
 labels} representing the type of environment the runner provides and
