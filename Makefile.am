@@ -459,6 +459,9 @@ AUX_FILES =						\
   gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
   gnu/packages/aux-files/guix-nvim.vim			\
+  gnu/packages/aux-files/linux-libre/7.3-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/7.3-riscv.conf	\
+  gnu/packages/aux-files/linux-libre/7.3-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/7.2-arm64.conf	\
   gnu/packages/aux-files/linux-libre/7.2-riscv.conf	\
   gnu/packages/aux-files/linux-libre/7.2-x86_64.conf	\

@@ -591,6 +591,22 @@ GEXP)."
                         "linux-" version ".tar.xz"))
     (sha256 hash)))
 
+;; The current "mainline" kernel.
+(define-public linux-libre-7.3-version "7.3")
+(define-public linux-libre-7.3-gnu-revision "gnu")
+(define deblob-scripts-7.3
+  (linux-libre-deblob-scripts
+   linux-libre-7.3-version
+   linux-libre-7.3-gnu-revision
+   (base32 "1cj5ksidgm573qq7wvzcaahg1avanlx07z1zz23gqzqf1mcvmk16")
+   (base32 "1vnafc1kn1197p28g270538p6m9jh4r5qp21ldpdfbgf58zyxbna")))
+(define-public linux-libre-7.3-pristine-source
+  (let ((version linux-libre-7.3-version)
+        (hash (base32 "0ls902gz6h1ydcnwx2zzdcglg52f14hmaxk2ncg341hfy4j3qdl7")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-7.3)))
+
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
@@ -730,6 +746,13 @@ GEXP)."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-7.3-source
+  (source-with-patches linux-libre-7.3-pristine-source
+                       (append
+                        (list %linux-libre-arm-export-__sync_icache_dcache-patch)
+                        (search-patches "linux-shmem-hurd-xattr.patch"
+                                        "linux-libre-fix-arm64-bin-sh.patch"))))
 
 (define-public linux-libre-7.2-source
   (source-with-patches linux-libre-7.2-pristine-source
@@ -902,6 +925,11 @@ GEXP)."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-7.3
+  (make-linux-libre-headers* linux-libre-7.3-version
+                             linux-libre-7.3-gnu-revision
+                             linux-libre-7.3-source))
 
 (define-public linux-libre-headers-7.2
   (make-linux-libre-headers* linux-libre-7.2-version
@@ -1489,6 +1517,14 @@ DFSDG}.")
                                     "olddefconfig")))))
 
 (define-public linux-debian linux-debian-6.12)
+
+(define-public linux-libre-7.3
+  (make-linux-libre* linux-libre-7.3-version
+                     linux-libre-7.3-gnu-revision
+                     linux-libre-7.3-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-7.2
   (make-linux-libre* linux-libre-7.2-version
