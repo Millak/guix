@@ -11946,22 +11946,25 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
     (license license:bsd-3)))
 
 (define-public python-stcal
+  ;; 1.20.0 (2026-08-13); to support drizzle >= 3 and tweakwcs >= 9.
+  (let ((commit "e0e2df9e58d17e8ff28db2cadbbc77fe840b19dc")
+        (revision "0"))
   (package
     (name "python-stcal")
-    (version "1.20.0")
+    (version (git-version "1.20.0" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/stcal")
-              (commit version)))
+              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dwja6a48a26bj13xhh8yhbd0100xw1al4lzksds52lp2xzh0rzv"))))
+        (base32 "1w6l8fbq35cfz503ilb21acrh4ffg9r4zsjh40qfzrax17kjcflx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 694 passed, 12 warnings
+      ;; tests: 704 passed, 12 warnings
       #:test-flags
       #~(list "--pyargs" "stcal"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
@@ -11969,13 +11972,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               ;; download test data from
               ;; <s3://stpubdata/gaia/gaia_dr3/public/hats/gaia/>.
               "--ignore=tests/test_tweakreg.py"
-              "tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("tweakwcs>=0.8.8,<0.9") "tweakwcs>=0.8.8,<=0.9.0")))))))
+              "tests")))
     (native-inputs
      (list python-cython
            python-psutil
@@ -12002,7 +11999,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
     (home-page "https://github.com/spacetelescope/stcal")
     (synopsis "STScI tools and algorithms used in calibration pipelines")
     (description "STScI tools and algorithms used in calibration pipelines.")
-    (license license:bsd-3)))
+    (license license:bsd-3))))
 
 (define-public python-stdatamodels
   (package
