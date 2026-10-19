@@ -2540,6 +2540,25 @@ compositor libraries.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
+(define-public qtserialbus
+  (package
+    (name "qtserialbus")
+    (version "6.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (qt-url name version))
+       (sha256
+        (base32 "0f6zbdgq2z59di72zygd17q9i01igihhnz49lxdhrlprmwjcr68h"))))
+    (build-system cmake-build-system)
+    (inputs (list qtbase qtserialport))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt Serial Bus module")
+    (description "The Qt Serial Bus module provides classes and functions to
+access the various industrial serial buses and protocols, such as CAN, ModBus,
+and others.")
+    (license (package-license qtbase))))
+
 (define-public qtserialport-5
   (package
     (inherit qtsvg-5)
