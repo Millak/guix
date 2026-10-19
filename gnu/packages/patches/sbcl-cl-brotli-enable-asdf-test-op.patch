@@ -1,0 +1,39 @@
+From ddfe932da724170f719166cf05f68f509cad967a Mon Sep 17 00:00:00 2001
+From: jgart <jgart@dismail.de>
+Date: Wed, 2 Sep 2026 16:32:36 +0100
+Subject: [PATCH] Enable cl-brotli tests through ASDF's test-op
+
+---
+ cl-brotli-tests.asd | 3 +++
+ cl-brotli.asd       | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/cl-brotli-tests.asd b/cl-brotli-tests.asd
+index 69b4a70..28f34c6 100644
+--- a/cl-brotli-tests.asd
++++ b/cl-brotli-tests.asd
+@@ -6,6 +6,9 @@
+   :depends-on ("cl-brotli"
+                "flexi-streams"
+                "babel")
++  :perform (test-op (operation system)
++             (declare (ignore operation system))
++             (uiop:symbol-call :brotli-tests :run-tests))
+   :serial t
+   :components ((:module "tests"
+                 :serial t
+diff --git a/cl-brotli.asd b/cl-brotli.asd
+index 069ca47..8187c5f 100644
+--- a/cl-brotli.asd
++++ b/cl-brotli.asd
+@@ -7,6 +7,7 @@
+   :depends-on ("cffi"
+                "trivial-gray-streams"
+                "cl-octet-streams")
++  :in-order-to ((test-op (test-op "cl-brotli-tests")))
+   :serial t
+   :components ((:module "src"
+                 :serial t
+-- 
+2.55.0
+

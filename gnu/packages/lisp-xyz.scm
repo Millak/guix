@@ -4911,7 +4911,10 @@ parser in Common Lisp.")
                 (commit commit)))
          (file-name (git-file-name "cl-brotli" version))
          (sha256
-          (base32 "00jsi4cc6q5lcld2pj2x2x85p1391crk9c1q0gf1g1n6h3wx2fi2"))))
+          (base32 "00jsi4cc6q5lcld2pj2x2x85p1391crk9c1q0gf1g1n6h3wx2fi2"))
+         ;; TODO: Tests fail due to improper configuration.
+         ;; See: https://codeberg.org/fsm/cl-brotli/pulls/1
+         (patches (search-patches "sbcl-cl-brotli-enable-asdf-test-op.patch"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list brotli
@@ -4922,6 +4925,7 @@ parser in Common Lisp.")
        (list sbcl-flexi-streams))
       (arguments
        (list
+        #:asd-test-systems ''("cl-brotli")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-paths
@@ -4932,17 +4936,7 @@ parser in Common Lisp.")
                   (("libbrotlienc\\.so")
                    (search-input-file inputs "lib/libbrotlienc.so"))
                   (("libbrotlidec\\.so")
-                   (search-input-file inputs "lib/libbrotlidec.so")))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (lisp-eval-program
-                   `((require :asdf)
-                     (asdf:load-asd ,(string-append (getcwd) "/cl-brotli.asd"))
-                     (asdf:load-asd ,(string-append (getcwd) "/cl-brotli-tests.asd"))
-                     (asdf:load-system "cl-brotli")
-                     (asdf:load-system "cl-brotli-tests")
-                     (brotli-tests:run-tests)))))))))
+                   (search-input-file inputs "lib/libbrotlidec.so"))))))))
       (home-page "https://codeberg.org/fsm/cl-brotli")
       (synopsis "Common Lisp bindings for the Brotli compression library")
       (description
