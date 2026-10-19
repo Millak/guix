@@ -4268,14 +4268,14 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxfont2
   (package
     (inherit libxfont)
-    (version "2.0.8")
+    (version "2.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/lib/libXfont2-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1m94d9z2y5pz0vr4mmvz33p04690dl84pg4hrh8njkis17hw0mpm"))))))
+                "1qlr2wjpiwssa7xgnjlmqb3d2nvm4j803dz986wyf5b8crqa6hph"))))))
 
 (define-public libxi
   (package
