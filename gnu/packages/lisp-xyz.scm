@@ -34819,6 +34819,34 @@ is built on top of the @code{libev} event library.")
 (define-public ecl-woo
   (sbcl-package->ecl-package sbcl-woo))
 
+(define-public sbcl-woo-for-lc-sse
+  (let ((commit "c91b223bb4ee39fcdf48ce1a48a2f4665910a441")
+        (revision "0"))
+    (package
+      (inherit sbcl-woo)
+      (name "sbcl-woo-for-lc-sse")
+      (version (git-version "0.12.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fsmunoz/woo")
+               (commit commit)))
+         (file-name (git-file-name "woo-for-lc-sse" version))
+         (sha256
+          (base32 "0bxkp223mf3psl91f383xb0wbmknvkvajc8x2p84pss2z20f900j"))))
+      (arguments
+       `(#:asd-systems '("woo")
+         #:asd-test-systems '("woo-test")
+         ;; Tests fail in the same way as sbcl-woo.
+         #:tests? #f)))))
+
+(define-public cl-woo-for-lc-sse
+  (sbcl-package->cl-source-package sbcl-woo-for-lc-sse))
+
+(define-public ecl-woo-for-lc-sse
+  (sbcl-package->ecl-package sbcl-woo-for-lc-sse))
+
 (define-public sbcl-wordnet
   (let ((commit "8cd0db8f5e84e7a930fa74e590ecddf75cd8e5d6")
         (revision "0"))
