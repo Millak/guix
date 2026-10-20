@@ -37,7 +37,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
-;;; Copyright © 2023, 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2023, 2024, 2026 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2023 ykonai <mail@ykonai.net>
 ;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
@@ -21006,6 +21006,57 @@ LASS files.")
 
 (define-public ecl-lass
   (sbcl-package->ecl-package sbcl-lass))
+
+(define-public sbcl-lc-sse
+  (package
+    (name "sbcl-lc-sse")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/fsm/lc-sse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-lc-sse" version))
+       (sha256
+        (base32 "01sr1fwrg2x23yv6fpk4caick8fmlmn14gcdm5i5jrn9i739zf10"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cl-brotli
+           sbcl-flexi-streams
+           sbcl-hunchentoot
+           sbcl-lack
+           sbcl-trivial-gray-streams
+           sbcl-usocket
+           sbcl-woo-for-lc-sse
+           sbcl-zstd))
+    (native-inputs
+     (list sbcl-fiveam))
+    (arguments
+     '(#:asd-systems '("lc-sse/brotli"
+                       "lc-sse/clack"
+                       "lc-sse/core"
+                       "lc-sse/hunchentoot"
+                       "lc-sse/registry"
+                       "lc-sse/woo"
+                       "lc-sse/zstd")
+       #:asd-test-systems '("lc-sse-tests")))
+    (home-page "https://codeberg.org/fsm/lc-sse")
+    (synopsis "Server-Sent Events in Common Lisp")
+    (description
+     "This package provides lc-sse, a backend-agnostic Server-Sent Events
+library for Common Lisp.  It provides thread-safe streaming, proxy-safe
+keep-alive with disconnect detection, streaming zstd and brotli compression,
+Hunchentoot and Clack backends, and a broadcast registry.")
+    (license license:lgpl3+)))
+
+(define-public cl-lc-sse
+  (sbcl-package->cl-source-package sbcl-lc-sse))
+
+(define-public ecl-lc-sse
+  (sbcl-package->ecl-package sbcl-lc-sse))
 
 (define-public sbcl-legion
   (let ((commit "599cca19f0e34246814621f7fe90322221c2e263")
