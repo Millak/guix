@@ -3207,6 +3207,7 @@ or mirroring an existing collection of nars.")
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin")               ; for glib-mkenums
+           gobject-introspection
            intltool
            pkg-config
            vala))
@@ -3216,8 +3217,7 @@ or mirroring an existing collection of nars.")
      `(#:configure-flags
        ;; XXX This ‘documentation’ is for developers, and fails informatively:
        ;; Error in gtkdoc helper script: 'gtkdoc-mkhtml' failed with status 5
-       (list "-Ddocs=false"
-             "-Dintrospection=false")))
+       (list "-Ddocs=false")))
     (home-page "https://wiki.gnome.org/msitools") ; no dedicated home page
     (synopsis "Microsoft Cabinet file manipulation library")
     (description
