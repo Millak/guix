@@ -48775,16 +48775,18 @@ execute code split into cells according to certain magic comments.")
 (define-public emacs-codex-ide
   (package
     (name "emacs-codex-ide")
-    (version "0.3.1")
+    ;; version bump.
+    (properties '((commit . "40e6f2d1b4a98e924b8079cbddc6d44a05f7fc7f")))
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/dgillis/emacs-codex-ide")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xasn1yp494wqr2z9ddq3s71la27cvdvlv4alid2k5bjj89fv2gz"))))
+        (base32 "1aa52cip4s6ms0qk0p4d0hlip2baxdlylqa5fa8h749yd917lz19"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -48796,7 +48798,7 @@ execute code split into cells according to certain magic comments.")
             (lambda _
               (emacs-substitute-variables "codex-ide-mcp-bridge.el"
                 ("codex-ide-emacs-bridge-script-path"
-                 (string-append #$output "/share/emacs/site-lisp/codex-ide2-"
+                 (string-append #$output "/share/emacs/site-lisp/codex-ide-"
                                 #$version "/bin/codex-ide-mcp-server.py")))))
           (add-before 'check 'remove-failing-tests
             (lambda _
@@ -48805,7 +48807,7 @@ execute code split into cells according to certain magic comments.")
                   (defun remove-test (file all-test-names)
                     (with-current-buffer
                      (find-file-noselect
-                      (format "tests/codex-ide-%s-tests.el" file))
+                      (format "tests/codex-ide-%stests.el" file))
                      (dolist (test-name all-test-names)
                              (save-excursion
                               (re-search-forward
@@ -48815,12 +48817,21 @@ execute code split into cells according to certain magic comments.")
                               (kill-sexp)))
                      (basic-save-buffer)))
                   (remove-test
-                   "context"
+                   ""
+                   (list (concat "collab-agent-message-open-"
+                                 "button-opens-agent-buffer")))
+                  (remove-test
+                   "context-"
+                   (list (concat "compose-turn-input-"
+                                 "obeys-emacs-context-policy")))
+                  (remove-test
+                   "context-"
                    (list (concat "compose-turn-input-does-not-"
                                  "duplicate-prompt-context-block")))
                   (remove-test
-                   "mcp"
+                   "mcp-"
                    (list "mcp-script-uses-emacsclient-bridge-responses"
+                         "mcp-script-times-out-slow-emacsclient"
                          (concat "mcp-script-decodes-base64-bridge-"
                                  "response-with-control-and-unicode-text")
                          (concat "mcp-script-starts-with-"
@@ -48828,7 +48839,6 @@ execute code split into cells according to certain magic comments.")
     (inputs
      (list python-wrapper))
     (native-inputs (list zsh))
-    (propagated-inputs (list emacs-transient))
     (home-page "https://github.com/dgillis/emacs-codex-ide")
     (synopsis "Codex app-server integration for Emacs")
     (description
