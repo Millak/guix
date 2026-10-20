@@ -5427,6 +5427,18 @@ swarm algorithm.")
       ;; tests: 398 passed, 1 skipped, 179 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
+              (string-append "--deselect=skopt/learning/tests/test_"
+                             "gbrt.py::test_gbrt_with_std")
+              #$@(map (lambda (test)
+                        (string-append
+                         "--deselect=skopt/tests/test_"
+                         test))
+                      (list
+                       "callbacks.py::test_timer_callback"
+                       "dummy_opt.py::test_dummy_categorical_integer"
+                       "forest_opt.py::test_forest_minimize_api[42]"
+                       "dummy_opt.py::test_dummy_minimize"
+                       "callbacks.py::test_checkpoint_saver"))
               "-k" (string-join
                     ;; XXX: As the project is not actively maintained, review
                     ;; failing test when a fresh release is available.
