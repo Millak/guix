@@ -7151,7 +7151,7 @@ scipy.io}.")
            python-scipy
            python-sympy
            python-tqdm))
-    (home-page "https://github.com/byu-pccl/holodeck")
+    (home-page "https://holodeck-gw.readthedocs.io/en/main/")
     (synopsis "MBH Binary Population Synthesis for Gravitational Wave Calculations")
     (description
      "This package provides a comprehensive framework for @acronym{Massive
