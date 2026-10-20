@@ -64,7 +64,7 @@
 (define-public calligra
   (package
     (name "calligra")
-    (version "26.04.3")
+    (version "26.08.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -72,7 +72,7 @@
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1b9yyrq307y129aaa6k4myi8xwz0pd7kzhvn2svgjcswm945w1i6"))))
+               (base32 "12zxm8fq215gdsc8xshak77f8vw51x50ccrs2cw1xl8piqbzibcj"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
