@@ -4574,6 +4574,36 @@ that a VHDL testbench can execute Python code and call Python functions
 without leaving the simulation.")
     (license license:mpl2.0)))
 
+(define-public python-vunit-helpers
+  ;; Last tagged release from 2024.
+  (let ((commit "40993aaca3559eb7a856efadf8eacc772179fb02")
+        (revision "0"))
+    (package
+      (name "python-vunit-helpers")
+      (version (git-version "1.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/p2l2/VUnit-helpers")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19nq9mib9svn6y892bxxllym5rf2dwcfp224i6k5m9mm983nxyl4"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (native-inputs
+       (list python-setuptools))
+      (propagated-inputs
+       (list python-glob2 python-toml python-vunit))
+      (home-page "https://github.com/p2l2/VUnit-helpers")
+      (synopsis "@code{VUnit} ancillary tools")
+      (description
+       "This package contains project independent tools and helpers to
+simplify VUnit run scripts.  It aims at shorter, more readable and easier to
+maintain run scripts.")
+      (license license:mpl2.0))))
+
 (define-public qrouter
   (package
     (name "qrouter")
