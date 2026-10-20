@@ -8949,6 +8949,45 @@ cases for which diffractive rather than geometric optics is the topic of
 interest, and which require portability between platforms or ease of scripting.")
     (license license:bsd-3)))
 
+(define-public python-psfr
+  (package
+    (name "python-psfr")
+    (version "0.1.1")     ;no git tag for this version
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psfr" version))
+       (sha256
+        (base32 "1jgh819n483yxjn678dy7w32djh15s21s79d9pgdva80xgrjaqlh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))    ;XXX: tests cant load test data from psfr/Data
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-lenstronomy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/sibirrer/psfr")
+    (synopsis "Point Spread Function reconstruction")
+    (description
+     "This package provides a Telescope Images Point Spread Function
+Reconstruction.
+
+Features
+@itemize
+@item Iterative PSF reconstruction given cutouts of individual stars or other
+point-like sources.
+@item Sub-pixel astrometric shifts calculated and accounted for while
+performing the PSF reconstruction.
+@item PSF reconstruction available in super-sampling resolution.
+@item Masking pixels, saturation levels and other options to deal with
+artifacts in the data.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-pvextractor
   (package
     (name "python-pvextractor")
