@@ -1264,12 +1264,12 @@ is not available for Guile 2.0.")
 
 (define-public guile-fibers-1.1
   (package
-    (inherit guile-fibers-1.3)
+    (inherit guile-fibers-1.4)
     (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/wingo/fibers")
+                    (url "https://codeberg.org/guile/fibers")
                     (commit (string-append "v" version))))
               (file-name (git-file-name "guile-fibers" version))
               (sha256
@@ -1279,18 +1279,36 @@ is not available for Guile 2.0.")
                (search-patches "guile-fibers-wait-for-io-readiness.patch"
                                "guile-fibers-epoll-instance-is-dead.patch"
                                "guile-fibers-fd-finalizer-leak.patch"))))
+    (arguments
+     (list
+      #:make-flags
+      #~(list "GUILE_AUTO_COMPILE=0")
+      #:phases
+      (if (and (target-x86-64?) (not (target-hurd?)))
+          #~%standard-phases
+          #~(modify-phases %standard-phases
+              (add-before 'check 'disable-some-tests
+                (lambda _
+                  ;; This test can take more than an hour on some systems.
+                  (substitute* "tests/basic.scm"
+                    ((".*spawn-fiber loop-to-1e4.*") ""))
+                  ;; These tests can take more than an hour and/or segfault.
+                  (substitute* "Makefile"
+                    (("tests/speedup.scm") ""))
+                  (when #$(target-aarch64?)
+                    ;; The tests below have issues on aarch64 systems.
+                    ;; They pass on an Apple M1 but take a very long time
+                    ;; on a Hetzner aarch64 VM.  Skip them.
+                    (substitute* "tests/basic.scm"
+                      ((".*spawn-fiber-chain 5000000.*") ""))
+                    (substitute* "tests/channels.scm"
+                      ((".*assert-run-fibers-terminates .*pingpong.*")
+                       "")))))))))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
            guile-3.0            ;for 'guild compile
            ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
            gettext-minimal))
-    (arguments
-     (if (%current-target-system)
-         (substitute-keyword-arguments (package-arguments guile-fibers-1.3)
-           ((#:phases phases)
-            #~(modify-phases #$phases
-                (delete 'apply-cross-build-fix-patch))))
-         (package-arguments guile-fibers-1.3)))
     (inputs
      (list guile-3.0))                            ;for libguile-3.0.so
     (supported-systems
