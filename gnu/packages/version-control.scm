@@ -4226,19 +4226,18 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
 (define-public pijul
   (package
     (name "pijul")
-    (version "1.0.0-beta.9")
+    (version "1.0.0-beta.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pijul" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lk261rrk4xy60d4akfn8mrrqxls28kf9mzrjcrxdzbdysml66n5"))))
+        (base32 "0cjm4rm6f505sq3q8b086zpvq7fb36psgbm2mr1djgvi37r05gvz"))))
     (build-system cargo-build-system)
     (arguments
      (list
        #:install-source? #f
-       #:features '(list "git")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-extras
@@ -4277,7 +4276,7 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
                  (list this-package)
                  '())
              (list pkg-config)))
-    (inputs (cons* libgit2-1.3 libssh2 libsodium openssl (cargo-inputs 'pijul)))
+    (inputs (cons* libgit2-1.9 libsodium openssl (cargo-inputs 'pijul)))
     (home-page "https://nest.pijul.com/pijul/pijul")
     (synopsis "Distributed version control system")
     (description "This package provides pijul, a sound and fast distributed
