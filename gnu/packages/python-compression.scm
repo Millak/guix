@@ -404,6 +404,31 @@ following algorithms are available:
               ;; <https://github.com/lemire/EWAHBoolArray>.
               license:asl2.0))))
 
+(define-public python-pgzip
+  (package
+    (name "python-pgzip")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pgzip/pgzip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13fimy7jafc3h6771fagpa8lfp8kdy39wbnmns4lvc1hkf4vm8hz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://github.com/pgzip/pgzip")
+    (synopsis "Multi-threading implementation of Python gzip module")
+    (description
+     "This package provides a simple replacement of Python internal
+@code{gzip} module to provide a multiprocessing solution for gzip
+compression/decompression.  Compression and decompression performance gains
+are made by parallelizing the usage of block indexing within a @code{gzip}
+file.")
+    (license license:expat)))
+
 (define-public python-pybcj
   (package
     (name "python-pybcj")
