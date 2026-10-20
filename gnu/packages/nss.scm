@@ -319,6 +319,7 @@ This package tracks the Rapid Release channel, which updates frequently.")))
   (package
     (inherit nss)
     (name "nss-certs")
+    (replacement nss-certs/fixed)
     (build-system gnu-build-system)
     (outputs '("out"))
     (native-inputs
@@ -353,6 +354,21 @@ This package tracks the Rapid Release channel, which updates frequently.")))
 taken from the NSS package and thus ultimately from the Mozilla project.")
     (home-page "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS")
     (license license:mpl2.0)))
+
+(define nss-certs/fixed
+  (package
+    (inherit nss-certs)
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'remove-compromised-certs
+              (lambda _
+                (with-directory-excursion
+                    (string-append #$output "/etc/ssl/certs")
+                  (for-each delete-file
+                            '("Comodo_AAA_Services_root.pem"
+                              "emSign_ECC_Root_CA_-_G3.pem")))))))))))
 
 (define-public nss-certs-for-test
   (hidden-package
