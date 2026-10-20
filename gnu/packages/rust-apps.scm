@@ -4536,7 +4536,7 @@ window manager.")
 (define-public tealdeer
   (package
     (name "tealdeer")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        ;; Completions aren't in the release tarball.
@@ -4547,7 +4547,7 @@ window manager.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d3877y9g1v6gi8a326d6wfz7z52qkrl70zi5ry7ybh5q6jha6a3"))))
+         "17hk7f8airpfklb99sx9a18rksqknl3g9pg06yd98kj46k354f38"))))
     (build-system cargo-build-system)
     (arguments
      (list
