@@ -198,7 +198,8 @@ official project.")
      (list #:qtbase qtbase
            #:configure-flags
            #~(list "-DCMAKE_CXX_FLAGS=-fPIC"
-                   "-DUSE_QT_VERSION=6")))
+                   "-DUSE_QT_VERSION=6"
+                   "-DBUILD_SHARED_LIBS=ON")))
     (native-inputs (list dbus))         ;for tests
     (inputs (list qtdeclarative qtwebsockets libxkbcommon))
     (home-page "https://qcoro.dvratil.cz/")
