@@ -18671,12 +18671,10 @@ accessing slash commands.")
     (license license:asl2.0)))
 
 (define-public emacs-claude-code-ide
-  ;; Upstream does not make versioned releases.
-  (let ((commit "56db02ee386d009ddb8b1482310f1f9beeefb810")
-        (revision "2"))
+  (let ((commit "89977293a0d822bc5ebd3257e6e3f5906d83e1be")) ;version bump
     (package
       (name "emacs-claude-code-ide")
-      (version (git-version "0.2.7" revision commit))
+      (version "0.3.0")
       (source
        (origin
          (method git-fetch)
@@ -18685,7 +18683,7 @@ accessing slash commands.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "060n6alwgnxqpqcl74c1ixjm0am1pfj2kx7v3wi4bys6dsf50zd8"))))
+          (base32 "0qiq6zsmmls9smiqw7sc2cn44gkrnf8y6fr0mryc500a390ygz4a"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -18706,7 +18704,6 @@ accessing slash commands.")
                  "'(not claude-code-ide-mcp-server-test-ws-send-fix))"))))
       (propagated-inputs
        (list emacs-flycheck
-             emacs-transient
              emacs-vterm
              emacs-web-server
              emacs-websocket))
