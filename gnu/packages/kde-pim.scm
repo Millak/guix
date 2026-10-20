@@ -1698,6 +1698,10 @@ test"
                      ")")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source-for-qt-6.12
+            (lambda _
+              (substitute* "src/autotests/kmcommandstest.cpp"
+                ((".*QTEST_DISABLE_KEYPAD_NAVIGATION.*") ""))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (define (find-program-directory name)
