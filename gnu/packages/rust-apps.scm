@@ -774,7 +774,7 @@ audit @file{Cargo.lock} for crates with security vulnerabilities.")
 (define-public cargo-auditable
   (package
     (name "cargo-auditable")
-    (version "0.7.4")
+    (version "0.7.7")
     (source
      (origin
        (method git-fetch)
@@ -783,7 +783,7 @@ audit @file{Cargo.lock} for crates with security vulnerabilities.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z1bi1mx4db44mlsda4pfr25sk4r5jjq02wqmvn9vdlvmfllkgdd"))))
+        (base32 "1hlcxak1kaxi9fz5rwmij8kh8cw0j5z7792xi656c9acsxg9vxip"))))
     (build-system cargo-build-system)
     (arguments
      (list
