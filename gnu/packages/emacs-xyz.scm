@@ -18640,7 +18640,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
 (define-public emacs-claude-code
   (package
     (name "emacs-claude-code")
-    (version "0.9.1")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -18650,7 +18650,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "076xb0193bjav8g03l6sjlb4pgwhnkbvri69lj3lcn8mqj2swxcz"))))
+         "1ny2hjzpnjng12ags4wvdlxp67gg6i6zpyj2v7262904p4fmhqb9"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -18660,7 +18660,6 @@ allowing unprefixed keys to insert their respective characters as expected.")
      (list emacs-inheritenv
            emacs-markdown-mode
            emacs-projectile
-           emacs-transient
            emacs-vterm))
     (home-page "https://github.com/stevemolitor/claude-code.el")
     (synopsis "Claude Code Emacs integration")
