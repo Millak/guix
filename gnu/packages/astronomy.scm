@@ -11479,7 +11479,7 @@ but has evolved to support other missions as well.")
 (define-public python-space-dolphin
   (package
     (name "python-space-dolphin")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -11488,16 +11488,17 @@ but has evolved to support other missions as well.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "126ks09wsv33g55m82vrqazfgy7ndbns0knhsqf9g7vg50jwq5wz"))))
+        (base32 "0h4x7kd48slzpa64abj0slfvc422jvzig3wb4ybli8ryjaf85ma4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 86 passed, 8 deselected, 37 warnings
+      ;; tests: 118 passed, 8 deselected, 2707 warnings
       #:test-flags
       #~(list "--ignore=test/test_ai/test_modeler.py"
               "--ignore=test/test_ai/test_vision.py"
               "--ignore=test/test_pipeline.py"
               "--ignore=test/test_util/test_jax_util.py"
+              "--ignore=test/test_preprocessing/test_psf.py"    ;starred
               #$@(map (lambda (ls) (string-append "--deselect=test/"
                                                   (string-join ls "::")))
                       ;; Depends on Jax.
@@ -11547,10 +11548,13 @@ but has evolved to support other missions as well.")
            python-lenstronomy
            python-matplotlib
            python-numpy
-           python-pyyaml
+           python-photutils
+           python-psfr
            python-ruamel.yaml
            python-schwimmbad
            python-scipy
+           ;; python-starred-astro ;depends on python-jax
+           ;; python-tensorflow
            python-tqdm))
     (home-page "https://github.com/ajshajib/dolphin")
     (synopsis "Automated pipeline for lens modeling based on lenstronomy")
