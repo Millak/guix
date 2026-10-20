@@ -11285,7 +11285,7 @@ framework of lens modelling software lenstronomy.")
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
-    (version "2.13.0")
+    (version "2.13.1")
     (source
      (origin
        (method git-fetch)
@@ -11294,7 +11294,7 @@ framework of lens modelling software lenstronomy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11a5ip576rfnjinsykwg4r6hcf1alfx1alin31fis3dbskivjfwd"))))
+        (base32 "16l3lizbya9b2mm10qb3yvjwf94shz3lx5ym0lic5adxxhnclykv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
