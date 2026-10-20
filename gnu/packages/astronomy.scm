@@ -9426,13 +9426,13 @@ recipes implemented in Python as part of an instrument pipeline package.")
 (define-public python-pyindi-client
   (package
     (name "python-pyindi-client")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyindi_client" version))
        (sha256
-        (base32 "06jpgxxnh4c2s1jnqlpbxrjsqsaknqpxiq7c1cwalxr1qpf4w8ig"))))
+        (base32 "1fcv718pbcd3cl6myz265pwd3v0f93lk78zigj8i46gq2p5l478k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
