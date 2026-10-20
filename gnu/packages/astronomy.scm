@@ -7305,7 +7305,7 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.8.1")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -7314,16 +7314,19 @@ observationally-derived galaxy merger catalogs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02n1mh5hz815hn2d6891h8i8vlnc7fq1g5jc790pm8sf4209xrz0"))))
+        (base32 "0x9gbc9yq8y3fk74lr1cjgarxa1knv1qri76z176dxfms3mvhdsl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 223 passed, 1 skipped, 13 deselected
+      ;; tests: 281 passed, 1 skipped, 15 deselected
       #:test-flags
       ;; Skip one test reqruiting optional python-rsliding.
       #~(list (string-append "--deselect=irispy/utils/tests/"
                              "test_cosmic_rays.py"
-                             "::test_remove_cosmic_rays_rsliding"))
+                             "::test_remove_cosmic_rays_rsliding")
+              ;; Specters comparison is not equal.
+              (string-append "--deselect=irispy/io/tests/test_spectrograph.py"
+                             "::test_raster_all_files_read_spectrograph_lvl2"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'sanity-check 'set-home
@@ -7338,7 +7341,9 @@ observationally-derived galaxy merger catalogs.")
            python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
+           python-dask
            python-dkist
+           python-gwcs
            python-mpl-animators
            python-ndcube
            python-pandas
@@ -7347,6 +7352,7 @@ observationally-derived galaxy merger catalogs.")
            python-sunraster
            ;; [optional]
            python-astroscrappy
+           python-colorsynth
            ;; python-rsliding   ;not packaged yet in Guix
            python-fiasco))
     (home-page "https://iris.lmsal.com/")
