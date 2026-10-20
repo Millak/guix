@@ -3059,14 +3059,14 @@ server for rapid website iteration.")
 (define-public ripgrep
   (package
     (name "ripgrep")
-    (version "15.1.0")
+    (version "15.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ripgrep" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wrbv3bd2sz8y0bkbhl3n0a6d824k20mawv6m0l7qiw5byaw927k"))))
+        (base32 "0wgchna3kynbkcwbr12b2i1qq9xaam2szfvfcp9gsfvls2v501x3"))))
     (build-system cargo-build-system)
     (arguments
      (list
