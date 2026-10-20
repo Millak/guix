@@ -13614,7 +13614,7 @@ low-resolution images containing the short/zero spacing.")
 (define-public python-velociraptor
   (package
     (name "python-velociraptor")
-    (version "0.21.0")
+    (version "0.21.1")
     (source
      (origin
        (method git-fetch)
@@ -13623,7 +13623,7 @@ low-resolution images containing the short/zero spacing.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "038k3wp5z22mf73a20rjm5l87yrzmwk8p99jj014s47drixgk9k4"))))
+        (base32 "0hwwjxly1gdvvzbgjbdv7x4x7xyhgaxl372pdaxr0dmw26460c95"))))
     (build-system pyproject-build-system)
     (arguments
      (list
