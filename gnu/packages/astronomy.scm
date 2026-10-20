@@ -8782,7 +8782,7 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.32.4")
+    (version "0.32.7")
     (source
      (origin
        (method git-fetch)
@@ -8791,7 +8791,7 @@ and the use of a modern programming language, techniques, and libraries
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18f56mdqx80cfbsknm5x63b1s24bnkfj9kffwn1aslshi8j1llh4"))))
+        (base32 "0achbsfb9m2sg2gb0wxiph3gqbndrkcpp84mhdkqbl2q4rpby81v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
