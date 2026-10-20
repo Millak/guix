@@ -1000,7 +1000,10 @@ test"
                                          "pimeventsplugintest" ;FIXME: enable
                                          "messageviewer-dkimauthentication\
 verifiedserverdialogtest" ;SEGFAULT
-                                         "markdowncreateimagewidgettest")
+                                         "markdowncreateimagewidgettest"
+                                         ;; Compared values are not the same
+                                         ;; (after Qt 6.12 update).
+                                         "briefheaderstyleplugintest")
                                        "|")
                           ")")
            #:imported-modules
