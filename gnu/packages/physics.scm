@@ -77,7 +77,7 @@
 (define-public alps
   (package
     (name "alps")
-    (version "2.3.3")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -86,15 +86,15 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dlmfl73dgw0ry7bcvdlr0p5fz0h62xn6c00vrpnjk60kj8cxsnr"))))
+        (base32 "0jqj77q1pwjvn9k2v1m81vfk235alll1hcsygrshvyba51fmrp7p"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:parallel-tests? #f
       #:configure-flags
       #~(list "-DALPS_ENABLE_OPENMP=ON"
-              "-DALPS_BUILD_PYTHON=ON"
-              "-DALPS_BUILD_FORTRAN=ON")
+              "-DALPS_BUILD_FORTRAN=ON"
+              "-DALPS_USE_SYSTEM_BOOST=ON")
       #:phases
       #~(modify-phases %standard-phases
           ;; Below is a workaround borrowed from the hdf5 package
@@ -107,36 +107,7 @@
                          (delete (string-append gfortran "/include/c++")
                                  (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
                          ":")))))
-          (add-after 'unpack 'rewrite-find-boost-cmake
-            (lambda _
-              (let ((boost-components '("chrono" "timer" "date_time"
-                                        "filesystem" "iostreams"
-                                        "program_options" "regex"
-                                        "serialization" "thread"
-                                        "python" "mpi" "numpy")))
-                (call-with-output-file "config/FindBoostForALPS.cmake"
-                  (lambda (port)
-                    (display "find_package(Boost REQUIRED COMPONENTS" port)
-                    (for-each (lambda (x)
-                                (format port "\n~a" x)) boost-components)
-                    (display ")\n" port)
-                    (display "set(ALPS_HAVE_BOOST_NUMPY ON)\n" port))))))
-          (add-after 'rewrite-find-boost-cmake 'fix-cmake-cxx-flags
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("^set\\(CMAKE_CXX_FLAGS .* -fpermissive.*\\)")
-                 (string-append "set(CMAKE_CXX_FLAGS \""
-                                "${CMAKE_CXX_FLAGS}"
-                                " -fpermissive"
-                                " -DBOOST_NO_AUTO_PTR"
-                                " -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF"
-                                " -DBOOST_AC_USE_PTHREADS"
-                                ;; For boost-1.89 the flag below leads
-                                ;; to weird errors in tests:
-                                ;; " -DBOOST_SP_USE_PTHREADS"
-                                " -DBOOST_TIMER_ENABLE_DEPRECATED"
-                                "\")")))))
-          (add-after 'fix-cmake-cxx-flags 'reconcile-with-boost-1.89
+          (add-after 'unpack 'reconcile-with-boost-1.89
             (lambda _
               (substitute*
                   '("src/alps/numeric/matrix/matrix_element_iterator.hpp"
@@ -144,11 +115,7 @@
                 (("^#include <boost/iterator/iterator_facade.hpp>" include)
                  (string-append "#include <boost/type_traits/is_same.hpp>\n"
                                 "#include <boost/type_traits/add_const.hpp>\n"
-                                include)))))
-          (add-after 'reconcile-with-boost-1.89 'fix-fortran-comment
-            (lambda _
-              (substitute* "src/alps/fortran/alps_fortran.h"
-                (("^\\*") "!")))))))
+                                include))))))))
     (native-inputs
      (list python-scipy   ; only used in tests
            python-numpy))
