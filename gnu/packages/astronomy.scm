@@ -14435,7 +14435,7 @@ interactively in the plotting window.")
 (define-public spot-nik
   (package
     (name "spot-nik")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -14444,7 +14444,7 @@ interactively in the plotting window.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nmq4ngidfy4a1dmc996dd0zdpk2ljsll4bws61r571rq1r876kk"))))
+        (base32 "1psd8sdapwjmc8may6zxn6fih1fn7cf54iwlixmf68k6nkgd2asn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
