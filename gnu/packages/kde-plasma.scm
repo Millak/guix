@@ -2832,7 +2832,8 @@ sensors, process information and other system resources.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1m0zad6rcc8wjjpcpi1nxzz8h99d4hwxj7yfdm0jg7nxpcxpdc19"))))
+                "1m0zad6rcc8wjjpcpi1nxzz8h99d4hwxj7yfdm0jg7nxpcxpdc19"))
+              (patches (search-patches "plasma-workspace-qt-6.12.patch"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
                          qttools

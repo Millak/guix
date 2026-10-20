@@ -1,0 +1,72 @@
+From 070142dc37cb3f3e8ab0754eb846ee0fdc8b58dd Mon Sep 17 00:00:00 2001
+From: David Edmundson <kde@davidedmundson.co.uk>
+Date: Fri, 15 May 2026 17:02:50 +0100
+Subject: [PATCH] appmenu: Compile against qt dev for setLastInputDevice
+ changes
+
+plasma is using very private implementation details of Qt as a
+questionable hack.
+
+The syntax changed, we need to guard and have two versions.
+---
+ appmenu/CMakeLists.txt | 23 +++++++++++++++++++++++
+ appmenu/appmenu.cpp    |  4 ++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/appmenu/CMakeLists.txt b/appmenu/CMakeLists.txt
+index 6d4493de3e..ce212aa80b 100644
+--- a/appmenu/CMakeLists.txt
++++ b/appmenu/CMakeLists.txt
+@@ -1,3 +1,22 @@
++include(CheckCXXSourceCompiles)
++
++set(_appmenu_saved_required_libraries "${CMAKE_REQUIRED_LIBRARIES}")
++list(APPEND CMAKE_REQUIRED_LIBRARIES Qt::WaylandClientPrivate Qt::GuiPrivate)
++check_cxx_source_compiles("
++    #include <QtWaylandClient/private/qwaylanddisplay_p.h>
++    #include <QtWaylandClient/private/qwaylandwindow_p.h>
++
++    int main()
++    {
++        auto display = static_cast<QtWaylandClient::QWaylandDisplay *>(nullptr);
++        auto device = static_cast<QtWaylandClient::QWaylandInputDevice *>(nullptr);
++        auto window = static_cast<QtWaylandClient::QWaylandWindow *>(nullptr);
++        display->setLastInputDevice(device, 1, window->waylandSurface());
++        return 0;
++    }
++" HAVE_QT_WAYLAND_SETLASTINPUTDEVICE_SURFACE)
++set(CMAKE_REQUIRED_LIBRARIES "${_appmenu_saved_required_libraries}")
++
+ set(kded_appmenu_SRCS
+     appmenu.cpp
+     menuimporter.cpp
+@@ -18,6 +37,10 @@ qt_add_dbus_adaptor(kded_appmenu_SRCS org.kde.kappmenu.xml
+ 
+ kcoreaddons_add_plugin(appmenu SOURCES ${kded_appmenu_SRCS} INSTALL_NAMESPACE "kf6/kded")
+ 
++if (HAVE_QT_WAYLAND_SETLASTINPUTDEVICE_SURFACE)
++    target_compile_definitions(appmenu PRIVATE HAVE_QT_WAYLAND_SETLASTINPUTDEVICE_SURFACE)
++endif()
++
+ pkg_check_modules(XKBCommon REQUIRED IMPORTED_TARGET xkbcommon)
+ 
+ target_link_libraries(appmenu
+diff --git a/appmenu/appmenu.cpp b/appmenu/appmenu.cpp
+index 14ab4a2142..722ed25776 100644
+--- a/appmenu/appmenu.cpp
++++ b/appmenu/appmenu.cpp
+@@ -270,7 +270,11 @@ void AppMenuModule::ensureSerial(QWindow *w)
+             auto waylandWindow = dynamic_cast<QtWaylandClient::QWaylandWindow *>(w->handle());
+             if (waylandWindow) {
+                 const auto device = waylandWindow->display()->currentInputDevice();
++#ifdef HAVE_QT_WAYLAND_SETLASTINPUTDEVICE_SURFACE
++                waylandWindow->display()->setLastInputDevice(device, 1, waylandWindow->waylandSurface());
++#else
+                 waylandWindow->display()->setLastInputDevice(device, 1, waylandWindow);
++#endif
+             }
+         }
+     }
+-- 
+2.54.0
+

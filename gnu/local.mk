@@ -2162,6 +2162,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/pharo-vm-cmake.patch                     \
   %D%/packages/patches/phobos-hurd.patch			\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
+  %D%/packages/patches/plasma-workspace-qt-6.12.patch           \
   %D%/packages/patches/plasp-fix-normalization.patch \
   %D%/packages/patches/plasp-include-iostream.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
