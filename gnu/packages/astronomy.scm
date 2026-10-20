@@ -11687,34 +11687,31 @@ instruments.")
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
-    (version "0.6.7")
+    (version "0.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "spectral_cube" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/radio-astro-tools/spectral-cube")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1r3mwrnjw2yfjsd3bskl013c3yk0ad3ky1yhxlvyiz4phrahhb3f"))))
+        (base32 "01czj584fffs2py6mwg90kyqi7pi1bisq9kvgq5cw9x1vhxbgw8v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1519 passed, 170 skipped, 17 xfailed, 6048 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; AttributeError: module 'numpy' has no attribute 'product'
-              "--deselect=spectral_cube/tests/test_dask.py::test_dask_distributed"
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "spectral_cube/tests/"
-                                                    "test_casafuncs.py::"
-                                                    "test"))
-                      (list "test_casa_read_basic[False-False]"
-                            "test_casa_read_basic[False-True]"
-                            "test_casa_read_basic[True-False]"
-                            "test_casa_read_basic[True-True]"
-                            "test_casa_read_basic_nomask")))))
+      ;; When --numprocesses is porvided tests fail randomly with error:
+      ;; "thread(s) were leaked from test".
+      #~(list "--pyargs" "spectral_cube")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "spectral_cube"))))))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
-           python-pytest-xdist
            python-regions
            python-setuptools
            python-setuptools-scm))
@@ -11728,6 +11725,9 @@ instruments.")
            python-radio-beam
            python-tqdm
            ;; [optional]
+           python-distributed
+           python-fsspec
+           python-reproject
            python-scipy
            python-zarr))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
@@ -11739,8 +11739,9 @@ dimension, optionally with Stokes parameters.
 
 It provides the following main features:
 @itemize
-@item A uniform interface to spectral cubes, robust to the wide range of conventions
-of axis order, spatial projections, and spectral units that exist in the wild.
+@item A uniform interface to spectral cubes, robust to the wide range of
+conventions of axis order, spatial projections, and spectral units that exist
+in the wild.
 @item Easy extraction of cube sub-regions using physical coordinates.
 @item Ability to easily create, combine, and apply masks to datasets.
 @item Basic summary statistic methods like moments and array aggregates.
