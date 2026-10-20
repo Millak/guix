@@ -1218,20 +1218,19 @@ is not available for Guile 2.0.")
 
 (define-public guile-fibers-1.4
   (package
-    (inherit guile-fibers-1.3)
     (name "guile-fibers")
     (version "1.4.3")
     (source
-     (origin (inherit (package-source guile-fibers-1.3))
-             (file-name (git-file-name name version))
-             (uri (git-reference
-                    (url (package-home-page guile-fibers-1.3))
-                    (commit (string-append "v" version))))
-             (sha256
-              (base32
-               "1q0a9y0cc8rld1z7mcj61fkldhd0kn9n4yq25izxslbgg4g5h9j6"))
-             (patches
-              (search-patches "guile-fibers-fix-timer-wheel-remove.patch"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/guile/fibers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q0a9y0cc8rld1z7mcj61fkldhd0kn9n4yq25izxslbgg4g5h9j6"))
+       (patches (search-patches "guile-fibers-fix-timer-wheel-remove.patch"))))
+    (build-system gnu-build-system)
     (arguments
      (if (target-aarch64?)
          (list #:phases
@@ -1258,7 +1257,32 @@ is not available for Guile 2.0.")
                              ;; heap grows too much
                              (("tests/cancel-port-waiters.scm") "")
                              (("tests/cancel-timer.scm") ""))))))
-             '())))))
+             '())))
+    (native-inputs
+     (list texinfo pkg-config autoconf-2.71 automake libtool
+           guile-3.0            ;for 'guild compile
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
+           gettext-minimal))
+    (inputs
+     (append (list guile-3.0)           ;for libguile-3.0.so
+             (if (target-hurd?)
+                 (list libevent)
+                 '())))
+    (home-page "https://codeberg.org/guile/fibers")
+    (synopsis "Lightweight concurrency facility for Guile")
+    (description
+     "Fibers is a Guile library that implements a a lightweight concurrency
+facility, inspired by systems like Concurrent ML, Go, and Erlang.  A fiber is
+like a \"goroutine\" from the Go language: a lightweight thread-like
+abstraction.  Systems built with Fibers can scale up to millions of concurrent
+fibers, tens of thousands of concurrent socket connections, and many parallel
+cores.  The Fibers library also provides Concurrent ML-like channels for
+communication between fibers.
+
+Note that Fibers makes use of some Guile 2.1/2.2-specific features and
+is not available for Guile 2.0.")
+    (properties '((upstream-name . "fibers")))
+    (license license:lgpl3+)))
 
 (define-public guile-fibers guile-fibers-1.4)
 
