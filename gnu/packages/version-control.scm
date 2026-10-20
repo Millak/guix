@@ -1010,14 +1010,14 @@ to GitHub contributions calendar.")
 (define-public git-cliff
   (package
     (name "git-cliff")
-    (version "2.12.0")
+    (version "2.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git-cliff" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vz1qix1yi6j5lb95q39pdxn4b6nrq8m235kjjh605m2mf0r8wyd"))))
+        (base32 "0y9a1vxhnrcjarfav9653kn14r2n3hncc9x57jkn8nqyhrfqdw1w"))))
     (build-system cargo-build-system)
     (arguments
      (list
