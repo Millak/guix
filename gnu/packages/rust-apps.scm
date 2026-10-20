@@ -2736,7 +2736,7 @@ Mollysocket.")
 (define-public ncspot
   (package
     (name "ncspot")
-    (version "1.3.3")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2745,7 +2745,7 @@ Mollysocket.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02i5v7jad80zx2ad9a2ppxg4ipd3faisys41gxcwmpy2kisrlssk"))))
+                "1z9pbcwc973skgv8rndgif6vwjw4f8vr163rdpr95zwg2mxafc6n"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f))
@@ -2757,7 +2757,7 @@ Mollysocket.")
             pulseaudio
             (cargo-inputs 'ncspot)))
     (native-inputs
-     (list pkg-config python))
+     (list pkg-config))
     (home-page "https://github.com/hrkfdn/ncspot")
     (synopsis "Ncurses Spotify client written in Rust")
     (description
