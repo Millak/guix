@@ -13430,7 +13430,7 @@ of the old packages.")
 (define-public python-tables-io
   (package
     (name "python-tables-io")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -13439,8 +13439,15 @@ of the old packages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yi20hjxmh1vgi8l74pinqvw9fmn2qz6sfkf0khrg3sillwbpa9q"))))
+        (base32 "0x9dlvj4qwb5w6klgvlyax8854rawpr2pdar12kkgwrvdfrihjpr"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 133 passed, 19 skipped, 1 deselected
+      #:test-flags
+      ;; Test depends on missing optional python-rustfits.
+      #~(list (string-append "--deselect=tests/io_utils/test_read.py"
+                             "::test_read_fits_edge_cases"))))
     (native-inputs
      (list python-mpi4py
            python-pytest
@@ -13455,7 +13462,8 @@ of the old packages.")
            python-tables
            ;; [optional]
            python-astropy
-           python-pyarrow))
+           python-pyarrow
+           #;python-rustfits))                     ;not packaged yet in Guix
     (home-page "https://github.com/LSSTDESC/tables_io")
     (synopsis "Input/output and conversion functions for tabular data")
     (description
