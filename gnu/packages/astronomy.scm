@@ -6952,13 +6952,13 @@ sensitivity or energy density
 (define-public python-hdecompose
   (package
     (name "python-hdecompose")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hdecompose" version))
        (sha256
-        (base32 "0bjvzighrywcys31aypjbyyc9xmzwws7fl0lp6aywcm9akgb9578"))))
+        (base32 "1dg07zzpvha95dwk4wmm3lhh4ihbmlayhshlgzirrjykv9dak1zd"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;no tests
