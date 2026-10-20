@@ -78,6 +78,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
@@ -4856,7 +4857,7 @@ engine.  Features include:
 (define-public koboldcpp
   (package
     (name "koboldcpp")
-    (version "1.122")
+    (version "1.123.1")
     (source
      (origin
        (method git-fetch)
@@ -4869,10 +4870,9 @@ engine.  Features include:
             (use-modules (guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-26))
-            (delete-file-recursively "lib")
             (for-each delete-file (find-files "." "\\.(dll|exe|bat)$"))))
        (sha256
-        (base32 "184336v6n3a3l7gvirm230rkknn93i91710wpr6190sdg5rbmmgl"))))
+        (base32 "1pqkklvdmkkxy2yyyqqs9ffskp1lbwnk7yfrpgrmi9fyif34brff"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4910,8 +4910,10 @@ engine.  Features include:
                    ,(python:site-packages inputs outputs)))))))))
     (inputs
      (list bash-minimal
+           psutils
            python
            python-customtkinter
+           python-jinja2
            spirv-headers
            spirv-tools
            vulkan-headers
