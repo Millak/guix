@@ -14099,7 +14099,7 @@ convenient access to metadata from a regular web browser
 (define-public sextractor
   (package
     (name "sextractor")
-    (version "2.28.2")
+    (version "2.29.0")
     (source
      (origin
        (method git-fetch)
@@ -14108,7 +14108,7 @@ convenient access to metadata from a regular web browser
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05i2q1665y4hv0dymgcwraq7ixwr706gwfb88vyvi8hazgym2iaq"))))
+        (base32 "0zszk9r4x48y1r44z25ffrka0rllmlsik4ckxjn9rmx4pbzkyhmn"))))
     (build-system gnu-build-system)
     (arguments
      (list
