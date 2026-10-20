@@ -9474,7 +9474,7 @@ official C++ API using SWIG.")
 (define-public python-pyirf
   (package
     (name "python-pyirf")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -9483,7 +9483,7 @@ official C++ API using SWIG.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01fk3rywhslvqsmr6vjdlicak1s5n39i139i6958wbk573vd8m3q"))))
+        (base32 "0rnzfk92hhh2vaxbrl43wcfgmzkavfymn8py6wvn5kfi5mnw8r8c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
