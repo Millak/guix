@@ -4650,6 +4650,47 @@ GetDist. It supports MPI parallelization (and very soon HPC containerization
 with Docker/Shifter and Singularity).")
     (license license:lgpl3+)))
 
+(define-public python-colorsynth
+  (package
+    (name "python-colorsynth")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sun-data/colorsynth")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04inj2vgjrgr80qhk72h6b3p5c8zqci8g21y74wal8hws1vynqfk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-manifest.in
+            (lambda* (#:key name source inputs #:allow-other-keys)
+              (let ((port (open-file "MANIFEST.in" "w")))
+                (display "recursive-include colorsynth *\n" port)
+                (close port)))))))
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy python-numba python-numpy))
+    (home-page "https://colorsynth.readthedocs.io/en/latest/")
+    (synopsis "False-color images from Numpy arrays of spectral intensity")
+    (description
+     "@code{colorsynth} is a Python library for creating false-color images
+from spectral cubes: arrays with two spatial axes and one spectral axis, such
+as those measured by scanning-slit spectrographs.  It collapses the spectral
+axis of a @code{numpy.ndarray} into red, green, and blue ( 𝑅⁢𝐺⁡𝐵 ) channels that
+can be displayed on your computer monitor by mapping the spectrum into the
+human visible range and weighting it by the CIE 1931 color-matching functions.
+The shape of the spectrum controls the hue of each pixel, and the total
+intensity controls its brightness, so features like Doppler shifts are visible
+directly in the image.")
+    (license license:bsd-3)))
+
 (define-public python-colossus
   ;; There is no source distribution in PyPI and no version tags, use the
   ;; latest commit from the master HEAD.
