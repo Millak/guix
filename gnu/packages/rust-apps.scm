@@ -2748,7 +2748,40 @@ Mollysocket.")
                 "1z9pbcwc973skgv8rndgif6vwjw4f8vr163rdpr95zwg2mxafc6n"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:install-source? #f))
+     (list
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda args
+              (invoke "cargo" "run" "--package" "xtask" "--"
+                      "generate-manpage")
+              (invoke "cargo" "run" "--package" "xtask" "--"
+                      "generate-shell-completion" "--shells"
+                      "bash,zsh,fish,elvish")
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("misc/ncspot.bash"
+                        "share/bash-completion/completions/ncspot")
+                       ("misc/ncspot.elv"
+                        "share/elvish/lib/ncspot")
+                       ("misc/ncspot.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("misc/_ncspot"
+                        "share/zsh/site-functions/")
+                       ("misc/ncspot.desktop"
+                        "share/applications/")
+                       ("images/logo.svg"
+                        "share/icons/hicolor/scalable/apps/ncspot.svg")
+                       ("misc/" "share/man/man1/"
+                        #:include-regexp ("\\.1$")))
+                     args))))))
+
     (inputs
      (cons* dbus
             libxcb
