@@ -125,14 +125,14 @@
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz --wildcards -O \
   ;;     firefox-*/browser/locales/l10n-changesets.json \
   ;;     | grep revision | sort | uniq
-  (let ((commit "0da379c064af4968c17feca6128a1290adfb3009"))
+  (let ((commit "1e95d1c5f519c3fbde715345ae7beb56a2c79077"))
    (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "1fm36dlqgc05r8m6w7bqm043h63spw7nnic67bxrlyjx7ysz11jq")))))
+      (sha256 (base32 "12rlba5g46sw22fxqyjj2jfvplxw45dm2m82lq17ajgqh21frdzf")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -250,12 +250,12 @@
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "158.0-1")
+    (version "158.0.1-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1fx2bbfw3qx1nj8lms278v3ixsv1w9kw6g38mw0ad03m3n0gfxzw"
-      #:librewolf-hash "1m30d7xg74v5zdz50dg88djvk94xxg8jy8hrmbrnrglj2z6kwsws"
+      #:firefox-hash "0958anxc9z058jz6n7im3vsrjxjx5y9aazc699krm8kkz9azzgmm"
+      #:librewolf-hash "1nlk8w8gwhw4044cal6h4wn6pgr69hjjxlzqp5i3fd6r0dzwa8j1"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
