@@ -4238,39 +4238,29 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
     (arguments
      (list
        #:install-source? #f
+       #:modules
+       '((guix build cargo-build-system)
+         (guix build utils)
+         (ice-9 match))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-extras
-             (lambda* (#:key native-inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share"))
-                      (bash-completions-dir
-                       (string-append out "/etc/bash_completion.d/"))
-                      (zsh-completions-dir
-                       (string-append share "/zsh/site-functions"))
-                      (fish-completions-dir
-                       (string-append share "/fish/vendor_completions.d"))
-                      (elvish-completions-dir
-                       (string-append share "/elvish/lib"))
-                      (pijul (if #$(%current-target-system)
-                             (search-input-file native-inputs "/bin/pijul")
-                             (string-append out "/bin/pijul"))))
-                 (mkdir-p bash-completions-dir)
-                 (with-output-to-file
-                   (string-append bash-completions-dir "/pijul")
-                   (lambda _ (invoke pijul "completion" "bash")))
-                 (mkdir-p zsh-completions-dir)
-                 (with-output-to-file
-                   (string-append zsh-completions-dir "/_pijul")
-                   (lambda _ (invoke pijul "completion" "zsh")))
-                 (mkdir-p fish-completions-dir)
-                 (with-output-to-file
-                   (string-append fish-completions-dir "/pijul.fish")
-                   (lambda _ (invoke pijul "completion" "fish")))
-                 (mkdir-p elvish-completions-dir)
-                 (with-output-to-file
-                   (string-append elvish-completions-dir "/pijul")
-                   (lambda _ (invoke pijul "completion" "elvish")))))))))
+             (lambda* (#:key native-inputs #:allow-other-keys)
+               (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/pijul")
+                              (in-vicinity #$output "bin/pijul"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "completion" shell))))))
+                '(("bash"   . "share/bash-completion/completions/pijul")
+                  ("elvish" . "share/elvish/lib/pijul")
+                  ("fish"   . "share/fish/vendor_completions.d/pijul.fish")
+                  ("zsh"    . "share/zsh/site-functions/_pijul"))))))))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
