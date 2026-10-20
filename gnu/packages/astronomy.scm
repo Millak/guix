@@ -5851,7 +5851,7 @@ all the input image headers.")
 (define-public python-fitscube
   (package
     (name "python-fitscube")
-    (version "2.7.0")
+    (version "2.11.0")
     (source
      (origin
        (method git-fetch)
@@ -5860,19 +5860,12 @@ all the input image headers.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mbjs3zmjfsnjalm4cgfp2qaiyncixhsa8rdb34nw0h7bdk8nr9x"))))
+        (base32 "0qbarwhdvfwi11amz31a231xcxcd3q7d2ah3fb9557vrfgyc8r44"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 75 passed, 1 deselected
-      #:test-flags
-      ;; Skip test requuring python-pgzip.
-      #~(list (string-append "--deselect=tests/test_compress.py"
-                             "::test_compress_cube_roundtrip[pgzip]"))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
-           ;; python-pgzip              ;not packaged yet in Guix
+           python-pgzip
            python-pytest
            python-pytest-asyncio))
     (propagated-inputs
