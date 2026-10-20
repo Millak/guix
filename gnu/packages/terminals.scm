@@ -302,7 +302,7 @@ text-based approach to terminal recording.")
   (package
    (name "asciinema-agg")
    (home-page "https://github.com/asciinema/agg")
-   (version "1.7.0")
+   (version "1.9.0")
    (source
     (origin
      (method git-fetch)
@@ -311,7 +311,7 @@ text-based approach to terminal recording.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "04vbj7mmn8cdgrh1563ghadfanpw4ga1jbm2i7jnp6m69qyafiz9"))))
+      (base32 "1qrmiwhsi2hhxql7zbjzdilqs0rf55c6wzxlhbkspc0k91r1bq2y"))))
    (build-system cargo-build-system)
    (arguments (list #:install-source? #f))
    (inputs (cargo-inputs 'asciinema-agg))
