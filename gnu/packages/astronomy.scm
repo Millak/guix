@@ -4956,7 +4956,7 @@ files and provide related services.")
 (define-public python-ctapipe
   (package
     (name "python-ctapipe")
-    (version "0.31.0")
+    (version "0.32.0")
     (source
      (origin
        (method git-fetch)
@@ -4965,11 +4965,11 @@ files and provide related services.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xkm21nan9fxvfjgna4schm1fcq2m38a05nl4x7h4f5riwx7g2lw"))))
+        (base32 "0ddyxhqavsb6p1pnmhah213dsdglarshn0l3rd9bak4cz3r2d4kq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 174 passed, 14 warnings
+      ;; tests: 180 passed, 14 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--pyargs" "ctapipe"
@@ -5029,6 +5029,7 @@ files and provide related services.")
                                 "io/tests/test_plugin.py"
                                 "io/tests/test_preprocessing.py"
                                 "io/tests/test_prod2.py"
+                                "io/tests/test_roundtrips.py"
                                 "io/tests/test_simteleventsource.py"
                                 "io/tests/test_table_loader.py"
                                 "io/tests/test_toysource.py"
@@ -5089,7 +5090,7 @@ files and provide related services.")
            python-tables
            python-tqdm
            python-traitlets
-           ;; [poptional]
+           ;; [optional]
            python-bokeh
            python-eventio
            python-iminuit
