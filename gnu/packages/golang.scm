@@ -916,8 +916,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.24)
     (name "go")
-    (replacement go-1.25/fixed)
-    (version "1.25.13")
+    (version "1.25.14")
     (source
      (origin
        (method git-fetch)
@@ -926,7 +925,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19irn0l27qyjxjim3b5m3ggca786sdz30aw913l4hmwxb26jsb1a"))))
+        (base32 "06l452r3lp3y1yfv3hvawykil8bdqsn1yld490b4dfxjmlmdxbkn"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.24)
        ((#:phases phases)
@@ -971,22 +970,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
          ("riscv64" ,@%go-1.25-riscv64-micro-architectures)
          ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
-
-(define-public go-1.25/fixed
-  (hidden-package
-   (package
-     (inherit go-1.25)
-     (name "go")
-    (version "1.25.14")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/golang/go")
-               (commit (string-append "go" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "06l452r3lp3y1yfv3hvawykil8bdqsn1yld490b4dfxjmlmdxbkn")))))))
 
 (define-public go-1.26
   (package
