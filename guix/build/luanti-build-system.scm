@@ -196,15 +196,29 @@ auth_backend = sqlite3
                (not (string-contains line "Audio: Global Initialization:"))))
         (define (stop? line)
           (and (string? line)
-               (string-contains line "ACTION[Server]: singleplayer [127.0.0.1] joins game.")))
+               (or
+                ;; < 5.17
+                (and
+                 (string-contains line "ACTION[Server]")
+                 (string-contains line "singleplayer [127.0.0.1] joins game.")
+                 SIGINT)
+                (and
+                 (string-contains line "INFO[Server]")
+                 ;; >= 5.17
+                 (string-contains
+                  line
+                  "Finding spawn place for player \"singleplayer\"")
+                 SIGTERM))))
         (let loop ((has-errors? #f))
           (match `(,(read-line port) ,has-errors?)
             (((? error? line) _)
              (display line)
              (newline)
              (loop #t))
-            (((? stop?) #f)
-             (kill pid SIGINT)
+            (((and line (? stop?) (= stop? signal)) #f)
+             (display line)
+             (newline)
+             (kill pid signal)
              (close-port port)
              (waitpid pid))
             (((? eof-object?) #f)
