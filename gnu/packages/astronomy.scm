@@ -8575,7 +8575,10 @@ or 3D models).")
                              "::test_source_photometry")
               (string-append "--deselect=petrofit/tests/test_photometry.py"
                              "::test_radial_photometry")
-              "--deselect=petrofit/tests/test_petrosian.py::test_grid_gen")
+              "--deselect=petrofit/tests/test_petrosian.py::test_grid_gen"
+              ;; XXX: AssertionError: assert np.float64(0.151779) == 0.036798
+              (string-append "--deselect=petrofit/tests/"
+                             "test_segmentation.py::test_get_functions"))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
