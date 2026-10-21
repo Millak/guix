@@ -42511,6 +42511,8 @@ fn main() {
 (define rust-webpki-roots-0.25.4
   (crate-source "webpki-roots" "0.25.4"
                 "1qgqa615gc1cgklls4bkjp9jv9pvv3jnl82lc6wd7dkximywa82z"
+                #:patches (search-patches
+                            "rust-webpki-roots-0.25.4-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-0.26.11
@@ -42521,6 +42523,7 @@ fn main() {
 (define rust-webpki-roots-0.26.8
   (crate-source "webpki-roots" "0.26.8"
                 "1jf54brni9lk4ak5pkma2pn18hli22gr7i7wp9zn2lzayy8v4412"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.10
@@ -42535,31 +42538,37 @@ fn main() {
 (define rust-webpki-roots-1.0.3
   (crate-source "webpki-roots" "1.0.3"
                 "1f49w0s7f3fgczvjri179wh2a9g8jpkmdi5bi5l8p7ylsb031c9j"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.4
   (crate-source "webpki-roots" "1.0.4"
                 "07jp2zgj3hjb60m1nwrasixdwazmzhh9y4bryy66wz6457q8x1xj"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.5
   (crate-source "webpki-roots" "1.0.5"
                 "0b3j9ngc8fca3kg24f4jb4v9969vmdngv6s2i4wccxijhs0ddghj"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.6
   (crate-source "webpki-roots" "1.0.6"
                 "1v8brkarm4spqkjs6y5b67xixnz4zlg33d1wwxigz4rr0qyazkr2"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.7
   (crate-source "webpki-roots" "1.0.7"
                 "17gblaqmp51znxd2c18c04k8yfnf7s77c04n6hdmzxbcr52fxxaj"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webpki-roots-1.0.9
   (crate-source "webpki-roots" "1.0.9"
                 "0apja04243wz3vi26pqjg4sq8cqaac66prj490sgb1crlc4rvkbx"
+                #:patches (search-patches "rust-webpki-roots-remove-compromised-cert.patch")
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-webrtc-sys-0.3.7.5f04705
