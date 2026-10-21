@@ -146,6 +146,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-vcs)
@@ -208,6 +209,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages uml)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
@@ -6037,5 +6039,69 @@ configure input, and customize Wayfire plugins.")
      "A drop-in replacement for the wlroots scene API that allows wayland
 compositors to render surfaces with eye-candy effects.")
     (license license:expat)))
+
+(define-public wlmaker
+  (package
+    (name "wlmaker")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/phkaeser/wlmaker.git")
+                     (commit (string-append "v" version))
+                     ;; Lots of bundled deps in dir "dependencies/"--and
+                     ;; one directory submodules/libbase we need.
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0n2kmpcri55dc1ha0fsp833yyhxrp3xnfhnqlwk90q6bw2jq68f2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;;; Remove bundled dependencies.
+                   (delete-file-recursively "dependencies")
+                   (delete-file-recursively "submodules/inih")
+                   (substitute* "CMakeLists.txt"
+                    (("add_subdirectory\\(submodules\\)")
+                     ;; Keep libbase, but use our separately packaged inih with
+                     ;; the same long-line settings as the bundled library.
+                     (string-append
+                      "add_subdirectory(submodules/libbase)\n"
+                      "pkg_check_modules(INIH REQUIRED IMPORTED_TARGET inih)\n"
+                      "add_library(inih ALIAS PkgConfig::INIH)")))
+                   (substitute* '("src/launcher.c" "src/clip.c")
+                    (("WLMAKER_SOURCE_DIR \"/share/wlmaker/icons")
+                     ;; The build system compiles the build tree's absolute
+                     ;; path into the binary (WLMAKER_SOURCE_DIR).
+                     ;; Point the fallback at the install prefix instead.
+                     (string-append "\"" (assoc-ref outputs "out")
+                                    "/share/wlmaker/icons")))
+                   (substitute* '("etc/State.plist"
+                                  "etc/HomeConfig.plist"
+                                  "etc/ExampleConfig.plist"
+                                  "etc/Config.plist")
+                    (("/usr/bin/") ; foot, chromium, firefox, swaylock--default panel
+                     ""))
+                   (substitute* "share/CMakeLists.txt"
+                    ;; This would try to resolve github.com in the build container.
+                    (("COMMAND .*APPSTREAMCLI.*(validate.*org.wlmaker.wlmaker.metainfo.xml\")")
+                     "COMMAND true"))
+                   (substitute* '("src/root_menu.c"
+                                  "src/action.c")
+                    (("/bin/sh")
+                     (search-input-file inputs "bin/sh"))))))))
+    (native-inputs
+     (list appstream bison desktop-file-utils doxygen flex graphviz plantuml pkg-config))
+    (inputs
+     (list bash-minimal cairo libinih-for-wlmaker libxkbcommon libxdg-basedir
+           ncurses wayland wayland-protocols wlroots))
+    (synopsis "Window Maker style Wayland compositor")
+    (description "This package provides a Window Maker style Wayland compositor.")
+    (home-page "https://phkaeser.github.io/wlmaker/")
+    (license license:asl2.0)))
 
 ;;; window-management.scm ends here
