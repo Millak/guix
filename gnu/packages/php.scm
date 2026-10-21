@@ -396,13 +396,13 @@ systems, web content management systems and web frameworks.")
   (package
     (inherit php-8.5)
     (home-page "https://www.php.net/")
-    (version "8.4.26")
+    (version "8.4.27")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "1wb90ns46i4s8hax5kjdwxqw4l0v9z748lh0lpa4xm1ahr9xx8ij"))
+        (base32 "1w6kcibi3ldms2v8hd4bl1hpg95m41jpjnxja990v3p3n0ikkyfw"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
