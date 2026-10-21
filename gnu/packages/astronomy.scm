@@ -4475,13 +4475,13 @@ data in the CHIANTI database.")
 (define-public python-ci-watson
   (package
     (name "python-ci-watson")
-    (version "0.11.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ci_watson" version))
        (sha256
-        (base32 "0rwmfzgbfazfb511fq6ipcwr5n2n4ngz4whxjd7kbcyj56580dg6"))))
+        (base32 "0zfs0zsvk5rnvrj076qs53qmjax7qc980k5fs05hab7v1jmndyf1"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-astropy-header
@@ -4491,6 +4491,7 @@ data in the CHIANTI database.")
     (propagated-inputs
      (list python-colorama
            python-crds
+           python-pytest-skip-slow
            python-readchar
            python-requests))
     (home-page "https://github.com/spacetelescope/ci_watson")
