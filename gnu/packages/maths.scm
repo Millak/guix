@@ -1832,14 +1832,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "6.0.1")
+    (version "6.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "16ipf7m2c2v1cldp3kwxbjj6db6bzy0rkrpp4kzhh61a3866cnp8"))))
+        (base32 "1n7f9m9spagcgsrmm38r9qw434sy1njsjcz1za5xc1iky0vpy8vk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config (texlive-local-tree)))
