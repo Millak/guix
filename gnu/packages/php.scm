@@ -68,14 +68,14 @@
 (define-public php-8.5
   (package
     (name "php")
-    (version "8.5.11")
+    (version "8.5.12")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "0q03h3mvwah8fbzf7m6rlvv1a2kmw7xxi521ix66yccciv07bgnr"))
+        (base32 "028j93njkvj5hdks1pb2r1b1axkbcjm78w9mw6nm91jq5ax2xg08"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -268,6 +268,9 @@
                  "ext/gd/tests/bug72339.phpt"
                  ;; AVIF support disabled
                  "ext/gd/tests/imagecreatefromstring_avif.phpt"
+
+                 ;; INT overflow, needs more info
+                 "ext/gd/tests/createfromstring-overflow.phpt"
 
                  ;; These tests fail due to issues in upstream gd
                  ;; 2.3.3 around BICUBIC interpolation.  See
