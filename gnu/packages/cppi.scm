@@ -17,28 +17,9 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages cppi)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix licenses))
+  #:use-module (guix deprecation))
 
-(define-public cppi
-  (package
-    (name "cppi")
-    (version "1.18")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/cppi/cppi-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1jk42cjaggk71rimjnx3qpmb6hivps0917vl3z7wbxk3i2whb98j"))))
-    (build-system gnu-build-system)
-    (home-page "https://www.gnu.org/software/cppi/")
-    (synopsis "Indent C preprocessor directives to reflect nesting and more")
-    (description
-     "GNU Cppi processes C source code files to properly indent the
-preprocessor directives to reflect their nesting.  It also performs other
-standardizations, such as correcting the number of spaces between directives
-and the text following them.")
-    (license gpl3+)))
+;; This whole file was deprecated at 2026-10-21.
+
+(define-deprecated/public-alias cppi
+  (@ (gnu packages code) cppi))

@@ -246,6 +246,27 @@ may help in learning or reviewing unfamiliar code or perhaps
 highlighting your own code that seemed comprehensible when you wrote it.")
     (license license:gpl3+)))
 
+(define-public cppi
+  (package
+    (name "cppi")
+    (version "1.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/cppi/cppi-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "1jk42cjaggk71rimjnx3qpmb6hivps0917vl3z7wbxk3i2whb98j"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.gnu.org/software/cppi/")
+    (synopsis "Indent C preprocessor directives to reflect nesting and more")
+    (description
+     "GNU Cppi processes C source code files to properly indent the
+preprocessor directives to reflect their nesting.  It also performs other
+standardizations, such as correcting the number of spaces between directives
+and the text following them.")
+    (license license:gpl3+)))
+
 (define-public cscope
   (package
     (name "cscope")

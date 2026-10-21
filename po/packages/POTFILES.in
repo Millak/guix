@@ -82,7 +82,6 @@ gnu/packages/coq.scm
 gnu/packages/coreboot.scm
 gnu/packages/cpio.scm
 gnu/packages/cpp.scm
-gnu/packages/cppi.scm
 gnu/packages/cran.scm
 gnu/packages/cross-base.scm
 gnu/packages/cross-toolchain.scm
