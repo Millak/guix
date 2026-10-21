@@ -10833,7 +10833,7 @@ Coronagraph technology demonstration (Coronagraph).")
 (define-public python-romancal
   (package
     (name "python-romancal")
-    (version "1.1.0")
+    (version "1.2.0rc1")
     (source
      (origin
        (method git-fetch)
@@ -10842,48 +10842,12 @@ Coronagraph technology demonstration (Coronagraph).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dn8knpfsdbqlswyb5636wzziwrqak6ib1nkws96q27n5lak7z9n"))))
+        (base32 "0w0yrr7wdgxpqgpvqv34a22z6b7arpvx27mpyp9gw62z1yxig16x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 441 passed, 313 skipped, 18 deselected, 2 xpassed, 11 warnings
-      #:test-flags
-      #~(list "--color=no"
-              ;; Tests requiring calibration data.
-              #$@(map (lambda (file) (string-append "--ignore=" file))
-                      (list "romancal/tweakreg/tests/test_tweakreg.py"
-                            "romancal/assign_wcs/tests/test_wcs.py"
-                            "romancal/dark_current/tests/test_dark.py"
-                            "romancal/dq_init/tests/test_dq_init.py"
-                            "romancal/flatfield/tests/test_flatfield.py"
-                            "romancal/flux/tests/test_flux_step.py"
-                            "romancal/linearity/tests/test_linearity.py"
-                            "romancal/multiband_catalog/tests/test_multiband_catalog.py"
-                            "romancal/photom/tests/test_photom.py"
-                            "romancal/pipeline/tests/test_exposure_pipeline.py"
-                            "romancal/ramp_fitting/tests/test_ramp_fit_cas22.py"
-                            "romancal/ramp_fitting/tests/test_ramp_fit_likelihood.py"
-                            "romancal/refpix/tests/test_step.py"
-                            "romancal/resample/tests/test_resample.py"
-                            "romancal/saturation/tests/test_saturation.py"
-                            "romancal/skycell/tests/test_skycell.py"
-                            "romancal/skycell/tests/test_skycell_match.py"
-                            "romancal/skymatch/tests/test_skymatch.py"
-                            "romancal/source_catalog/tests/test_psf.py"
-                            "romancal/source_catalog/tests/test_source_catalog.py"
-                            "romancal/stpipe/tests/test_core.py"))
-              ;;  SystemExit: -1
-              "-k" (string-join
-                    (list "not test_dark_decay"
-                          "test_inject_sources"
-                          "test_grid_injection"
-                          "test_wfi18_transient"
-                          "test_wfi18_transient_flat_data"
-                          "test_wfi18_transient_wrong_detector"
-                          "test_wfi18_transient_too_few_resultants"
-                          "test_wfi18_transient_fit_failure"
-                          "test_wfi18_transient_save_results")
-                    " and not "))
+      ;; Tests fail during collection, requiring access to CRDS server.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -10893,14 +10857,8 @@ Coronagraph technology demonstration (Coronagraph).")
                 (("roman_datamodels>=1.1,<1.2") "roman_datamodels")
                 (("romanisim>=0.14,<0.15") "romanisim")))))))
     (native-inputs
-     (list nss-certs-for-test
-           python-ci-watson
-           python-deepdiff
-           python-pytest
-           python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-stpreview))
+     (list python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
