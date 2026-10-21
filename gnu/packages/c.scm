@@ -162,7 +162,7 @@ slicing.")
 (define-public c-sbsv
   (package
     (name "c-sbsv")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -171,7 +171,7 @@ slicing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wgqb7j2slp05zm6s2qqsb5821vzz1w3jdcwsn2k3jfj7mylnryq"))
+        (base32 "1d1g3vjyviidp95favqyq472xcxbl33rzrh5gli5zndj101afmcm"))
        (modules '((guix build utils)))
        (snippet #~(begin                ;remove the separate Python library
                     (delete-file-recursively "sbsv")
