@@ -10686,6 +10686,8 @@ Coronagraph technology demonstration (Coronagraph).")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
+                (("drizzle>=2.2.0,<2.3.0") "drizzle")
+                (("roman_datamodels>=1.1,<1.2") "roman_datamodels")
                 (("romanisim>=0.14,<0.15") "romanisim")))))))
     (native-inputs
      (list nss-certs-for-test
