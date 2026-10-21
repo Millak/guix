@@ -1866,7 +1866,7 @@ an embedded event driven algorithm.")
            python-pytest
            python-setuptools))
     (inputs
-     (list ciel
+     (list ciel-2
            klayout
            magic
            netgen
