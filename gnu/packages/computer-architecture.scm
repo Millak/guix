@@ -48,7 +48,7 @@
 (define-public gem5
   (package
     (name "gem5")
-    (version "25.1.0.1")
+    (version "26.0.0.0")
     (source
      (origin
        (method git-fetch)
@@ -57,7 +57,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pbckqv08f6yiirr9f6gxivgrk422z31p04fifdhvzyc5magh8ls"))
+        (base32 "1pifdcnj5x6sbipsimim6fb79r4qr1bgrzxji605n9zb4spaqdip"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
