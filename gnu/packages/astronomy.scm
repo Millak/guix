@@ -8666,7 +8666,7 @@ astronomical sources.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -8675,11 +8675,11 @@ astronomical sources.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w1xrrc2w317zdmdxmcmwp1icm1sl33pq3pbympdx7jsxb1galn1"))))
+        (base32 "0iij5l6mmas9rfa9c11mkd7f0r3cgzr7plq3v7sa7ql3c5dz6z4x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 790 passed, 17 skipped, 13 deselected, 11 xfailed, 1 xpassed,
+      ;; tests: 794 passed, 18 skipped, 13 deselected, 11 xfailed, 1 xpassed,
       ;;        710 warnings
       #:test-flags
       #~(list "-k" (string-join
