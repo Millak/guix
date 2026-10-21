@@ -245,7 +245,7 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20261014155700")
+(define %librewolf-build-id "20261021072247")
 
 (define-public librewolf
   (package
