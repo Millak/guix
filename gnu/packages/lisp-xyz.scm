@@ -14515,6 +14515,53 @@ library inspired by @code{cl-data-format-validation} and WTForms validators.")
 (define-public ecl-datafly
   (sbcl-package->ecl-package sbcl-datafly))
 
+(define-public sbcl-datastar-cl
+  (let ((commit "470021d42de5dccfc391184187d1fb63761d820d")
+        (revision "0"))
+    (package
+      (name "sbcl-datastar-cl")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fsmunoz/datastar-cl")
+               (commit commit)))
+         (file-name (git-file-name "cl-datastar-cl" version))
+         (sha256
+          (base32 "0zhpb4147aiidsbd7idncbwazd1v984aghrad3awivh1wqi3vg3s"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-flexi-streams
+             sbcl-hunchentoot
+             sbcl-jzon
+             sbcl-lc-sse
+             sbcl-quri
+             sbcl-split-sequence))
+      (native-inputs
+       (list sbcl-drakma
+             sbcl-fiveam
+             which))
+      (home-page "https://github.com/fsmunoz/datastar-cl")
+      (synopsis "Common Lisp SDK for Datastar Server-Sent Events")
+      (description
+       "This package provides a Common Lisp implementation of the Datastar SDK
+for Server-Sent Events (SSE), with Hunchentoot and Clack backends and optional
+compression of streaming responses.")
+      (license license:expat))))
+
+(define-public cl-datastar-cl
+  (sbcl-package->cl-source-package sbcl-datastar-cl))
+
+(define-public ecl-datastar-cl
+  (let ((pkg (sbcl-package->ecl-package sbcl-datastar-cl)))
+    (package
+      (inherit pkg)
+      (arguments
+       ;; Integration tests fail due to missing /etc/protocols.
+       (list #:asd-test-systems ''("datastar-cl-tests/unit"))))))
+
 (define-public sbcl-db3
   (let ((commit "38e5ad35f025769fb7f8dcdc6e56df3e8efd8e6d")
         (revision "1"))
