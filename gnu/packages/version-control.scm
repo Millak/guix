@@ -4609,7 +4609,7 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4618,7 +4618,7 @@ file contents on a remote server.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07m4nynjhd5w4ra618mfvqfbx8d8zbl0rq7254qvm1kcjfqlvyh1"))))
+        (base32 "1pbzwwj4nl8arm1ilcmp97r9dldip7m9jqqavy80k3drwjbx63h3"))))
     (build-system go-build-system)
     (arguments
      (list
