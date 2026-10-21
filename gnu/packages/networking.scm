@@ -5538,7 +5538,7 @@ wireguard peer, and exposes a socks5/http proxy or tunnels on the machine.")
 (define-public wireproxy-awg
   (package
     (name "wireproxy-awg")
-    (version "1.0.17")
+    (version "1.0.18")
     (source
      (origin
        (method git-fetch)
@@ -5547,7 +5547,7 @@ wireguard peer, and exposes a socks5/http proxy or tunnels on the machine.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wsdyimml8l09m97fq593rj84rlj08ly5vp2bkc4lahj1w9f074z"))))
+        (base32 "11ydsd8waw6b4fj1bvw42wz5lk6hvskgyvb7as8zpxhg819cf83a"))))
     (build-system go-build-system)
     (arguments
      (list
