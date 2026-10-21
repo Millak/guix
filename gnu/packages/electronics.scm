@@ -583,6 +583,29 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
 chip design and @acronym{EDA, Electronic Design Automation}.")
     (license license:asl2.0)))
 
+(define ciel-2
+  (package
+    (inherit ciel)
+    (version "2.6.1")
+    (name "ciel")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fossi-foundation/ciel")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aqc68v57sx9grl311f5j6sg72a0rajbjrz40b9zchymvy51pyxc"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "pyproject.toml"
+                  ((">=12,<15") ">=12"))))))))))
+
 (define-public comedilib
   (package
     (name "comedilib")
