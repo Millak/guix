@@ -42454,7 +42454,11 @@ fn main() {
 
 (define rust-webpki-root-certs-0.26.8
   (crate-source "webpki-root-certs" "0.26.8"
-                "1i462gigwj2mfxa7fxa2cvjmz19pr2j37aiz9cs1hb4dbqgxdbh9"))
+                "1i462gigwj2mfxa7fxa2cvjmz19pr2j37aiz9cs1hb4dbqgxdbh9"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-root-certs-1.0.10
   (crate-source "webpki-root-certs" "1.0.10"
@@ -42466,23 +42470,43 @@ fn main() {
 
 (define rust-webpki-root-certs-1.0.3
   (crate-source "webpki-root-certs" "1.0.3"
-                "0vkqczsmad6rr1rc5qnr36f6jqblz9p1xrvv5rv4ps0d93n53mh5"))
+                "0vkqczsmad6rr1rc5qnr36f6jqblz9p1xrvv5rv4ps0d93n53mh5"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-root-certs-1.0.5
   (crate-source "webpki-root-certs" "1.0.5"
-                "1p05rj22vamgs9n34326vypxy3klmdbphqrjrxl3y4cb8309z8in"))
+                "1p05rj22vamgs9n34326vypxy3klmdbphqrjrxl3y4cb8309z8in"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-root-certs-1.0.6
   (crate-source "webpki-root-certs" "1.0.6"
-                "1jm844z3caldlsb4ycb2h7q6vw4awfdgmddmx2sgyxi6mjj1hkw0"))
+                "1jm844z3caldlsb4ycb2h7q6vw4awfdgmddmx2sgyxi6mjj1hkw0"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-root-certs-1.0.7
   (crate-source "webpki-root-certs" "1.0.7"
-                "0b59x5mzsilk42w59nif3lfhc24pgzb0v35pi6p01qy37z7424gk"))
+                "0b59x5mzsilk42w59nif3lfhc24pgzb0v35pi6p01qy37z7424gk"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-root-certs-1.0.9
   (crate-source "webpki-root-certs" "1.0.9"
-                "16qw59hxn1lln1615kb9rjy16pfxd1x8m9f9w6vwv36c5am58rdr"))
+                "16qw59hxn1lln1615kb9rjy16pfxd1x8m9f9w6vwv36c5am58rdr"
+                #:snippet
+                ;; Remove compromised "emSign ECC Root CA - G3".
+                '(substitute* "src/lib.rs"
+                   ((".*b\"\\\\x30\\\\x82\\\\x02\\\\x4E.*") ""))))
 
 (define rust-webpki-roots-0.25.4
   (crate-source "webpki-roots" "0.25.4"
