@@ -86,6 +86,7 @@
 ;;; Copyright © 2025 Abra K. <abra_k_332@protonmail.me>
 ;;; Copyright © 2025 Ben Hansen <git@beha.pw>
 ;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
+;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14203,3 +14204,85 @@ applications and system extensions and remove existing installed
 applications.")
     (license license:gpl2+)
     (home-page "https://apps.gnome.org/en/Software/")))
+
+(define-public fractal
+  (package
+    (name "fractal")
+    (version "14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.gnome.org/World/fractal")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lpsjshlvkmd56ypcfm2a3ipbvrzwcj8q6wfbns4csy2abqgdc2p"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-build
+            (lambda _
+              (substitute* "data/resources/meson.build"
+                (("'sass'") "'sassc'")
+                (("'--no-error-css', '--no-source-map'") ""))
+              (delete-file "Cargo.lock")))
+          ;; The meson 'configure phase changes to a different directory and
+          ;; we need it created before unpacking the crates.
+          (add-after 'configure 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase) args))
+               '(prepare-rust-crates
+                 unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'install 'wrap-glycin-loaders
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/fractal")
+                `("XDG_DATA_DIRS" ":" prefix
+                  ,(map dirname
+                        (search-path-as-list
+                         '("share/glycin-loaders")
+                         (map cdr inputs))))))))))
+    (native-inputs (list desktop-file-utils
+                         gettext-minimal
+                         `(,glib "bin")
+                         gobject-introspection
+                         `(,gtk "bin")
+                         libshumate
+                         pkg-config
+                         rust
+                         `(,rust "cargo")
+                         sassc))
+    (inputs (cons* bash-minimal
+                   blueprint-compiler
+                   glib
+                   glycin-loaders
+                   gsettings-desktop-schemas
+                   gstreamer
+                   gst-plugins-bad
+                   gtk
+                   gtksourceview
+                   libadwaita
+                   libglycin
+                   libwebp
+                   (cargo-inputs 'fractal)))
+    (home-page "https://gitlab.gnome.org/World/fractal")
+    (synopsis "Matrix client for GNOME")
+    (description
+     "Fractal is a Matrix messaging app for GNOME written in Rust.  Its
+interface is optimized for collaboration in large groups, such as free
+software projects, and will fit any screens.")
+    (license license:gpl3+)))
