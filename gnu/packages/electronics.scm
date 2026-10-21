@@ -535,7 +535,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
 (define-public ciel
   (package
     (name "ciel")
-    (version "2.6.1")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -544,7 +544,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aqc68v57sx9grl311f5j6sg72a0rajbjrz40b9zchymvy51pyxc"))))
+        (base32 "1a9jx9vfpidiwfg6hnnv6r4znbng8fkqswr53ji0gvl075i8sir0"))))
     (arguments
      (list
       ;; No unit tests, there are some integration tests, see:
@@ -552,11 +552,6 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; rich = ">=12,<15"
-                ((">=12,<15") ">=12"))))
           (add-after 'wrap 'wrap-ciel
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/ciel")
@@ -573,6 +568,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
      (list python-click
            python-httpx
            python-pcpp
+           python-pyyaml
            python-rich
            python-zstandard))
     (home-page "https://github.com/fossi-foundation/ciel")
