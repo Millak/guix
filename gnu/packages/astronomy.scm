@@ -8621,7 +8621,7 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -8630,42 +8630,53 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1azwm65lb84r19c0ippq6mdp6vhrk02fs6j5fkmz6sqhj3g85ycd"))))
+        (base32 "1ys3kxnvwrjd3wymspy1ibk6a33ppv8w6809v74gdxs23kbbvnzr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3361 passed, 23 skipped
+      ;; tests: 7942 passed, 27 skipped
       #:test-flags
       #~(list "--pyargs" "photutils"
-              "--numprocesses" (number->string (min 8 (parallel-job-count))))
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Tests take about 1h to complete.
+              "-k"
+              (string-join
+               (list "not test_alias_passband_changes_epsf"
+                     "test_auto_choices_oversampled"
+                     "test_build"
+                     "test_build_step_with_epsf"
+                     "test_extract_stars_nonfinite_weights"
+                     "test_recentering_boxsize_oversampling_scaling"
+                     "test_recentering_symmetry_offset_stars"
+                     "test_refinement_excludes_failed_fits"
+                     "test_refinement_progress_bar"
+                     "test_refinement_steps"
+                     "test_smoothing_kernel")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'add-missing-import
-            ;; See: <https://github.com/astropy/photutils/pull/2260>
-            (lambda _
-              (substitute* "photutils/isophote/ellipse_model.pyx"
-                (("    double sqrt\\(double x\\)" all)
-                 (string-append all "\n\nfrom cpython cimport bool")))))
           (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "photutils"))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
+           python-pytest-asdf-plugin
            python-pytest-astropy
            python-pytest-xdist
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
+           python-numpy
+           python-scipy
+           ;; [optional]
            python-bottleneck
            python-gwcs
            python-matplotlib
-           python-numpy
            python-rasterio
            python-regions
            python-scikit-image
-           python-scipy
            python-shapely
            python-tqdm))
     (home-page "https://github.com/astropy/photutils")
