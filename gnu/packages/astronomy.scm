@@ -10064,7 +10064,7 @@ weather indices as pysat.Instrument objects.")
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method git-fetch)
@@ -10073,7 +10073,7 @@ weather indices as pysat.Instrument objects.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14zacxpc9qjzhs0ncaiyrw04rriy4bb26yp5ca8wbhlkhphpaw9i"))))
+        (base32 "04ynvwny6608mrxp54cw5lgjav7vg69alg1gyar1s1zykd75mm12"))))
     (build-system pyproject-build-system)
     (arguments
      (list
