@@ -2598,6 +2598,7 @@ targeting storage applications.  ISA-L includes:
   (package
     (name "brotli")
     (version "1.2.0")
+    (replacement brotli/fixed)
     (source
      (origin
        (method git-fetch)
@@ -2619,6 +2620,18 @@ with @code{deflate} but offers more dense compression.
 
 The specification of the Brotli Compressed Data Format is defined in RFC 7932.")
     (license license:expat)))
+
+(define-public brotli/fixed
+  (hidden-package
+   (package
+     (inherit brotli)
+     (source
+      (let ((s (package-source brotli)))
+        (origin
+          (inherit s)
+          (patches
+           (append (search-patches "brotli-CVE-2026-111497.patch")
+                   (origin-patches s)))))))))
 
 (define-public java-brotli
   (package
