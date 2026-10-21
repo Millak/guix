@@ -318,14 +318,14 @@ parser definition into a C output.")
 (define-public node-lts
   (package
     (name "node")
-    (version "24.22.0")
+    (version "24.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "0a833vp35plyskmrzza3dg0hbmldbv38apywjf11yvv65kzprya1"))
+                "0caj8cxrd78sr6lbb0zsgpxw8v51nq2gsn7kqaqaxkc0c9wpjlsg"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-26)))
@@ -634,7 +634,7 @@ parser definition into a C output.")
     (native-inputs
      (list
       ;; Runtime dependencies for binaries used as a bootstrap.
-      brotli
+      brotli/fixed
       c-ares-for-node-lts
       cpp-ada-url-parser
       googletest
@@ -662,7 +662,7 @@ parser definition into a C output.")
       util-linux))
     (inputs
      (list bash-minimal
-           brotli
+           brotli/fixed
            c-ares-for-node-lts
            coreutils-minimal
            cpp-ada-url-parser
