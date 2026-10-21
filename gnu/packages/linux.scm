@@ -11031,6 +11031,29 @@ compatible with Python's ConfigParser style of .INI files, including RFC
 822-style multi-line syntax and name: value entries.")
     (license license:bsd-3)))
 
+(define-public libinih-for-wlmaker
+  (hidden-package
+   (package
+     (inherit libinih)
+     (arguments
+      (substitute-keyword-arguments (package-arguments libinih)
+        ((#:configure-flags flags)
+         ;; wlmaker needs long lines for desktop entries.  Upstream disables
+         ;; customization for distro installs so applications can rely on one
+         ;; shared library configuration.  Guix gives this variant its own store
+         ;; path, so overriding that policy cannot affect other users.
+         `(cons "-Dc_args=['-DINI_MAX_LINE=65536','-DINI_USE_STACK=0','-DINI_ALLOW_REALLOC=1']"
+                ,flags))
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (add-after 'unpack 'skip-incompatible-buffer-tests
+              (lambda _
+                ;; These tests force a 20-byte line limit and expect truncation
+                ;; and errors.  With wlmaker's heap-buffer settings, the initial
+                ;; allocation is 200 bytes, so those expectations do not apply.
+                (substitute* "tests/meson.build"
+                  (("^  '(multi_max_line|string)':.*") "")))))))))))
+
 (define-public simpleini
   (package
     (name "simpleini")
