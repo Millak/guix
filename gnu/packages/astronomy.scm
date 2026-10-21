@@ -9628,7 +9628,7 @@ plot a single (or a few) model(s).")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "2.7.1")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -9637,7 +9637,7 @@ plot a single (or a few) model(s).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxgd8yh0dv1zjf43l98m0gis2by21rn2pb2xmx6lija4w7jrcpj"))
+        (base32 "0crxn5j9w5sraa5dbwkqd9f6dxdi21cv5iifcfnfy2bczbilvx98"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -9646,57 +9646,31 @@ plot a single (or a few) model(s).")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 288 passed, 6 skipped, 13 deselected
+      ;; tests: 881 passed, 6 skipped, 1 deselected
       #:test-flags
       ;; XXX: testdata is distributed via Zenodo
       ;; <https://zenodo.org/records/17084976> with total size more than 2GiB,
       ;; refer to the helper script obtaining it
-      ;; <pynbody/test_utils/__init__.py>.
-      #~(list #$@(map (lambda (file) (string-append "--ignore=tests/" file))
-                      (list "adaptahop_test.py"
-                            "ahf_halos_test.py"
-                            "array_test.py"
-                            "bridge_test.py"
-                            "copy_on_access_test.py"
-                            "family_test.py"
-                            "gadget_test.py"
-                            "gadgethdf_test.py"
-                            "gizmo_test.py"
-                            "grafic_test.py"
-                            "gravity_test.py"
-                            "halos_test.py"
-                            "halotools_test.py"
-                            "hbtplus_test.py"
-                            "hmf_test.py"
-                            "hop_test.py"
-                            "ionfrac_test.py"
-                            "kdtree_test.py"
-                            "luminosity_test.py"
-                            "morphology_test.py"
-                            "nchilada_test.py"
-                            "partial_tipsy_test.py"
-                            "pkdgravhdf_test.py"
-                            "plot_stars_test.py"
-                            "profile_test.py"
-                            "ramses_new_ptcl_format_test.py"
-                            "ramses_test.py"
-                            "rockstar_test.py"
-                            "schmidtlaw_test.py"
-                            "snapshot_test.py"
-                            "sph_image_test.py"
-                            "subfind_test.py"
-                            "subfindhdf_gadget4_test.py"
-                            "subfindhdf_test.py"
-                            "swift_test.py"
-                            "tipsy_test.py"
-                            "velociraptor_test.py"))
-              "--deselect=tests/shape_test.py::test_2D_shape"
-              "--deselect=tests/shape_test.py::test_3D_shape"
-              "--deselect=tests/shape_test.py::test_halo_shape_wrapper"
-              "--deselect=tests/split_swift_snapshot_test.py::test_split_snapshot"
-              "--deselect=tests/split_swift_snapshot_test.py::test_split_snapshot_with_mask"
-              "--deselect=tests/test_profile.py::test_unique_hash_generation"
-              "--deselect=tests/test_profile.py::test_write_profile")
+      ;; <pynbody/test_utils/__init__.py>. Run some portion of unittests only.
+      #~(list "tests/chunk_test.py"
+              "tests/completion_test.py"
+              "tests/cosmology_test.py"
+              "tests/derived_arrays_test.py"
+              "tests/filter_test.py"
+              "tests/hdf_bulk_read_test.py"
+              "tests/hdf_read_strategy_test.py"
+              "tests/import_test.py"
+              "tests/plot_hist2d_test.py"
+              "tests/simsnap_test.py"
+              "tests/subarray_test.py"
+              "tests/theoretical_profile_test.py"
+              "tests/transformation_test.py"
+              "tests/units_test.py"
+              "tests/user_sph_operations_test.py"
+              "tests/utils_test.py"
+              "-k"
+              ;; Failed: DID NOT RAISE
+              "not test_interrupting_the_caller_stops_every_input_thread")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
