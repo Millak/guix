@@ -57,7 +57,6 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
-  #:use-module (gnu packages cppi)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
