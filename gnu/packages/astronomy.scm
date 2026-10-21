@@ -6274,18 +6274,24 @@ full support for Astropy’s Quantity framework for variables with units.")
     (license license:bsd-3)))
 
 (define-public python-gammapy
+  ;; To support python-regions@0.13+.
+  (let ((commit "e3faf0d5749e9ff02f488d3d4d9e8776654d2732")
+        (commit-date "2026-10-20")
+        (release "2.1")
+        (release-date "2026-04-02")
+        (revision "1"))
   (package
     (name "python-gammapy")
-    (version "2.1")
+    (version (git-version release revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/gammapy/gammapy")
-              (commit (string-append "v" version))))
+              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kgnmp65a3d1h7hd69clhvsfkcj5ishgx63k2vx15xh2ssc45ckz"))))
+        (base32 "1vmd0vmfd0f64bczy0grakp41p88a6c4s5kvvalnqs3hjprjmmni"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6307,6 +6313,7 @@ full support for Astropy’s Quantity framework for variables with units.")
            python-pytest
            python-pytest-astropy
            python-pytest-xdist
+           python-pyvo
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
@@ -6324,6 +6331,7 @@ full support for Astropy’s Quantity framework for variables with units.")
            python-ipywidgets
            python-naima
            python-numba
+           ;;python-psrecord    ;not packaged yet in Guix
            ;;python-ray         ;not packaged yet in Guix
            python-requests
            ;;python-sherpa      ;not packaged yet in Guix
@@ -6340,7 +6348,7 @@ widely used in the analysis of existing gamma-ray instruments, such as
 @acronym{MAGIC, Major Atmospheric Gamma Imaging Cherenkov Telescopes}
 @acronym{VERITAS, Very Energetic Radiation Imaging Telescope Array System} and
 @acronym{HAWC, The High-Altitude Water Cherenkov Gamma-Ray Observatory}.")
-    (license license:bsd-3)))
+    (license license:bsd-3))))
 
 (define-public python-gatspy
   (package
