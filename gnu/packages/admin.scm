@@ -4556,7 +4556,7 @@ hard-coded.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.5.12")
+    (version "2.5.13")
     (source
      (origin
       (method git-fetch)
@@ -4565,7 +4565,7 @@ hard-coded.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1vwnigyygzch2pxszqbhs4vpjkzpc5pf0k7p5fxmsanmf5mp76m6"))))
+       (base32 "0ab459lcq3b1b0jsfhbrj1af5nfgcx8zd595qvfwn6wf6m1m0ma8"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4578,6 +4578,15 @@ hard-coded.")
        #~(list "V=1")                     ; log build commands
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-makefile
+             (lambda _
+               (substitute* "docs/Makefile.am"
+                 ;; "$(top_srcdir)/gtk-doc.make" is missing.
+                 (("^include \\$\\(top_srcdir\\)/gtk-doc.make")
+                  "")
+                 ;; CLEANFILES must be set with "=" before using "+=".
+                 (("CLEANFILES \\+=")
+                  "CLEANFILES ="))))
            (add-before 'bootstrap 'no-early-./configure
              (lambda _
                (setenv "NO_CONFIGURE" "yet"))))))
