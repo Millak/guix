@@ -91,7 +91,7 @@
            libjpeg-turbo
            libpng
            zlib))
-    (home-page "https://www.libgd.org/")
+    (home-page "https://libgd.github.io/")
     (synopsis "Library for the dynamic creation of images by programmers")
     (description
      "GD is a library for the dynamic creation of images by programmers.  GD
