@@ -2514,6 +2514,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-codex-0.117.0-core-remove-self-dep.patch	\
   %D%/packages/patches/rust-librocksdb-sys-unbundled-sources.patch	\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
+  %D%/packages/patches/rust-webpki-roots-0.25.4-remove-compromised-cert.patch	\
+  %D%/packages/patches/rust-webpki-roots-remove-compromised-cert.patch	\
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
   %D%/packages/patches/ryzen-smu-fix-linux-7.2.patch		\
