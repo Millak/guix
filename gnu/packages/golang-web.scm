@@ -11199,6 +11199,8 @@ sessions, flash messages, custom backends, and more.")
     (license license:bsd-3)))
 
 (define-public go-github-com-gorilla-websocket
+  ;; XXX: 1.5.3 (2024-06-14); project is unmaintained.
+  ;; See: <https://github.com/gorilla/websocket/issues>.
   (package
     (name "go-github-com-gorilla-websocket")
     (version "1.5.3")
@@ -11207,14 +11209,18 @@ sessions, flash messages, custom backends, and more.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
+              (url home-page)
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1k84plbz6bxarbdrdcsrm9vhiy971prpvfnkcpsfv2q4ac80ccmx"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/gorilla/websocket"))
+     (list
+      #:import-path "github.com/gorilla/websocket"
+      #:test-flags
+      ;; client_server_test.go:183: Dial: unexpected EOF
+      #~(list "-skip" "TestProxyDial|TestProxyAuthorizationDial")))
     (synopsis "Fast WebSocket implementation for Go")
     (description "Gorilla WebSocket is a Go implementation of the WebSocket
 protocol.")
