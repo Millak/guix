@@ -4013,7 +4013,7 @@ with documentation.
 (define-public guile-scriba
   (package
     (name "guile-scriba")
-    (version "0.3.3")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -4022,7 +4022,7 @@ with documentation.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b05a74k2gcz5whn5czkjq28lp1m4b88ww16d8y7q3708ncdwq23"))))
+        (base32 "11782dag0frxk2x7gscvjj8mnxa2z4wva0n4wd9sd93h1g9600s4"))))
     (build-system guile-build-system)
     (arguments
      (list
