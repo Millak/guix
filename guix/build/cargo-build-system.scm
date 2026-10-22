@@ -87,7 +87,7 @@ Cargo.toml file present at its root."
            ;; Workspaces should be packaged into crates (via 'package phase)
            ;; and used in inputs.
            (cargo-package? path)
-           (and (not (string-suffix? "py" path)) ;sanity-check.py
+           (and (tarball? path)
                 ;; First we print out all file names within the tarball to see
                 ;; if it looks like the source of a crate. However, the tarball
                 ;; will include an extra path component which we would like to
