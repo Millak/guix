@@ -410,7 +410,7 @@ library.  It supports almost all PNG features and is extensible.")
 (define-public libpng-next
   (package
     (inherit libpng)
-    (version "1.6.50")
+    (version "1.6.59")
     (source (origin
 	      (method url-fetch)
 	      (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
@@ -423,7 +423,7 @@ library.  It supports almost all PNG features and is extensible.")
 			  "/libpng16/libpng-" version ".tar.xz")))
 	      (sha256
 	       (base32
-                "01r34c31gq136jwshdfira44wbl6nb8qfgj4a4vam9r0hr8rdwsd"))))))
+                "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))))
 
 (define-public libpng-apng
   ;; The APNG patch is maintained separately and may lag behind upstream libpng.
