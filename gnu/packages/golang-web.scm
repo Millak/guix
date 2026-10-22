@@ -16775,7 +16775,7 @@ does not necessarily conform to a fixed structure.")
 (define-public go-github-com-ooni-netem
   (package
     (name "go-github-com-ooni-netem")
-    (version "0.0.0-20260715150927-e0a456040e27")
+    (version "0.0.0-20261015055222-b67b70868bcc")
     (source
      (origin
        (method git-fetch)
@@ -16784,7 +16784,7 @@ does not necessarily conform to a fixed structure.")
               (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hs4lc90pw8g9ipk31iv9zss9x0dahvc06s9pxsw9rkw2sm0cm1b"))))
+        (base32 "1h6ms41hqaz1z2pn94qnr3wzzsvrzs3pccsxh247ivbz766p2gln"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -16799,7 +16799,7 @@ does not necessarily conform to a fixed structure.")
            go-github-com-miekg-dns
            go-golang-org-x-crypto
            go-gvisor-dev-gvisor-source))
-    (home-page "https://github.com/ooni/netem")
+    (home-page "https://ooni.org/")
     (synopsis "Network emulation for writing integration tests in Go")
     (description
      "Package netem is a framework to write integration tests that use TCP/IP
