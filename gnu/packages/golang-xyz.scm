@@ -36121,7 +36121,7 @@ written in YAML or JSON.")
 (define-public go-go-mongodb-org-mongo-driver
   (package
     (name "go-go-mongodb-org-mongo-driver")
-    (version "1.17.9")
+    (version "1.17.10")
     (source
      (origin
        (method git-fetch)
@@ -36130,7 +36130,7 @@ written in YAML or JSON.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ba6nr5gzkv4k0h2gf58h2f2cmhdc53z0zxgy01vaw4sxa8h3adl"))
+        (base32 "1bqbd7bw1ginmmmm7k3z1j1vf0cd93rgh53f4iinspnr84cnixcv"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -36153,6 +36153,7 @@ written in YAML or JSON.")
                      "TestClientOptions"
                      "TestConvenientTransactions"
                      "TestGridFS"
+                     "TestPercentile"
                      "TestPollSRVRecords"
                      "TestPollSRVRecordsMaxHosts"
                      "TestPollSRVRecordsServiceName"
