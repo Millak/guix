@@ -487,10 +487,11 @@ library.  It supports almost all PNG features and is extensible.")
 extension of the APNG (Portable Network Graphics) format.
 APNG patch provides APNG support to libpng.")
     (home-page "https://sourceforge.net/projects/libpng-apng/")
-    (license license:zlib)))
+    (license license:zlib)
+    (replacement libpng-apng/fixed)))
 
-;; Temporary, until 76798 merges into core-packages-team, and that merges into
-;; master.
+;; Temporary and kept around to avoid rebuild. Consider removing if
+;; dependent packages are rebuilt anyway.
 (define-public libpng-apng-next
   (package
     (inherit libpng-apng)
@@ -519,7 +520,8 @@ APNG patch provides APNG support to libpng.")
                            version "/libpng-" version "-apng.patch.gz"))
            (sha256
             (base32
-             "0r811izi40qzy69jmhz0xlkpqlsjj89bang1b3ma6a5igh6dqzb8"))))))))
+             "0r811izi40qzy69jmhz0xlkpqlsjj89bang1b3ma6a5igh6dqzb8"))))))
+    (replacement libpng-apng/fixed)))
 
 (define libpng-apng/fixed
   ;; Temporary graft to avoid rebuilds.
