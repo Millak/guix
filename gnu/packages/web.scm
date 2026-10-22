@@ -5983,8 +5983,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "029880e5633789ce96ec363a94d98aed6451430f")
-        (revision "79"))
+  (let ((commit "b656cdba98b39c9ace504c055914d1262ea1b48c")
+        (revision "80"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -5996,7 +5996,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1h7k30k2hrql2r5kg1qhsq5haxzs2qzzkc195aidigr2vnj7xkm0"))))
+                  "162vabsfkl173d3lcyrwfydxxv5c82jy3zfnbrl9g7px3pklsjrj"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -6053,7 +6053,7 @@ Cloud.")
        (list bash-minimal
              ephemeralpg
              util-linux
-             postgresql-13
+             postgresql
              sqitch
              bash-minimal))
       (propagated-inputs
