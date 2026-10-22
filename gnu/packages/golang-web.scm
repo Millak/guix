@@ -5721,7 +5721,7 @@ conditions, metamorphic tests can identify bugs without requiring an oracle.")
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
-    (version "1.8.14")
+    (version "1.8.15")
     (source
      (origin
        (method git-fetch)
@@ -5730,13 +5730,11 @@ conditions, metamorphic tests can identify bugs without requiring an oracle.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15i1sri7ym9mhl5z6nlps7hhr874nprk1cdic0aq3v8g7fyqmh2w"))
+        (base32 "0ib6m5564dqrm81k93n01wl4jynqqkk4l9rxz4zxbwk5rkmbj1xw"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/coder/websocket/internal/thirdparty
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "internal/thirdparty")))))
     (build-system go-build-system)
     (arguments
