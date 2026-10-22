@@ -37,6 +37,7 @@
 ;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
+;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -44,6 +45,31 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "e4d01554e863d3cb88f654f160ccb05e28222b67")
+        (title
+         (en "PHP critical security updates"))
+         (body
+          (en "If you use Guix's PHP package, you must update to newer PHP
+versions i.e 8.5.21 and 8.4.27, as soon as possible as it fixes two critical
+security vulnerabilities that can allow unauthenticated remote code execution.
+The vulnerabilities are:
+
+RCE via OOM corruption, CVE-2026-109618
+@url{https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w,
+(GHSA-w8hw-w9fx-j79w)}: out-of-memory handling can interrupt PHP while internal
+request data is only partially initialized.  Request cleanup may then treat
+the invalid data as valid.
+
+RCE via stale global state, CVE-2026-109619
+@url{https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp,
+(GHSA-6wmf-4rv5-p3rp)}: request-owned internal state can survive after its
+backing memory has been freed.  A later request handled by the same worker may
+use that stale state before normal initialization resets it.
+
+For more information, you can read the
+@url{https://www.php.net/archive/2026.php#2026-10-21-5, PHP's advisory
+announcement.}")))
 
  (entry (commit "fb0bf8a0d1e6f0f3fae31a4d0a2d70e76a4a069d")
         (title
