@@ -521,6 +521,37 @@ APNG patch provides APNG support to libpng.")
             (base32
              "0r811izi40qzy69jmhz0xlkpqlsjj89bang1b3ma6a5igh6dqzb8"))))))))
 
+(define libpng-apng/fixed
+  ;; Temporary graft to avoid rebuilds.
+  (package
+    (inherit libpng-apng)
+    (version "1.6.59")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
+                                  version "/libpng-" version ".tar.xz")
+                   (string-append
+                    "ftp://ftp.simplesystems.org/pub/libpng/png/src"
+                    "/libpng16/libpng-" version ".tar.xz")
+                   (string-append
+                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
+                    "/libpng16/libpng-" version ".tar.xz")))
+        (sha256
+         (base32
+          "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))
+    (inputs
+     (modify-inputs inputs
+       (replace "apng"
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "mirror://sourceforge/libpng-apng/libpng16/"
+                           version "/libpng-" version "-apng.patch.gz"))
+           (sha256
+            (base32
+             "1459wz9p3pv7m4zid66wjczyfnfr1r8fw0alwa41xjjkk6f3ls99"))))))))
+
 (define-public pngcrush
   (package
    (name "pngcrush")
