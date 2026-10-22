@@ -419,7 +419,7 @@ OAuth2 protocols.")
 (define-public guile-bewaking
   (package
     (name "guile-bewaking")
-    (version "0.1.9")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -428,7 +428,7 @@ OAuth2 protocols.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cx2pn6bfgy1xzms92v28q3mf24p195sjl2yyz7wbq8r9nz6rc2i"))))
+        (base32 "1hrg5afz49pr1yppdx6v77j2sf9hcdfy1jr8gy7mpmniw0yny93m"))))
     (build-system guile-build-system)
     (arguments
      (list
