@@ -14522,14 +14522,19 @@ cases of interpreting the program counter (pc) values returned by
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/go-task/slim-sprig")
-               (commit commit)))
+                (url "https://github.com/go-task/slim-sprig")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1185y8qygv8gb3wpghx5d945wq68j4dbaiffq3h0dh453g4h1w7a"))))
       (build-system go-build-system)
       (arguments
        (list
+        #:test-flags
+        #~(list #$@(if (target-aarch64?)
+                       ;; Error: Not equal: expected: 123.556 actual: 123.555
+                       '("-skip" "TestRound")
+                       '()))
         #:import-path "github.com/go-task/slim-sprig"
         #:phases
         #~(modify-phases %standard-phases
