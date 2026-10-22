@@ -658,17 +658,17 @@ GEXP)."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.12)))
 
-(define-public linux-libre-6.6-version "6.6.156")
+(define-public linux-libre-6.6-version "6.6.160")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
    linux-libre-6.6-version
    linux-libre-6.6-gnu-revision
-   (base32 "0y3lawljby2rl0mb0yjdyaasci4pl935y8xa0dnmbzff23knkxlw")
-   (base32 "1h0qybxvk1f2vvbajivxcyqha49zfh1as5053ww36klllyml3cpn")))
+   (base32 "1b31lslg8xzhmas5jsxzxfph02l0b5cxskn4d9nai7x4ally8bwd")
+   (base32 "0yh39ky4rgdikg5qvjw5sfy6xpbgqhkbqkncvnlv8yp6dxi7hkl9")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "07a1dyaxmcv289r0n4agna2li2rfsjdld8279cs18jmg9r52dqmf")))
+        (hash (base32 "09f29v25lpm4zjz7v994chbq0h0wlpfpwmjq6f09b1hqwall0k5j")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
