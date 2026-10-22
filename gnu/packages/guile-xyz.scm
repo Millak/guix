@@ -1316,7 +1316,7 @@ is not available for Guile 2.0.")
 (define-public guile-kracht
   (package
     (name "guile-kracht")
-    (version "0.2.1")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1325,7 +1325,7 @@ is not available for Guile 2.0.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mcyi3a6vpqm4z01rcmv6fqhf7gayppa9yib76jqrihxv8w70m5g"))))
+        (base32 "0zfb35h6s59971zx9mina7wd9dh5p4s1jl1dflpqwqyxm2x2qf8f"))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
     (arguments
