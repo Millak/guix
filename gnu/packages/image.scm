@@ -405,7 +405,8 @@ DICOM WSI files.")
     "Libpng is the official PNG (Portable Network Graphics) reference
 library.  It supports almost all PNG features and is extensible.")
    (license license:zlib)
-   (home-page "http://www.libpng.org/pub/png/libpng.html")))
+   (home-page "http://www.libpng.org/pub/png/libpng.html")
+   (replacement libpng-next)))
 
 (define-public libpng-next
   (package
