@@ -6518,6 +6518,37 @@ Data Representation (XDR) standard protocol as specified in RFC
 4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
     (license license:isc)))
 
+(define-public go-github-com-definednet-netlink
+  (package
+    (name "go-github-com-definednet-netlink")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/DefinedNet/netlink")
+              (commit (string-append "v" version "-dn.1"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15chjkvh6s0kjz3rjxdf83al9df0h7z81b0w01yk8jah1r7ymxpk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/DefinedNet/netlink"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/DefinedNet/netlink")
+    (synopsis "Simple netlink library for Go")
+    (description
+     "The netlink package provides a simple netlink library for Go.  Netlink
+is the interface a user-space program in Linux uses to communicate with the
+kernel.  It can be used to add and remove interfaces, set IP addresses and
+routes, and configure IPsec.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-digitalocean-godo
   (package
     (name "go-github-com-digitalocean-godo")
