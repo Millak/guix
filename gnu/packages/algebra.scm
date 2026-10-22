@@ -347,7 +347,7 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
 (define-public paritwine
   (package
     (name "paritwine")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -356,7 +356,7 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0hkn18qkg4ssg1rg6k95ff7yvywacvhwqq9gj06wix4xb7nw4yzz"))))
+                "0f2xnngjl224954c5lcy738fn6jv5f5rn60j0wl5pxcbppgqd6gd"))))
     (build-system gnu-build-system)
     (propagated-inputs (list pari-gp
                              gmp
