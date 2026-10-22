@@ -5240,7 +5240,7 @@ files or Python scripts that define a list of migration steps.")
 (define-public mutastructura
   (package
     (name "mutastructura")
-    (version "0.7.1")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -5249,7 +5249,7 @@ files or Python scripts that define a list of migration steps.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rzy7clbzc580xp1mk2qwqv29lq2xn8sfr9lv1rdczk5fj55m4d6"))))
+        (base32 "12qjy0pgwd2l3vxxx99pgb0i2hana5py4ll6x4lqlmd3vidz2y6p"))))
     (build-system guile-build-system)
     (arguments
      (list
