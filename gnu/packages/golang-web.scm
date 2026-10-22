@@ -9979,9 +9979,10 @@ certificates.")
     (license license:asl2.0)))
 
 (define-public go-github-com-google-go-containerregistry
+  ;; TODO: Move to (gnu packages containers).
   (package
     (name "go-github-com-google-go-containerregistry")
-    (version "0.21.7")
+    (version "0.21.9")
     (source
      (origin
        (method git-fetch)
@@ -9990,7 +9991,7 @@ certificates.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "002qa02i1ai3qqysjzgi01v9gcx5zcx6f8bgwkik8yb415ijk80d"))
+        (base32 "1918m1cmyzbpc4wa5s3wrgz4ig3fy3dkl4mxq7cai8d1vcw7r0qg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -10004,7 +10005,10 @@ certificates.")
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/google/go-containerregistry"))
+      #:import-path "github.com/google/go-containerregistry"
+      ;; http: TLS handshake error from 127.0.0.1:59268: client sent an HTTP
+      ;; request to an HTTPS server
+      #:test-flags #~(list "-skip" "TestPingHttpFallback")))
     (native-inputs
      ;; For the CLI commands.
      (list go-github-com-spf13-cobra
