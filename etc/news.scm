@@ -48,9 +48,10 @@
 
  (entry (commit "e4d01554e863d3cb88f654f160ccb05e28222b67")
         (title
-         (en "PHP critical security updates"))
-         (body
-          (en "If you use Guix's PHP package, you must update to newer PHP
+         (en "PHP critical security updates")
+         (de "Kritische PHP-Sicherheitsupdates"))
+        (body
+         (en "If you use Guix's PHP package, you must update to newer PHP
 versions i.e 8.5.21 and 8.4.27, as soon as possible as it fixes two critical
 security vulnerabilities that can allow unauthenticated remote code execution.
 The vulnerabilities are:
@@ -69,7 +70,30 @@ use that stale state before normal initialization resets it.
 
 For more information, you can read the
 @url{https://www.php.net/archive/2026.php#2026-10-21-5, PHP's advisory
-announcement.}")))
+announcement.}")
+         (de "Wenn Sie Guix’ PHP-Paket benutzen, müssen Sie so bald wie möglich
+auf die neueren PHP-Versionen, d.h. 8.5.21 und 8.4.27, aktualisieren, weil zwei
+kritische Sicherheitslücken behoben werden, mit denen entfernte Ausführung von
+Code ohne Authentifizierung möglich war.  Die Schwachstellen sind:
+
+Entfernte Ausführung von Code bei vollem Speicher, CVE-2026-109618
+@url{https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w,
+(GHSA-w8hw-w9fx-j79w)}:
+Wenn ein Fehler durch zu wenig freien Speicher auftritt, kann PHP unterbrochen
+werden, während interne Daten zu einer Anfrage noch nicht komplett initialisiert
+wurden.  Beim Bereinigen der Anfrage können dann ungültige Daten als gültig
+behandelt werden.
+
+Entfernte Ausführung von Code durch veralteten globalen Zustand, CVE-2026-109619
+@url{https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp,
+(GHSA-6wmf-4rv5-p3rp)}: Der zu einer Anfrage gehörende interne Zustand kann im
+Speicher verbleiben, obwohl der Speicher zur Anfrage freigegeben wurde. Wenn
+derselbe Arbeiterprozess eine spätere Anfrage bearbeitet, kann veralteter
+Zustand ausgelesen werden, bevor er bei der normalen Initialisierung
+zurückgesetzt wird.
+
+Weitere Informationen finden Sie in
+@url{https://www.php.net/archive/2026.php#2026-10-21-5, PHPs Empfehlungen.}")))
 
  (entry (commit "fb0bf8a0d1e6f0f3fae31a4d0a2d70e76a4a069d")
         (title
