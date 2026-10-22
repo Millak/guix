@@ -1274,8 +1274,8 @@ API key.")
 
 (define-public emacs-gptel-agent
   ;; No releases.
-  (let ((commit "326e0abb8c6db0e5c4c421bd9af495932ae94b62")
-        (revision "2"))
+  (let ((commit "2fbe4f6c71a6a1355c647ce90151c8c2bc1c4bdf")
+        (revision "3"))
     (package
       (name "emacs-gptel-agent")
       (version (git-version "0.0.1" revision commit))
@@ -1286,7 +1286,7 @@ API key.")
                 (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "1jb01g3sw5f3ch7j5nn0j9p56zd3p9y11n7xlp7c1klvqza9isnr"))
+          (base32 "0bwk6k8fk59m6kjc6z109kizpms1l9k1xifif0rwxs84wwcrf2c0"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
