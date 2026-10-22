@@ -43288,18 +43288,7 @@ time.")
                   "mastodon-profile--make-author-buffer"))
                 (disable-tests
                  "test/mastodon-auth-tests.el"
-                 ("mastodon-auth--handle-token-response--good"
-                  "mastodon-auth-plstore-token-check"))
-                (disable-tests
-                 "test/mastodon-client-tests.el"
-                 ("mastodon-client--make-user-active"
-                  "mastodon-client--store"
-                  "mastodon-client--store-access-token"))
-                (disable-tests
-                 "test/mastodon-tl-tests.el"
-                 ("mastodon-tl--byline-timestamp-has-relative-display"
-                  "mastodon-tl--next-tab-item--no-spaces-at-ends"
-                  "mastodon-tl--next-tab-item--with-spaces-at-ends"))
+                 ("mastodon-auth--handle-token-response--good"))
                 (disable-tests
                  "test/mastodon-media-tests.el"
                  ("mastodon-media--get-avatar-rendering"
