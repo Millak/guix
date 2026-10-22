@@ -5190,7 +5190,7 @@ daemon.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.11.1")
+    (version "1.11.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5199,7 +5199,7 @@ daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zj8wlchilk8lwjj686sgbr6ahqackzyhndi45j2hd9iv6mlx36x"))
+                "03yjv560yj9nfy3q21vbql5gba50sqavnm008mvfbhwzywldydcg"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -5220,6 +5220,7 @@ daemon.")
            go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
            go-github-com-cyberdelia-go-metrics-graphite
+           go-github-com-definednet-netlink
            go-github-com-flynn-noise
            go-github-com-gaissmai-bart
            go-github-com-gogo-protobuf
