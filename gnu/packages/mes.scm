@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017-2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2025 Ricardo Wurmus <rekado@elephly.net>
@@ -242,7 +242,7 @@ get_machine.")
 (define-public m2-planet
   (package
     (name "m2-planet")
-    (version "1.12.0")
+    (version "1.13.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -250,7 +250,7 @@ get_machine.")
                     "Release_" version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "16vgad5wa5lmh6mjnkid4qn2xs7hfcfn43z9gd8iljzvsxl2i8z7"))))
+                "0wv1l9ngf86wmh9pliik6r9j8yibq6dcm0bh0jlqn5cffbi33igx"))))
     (native-inputs (list mescc-tools))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
