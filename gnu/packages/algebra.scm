@@ -375,7 +375,7 @@ currently GMP, GNU MPFR, GNU MPC, FLINT and CMH.")
 (define-public cmh
   (package
     (name "cmh")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               ;; Git repo at <https://gitlab.inria.fr/cmh/cmh>.
@@ -384,7 +384,7 @@ currently GMP, GNU MPFR, GNU MPC, FLINT and CMH.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0nadvqfmidgks1s7aljsf8dp32pz7vjaxyaym36m9bx4zr8msk91"))))
+                "1x138v1b3qr2jvzqpwwwgdm98r267jq2w5h9s938qa3b7p7k66cz"))))
     (build-system gnu-build-system)
     (inputs (list gmp
                   mpfr
