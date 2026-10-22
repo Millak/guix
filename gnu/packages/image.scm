@@ -1740,7 +1740,7 @@ others.")
 (define-public ggg
   (package
     (name "ggg")
-    (version "0.6.1")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -1749,7 +1749,7 @@ others.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0asrvc7fzyavv8xmrb0pbqqv35z8bhcl4si0xwj9xndbificx7li"))))
+        (base32 "1xb5n0vrj2l1srsh0d7rhy3g581f2ng83y3gf3mc9wh6pbizlkk8"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -1762,11 +1762,11 @@ others.")
           (add-before 'build 'install-program-files
             (lambda _
               (let ((bin (string-append #$output "/bin"))
-                    (share (string-append #$output "/share")))
-                (install-file "resources/help.txt"
-                              (string-append share "/resources"))
-                (copy-recursively "resources/svg-paths"
-                                  (string-append share "/resources/svg-paths"))
+                    (resources (string-append #$output
+                                              "/share/ggg/resources")))
+                (install-file "resources/help.txt" resources)
+                (copy-recursively "resources/logos"
+                                  (string-append resources "/logos"))
                 (install-file "scripts/ggg" bin)
                 (chmod (string-append bin "/ggg") #o755))))
           (add-after 'unpack 'fix-paths
@@ -1782,34 +1782,32 @@ others.")
                         '(("readlink -f " "readlink" "~s -f ")
                           ("realpath " "realpath" "~s ")
                           ("dirname " "dirname" "~s ")
+                          ("date '" "date" "~s '")
                           ("getopt " "getopt" "~s ")
                           ("exec guile " "guile" "exec ~s ")))
-              (for-each (match-lambda
-                          ((pattern program format-string)
-                           (substitute* "src/ggg/main.scm"
-                             ((pattern)
-                              (format #f format-string
-                                      (search-input-file inputs
-                                                         (string-append "bin/"
-                                                          program)))))))
-                        '(("convert -quality 100" "convert" "~a -quality 100"))))))))
+              ;; (ggg main) names the ImageMagick program once, so it can be
+              ;; pointed at the store here.  Inkscape is only a fallback and is
+              ;; left to the user's profile: it is a heavy dependency for a path
+              ;; most users never take.
+              (let ((convert (search-input-file inputs "bin/convert")))
+                (substitute* "src/ggg/main.scm"
+                  (("\"convert\"")
+                   (string-append "\"" convert "\"")))))))))
     (inputs
       (list guile-3.0
             bash-minimal
             imagemagick
             coreutils-minimal
             util-linux))
-    (synopsis "GGG is a SVG image generator for project and web badges")
-    (description
-     "GGG (Guile Glyph Generator) is a command-line utility
-that allows you to generate pretty images/badges which can be used for
-your projects, announcing tech used, sponsoring and appreciating
-other projects, distinguishing versions of things supported, etc.
-
-GGG is highly configurable, reads Scheme files where you define your tasks,
-and supports badges between one and three parts.  It leverages SVG generation
-from Lisp and S-expressions, building pixel perfect badges.")
     (home-page "https://codeberg.org/jjba23/ggg")
+    (synopsis "Generate SVG badges for projects")
+    (description
+     "@acronym{GGG, Guile Glyph Generator} generates the SVG badges that projects use to
+announce the technologies they build with, the versions they support and the
+projects they appreciate.  Badges are described in Scheme files and can have
+multiple sections, which makes a badge a value in a build rather than a
+screenshot.  Rendering the badges to PNG is optional and requires ImageMagick,
+or Inkscape when ImageMagick cannot read SVG files.")
     (license license:agpl3+)))
 
 (define-public vigra
