@@ -50993,7 +50993,7 @@ variations, including non-standard base32 encodings.")
 (define-public emacs-typewriter
   (package
     (name "emacs-typewriter")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -51002,7 +51002,7 @@ variations, including non-standard base32 encodings.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xza82hi5smg8dzfgc1ninpdpdhv01l8zhbr3lwws345d6h110fj"))))
+        (base32 "0qk1x94zi12wahamr63s4sh3mdhv33nz4yw21lzzafrmk29nm3s3"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))    ;no tests
     (home-page "https://github.com/enricoflor/typewriter.el")
