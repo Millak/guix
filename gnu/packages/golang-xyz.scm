@@ -36205,7 +36205,7 @@ written in YAML or JSON.")
   (package
     (inherit go-go-mongodb-org-mongo-driver)
     (name "go-go-mongodb-org-mongo-driver-v2")
-    (version "2.6.0")
+    (version "2.8.2")
     (source
      (origin
        (method git-fetch)
@@ -36214,7 +36214,7 @@ written in YAML or JSON.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rw0zg1xjix3b6l5bpxy3vmk2b9v95p7jpyljhbsfd70xaq96g67"))
+        (base32 "1m1zm4vb5nqhs4c31imi5hn72sh1v6pid8zqyilg5y1ndls7mvc9"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
