@@ -152,17 +152,18 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))))))))
 (define-public mes
   (package
     (name "mes")
-    (version "0.27.1")
+    (version "0.27.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "0pgjzlynfzdfq5xrxirvsrj4sdvnwq99s6xxwfhzhjga8zm40fhq"))))
+                "1c7fa0kmwi9ggz1y9qp0pazfh7vwzvzcam4ip5b1fp9dm0vh0ypp"))))
     (supported-systems '("armhf-linux" "i686-linux"
                          "x86_64-linux" "riscv64-linux"))
-    (propagated-inputs (list mescc-tools nyacc-2.02))
+    (propagated-inputs (list mescc-tools
+                             nyacc))
     (native-inputs
      (append (list guile-3.0)
          (let ((target-system (or (%current-target-system)
@@ -177,10 +178,12 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))))))))
           ;; Use cross-compiler rather than #:system "armhf-linux" to get
           ;; MesCC 64 bit .go files installed ready for use with Guile.
           (let ((triplet "arm-linux-gnueabihf"))
-            (list (cross-binutils triplet) (cross-gcc triplet))))
+            (list (cross-binutils triplet)
+                  (cross-gcc triplet))))
          (else
           '())))
-       (list graphviz help2man
+       (list graphviz
+             help2man
              m2-planet
              perl                               ;build-aux/gitlog-to-changelog
              texinfo)))
