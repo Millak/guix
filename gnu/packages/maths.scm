@@ -9860,25 +9860,29 @@ layout to sta0bilize gradually.")
 (define-public speedcrunch
   (package
     (name "speedcrunch")
-    (version "0.12.0")
+    (version "1.1.0")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url "https://bitbucket.org/heldercorreia/speedcrunch.git")
-        (commit (string-append "release-" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "0vh7cd1915bjqzkdp3sk25ngy8cq624mkh8c53c5bnzk357kb0fk"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/heldercorreia/speedcrunch.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dafpvd3052zvrz6a65lapbhy9f78l5rpc6zdppx4nr4vanycw6a"))))
     (build-system qt-build-system)
-    (inputs (list qtbase-5 qtwayland-5))
-    (native-inputs (list qttools-5))
+    (inputs (list qtwayland))
+    (native-inputs (list qttools))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir-to-src
-           (lambda _ (chdir "src") #t)))))
+     (list
+       #:qtbase qtbase
+       #:phases #~(modify-phases %standard-phases
+                  (add-after 'unpack 'chdir-to-src
+                    (lambda _
+                      (chdir "src")))
+                  (add-before 'check 'set-home
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
     (synopsis "High-precision scientific calculator")
     (description
      "SpeedCrunch is a high-precision scientific calculator.  It features a
