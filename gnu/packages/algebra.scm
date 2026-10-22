@@ -1576,7 +1576,7 @@ xtensor provides:
 (define-public gap
   (package
     (name "gap")
-    (version "4.14.0")
+    (version "4.16.1")
     (source
      (origin
        (method url-fetch)
@@ -1584,7 +1584,7 @@ xtensor provides:
                            (version-major+minor version)
                            "/tar.gz/gap-" version ".tar.gz"))
        (sha256
-        (base32 "11v4a3cpjpf6pc0hd6x1wlglq9jzakq4naggp671psvgq9r54pw4"))
+        (base32 "0sbzbwhyr00xh6bjzhga91d9rchn2jhnxizp9g1dl9n40dpi2zfz"))
        (modules '((guix build utils) (ice-9 ftw) (srfi srfi-1)))
        (snippet
         '(begin
