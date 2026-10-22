@@ -619,7 +619,7 @@ penalization.")
 (define-public go-github-com-montanaflynn-stats
   (package
     (name "go-github-com-montanaflynn-stats")
-    (version "0.7.1")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -628,7 +628,7 @@ penalization.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y38cvp7r6fb6291k82j781dbykx00mxw8ca0v9d0fijzc1x81fi"))))
+        (base32 "0rcccd6x5l4x2mm711dghwyz8wrsdim4xvhh92s706q9y04d8g24"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -638,10 +638,7 @@ penalization.")
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "examples")))))
-      #:test-flags
-      ;; disable go vet in go 1.24+
-      #~(list "-vet=off")))
+                (delete-file-recursively "examples")))))))
     (home-page "https://github.com/montanaflynn/stats")
     (synopsis "Statistics library for Golang")
     (description
