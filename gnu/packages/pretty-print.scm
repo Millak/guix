@@ -13,6 +13,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Olivia Lee <olivia@computer.surgery>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -450,3 +451,46 @@ TeX, SVG, BBCode and terminal escape sequences with colored syntax
 highlighting.  Language definitions and color themes are customizable.")
     (license license:gpl3+)
     (properties '((lint-hidden-cpe-vendors . ("highlight"))))))
+
+(define-public par
+  (package
+    (name "par")
+    (version "1.53.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.nicemice.net/par/Par-" version
+                           ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "013qqi5f8avg0hyd2f934rnijmfsr2c9hjy579aqkdc2xchcc2f8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "--file=protoMakefile"
+              (string-append "CC=" #$(cc-for-target) " -c")
+              (string-append "LINK1=" #$(cc-for-target)))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file "par"
+                            (string-append #$output "/bin"))
+              (install-file "par.1"
+                            (string-append #$output "/share/man/man1"))
+              (install-file "par.doc"
+                            (string-append #$output "/share/doc/par")))))))
+    (home-page "http://www.nicemice.net/par/")
+    (synopsis "Paragraph reformatter, comparable to fmt")
+    (description
+     "@command{par} is a filter which copies its input to its output,
+changing all white characters (except newlines) to spaces, and
+reformatting each paragraph.")
+    ;; par is dual-licensed under either expat or a custom license
+    ;; listed in the documentation file under "Rights and
+    ;; Responsibilities".
+    (license (list license:expat
+                   (license:non-copyleft "file://par.doc")))))
