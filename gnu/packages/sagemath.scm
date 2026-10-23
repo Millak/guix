@@ -191,17 +191,23 @@ represented as strings.")
 (define-public python-cypari2
   (package
     (name "python-cypari2")
-    (version "2.2.2")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cypari2" version))
        (sha256
         (base32
-         "080p17yn8wjl973jnw15hz3dhxzp3db1bi4giw3c28d2brrki8qk"))))
+         "04znjynfbbgx5q45hnq5gs25hc9hkhfiwh90jdhn9c50m6afkw7r"))
+       (patches
+        (search-patches "python-cypari2-pc.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython python-pytest python-setuptools python-wheel))
+     (list python-cython
+           python-meson
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-cysignals))
     (inputs
