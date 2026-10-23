@@ -3432,6 +3432,8 @@ caching server.")
              (url "https://github.com/ImagingDataCommons/dicomweb-client")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       ;; https://github.com/ImagingDataCommons/dicomweb-client/pull/131
+       (patches (search-patches "python-dicomweb-client-pillow-13.patch"))
        (sha256
         (base32 "1zad0905cc4jy4hnh9yhcw63bg25f7xa33x9rj9fhh5r4fznha8d"))))
     (build-system pyproject-build-system)

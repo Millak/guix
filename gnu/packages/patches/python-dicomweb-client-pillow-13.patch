@@ -1,0 +1,34 @@
+From e217f70c5ef76018d56171e798c9fc7906cff3d9 Mon Sep 17 00:00:00 2001
+From: Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+Date: Fri, 23 Oct 2026 23:00:30 +0200
+Subject: [PATCH] Fix pillow-13 support.
+
+---
+ src/dicomweb_client/file.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/dicomweb_client/file.py b/src/dicomweb_client/file.py
+index 612c1f1..a635dbe 100644
+--- a/src/dicomweb_client/file.py
++++ b/src/dicomweb_client/file.py
+@@ -3337,6 +3337,8 @@ class DICOMfileClient:
+                 )
+             )
+             image = Image.fromarray(array)
++            if codec_name == "png" and image.mode == "I":
++                image = image.convert("I;16")
+             with io.BytesIO() as fp:
+                 image.save(fp, codec_name, **codec_kwargs)  # type: ignore
+                 fp.seek(0)
+@@ -3895,6 +3897,8 @@ class DICOMfileClient:
+                 )
+             )
+             image = Image.fromarray(array)
++            if codec_name == "png" and image.mode == "I":
++                image = image.convert("I;16")
+             with io.BytesIO() as fp:
+                 image.save(fp, codec_name, **codec_kwargs)  # type: ignore
+                 fp.seek(0)
+-- 
+2.54.0
+
