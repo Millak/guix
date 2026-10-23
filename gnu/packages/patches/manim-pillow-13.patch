@@ -1,0 +1,31 @@
+From 25fa4150c6a907822c776c5f41cfcbf765038d10 Mon Sep 17 00:00:00 2001
+From: Benjamin Hackl <devel@benjamin-hackl.at>
+Date: Tue, 20 Oct 2026 11:08:07 +0200
+Subject: Fix Cairo image rendering with Pillow 13
+
+Create the transparent compositing canvas directly as an RGBA image instead of reinterpreting a two-dimensional float64 array. Pillow 13 rejects the mismatched array mode.
+
+---
+ manim/camera/camera.py        |  7 ++--
+ tests/test_pillow13_compat.py | 61 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 65 insertions(+), 3 deletions(-)
+ create mode 100644 tests/test_pillow13_compat.py
+
+diff --git a/manim/camera/camera.py b/manim/camera/camera.py
+index b3371faf3e..6dfc08117b 100644
+--- a/manim/camera/camera.py
++++ b/manim/camera/camera.py
+@@ -1125,9 +1125,10 @@ def display_image_mobject(
+         )
+ 
+         # Paste into an image as large as the camera's pixel array.
+-        full_image = Image.fromarray(
+-            np.zeros((self.pixel_height, self.pixel_width)),
+-            mode="RGBA",
++        full_image = Image.new(
++            "RGBA",
++            (self.pixel_width, self.pixel_height),
++            (0, 0, 0, 0),
+         )
+         full_image.paste(
+             sub_image,
