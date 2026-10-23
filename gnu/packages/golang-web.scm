@@ -18983,9 +18983,9 @@ changes.")
 (define-public go-github-com-protonmail-gluon
   (package
     (name "go-github-com-protonmail-gluon")
-    ;; The latest commit from dev branch, 0.17.0 was placed in 2023.
-    (properties '((commit . "b1f9ccf142a4b49efca9777eb66aab9249f05211")
-                  (revision . "0")))
+    (properties '((commit . "6e4cdbc4bebcfa723830ec4b7d75562726d2583a")
+                  (revision . "2")
+                  (go-pseudo-version . "0.0.0-20261022105838-6e4cdbc4bebc")))
     (version (git-version "0.17.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -18997,11 +18997,15 @@ changes.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08bs78g662br83paxh7l5fx4n33fjfz8c019xks0qvbff8zprrzw"))))
+        (base32 "0rr8x4wrfpislk9qpk9lh6z7af7jq0x6fvcw351qhcfhh068b6nc"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/ProtonMail/gluon"))
+      #:import-path "github.com/ProtonMail/gluon"
+      #:test-flags
+      #~(list "-short"  ;full tests timeout randomly
+              ;; May fail randomly.
+              "-skip" "TestTrackCommand_.*")))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-go-uber-org-goleak
