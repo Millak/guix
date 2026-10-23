@@ -6,7 +6,7 @@ Subject: [PATCH] Update compiler patch for M147 beta
 Signed-off-by: Matt Jolly <kangie@gentoo.org>
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -368,9 +368,6 @@ config("compiler") {
+@@ -365,9 +365,6 @@ config("compiler") {
  
    configs += [
      # See the definitions below.
@@ -16,7 +16,7 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
      ":compiler_codegen",
      ":compiler_deterministic",
      ":clang_warning_suppression",
-@@ -1396,43 +1393,6 @@ config("compiler_deterministic") {
+@@ -1408,43 +1405,6 @@ config("compiler_deterministic") {
      }
    }
  
@@ -60,7 +60,7 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
    # Tells the compiler not to use absolute paths when passing the default
    # paths to the tools it invokes. We don't want this because we don't
    # really need it and it can mess up the RBE cache entries.
-@@ -1465,88 +1425,6 @@ config("compiler_deterministic") {
+@@ -1477,121 +1437,6 @@ config("compiler_deterministic") {
    }
  }
  
@@ -120,22 +120,55 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
 -
 -    if (toolchain_has_rust && _perform_consistency_checks &&
 -        !rust_force_head_revision) {
--      # Ensure that the synced rust version matches what's in git.
--      _rust_revision_lines =
--          filter_include(read_file("//tools/rust/update_rust.py", "list lines"),
--                         [ "RUST_*REVISION = *" ])
--      _py_revision =
--          string_replace(_rust_revision_lines[0], "RUST_REVISION = '", "")
--      _py_revision = string_replace(_py_revision, "'", "")
--      _py_subrevision =
--          string_replace(_rust_revision_lines[1], "RUST_SUB_REVISION = ", "")
--      _expected_rust_revision = "$_py_revision-$_py_subrevision"
+-      # Ensure that synced rust, crubit, and bindgen versions match what's in
+-      # git.
+-      _rust_update_lines =
+-          read_file("//tools/rust/update_rust.py", "list lines")
+-      _version_lines =
+-          read_file("//third_party/rust-toolchain/VERSION", "list lines")
 -
--      # Ensure the rust version matches the clang version.
--      assert(
--          filter_include([ rustc_revision ],
--                         [ "*-$_expected_rust_revision-*" ]) != [],
--          "rustc_revision=\"$rustc_revision\" but update_rust.py expected \"$_expected_rust_revision\". Run \"gclient sync\"?")
+-      # The rust revision combines two lines of the file, so we need to do
+-      # some preprocessing to combine them.
+-      _lines = filter_include(_rust_update_lines, [ "RUST_*REVISION = *" ])
+-      _rust_rev =
+-          string_replace(string_replace(_lines[0], "RUST_REVISION = '", ""),
+-                         "'",
+-                         "")
+-      _rust_subrev = string_replace(_lines[1], "RUST_SUB_REVISION = ", "")
+-
+-      _tools = [
+-        {
+-          name = "rustc"
+-          expected_pattern = "rustc *$_rust_rev-$_rust_subrev-*"
+-        },
+-        {
+-          name = "crubit"
+-          update_variable = "CRUBIT_REVISION"
+-        },
+-        {
+-          name = "bindgen"
+-          update_variable = "BINDGEN_REVISION"
+-        },
+-      ]
+-
+-      foreach(_tool, _tools) {
+-        if (defined(_tool.expected_pattern)) {
+-          _expected = _tool.expected_pattern
+-        } else {
+-          _lines = []
+-          _lines = filter_include(_rust_update_lines,
+-                                  [ "${_tool.update_variable} = *" ])
+-          _expected =
+-              string_replace(string_replace(_lines[0],
+-                                            "${_tool.update_variable} = '",
+-                                            "${_tool.name}: "),
+-                             "'",
+-                             "")
+-        }
+-        assert(
+-            filter_include(_version_lines, [ _expected ]) != [],
+-            "${_tool.name} revision in //third_party/rust-toolchain/VERSION does not match update_rust.py. Run \"gclient sync\"?")
+-      }
 -    }
 -
 -    # This is here so that all files get recompiled after a clang roll and
@@ -149,19 +182,28 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
  # Controls the usage of a warning suppression mapping (WSM) file to suppress
  # warnings based on the path of the file they come from. It's controlled by the
  # `clang_warning_suppression_file` gn argument , which points to a text file
-@@ -1590,7 +1590,7 @@ config("clang_warning_suppression") {
+@@ -1625,7 +1470,7 @@ config("clang_warning_suppression") {
  # See also: https://crbug.com/40891132#comment10
  ubsan_hardening("c_array_bounds") {
    sanitizer = "array-bounds"
 -  condition = !(is_asan && target_cpu == "x86")
 +  condition = false
-
+ 
    # Because we've enabled array-bounds sanitizing we also want to suppress
    # the related warning about "unsafe-buffer-usage-in-static-sized-array",
-@@ -1604,18 +1604,7 @@ ubsan_hardening("c_array_bounds") {
+@@ -1639,6 +1484,7 @@ ubsan_hardening("c_array_bounds") {
  # `NOTREACHED()` at the end of such functions.
  ubsan_hardening("return") {
    sanitizer = "return"
++  condition = false
+ }
+ 
+ # Enable `-fsanitize=unreachable` to crash deterministically if control
+@@ -1650,19 +1496,7 @@ ubsan_hardening("unreachable") {
+   # 1.  `fuchsia-binary-size` tells us that web_engine and
+   #     chrome_fuchsia both grow 32768 bytes (10x that, uncompressed).
+   # 2.  `headless_shell_wpt_tests` fail on `mac-rel`.
+-  condition = is_debug || !(is_mac || is_fuchsia)
 -}
 -
 -config("rustc_revision") {
@@ -176,9 +218,9 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
 -  }
 +  condition = false
  }
-
+ 
  config("compiler_arm_fpu") {
-@@ -2104,11 +1970,7 @@ config("chromium_code") {
+@@ -2174,11 +2008,7 @@ config("chromium_code") {
        defines = [ "_HAS_NODISCARD" ]
      }
    } else {
@@ -191,7 +233,3 @@ Signed-off-by: Matt Jolly <kangie@gentoo.org>
  
      # In Chromium code, we define __STDC_foo_MACROS in order to get the
      # C99 macros on Mac and Linux.
- 
--- 
-2.52.0
-

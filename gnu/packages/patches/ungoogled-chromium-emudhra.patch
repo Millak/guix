@@ -1,0 +1,741 @@
+From da63b94c4ee231a3f89ecec37c58db6486afaf14 Mon Sep 17 00:00:00 2001
+From: Hubert Chao <hchao@chromium.org>
+Date: Tue, 20 Oct 2026 11:28:38 -0700
+Subject: [PATCH] Add compromised eMudhra intermediates to blocklist.
+
+https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/0R3XLJL6FuE/m/0XofdebrAAAJ
+
+Change-Id: I8036be8b65ee3c7ff2ea645e670428db31f3e8f6
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/8618876
+Reviewed-by: David Benjamin <davidben@chromium.org>
+Commit-Queue: Hubert Chao <hchao@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1723080}
+---
+
+diff --git a/net/cert/cert_verify_proc_blocklist.inc b/net/cert/cert_verify_proc_blocklist.inc
+index b00fc51..c196d03ef 100644
+--- a/net/cert/cert_verify_proc_blocklist.inc
++++ b/net/cert/cert_verify_proc_blocklist.inc
+@@ -418,7 +418,39 @@
+         // 289ed1676f42b679f2b665bb5a3f25610d9d19ac017beafa46787f1d6022986a.pem
+         {0x36, 0xce, 0x75, 0xed, 0xea, 0x80, 0x6f, 0x09, 0x85, 0x14, 0x56,
+         0x83, 0x29, 0x4e, 0x54, 0xdb, 0xdf, 0xf0, 0x2f, 0xc8, 0x21, 0x87,
+-        0x0c, 0xf5, 0x06, 0x7a, 0x30, 0x8d, 0x15, 0x04, 0xbe, 0x3a}
++        0x0c, 0xf5, 0x06, 0x7a, 0x30, 0x8d, 0x15, 0x04, 0xbe, 0x3a},
++        // 0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem
++        {0x49, 0xdd, 0x35, 0x3d, 0xc2, 0xb9, 0x19, 0xa3, 0x77, 0x06, 0x45,
++         0x11, 0x7d, 0x0e, 0x60, 0xc1, 0x61, 0x15, 0xe7, 0xd1, 0xbc, 0x25,
++         0x9e, 0xef, 0xe7, 0x34, 0xb0, 0x0e, 0xa4, 0x34, 0xfe, 0x5f},
++        // 42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem
++        {0xeb, 0xed, 0x64, 0x75, 0xc2, 0xc2, 0xd8, 0x0f, 0xcb, 0x19, 0x9f,
++         0x3f, 0xe8, 0xdd, 0x6e, 0x6b, 0x3c, 0xe6, 0x0b, 0x77, 0xeb, 0x15,
++         0xd4, 0xe4, 0x2c, 0x3d, 0xec, 0x0c, 0x6f, 0x5b, 0x51, 0x05},
++        // 432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem
++        {0x5c, 0x06, 0x60, 0xa2, 0xb1, 0x64, 0x91, 0x0d, 0x8f, 0xf5, 0x89,
++         0xc1, 0x8e, 0x14, 0x55, 0x2e, 0x9e, 0x0e, 0xc2, 0x37, 0xdc, 0xef,
++         0xe2, 0xcb, 0x73, 0x6d, 0x41, 0xa4, 0x81, 0x1f, 0x81, 0xa0},
++        // 98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem
++        {0x43, 0xbf, 0xfa, 0x19, 0xd6, 0xef, 0x65, 0x14, 0x51, 0xf6, 0x84,
++         0x1e, 0x01, 0x99, 0x31, 0xe9, 0x6f, 0x6f, 0x2e, 0xae, 0xff, 0x28,
++         0xab, 0x4b, 0x6f, 0x1c, 0xe4, 0x57, 0x6d, 0xe2, 0x71, 0x7b},
++        // cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem
++        {0x63, 0xec, 0xef, 0xee, 0x43, 0x1d, 0x49, 0x52, 0x3b, 0xc1, 0x13,
++         0x6c, 0x4e, 0x72, 0xd0, 0x20, 0x6a, 0x47, 0x70, 0x86, 0xca, 0xf6,
++         0x06, 0xcd, 0x5c, 0xf0, 0x25, 0x68, 0x6c, 0x10, 0x9c, 0xf8},
++        // e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem
++        {0xe0, 0x25, 0x4c, 0x7f, 0xcd, 0xc2, 0x65, 0xe2, 0xf0, 0xf8, 0xa4,
++         0x28, 0xda, 0xbb, 0x75, 0xab, 0x4a, 0xe0, 0x39, 0xb4, 0x87, 0x2d,
++         0x62, 0xf5, 0xee, 0x57, 0xf0, 0x87, 0x7d, 0x5a, 0x8a, 0x41},
++        // 4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem
++        {0x92, 0xc0, 0x63, 0xd6, 0x7e, 0x8f, 0x14, 0xdb, 0x71, 0xd2, 0x88, 0xe1,
++         0x12, 0x66, 0xff, 0xda, 0xf6, 0x9c, 0xbf, 0x11, 0x5f, 0x7b, 0xab, 0x14,
++         0xf3, 0xbc, 0x2f, 0x68, 0xd2, 0x5e, 0x0e, 0x30},
++        // 9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem
++        {0xec, 0x4f, 0xfa, 0x1a, 0xd0, 0xac, 0x88, 0x08, 0x13, 0x14, 0xb7, 0xaa,
++         0xff, 0xef, 0x6a, 0x91, 0xf9, 0x7c, 0xd5, 0x72, 0x91, 0xbb, 0x5b, 0xa6,
++         0x86, 0xc5, 0x41, 0x5f, 0x5e, 0xb4, 0xf6, 0xb6}
+ };
+ 
+ // Hashes of SubjectPublicKeyInfos known to be used for interception by a
+diff --git a/net/data/ssl/blocklist/0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem b/net/data/ssl/blocklist/0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem
+new file mode 100644
+index 0000000..0bd03a9
+--- /dev/null
++++ b/net/data/ssl/blocklist/0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem
+@@ -0,0 +1,76 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            58:8b:2e:3c:2b:b8:cd:a1:3e:1a:12:09:25:43:21
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 15:35:09 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=US, O=eMudhra Inc, CN=EM DV TLS CA - G3C
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:3a:7a:78:62:c8:c4:4d:32:4d:dd:69:03:3a:67:
++                    82:c0:ef:ee:fe:40:55:e6:8a:12:3f:a0:37:1b:a3:
++                    bd:91:94:51:4e:e1:72:a4:33:e3:63:0f:02:bd:18:
++                    80:37:d9:e5:14:9f:9b:77:db:94:a2:81:df:98:7b:
++                    2f:ea:88:8b:74:bd:fe:8f:da:4c:10:99:ee:6c:a1:
++                    95:66:fe:3e:f0:e5:f6:b0:9a:55:6c:cc:8b:a5:05:
++                    61:df:1b:2a:44:1d:01
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                AE:7E:10:5C:3C:29:96:C1:A8:47:27:05:59:F1:E0:3D:D4:E5:0A:F3
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.100
++                Policy: 2.23.140.1.2.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-c.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMDVTLSCAG3C.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:65:02:31:00:c1:0d:d8:75:8c:a1:c6:ee:59:dc:b5:77:7d:
++        e9:1f:a2:69:32:f3:ff:57:f0:c8:4b:93:ed:65:bb:f5:43:b4:
++        d7:11:bc:6b:73:2c:60:ca:e7:5d:38:9b:1c:60:32:49:94:02:
++        30:07:8b:07:d4:1a:5b:49:c0:f3:91:d0:f8:b4:90:52:c2:b1:
++        bf:d4:cc:7c:da:f6:fc:61:ac:92:7a:13:6e:bb:5f:b5:a1:73:
++        5d:00:42:b0:68:9d:26:57:34:9c:cb:6f:ba
++-----BEGIN CERTIFICATE-----
++MIIDaDCCAu6gAwIBAgIPWIsuPCu4zaE+GhIJJUMhMAoGCCqGSM49BAMDMFYxCzAJ
++BgNVBAYTAklOMSUwIwYDVQQKDBxlTXVkaHJhIFRlY2hub2xvZ2llcyBMaW1pdGVk
++MSAwHgYDVQQDDBdlbVNpZ24gUm9vdCBUTFMgQ0EgLSBHMzAeFw0yNTA0MzAxNTM1
++MDlaFw00MDA0MjgxODMwMDBaMEAxCzAJBgNVBAYTAlVTMRQwEgYDVQQKDAtlTXVk
++aHJhIEluYzEbMBkGA1UEAwwSRU0gRFYgVExTIENBIC0gRzNDMHYwEAYHKoZIzj0C
++AQYFK4EEACIDYgAEOnp4YsjETTJN3WkDOmeCwO/u/kBV5ooSP6A3G6O9kZRRTuFy
++pDPjYw8CvRiAN9nlFJ+bd9uUooHfmHsv6oiLdL3+j9pMEJnubKGVZv4+8OX2sJpV
++bMyLpQVh3xsqRB0Bo4IBljCCAZIwHwYDVR0jBBgwFoAU4TqrIXzx401UrtRyt/2L
++WUIgkFQwHQYDVR0OBBYEFK5+EFw8KZbBqEcnBVnx4D3U5QrzMB0GA1UdJQQWMBQG
++CCsGAQUFBwMBBggrBgEFBQcDAjBdBgNVHSAEVjBUMDkGCysGAQQBg44hAQABMCow
++KAYIKwYBBQUHAgEWHGh0dHA6Ly9yZXBvc2l0b3J5LmVtc2lnbi5jb20wDQYLKwYB
++BAGDjiEBAmQwCAYGZ4EMAQIBMHUGCCsGAQUFBwEBBGkwZzAkBggrBgEFBQcwAYYY
++aHR0cDovL29jc3AtYy5lbXNpZ24uY29tMD8GCCsGAQUFBzAChjNodHRwOi8vcmVw
++b3NpdG9yeS5lbXNpZ24uY29tL2NlcnRzL0VNRFZUTFNDQUczQy5wN2MwNwYDVR0f
++BDAwLjAsoCqgKIYmaHR0cDovL2NybC5lbXNpZ24uY29tLz9yb290dGxzY2FnMy5j
++cmwwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwCgYIKoZIzj0E
++AwMDaAAwZQIxAMEN2HWMocbuWdy1d33pH6JpMvP/V/DIS5PtZbv1Q7TXEbxrcyxg
++yuddOJscYDJJlAIwB4sH1BpbScDzkdD4tJBSwrG/1Mx82vb8YaySehNuu1+1oXNd
++AEKwaJ0mVzScy2+6
++-----END CERTIFICATE-----
+diff --git a/net/data/ssl/blocklist/42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem b/net/data/ssl/blocklist/42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem
+new file mode 100644
+index 0000000..9a268c0b
+--- /dev/null
++++ b/net/data/ssl/blocklist/42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem
+@@ -0,0 +1,78 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            a4:ae:e6:78:f2:33:62:b4:c0:e4:60:b7:72:f2:14
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 15:54:08 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=NL, O=eMudhra BV, CN=EM DV TLS CA - G3B
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:e7:9e:d9:c0:4a:97:73:c4:73:5e:51:11:1d:a8:
++                    5a:c2:bd:5e:64:ab:37:4b:80:e1:2c:bc:20:38:ec:
++                    1e:4f:0e:3b:81:2f:c9:85:9e:1e:67:af:b0:4e:2f:
++                    8b:c9:7f:74:85:ba:65:aa:91:1e:e8:a4:e4:5b:62:
++                    d5:cc:03:d5:6b:e6:78:b3:c3:8c:b4:dc:93:7c:a2:
++                    46:0e:23:84:53:c8:92:93:5d:29:d4:4f:91:e1:56:
++                    06:b6:3c:ce:da:b4:68
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                E2:1E:2F:E7:1C:19:39:0E:55:4B:62:C1:20:24:57:35:24:8A:25:14
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.100
++                Policy: 2.23.140.1.2.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-b.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMDVTLSCAG3B.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:65:02:30:2e:6b:06:5e:2e:a8:14:c2:76:92:59:1c:10:c5:
++        cc:ba:0e:a0:bf:14:16:65:69:1e:c2:20:d6:57:34:32:97:62:
++        fa:cf:a0:ee:41:f3:ce:21:b8:75:82:bb:dd:50:b0:c2:02:31:
++        00:c5:9b:cb:97:15:1a:bc:6e:bd:27:ac:27:4a:30:bc:5c:16:
++        ea:34:84:2c:27:a0:84:d9:07:4d:39:ef:38:3e:dc:5b:e9:51:
++        bc:82:dd:93:95:f2:5b:1e:28:be:28:db:ca
++
++-----BEGIN CERTIFICATE-----
++MIIDaDCCAu6gAwIBAgIQAKSu5njyM2K0wORgt3LyFDAKBggqhkjOPQQDAzBWMQsw
++CQYDVQQGEwJJTjElMCMGA1UECgwcZU11ZGhyYSBUZWNobm9sb2dpZXMgTGltaXRl
++ZDEgMB4GA1UEAwwXZW1TaWduIFJvb3QgVExTIENBIC0gRzMwHhcNMjUwNDMwMTU1
++NDA4WhcNNDAwNDI4MTgzMDAwWjA/MQswCQYDVQQGEwJOTDETMBEGA1UECgwKZU11
++ZGhyYSBCVjEbMBkGA1UEAwwSRU0gRFYgVExTIENBIC0gRzNCMHYwEAYHKoZIzj0C
++AQYFK4EEACIDYgAE557ZwEqXc8RzXlERHahawr1eZKs3S4DhLLwgOOweTw47gS/J
++hZ4eZ6+wTi+LyX90hbplqpEe6KTkW2LVzAPVa+Z4s8OMtNyTfKJGDiOEU8iSk10p
++1E+R4VYGtjzO2rRoo4IBljCCAZIwHwYDVR0jBBgwFoAU4TqrIXzx401UrtRyt/2L
++WUIgkFQwHQYDVR0OBBYEFOIeL+ccGTkOVUtiwSAkVzUkiiUUMB0GA1UdJQQWMBQG
++CCsGAQUFBwMBBggrBgEFBQcDAjBdBgNVHSAEVjBUMDkGCysGAQQBg44hAQABMCow
++KAYIKwYBBQUHAgEWHGh0dHA6Ly9yZXBvc2l0b3J5LmVtc2lnbi5jb20wDQYLKwYB
++BAGDjiEBAmQwCAYGZ4EMAQIBMHUGCCsGAQUFBwEBBGkwZzAkBggrBgEFBQcwAYYY
++aHR0cDovL29jc3AtYi5lbXNpZ24uY29tMD8GCCsGAQUFBzAChjNodHRwOi8vcmVw
++b3NpdG9yeS5lbXNpZ24uY29tL2NlcnRzL0VNRFZUTFNDQUczQi5wN2MwNwYDVR0f
++BDAwLjAsoCqgKIYmaHR0cDovL2NybC5lbXNpZ24uY29tLz9yb290dGxzY2FnMy5j
++cmwwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwCgYIKoZIzj0E
++AwMDaAAwZQIwLmsGXi6oFMJ2klkcEMXMug6gvxQWZWkewiDWVzQyl2L6z6DuQfPO
++Ibh1grvdULDCAjEAxZvLlxUavG69J6wnSjC8XBbqNIQsJ6CE2QdNOe84Ptxb6VG8
++gt2TlfJbHii+KNvK
++-----END CERTIFICATE-----
++
+diff --git a/net/data/ssl/blocklist/432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem b/net/data/ssl/blocklist/432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem
+new file mode 100644
+index 0000000..fd2a5855
+--- /dev/null
++++ b/net/data/ssl/blocklist/432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem
+@@ -0,0 +1,77 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            80:09:92:8a:64:10:76:01:af:05:fa:2f:19:f1:09
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 15:39:31 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=US, O=eMudhra Inc, CN=EM EV TLS CA - G3C
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:2d:56:e8:29:a6:fb:82:c6:4a:46:97:d9:60:af:
++                    95:1e:90:67:ae:91:f9:26:d3:43:06:da:48:a8:aa:
++                    eb:78:69:b6:a6:7e:6d:27:42:6e:04:42:aa:03:b3:
++                    6e:19:88:df:f6:36:51:4e:e1:cf:07:f5:ba:4b:3f:
++                    f2:a0:66:45:ae:7d:31:d5:86:6a:d3:1a:a3:d2:46:
++                    eb:0b:31:77:ee:99:cb:75:66:c5:16:ce:74:80:8a:
++                    66:8f:91:f0:c4:7f:ca
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                A6:25:5E:80:A9:4D:B7:F3:96:7C:1B:C7:91:DF:92:BC:EE:4B:EB:5F
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.120
++                Policy: 2.23.140.1.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-c.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMEVTLSCAG3C.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:65:02:30:07:2d:70:4e:7c:c7:e2:55:c3:4f:2d:8f:0f:dd:
++        72:b0:b8:ef:9e:55:4d:dc:96:c9:99:cd:41:20:c1:14:f1:33:
++        8b:91:85:47:89:b3:1c:f4:77:b2:a2:78:a4:15:27:e6:02:31:
++        00:ea:e1:37:41:1c:65:ad:94:f3:ff:5f:e5:5c:f4:c4:31:48:
++        68:6a:e0:2d:c9:c6:a0:b6:53:45:a7:bf:64:8e:1b:cd:6b:6f:
++        df:01:a9:75:18:dc:6c:3a:eb:4b:9e:bd:18
++-----BEGIN CERTIFICATE-----
++MIIDaDCCAu6gAwIBAgIQAIAJkopkEHYBrwX6LxnxCTAKBggqhkjOPQQDAzBWMQsw
++CQYDVQQGEwJJTjElMCMGA1UECgwcZU11ZGhyYSBUZWNobm9sb2dpZXMgTGltaXRl
++ZDEgMB4GA1UEAwwXZW1TaWduIFJvb3QgVExTIENBIC0gRzMwHhcNMjUwNDMwMTUz
++OTMxWhcNNDAwNDI4MTgzMDAwWjBAMQswCQYDVQQGEwJVUzEUMBIGA1UECgwLZU11
++ZGhyYSBJbmMxGzAZBgNVBAMMEkVNIEVWIFRMUyBDQSAtIEczQzB2MBAGByqGSM49
++AgEGBSuBBAAiA2IABC1W6Cmm+4LGSkaX2WCvlR6QZ66R+SbTQwbaSKiq63hptqZ+
++bSdCbgRCqgOzbhmI3/Y2UU7hzwf1uks/8qBmRa59MdWGatMao9JG6wsxd+6Zy3Vm
++xRbOdICKZo+R8MR/yqOCAZUwggGRMB8GA1UdIwQYMBaAFOE6qyF88eNNVK7Ucrf9
++i1lCIJBUMB0GA1UdDgQWBBSmJV6AqU2385Z8G8eR35K87kvrXzAdBgNVHSUEFjAU
++BggrBgEFBQcDAQYIKwYBBQUHAwIwXAYDVR0gBFUwUzA5BgsrBgEEAYOOIQEAATAq
++MCgGCCsGAQUFBwIBFhxodHRwOi8vcmVwb3NpdG9yeS5lbXNpZ24uY29tMA0GCysG
++AQQBg44hAQJ4MAcGBWeBDAEBMHUGCCsGAQUFBwEBBGkwZzAkBggrBgEFBQcwAYYY
++aHR0cDovL29jc3AtYy5lbXNpZ24uY29tMD8GCCsGAQUFBzAChjNodHRwOi8vcmVw
++b3NpdG9yeS5lbXNpZ24uY29tL2NlcnRzL0VNRVZUTFNDQUczQy5wN2MwNwYDVR0f
++BDAwLjAsoCqgKIYmaHR0cDovL2NybC5lbXNpZ24uY29tLz9yb290dGxzY2FnMy5j
++cmwwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwCgYIKoZIzj0E
++AwMDaAAwZQIwBy1wTnzH4lXDTy2PD91ysLjvnlVN3JbJmc1BIMEU8TOLkYVHibMc
++9HeyonikFSfmAjEA6uE3QRxlrZTz/1/lXPTEMUhoauAtycagtlNFp79kjhvNa2/f
++Aal1GNxsOutLnr0Y
++-----END CERTIFICATE-----
++
+diff --git a/net/data/ssl/blocklist/4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem b/net/data/ssl/blocklist/4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem
+new file mode 100644
+index 0000000..66ae276
+--- /dev/null
++++ b/net/data/ssl/blocklist/4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem
+@@ -0,0 +1,75 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            54:4b:7f:92:2c:31:ae:22:0a:4a:92:29:16:f6:e6
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root CS CA - G3
++        Validity
++            Not Before: Apr 30 16:38:40 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=US, O=eMudhra Inc, CN=EM OV CS CA - G3C
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:b9:f0:e0:63:47:02:a6:9c:a6:aa:dd:44:3c:fd:
++                    62:c4:1b:9b:a4:b2:09:24:69:7d:79:74:e7:69:1a:
++                    12:6f:b9:6a:fb:3e:34:c2:fd:3b:c5:f4:83:06:1f:
++                    26:5d:c2:a5:84:36:34:73:23:51:04:36:b2:8f:04:
++                    f3:86:23:63:06:79:80:e2:50:3e:02:53:2d:65:46:
++                    23:5a:71:65:a2:59:a1:ef:49:6f:74:1b:5f:de:e7:
++                    78:72:08:e4:b8:fa:ef
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                68:74:03:F8:85:CA:8D:54:50:57:1D:16:E0:C8:DE:45:0D:AB:CD:2D
++            X509v3 Subject Key Identifier:
++                EE:6F:73:29:8D:6F:BF:A7:B3:1B:C3:95:34:F6:15:56:44:78:66:B7
++            X509v3 Extended Key Usage:
++                Code Signing
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.200
++                Policy: 2.23.140.1.4.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-c.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMOVCSCAG3C.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?rootcscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:65:02:31:00:f3:23:e0:f2:c9:ed:3a:12:f0:57:64:17:27:
++        92:c4:68:a4:a9:a3:f7:e7:13:7b:8e:81:36:9d:2b:bd:df:0e:
++        1c:a3:8a:aa:f4:22:8f:46:56:e4:13:62:a0:4f:6d:0d:93:02:
++        30:60:7a:e0:29:98:14:b8:f3:af:a2:7a:2d:37:95:1a:e9:d7:
++        7f:5d:3f:0e:a4:db:c8:e3:18:db:d6:b0:05:3b:03:53:7c:e8:
++        9d:73:3c:95:43:13:25:47:fa:73:00:58:2d
++-----BEGIN CERTIFICATE-----
++MIIDWzCCAuGgAwIBAgIPVEt/kiwxriIKSpIpFvbmMAoGCCqGSM49BAMDMFUxCzAJ
++BgNVBAYTAklOMSUwIwYDVQQKDBxlTXVkaHJhIFRlY2hub2xvZ2llcyBMaW1pdGVk
++MR8wHQYDVQQDDBZlbVNpZ24gUm9vdCBDUyBDQSAtIEczMB4XDTI1MDQzMDE2Mzg0
++MFoXDTQwMDQyODE4MzAwMFowPzELMAkGA1UEBhMCVVMxFDASBgNVBAoMC2VNdWRo
++cmEgSW5jMRowGAYDVQQDDBFFTSBPViBDUyBDQSAtIEczQzB2MBAGByqGSM49AgEG
++BSuBBAAiA2IABLnw4GNHAqacpqrdRDz9YsQbm6SyCSRpfXl052kaEm+5avs+NML9
++O8X0gwYfJl3CpYQ2NHMjUQQ2so8E84YjYwZ5gOJQPgJTLWVGI1pxZaJZoe9Jb3Qb
++X97neHII5Lj676OCAYswggGHMB8GA1UdIwQYMBaAFGh0A/iFyo1UUFcdFuDI3kUN
++q80tMB0GA1UdDgQWBBTub3MpjW+/p7Mbw5U09hVWRHhmtzATBgNVHSUEDDAKBggr
++BgEFBQcDAzBeBgNVHSAEVzBVMDkGCysGAQQBg44hAQABMCowKAYIKwYBBQUHAgEW
++HGh0dHA6Ly9yZXBvc2l0b3J5LmVtc2lnbi5jb20wDgYMKwYBBAGDjiEBAoFIMAgG
++BmeBDAEEATB0BggrBgEFBQcBAQRoMGYwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3Nw
++LWMuZW1zaWduLmNvbTA+BggrBgEFBQcwAoYyaHR0cDovL3JlcG9zaXRvcnkuZW1z
++aWduLmNvbS9jZXJ0cy9FTU9WQ1NDQUczQy5wN2MwNgYDVR0fBC8wLTAroCmgJ4Yl
++aHR0cDovL2NybC5lbXNpZ24uY29tLz9yb290Y3NjYWczLmNybDAOBgNVHQ8BAf8E
++BAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADAKBggqhkjOPQQDAwNoADBlAjEA8yPg
++8sntOhLwV2QXJ5LEaKSpo/fnE3uOgTadK73fDhyjiqr0Io9GVuQTYqBPbQ2TAjBg
++euApmBS486+iei03lRrp139dPw6k28jjGNvWsAU7A1N86J1zPJVDEyVH+nMAWC0=
++-----END CERTIFICATE-----
+diff --git a/net/data/ssl/blocklist/98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem b/net/data/ssl/blocklist/98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem
+new file mode 100644
+index 0000000..72de3b9
+--- /dev/null
++++ b/net/data/ssl/blocklist/98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem
+@@ -0,0 +1,77 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            6c:ad:a3:67:fb:1c:10:00:88:12:0e:a2:02:d5:68
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 16:00:12 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=NL, O=eMudhra BV, CN=EM OV TLS CA - G3B
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:73:89:7a:a0:eb:3c:fd:ca:8b:12:40:2f:fa:f0:
++                    ab:c4:e1:21:2b:af:8d:ee:77:8a:c9:ee:2d:6d:b8:
++                    3f:ac:28:0c:5e:05:63:8a:e7:a2:ac:d7:1c:32:2a:
++                    8e:36:1c:de:b9:f6:9c:43:02:b9:dd:8d:73:d1:cc:
++                    6c:aa:b2:cc:0a:ee:4e:21:6c:e9:79:dd:51:8a:4a:
++                    f4:b6:26:e5:68:4c:dd:65:80:37:ed:0c:85:4e:4c:
++                    c1:2f:4c:f8:64:6d:0d
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                9B:D8:65:51:AF:E7:E7:2C:37:AD:08:EE:69:19:D9:BF:37:84:AE:0A
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.110
++                Policy: 2.23.140.1.2.2
++            Authority Information Access:
++                OCSP - URI:http://ocsp-b.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMOVTLSCAG3B.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:64:02:30:40:93:ee:41:8b:37:49:86:b1:03:df:06:fb:17:
++        61:a6:ed:b5:88:eb:47:65:35:dd:3b:e6:78:21:4f:64:eb:47:
++        83:56:29:9b:49:65:c6:dc:db:cc:71:21:8f:cd:38:d2:02:30:
++        5e:a6:3d:db:23:a2:c6:aa:9a:f1:0c:5a:a2:9c:06:1e:2f:b0:
++        8b:d7:48:a9:d0:8f:9a:3c:ce:b1:41:e2:82:92:f9:a7:1c:8d:
++        84:de:f0:3c:f7:6d:08:da:ba:fc:bd:bb
++-----BEGIN CERTIFICATE-----
++MIIDZjCCAu2gAwIBAgIPbK2jZ/scEACIEg6iAtVoMAoGCCqGSM49BAMDMFYxCzAJ
++BgNVBAYTAklOMSUwIwYDVQQKDBxlTXVkaHJhIFRlY2hub2xvZ2llcyBMaW1pdGVk
++MSAwHgYDVQQDDBdlbVNpZ24gUm9vdCBUTFMgQ0EgLSBHMzAeFw0yNTA0MzAxNjAw
++MTJaFw00MDA0MjgxODMwMDBaMD8xCzAJBgNVBAYTAk5MMRMwEQYDVQQKDAplTXVk
++aHJhIEJWMRswGQYDVQQDDBJFTSBPViBUTFMgQ0EgLSBHM0IwdjAQBgcqhkjOPQIB
++BgUrgQQAIgNiAARziXqg6zz9yosSQC/68KvE4SErr43ud4rJ7i1tuD+sKAxeBWOK
++56Ks1xwyKo42HN659pxDArndjXPRzGyqsswK7k4hbOl53VGKSvS2JuVoTN1lgDft
++DIVOTMEvTPhkbQ2jggGWMIIBkjAfBgNVHSMEGDAWgBThOqshfPHjTVSu1HK3/YtZ
++QiCQVDAdBgNVHQ4EFgQUm9hlUa/n5yw3rQjuaRnZvzeErgowHQYDVR0lBBYwFAYI
++KwYBBQUHAwEGCCsGAQUFBwMCMF0GA1UdIARWMFQwOQYLKwYBBAGDjiEBAAEwKjAo
++BggrBgEFBQcCARYcaHR0cDovL3JlcG9zaXRvcnkuZW1zaWduLmNvbTANBgsrBgEE
++AYOOIQECbjAIBgZngQwBAgIwdQYIKwYBBQUHAQEEaTBnMCQGCCsGAQUFBzABhhho
++dHRwOi8vb2NzcC1iLmVtc2lnbi5jb20wPwYIKwYBBQUHMAKGM2h0dHA6Ly9yZXBv
++c2l0b3J5LmVtc2lnbi5jb20vY2VydHMvRU1PVlRMU0NBRzNCLnA3YzA3BgNVHR8E
++MDAuMCygKqAohiZodHRwOi8vY3JsLmVtc2lnbi5jb20vP3Jvb3R0bHNjYWczLmNy
++bDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADAKBggqhkjOPQQD
++AwNnADBkAjBAk+5BizdJhrED3wb7F2Gm7bWI60dlNd075nghT2TrR4NWKZtJZcbc
++28xxIY/NONICMF6mPdsjosaqmvEMWqKcBh4vsIvXSKnQj5o8zrFB4oKS+accjYTe
++8Dz3bQjauvy9uw==
++-----END CERTIFICATE-----
++
+diff --git a/net/data/ssl/blocklist/9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem b/net/data/ssl/blocklist/9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem
+new file mode 100644
+index 0000000..7d8aa4d
+--- /dev/null
++++ b/net/data/ssl/blocklist/9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem
+@@ -0,0 +1,76 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            78:18:93:3f:8f:85:b4:61:9a:2b:35:fb:a8:3d:0a
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root CS CA - G3
++        Validity
++            Not Before: Apr 30 16:08:27 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=NL, O=eMudhra BV, CN=EM OV CS CA - G3B
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:aa:bb:0f:b0:66:6a:cf:cf:01:fa:d5:2b:fc:fd:
++                    4c:2b:f2:cb:3c:34:97:de:73:95:0e:58:19:b6:1f:
++                    e6:95:09:87:41:c8:c4:91:43:9b:34:a0:43:1c:af:
++                    fe:5b:f9:b4:c1:c8:e8:ae:00:01:f9:f4:dc:8a:d8:
++                    2c:59:f3:63:9e:96:cd:6c:3d:4d:b0:ce:fe:c2:6c:
++                    3d:62:51:7b:37:76:13:72:74:3f:8e:8a:dd:77:b1:
++                    00:64:f2:ab:e5:e0:50
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                68:74:03:F8:85:CA:8D:54:50:57:1D:16:E0:C8:DE:45:0D:AB:CD:2D
++            X509v3 Subject Key Identifier:
++                79:FA:E8:EC:CF:DB:0D:75:8D:A4:58:D6:9F:B6:ED:DC:7C:49:DE:E6
++            X509v3 Extended Key Usage:
++                Code Signing
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.200
++                Policy: 2.23.140.1.4.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-b.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMOVCSCAG3B.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?rootcscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:66:02:31:00:bf:ce:bd:37:60:41:0b:b0:d2:aa:cd:4b:47:
++        d9:d5:45:8b:80:5a:28:57:72:ae:bf:fa:1b:57:48:5a:9f:0a:
++        01:58:2c:c3:6f:ee:e2:5c:b2:6e:85:03:68:2f:63:0e:f2:02:
++        31:00:bd:1d:3c:64:bb:ce:2d:35:7f:5d:98:73:ad:1f:b6:82:
++        d8:db:bf:24:cd:23:4d:fe:8a:8d:90:2f:a2:f0:89:cf:3b:f5:
++        20:55:92:66:95:4b:66:26:f2:9c:c2:d7:3a:b3
++-----BEGIN CERTIFICATE-----
++MIIDWzCCAuCgAwIBAgIPeBiTP4+FtGGaKzX7qD0KMAoGCCqGSM49BAMDMFUxCzAJ
++BgNVBAYTAklOMSUwIwYDVQQKDBxlTXVkaHJhIFRlY2hub2xvZ2llcyBMaW1pdGVk
++MR8wHQYDVQQDDBZlbVNpZ24gUm9vdCBDUyBDQSAtIEczMB4XDTI1MDQzMDE2MDgy
++N1oXDTQwMDQyODE4MzAwMFowPjELMAkGA1UEBhMCTkwxEzARBgNVBAoMCmVNdWRo
++cmEgQlYxGjAYBgNVBAMMEUVNIE9WIENTIENBIC0gRzNCMHYwEAYHKoZIzj0CAQYF
++K4EEACIDYgAEqrsPsGZqz88B+tUr/P1MK/LLPDSX3nOVDlgZth/mlQmHQcjEkUOb
++NKBDHK/+W/m0wcjorgAB+fTcitgsWfNjnpbNbD1NsM7+wmw9YlF7N3YTcnQ/jord
++d7EAZPKr5eBQo4IBizCCAYcwHwYDVR0jBBgwFoAUaHQD+IXKjVRQVx0W4MjeRQ2r
++zS0wHQYDVR0OBBYEFHn66OzP2w11jaRY1p+27dx8Sd7mMBMGA1UdJQQMMAoGCCsG
++AQUFBwMDMF4GA1UdIARXMFUwOQYLKwYBBAGDjiEBAAEwKjAoBggrBgEFBQcCARYc
++aHR0cDovL3JlcG9zaXRvcnkuZW1zaWduLmNvbTAOBgwrBgEEAYOOIQECgUgwCAYG
++Z4EMAQQBMHQGCCsGAQUFBwEBBGgwZjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3At
++Yi5lbXNpZ24uY29tMD4GCCsGAQUFBzAChjJodHRwOi8vcmVwb3NpdG9yeS5lbXNp
++Z24uY29tL2NlcnRzL0VNT1ZDU0NBRzNCLnA3YzA2BgNVHR8ELzAtMCugKaAnhiVo
++dHRwOi8vY3JsLmVtc2lnbi5jb20vP3Jvb3Rjc2NhZzMuY3JsMA4GA1UdDwEB/wQE
++AwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMAoGCCqGSM49BAMDA2kAMGYCMQC/zr03
++YEELsNKqzUtH2dVFi4BaKFdyrr/6G1dIWp8KAVgsw2/u4lyyboUDaC9jDvICMQC9
++HTxku84tNX9dmHOtH7aC2Nu/JM0jTf6KjZAvovCJzzv1IFWSZpVLZibynMLXOrM=
++-----END CERTIFICATE-----
++
+diff --git a/net/data/ssl/blocklist/README.md b/net/data/ssl/blocklist/README.md
+index fe2d29db..48025326 100644
+--- a/net/data/ssl/blocklist/README.md
++++ b/net/data/ssl/blocklist/README.md
+@@ -399,3 +399,18 @@
+ ### www.cloudflarechallenge.com
+ 
+   * [e757fd60d8dd4c26f77aca6a87f63ea4d38d0b736c7f79b56cad932d4c400fb5.pem](e757fd60d8dd4c26f77aca6a87f63ea4d38d0b736c7f79b56cad932d4c400fb5.pem)
++
++
++### eMudhra
++
++For details, see <https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/0R3XLJL6FuE/m/0XofdebrAAAJ>
++
++  * [0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem](0164d7ceae5bb909c272af151ff44b1177ae9b47d9424b94f1d9558c30934d19.pem)
++  * [42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem](42c4accd12c4f59597925e1a08a7a90102608543809308d50ec427e118ba1493.pem)
++  * [432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem](432ec25f0d28de9006d97bf752f17bbb2cd41f669933fcb072d9a1148d0261f3.pem)
++  * [4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem](4b2460a466f95fd40113bcdcca2ceb29b3b093921de45474da7df48874c630b1.pem)
++  * [98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem](98b896625c0c230adeec3eb2cf6aad5001ecf9156a68644e82374ce5833bc25b.pem)
++  * [9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem](9e39de2881273acc225a149c72ba3e0f51424963669ab633ee1dc7df5db067b4.pem)
++  * [cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem](cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem)
++  * [e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem](e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem)
++
+diff --git a/net/data/ssl/blocklist/cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem b/net/data/ssl/blocklist/cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem
+new file mode 100644
+index 0000000..dc1c471c
+--- /dev/null
++++ b/net/data/ssl/blocklist/cb6e15165ac802e9b3f993f16c25d41f4e81c21ebde71ae1b012ac00bf9c7c3f.pem
+@@ -0,0 +1,76 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            29:69:26:c2:27:a3:a1:52:63:92:b1:94:82:a5:04
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 15:37:41 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=US, O=eMudhra Inc, CN=EM OV TLS CA - G3C
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:13:82:51:cd:52:ac:92:98:c1:c8:aa:d9:77:32:
++                    1d:eb:97:e7:09:bd:0b:4c:a0:ac:a5:5d:c8:ad:51:
++                    dc:fc:9d:15:89:a1:59:7e:3a:51:20:e1:ef:d6:31:
++                    c6:3e:18:35:ca:ca:e2:98:69:a6:2e:16:31:e8:a2:
++                    81:81:ab:56:61:6d:c4:5d:91:8a:bc:09:f3:ab:0e:
++                    63:cf:79:2a:a4:dc:ed:73:87:be:37:bb:a5:69:54:
++                    9f:1c:02:b2:70:ed:67
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                34:EA:EA:0C:EB:C9:0A:DA:F9:D0:C5:E2:ED:9B:78:C9:87:9E:1B:6C
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.110
++                Policy: 2.23.140.1.2.2
++            Authority Information Access:
++                OCSP - URI:http://ocsp-c.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMOVTLSCAG3C.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:65:02:31:00:c4:99:b7:6c:6c:3d:eb:a6:45:d7:92:31:24:
++        37:09:bc:c8:65:e4:3f:ab:b1:83:09:67:de:13:53:ea:fa:68:
++        60:03:a8:11:33:8e:1c:35:51:77:c4:9f:b0:b3:12:64:fb:02:
++        30:14:96:da:0c:ca:24:0f:c1:22:e9:e3:4e:88:0f:32:50:c6:
++        2f:7f:34:32:9e:09:ab:85:94:0c:74:f0:8a:d5:27:b0:ad:1e:
++        fd:e2:b4:9b:f6:f1:aa:c5:9c:de:95:0b:61
++-----BEGIN CERTIFICATE-----
++MIIDaDCCAu6gAwIBAgIPKWkmwiejoVJjkrGUgqUEMAoGCCqGSM49BAMDMFYxCzAJ
++BgNVBAYTAklOMSUwIwYDVQQKDBxlTXVkaHJhIFRlY2hub2xvZ2llcyBMaW1pdGVk
++MSAwHgYDVQQDDBdlbVNpZ24gUm9vdCBUTFMgQ0EgLSBHMzAeFw0yNTA0MzAxNTM3
++NDFaFw00MDA0MjgxODMwMDBaMEAxCzAJBgNVBAYTAlVTMRQwEgYDVQQKDAtlTXVk
++aHJhIEluYzEbMBkGA1UEAwwSRU0gT1YgVExTIENBIC0gRzNDMHYwEAYHKoZIzj0C
++AQYFK4EEACIDYgAEE4JRzVKskpjByKrZdzId65fnCb0LTKCspV3IrVHc/J0ViaFZ
++fjpRIOHv1jHGPhg1ysrimGmmLhYx6KKBgatWYW3EXZGKvAnzqw5jz3kqpNztc4e+
++N7ulaVSfHAKycO1no4IBljCCAZIwHwYDVR0jBBgwFoAU4TqrIXzx401UrtRyt/2L
++WUIgkFQwHQYDVR0OBBYEFDTq6gzryQra+dDF4u2beMmHnhtsMB0GA1UdJQQWMBQG
++CCsGAQUFBwMBBggrBgEFBQcDAjBdBgNVHSAEVjBUMDkGCysGAQQBg44hAQABMCow
++KAYIKwYBBQUHAgEWHGh0dHA6Ly9yZXBvc2l0b3J5LmVtc2lnbi5jb20wDQYLKwYB
++BAGDjiEBAm4wCAYGZ4EMAQICMHUGCCsGAQUFBwEBBGkwZzAkBggrBgEFBQcwAYYY
++aHR0cDovL29jc3AtYy5lbXNpZ24uY29tMD8GCCsGAQUFBzAChjNodHRwOi8vcmVw
++b3NpdG9yeS5lbXNpZ24uY29tL2NlcnRzL0VNT1ZUTFNDQUczQy5wN2MwNwYDVR0f
++BDAwLjAsoCqgKIYmaHR0cDovL2NybC5lbXNpZ24uY29tLz9yb290dGxzY2FnMy5j
++cmwwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwCgYIKoZIzj0E
++AwMDaAAwZQIxAMSZt2xsPeumRdeSMSQ3CbzIZeQ/q7GDCWfeE1Pq+mhgA6gRM44c
++NVF3xJ+wsxJk+wIwFJbaDMokD8Ei6eNOiA8yUMYvfzQyngmrhZQMdPCK1SewrR79
++4rSb9vGqxZzelQth
++-----END CERTIFICATE-----
+diff --git a/net/data/ssl/blocklist/e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem b/net/data/ssl/blocklist/e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem
+new file mode 100644
+index 0000000..8fa9650f
+--- /dev/null
++++ b/net/data/ssl/blocklist/e7568fe6e12331f4fd7de61da4c7559d0f8eb192a218d4741a3ba75184333838.pem
+@@ -0,0 +1,76 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number:
++            c7:c4:1e:fe:92:d8:25:f0:5e:ae:84:1a:4a:82:c1
++        Signature Algorithm: ecdsa-with-SHA384
++        Issuer: C=IN, O=eMudhra Technologies Limited, CN=emSign Root TLS CA - G3
++        Validity
++            Not Before: Apr 30 16:03:31 2025 GMT
++            Not After : Apr 28 18:30:00 2040 GMT
++        Subject: C=NL, O=eMudhra BV, CN=EM EV TLS CA - G3B
++        Subject Public Key Info:
++            Public Key Algorithm: id-ecPublicKey
++                Public-Key: (384 bit)
++                pub:
++                    04:25:db:a8:5a:64:d3:97:da:0b:10:52:e9:ea:54:
++                    6e:48:7b:ef:ea:9c:9d:9d:68:a0:c5:ea:dc:fe:ef:
++                    75:a6:9b:b5:d6:fc:01:f4:2b:fb:ca:6e:b4:0b:cd:
++                    64:c0:76:7e:36:ff:d0:5d:97:a8:13:c5:aa:0c:6c:
++                    95:30:e7:9c:f5:f0:86:64:68:f1:38:06:42:0a:a5:
++                    c8:51:84:0b:1e:25:25:40:e7:90:e4:b6:54:c3:85:
++                    2e:d6:4a:f1:e8:65:7d
++                ASN1 OID: secp384r1
++                NIST CURVE: P-384
++        X509v3 extensions:
++            X509v3 Authority Key Identifier:
++                E1:3A:AB:21:7C:F1:E3:4D:54:AE:D4:72:B7:FD:8B:59:42:20:90:54
++            X509v3 Subject Key Identifier:
++                3E:DC:20:D9:89:46:98:87:7B:87:3F:D8:81:47:B2:5C:15:D8:47:06
++            X509v3 Extended Key Usage:
++                TLS Web Server Authentication, TLS Web Client Authentication
++            X509v3 Certificate Policies:
++                Policy: 1.3.6.1.4.1.50977.1.0.1
++                  CPS: http://repository.emsign.com
++                Policy: 1.3.6.1.4.1.50977.1.2.120
++                Policy: 2.23.140.1.1
++            Authority Information Access:
++                OCSP - URI:http://ocsp-b.emsign.com
++                CA Issuers - URI:http://repository.emsign.com/certs/EMEVTLSCAG3B.p7c
++            X509v3 CRL Distribution Points:
++                Full Name:
++                  URI:http://crl.emsign.com/?roottlscag3.crl
++
++            X509v3 Key Usage: critical
++                Certificate Sign, CRL Sign
++            X509v3 Basic Constraints: critical
++                CA:TRUE, pathlen:0
++    Signature Algorithm: ecdsa-with-SHA384
++    Signature Value:
++        30:66:02:31:00:f4:9a:bd:f7:da:1a:39:42:a1:17:0a:29:c3:
++        7d:e2:0a:6b:74:38:72:27:de:08:d3:e3:71:9f:b8:e1:d1:fd:
++        87:24:5d:dc:28:35:d0:c0:94:81:21:cf:43:60:44:ed:ff:02:
++        31:00:bd:8f:da:dc:e3:2f:92:d2:19:2d:88:e7:f9:62:ca:9a:
++        9d:10:86:b2:0c:57:e7:ba:12:94:bb:8f:81:95:78:e2:a8:b8:
++        da:7a:30:df:cf:f8:1c:86:7a:24:4c:82:1c:c1
++-----BEGIN CERTIFICATE-----
++MIIDaDCCAu2gAwIBAgIQAMfEHv6S2CXwXq6EGkqCwTAKBggqhkjOPQQDAzBWMQsw
++CQYDVQQGEwJJTjElMCMGA1UECgwcZU11ZGhyYSBUZWNobm9sb2dpZXMgTGltaXRl
++ZDEgMB4GA1UEAwwXZW1TaWduIFJvb3QgVExTIENBIC0gRzMwHhcNMjUwNDMwMTYw
++MzMxWhcNNDAwNDI4MTgzMDAwWjA/MQswCQYDVQQGEwJOTDETMBEGA1UECgwKZU11
++ZGhyYSBCVjEbMBkGA1UEAwwSRU0gRVYgVExTIENBIC0gRzNCMHYwEAYHKoZIzj0C
++AQYFK4EEACIDYgAEJduoWmTTl9oLEFLp6lRuSHvv6pydnWigxerc/u91ppu11vwB
++9Cv7ym60C81kwHZ+Nv/QXZeoE8WqDGyVMOec9fCGZGjxOAZCCqXIUYQLHiUlQOeQ
++5LZUw4Uu1krx6GV9o4IBlTCCAZEwHwYDVR0jBBgwFoAU4TqrIXzx401UrtRyt/2L
++WUIgkFQwHQYDVR0OBBYEFD7cINmJRpiHe4c/2IFHslwV2EcGMB0GA1UdJQQWMBQG
++CCsGAQUFBwMBBggrBgEFBQcDAjBcBgNVHSAEVTBTMDkGCysGAQQBg44hAQABMCow
++KAYIKwYBBQUHAgEWHGh0dHA6Ly9yZXBvc2l0b3J5LmVtc2lnbi5jb20wDQYLKwYB
++BAGDjiEBAngwBwYFZ4EMAQEwdQYIKwYBBQUHAQEEaTBnMCQGCCsGAQUFBzABhhho
++dHRwOi8vb2NzcC1iLmVtc2lnbi5jb20wPwYIKwYBBQUHMAKGM2h0dHA6Ly9yZXBv
++c2l0b3J5LmVtc2lnbi5jb20vY2VydHMvRU1FVlRMU0NBRzNCLnA3YzA3BgNVHR8E
++MDAuMCygKqAohiZodHRwOi8vY3JsLmVtc2lnbi5jb20vP3Jvb3R0bHNjYWczLmNy
++bDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADAKBggqhkjOPQQD
++AwNpADBmAjEA9Jq999oaOUKhFwopw33iCmt0OHIn3gjT43GfuOHR/YckXdwoNdDA
++lIEhz0NgRO3/AjEAvY/a3OMvktIZLYjn+WLKmp0QhrIMV+e6EpS7j4GVeOKouNp6
++MN/P+ByGeiRMghzB
++-----END CERTIFICATE-----

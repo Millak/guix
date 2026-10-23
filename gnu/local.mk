@@ -2653,8 +2653,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/unity-test-set-subdir-correctly.patch		\
   %D%/packages/patches/unity-test-support-int64.patch		\
   %D%/packages/patches/ungoogled-chromium-custom-compiler.patch 	\
-  %D%/packages/patches/ungoogled-chromium-crubit.patch \
   %D%/packages/patches/ungoogled-chromium-empty-parsed-rustc-args.patch	\
+  %D%/packages/patches/ungoogled-chromium-emudhra.patch		\
+  %D%/packages/patches/ungoogled-chromium-esbuild.patch		\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
   %D%/packages/patches/ungoogled-chromium-golang.patch		\
   %D%/packages/patches/ungoogled-chromium-increase-fortify-level.patch	\

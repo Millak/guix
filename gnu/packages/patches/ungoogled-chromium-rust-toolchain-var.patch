@@ -81,9 +81,9 @@ index 105a1d52a1682..88ed50182a604 100644
        # For the rustc sysroot we must include even the rlibs we don't pass to
 --- a/build/rust/gni_impl/run_rs_bindings_from_cc.py
 +++ b/build/rust/gni_impl/run_rs_bindings_from_cc.py
-@@ -15,15 +15,6 @@ CHROMIUM_SRC_DIR = os.path.relpath(os.pa
+@@ -15,14 +15,6 @@ CHROMIUM_SRC_DIR = os.path.relpath(os.pa
  sys.path.append(THIS_DIR)
- from run_bindgen import filter_clang_args
+ from filter_clang_args import filter_clang_args
 
 -RUST_TOOLCHAIN_DIR = os.path.join(
 -    CHROMIUM_SRC_DIR, "third_party", "rust-toolchain"
@@ -93,11 +93,10 @@ index 105a1d52a1682..88ed50182a604 100644
 -RS_BINDINGS_FROM_CC_EXE_PATH = os.path.join(
 -    RUST_TOOLCHAIN_DIR, "bin", "rs_bindings_from_cc"
 -)
--
-
- def format_cmdline(args):
-
-@@ -40,6 +31,18 @@ def main():
+ CRUBIT_SUPPORT_PATH = os.path.join(
+     "third_party", "crubit", "src", "rs_bindings_from_cc", "support"
+ )
+@@ -43,6 +35,18 @@ def main():
      parser = argparse.ArgumentParser()
      (
          parser.add_argument(
@@ -116,7 +115,7 @@ index 105a1d52a1682..88ed50182a604 100644
              "--targets_and_args_from_gn",
              metavar="FILE",
              help="File parsed into --targets_and_args Crubit arg",
-@@ -111,8 +114,9 @@ def main():
+@@ -114,8 +118,9 @@ def main():
      )
 
      # All Crubit invocations in Chromium share the following cmdline args.
@@ -125,11 +124,11 @@ index 105a1d52a1682..88ed50182a604 100644
 +    generator_args.append(f"--rustfmt_exe_path={args.rustfmt_path}")
 +    rustfmt_config_path = os.path.join(CHROMIUM_SRC_DIR, ".rustfmt.toml")
 +    generator_args.append(f"--rustfmt_config_path={rustfmt_config_path}")
-     generator_args.append(
-         "--crubit_support_path=third_party/crubit/src/rs_bindings_from_cc/support"
-     )
-@@ -143,7 +147,7 @@ def main():
-     clang_args += ["-Wno-unused-command-line-argument"]
+     generator_args.append(f"--crubit_support_path={CRUBIT_SUPPORT_PATH}")
+
+     # Long cmdlines may not work - work around that by using Abseil's
+@@ -135,7 +140,7 @@ def main():
+     clang_args.extend(filter_clang_args(args.clang_args))
 
      # Print a copy&pastable final cmdline when asked for debugging help.
 -    cmdline = [RS_BINDINGS_FROM_CC_EXE_PATH, f"--flagfile={params_file_path}"]
@@ -162,12 +161,10 @@ index 105a1d52a1682..88ed50182a604 100644
              rebase_path(_rustc_env_and_flags, root_build_dir),
 --- a/build/rust/rs_bindings_from_cc.gni
 +++ b/build/rust/rs_bindings_from_cc.gni
-@@ -248,7 +248,15 @@ template("rs_bindings_from_cc") {
+@@ -248,10 +248,16 @@ template("rs_bindings_from_cc") {
      }
- 
+
      script = "//build/rust/gni_impl/run_rs_bindings_from_cc.py"
--    inputs = [ "//third_party/rust-toolchain/bin/rs_bindings_from_cc" ]
-+
 +    if (host_os == "win") {
 +      _rs_bindings_from_cc_exe = "${rust_sysroot}/bin/rs_bindings_from_cc.exe"
 +      _rustfmt_exe = "${rust_sysroot}/bin/rustfmt.exe"
@@ -175,8 +172,13 @@ index 105a1d52a1682..88ed50182a604 100644
 +      _rs_bindings_from_cc_exe = "${rust_sysroot}/bin/rs_bindings_from_cc"
 +      _rustfmt_exe = "${rust_sysroot}/bin/rustfmt"
 +    }
-+    inputs = [ _rs_bindings_from_cc_exe ]
-     sources = invoker.public_headers
++
+     inputs = [
+-               # Public headers are inputs to this action rather than sources,
+-               # so GN does not consider this target an owner of the headers.
+-               "//third_party/rust-toolchain/bin/rs_bindings_from_cc",
++             _rs_bindings_from_cc_exe,
+              ] + invoker.public_headers
      outputs = [
        _rs_out_path,
 @@ -268,6 +276,10 @@ template("rs_bindings_from_cc") {

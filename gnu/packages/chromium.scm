@@ -76,6 +76,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages web)
   #:use-module (ice-9 match))
 
 (define %preserved-third-party-files
@@ -97,7 +98,6 @@
     "third_party/anonymous_tokens" ;ASL2.0
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
-    "third_party/bidimapper" ;ASL2.0
     "third_party/blink" ;BSD-3, LGPL2+
     "third_party/boringssl" ;OpenSSL/ISC (Google additions are ISC)
     "third_party/boringssl/src/third_party/fiat" ;Expat
@@ -121,6 +121,7 @@
     ;; XXX: Minified version of <https://github.com/nodeca/pako>.
     "third_party/catapult/tracing/third_party/pako" ;Expat
     "third_party/ced" ;BSD-3
+    "third_party/chromium-bidi" ;ASL2.0
     "third_party/cld_3" ;ASL2.0
     "third_party/closure_compiler" ;ASL2.0
     "third_party/compiler-rt" ;ASL2.0
@@ -279,6 +280,7 @@
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
     "third_party/openscreen/src/third_party/tinycbor" ;Expat
+    "third_party/openxr" ;ASL2.0 among others.
     "third_party/opus" ;BSD-3
     "third_party/ots" ;BSD-3
     "third_party/pdfium" ;BSD-3
@@ -405,9 +407,14 @@
   ;; 'third_party/blink/perf_tests/resources/svg/HarveyRayner.svg' carries a
   ;; nonfree license according to LICENSES in the same directory.  As we don't
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
-  '("third_party/blink/perf_tests"))
+  '("third_party/blink/perf_tests"
+    ;; Bundled binaries.
+    "third_party/devtools-frontend/src/node_modules/esbuild"
+    "third_party/oak/src/mcp"
+    "third_party/tflite/src/tensorflow/lite/experimental/acceleration/compatibility"
+    "third_party/tflite/src/tensorflow/lite/experimental/acceleration/mini_benchmark/models"))
 
-(define %chromium-version "153.0.8010.52")
+(define %chromium-version "156.0.8078.47")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -419,7 +426,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1sd34gzhc9aimqhq4bnj1zijx3z2f5i8ql7svzis5kc5j8gkcxv6"))))
+      "1iirvhpfc88g7w2yp6kkam5lci02793k4mm3l3jfy3kif19s3bs3"))))
 
 (define %debian-origin
   (origin
@@ -432,7 +439,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "1q43rdy7hjjfcdshlb6aw70yjmcp2ncqa32zalzf89nlkzgr869l"))))
+      "0jfrim8pdhjlr923b0pxqb6gvf52afvqvzmdyjcs2z7ah6dglxh9"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -445,16 +452,18 @@
 
 (define %debian-patches
   (map debian-patch
-       '("bookworm/foreach.patch"
-         "debianization/safe-libcxx.patch"
+       '("debianization/safe-libcxx.patch"
          "disable/enterprise-tests.patch"
          "disable/node-version-ck.patch"
          "disable/rustc-allow-features.patch"
          "fixes/bytemuck.patch"
+         "fixes/crubit.patch"
          "fixes/gentoo-stylesheet.patch"
          "fixes/libcpp-headers.patch"
          "fixes/libpng-testonly.patch"
          "fixes/rust-clanglib.patch"
+         "fixes/tsc-split-comp.patch"
+         "fixes/verification-tokens.patch"
          "llvm-22/clang22.patch"
          "llvm-22/clone-traits.patch"
          "llvm-22/const-profile.patch"
@@ -462,11 +471,9 @@
          "llvm-22/keyfactory.patch"
          "llvm-22/raw-ref-map-find.patch"
          "system/openjpeg.patch"
-         "system/rust-cbor.patch"
          "system/llvm.patch"
          "trixie/bindgen-boringssl.patch"
          "trixie/cookie-string-view.patch"
-         "trixie/nodejs-main.patch"
          "trixie/revert-v8-sanitize.patch")))
 
 (define %guix-patches
@@ -476,8 +483,9 @@
            (search-patch patch))))
        (list
          "ungoogled-chromium-custom-compiler.patch"
-         "ungoogled-chromium-crubit.patch"
          "ungoogled-chromium-empty-parsed-rustc-args.patch"
+         "ungoogled-chromium-emudhra.patch"
+         "ungoogled-chromium-esbuild.patch"
          "ungoogled-chromium-extension-search-path.patch"
          "ungoogled-chromium-golang.patch"
          "ungoogled-chromium-increase-fortify-level.patch"
@@ -623,7 +631,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "0jl476d87vz7n35h1gxxacffdxjnigx3asv13739fbzi2gwwnvzd"))
+                "01d7xbrbk57kldavdrjs9yqd2ylh032q1f4x5qghxxqfi4l20hr8"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -696,6 +704,8 @@
               "v8_symbol_level=0"
               "v8_enable_backtrace=false"
               "v8_drumbrake_bounds_checks=true"
+              ;; Does not work with unbundled llvm toolchain.
+              "v8_use_metagen_instance_types=false"
 
               ;; Define a custom toolchain that simply looks up CC, AR and
               ;; friends from the environment.
@@ -771,6 +781,9 @@
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (let* ((brotli     (search-input-file inputs
                                                     "/bin/brotli"))
+                     (esbuild    (search-input-file
+                                   (or native-inputs inputs)
+                                   "/lib/node_modules/esbuild/bin/esbuild"))
                      (libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
                      (openjpeg   (dirname (dirname libopenjp2)))
                      (gperf      (search-input-file (or native-inputs inputs)
@@ -787,12 +800,21 @@
                   (("/usr/bin/brotli")
                    brotli))
 
+                ;; Works on top of the esbuild patch.
+                (substitute*
+                  '("third_party/devtools-frontend/src/scripts/build/esbuild.js"
+                    "third_party/devtools-frontend/src/scripts/build/ninja/bundle.gni")
+                  (("/usr/bin/esbuild")
+                   esbuild))
+
                 (substitute* ".gn"
                   (("//third_party/cpython3/host/bin/python3")
                    python3))
 
-                ;; works on top of typescript patch.
-                (substitute* "third_party/devtools-frontend/src/third_party/typescript/typescript.py"
+                ;; Works on top of typescript patch.
+                (substitute*
+                  '("third_party/devtools-frontend/src/third_party/typescript/typescript.py"
+                    "third_party/devtools-frontend/src/scripts/build/typescript/typescript_vars.gni")
                   (("/usr/bin/tsc")
                    tsc))
 
@@ -846,6 +868,11 @@
                 ;; be available here.
                 (mkdir-p "third_party/gperf/cipd")
                 (symlink (dirname gperf) "third_party/gperf/cipd/bin")
+
+                ;; Since M154, esbuild is required, bundled and expected to
+                ;; be available here.
+                (symlink (dirname (dirname esbuild))
+                         "third_party/devtools-frontend/src/node_modules/esbuild")
 
                 (substitute*
                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
@@ -1007,8 +1034,8 @@
                 (substitute* '("chrome/app/resources/manpage.1.in"
                                "chrome/installer/linux/common/desktop.template")
                   (("@@MENUNAME") "Chromium")
-                  (("@@PACKAGE") "chromium")
-                  (("/usr/bin/@@usr_bin_symlink_name") exe)
+                  (("@@desktop_icon") "chromium")
+                  (("@@desktop_exec") exe)
                   (("@@uri_scheme") "x-scheme-handler/chromium;")
                   (("@@extra_desktop_entries") "")
                   (("@@startup_wm_class") "Chromium-browser"))
@@ -1061,10 +1088,11 @@
            clang-toolchain-23
            gn
            gperf
-           go
+           go-1.27
            lld-as-ld-wrapper-23
            llvm-23
            ninja
+           node-esbuild
            node-lts
            node-typescript
            pkg-config
