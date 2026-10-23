@@ -23,7 +23,7 @@
 ;;; Copyright © 2023 Tomas Volf <wolf@wolfsden.cz>
 ;;; Copyright © 2023, 2024, 2025 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025, 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.

@@ -40,7 +40,7 @@
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2024, 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>

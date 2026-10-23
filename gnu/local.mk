@@ -71,7 +71,7 @@
 # Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 # Copyright © 2024 Noé Lopez <noelopez@free.fr>
 # Copyright © 2024 Runciter <runciter@whispers-vpn.org>
-# Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+# Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 # Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 # Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 # Copyright © 2025 Cayetano Santos <csantosb@disroot.org>

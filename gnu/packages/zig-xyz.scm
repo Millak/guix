@@ -3,7 +3,7 @@
 ;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Meredith Oleander <mereditholeander@gmail.com>
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;;

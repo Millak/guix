@@ -60,7 +60,7 @@
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
 ;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2023 Santiago Payà Miralta <santiagopim@gmail.com>

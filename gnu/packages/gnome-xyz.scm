@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025-2026 aurtzy <aurtzy@gmail.com>
-;;; Copyright © 2025, 2026 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025, 2026 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>

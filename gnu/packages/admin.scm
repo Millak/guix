@@ -74,7 +74,7 @@
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 nik gaffney <nik@fo.am>
 ;;; Copyright © 2025 Simon Streit <simon@netpanic.org>

@@ -17,7 +17,7 @@
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

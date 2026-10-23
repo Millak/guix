@@ -86,7 +86,7 @@
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023-2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>

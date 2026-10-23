@@ -64,7 +64,7 @@
 ;;; Copyright © 2023, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025-2026 bdunahu <bdunahu@operationnull.com>

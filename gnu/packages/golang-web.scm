@@ -41,7 +41,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
