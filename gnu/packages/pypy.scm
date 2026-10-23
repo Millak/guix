@@ -286,14 +286,14 @@ Python code natively, including C extensions.")
   (package
     (inherit pypy2)
     (name "pypy")
-    (version "7.3.20")
+    (version "8.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.python.org/pypy/"
-                                  "pypy3.11-v" version "-src.tar.bz2"))
+                                  "pypy3.11-v" version "-src.tar.gz"))
               (sha256
                (base32
-                "1yq6n888fxfdqid29q3w8bn7ii800bjkf44w82kjwgh0c2kxv1kp"))))
+                "17kklfgh202mpa6jgzmmv1f61md4pi8bcvq9vss2zmc7xq0jhpvy"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)
@@ -304,9 +304,6 @@ Python code natively, including C extensions.")
                 (substitute* '("rpython/rlib/clibffi.py")
                   ;; find_library does not work for libc
                   (("ctypes\\.util\\.find_library\\('c'\\)") "'libc.so'"))
-                (substitute* '("lib_pypy/cffi/_pycparser/ply/cpp.py")
-                  ;; Make reproducible (XXX: unused?)
-                  (("time\\.localtime\\(\\)") "time.gmtime(0)"))
                 (substitute* '("pypy/module/sys/version.py")
                   ;; Make reproducible
                   (("t\\.gmtime\\(\\)") "t.gmtime(0)"))
