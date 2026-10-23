@@ -5327,8 +5327,8 @@ web server.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/BurntSushi/graphics-go")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/BurntSushi/graphics-go")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1084wkrj5l6j48s9lkh28h2zgmw8kp63ra1yw1nfpkf0f6hil3hn"))))
@@ -5336,7 +5336,13 @@ web server.")
     (arguments
      (list
       #:import-path "github.com/BurntSushi/graphics-go"
-      #:skip-build? #t))
+      #:skip-build? #t
+      #:test-flags
+      #~(list #$@(if (target-aarch64?)
+                     ;; scale_test.go:150: got {150 85 57 255} want {150 85 58
+                     ;; 255} at (43, 1)
+                     '("-skip" "TestScaleGopher")
+                     '()))))
     (home-page "https://github.com/BurntSushi/graphics-go")
     (synopsis "Graphics library for the Golang")
     (description
