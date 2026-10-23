@@ -10,6 +10,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,12 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages node)
   #:use-module (gnu packages python)
@@ -47,6 +54,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system minify)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils))
@@ -70,6 +78,72 @@
     (synopsis "JSON parser written in ANSI C")
     (description "This library provides a portable embeddable JSON parser.")
     (license license:expat)))
+
+(define-public typescript-go
+  (package
+    (name "typescript-go")
+    (version "7.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/microsoft/TypeScript")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bcgrifcg1gf6ivacyfj37n1r2k2dfcxz8g6q2pbw9gzqzi1hl4g"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; The repository provides a monorepo of sub projects, we need
+            ;; TypeScript Compiler (tsc) only.
+            (delete-all-but "." "tsc")
+            ;; It was "github.com/microsoft/typescript-go" which is merged
+            ;; into "github.com/microsoft/TypeScript" monorepo. Remove when
+            ;; new version is released including this change.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/microsoft/typescript-go")
+               "github.com/microsoft/TypeScript/tsc"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/microsoft/TypeScript/tsc/..."
+      #:unpack-path "github.com/microsoft/TypeScript"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; XXX: It's not clear why these tests fail.
+               (list "TestTscCommandline/tsc/show_help_with_ExitStatus"
+                     "TestSanitizedStackTraceDefeatsVSCodeGenericSecretRegex"
+                     "TestSanitizedReleaseStackTraceCompletionsRequest"
+                     "TestSanitizedDebugStackTraceCompletionsRequest")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; See: <https://go.dev/blog/synctest>.
+                (setenv "GODEBUG" "asynctimerchan=0")))))))
+    (native-inputs
+     (list go-github-com-go-json-experiment-json
+           go-github-com-google-go-cmp
+           go-github-com-mackerelio-go-osstat
+           ;; go-github-com-microsoft-go-winio      ;Windows only
+           go-github-com-peter-evans-patience
+           go-github-com-zeebo-xxh3
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-gotest-tools-v3))
+    (home-page "https://www.typescriptlang.org/")
+    (synopsis "TypeScript Compiler")
+    (description
+     "This package provides @acronym{TypeScript Compiler, @code{tsc}} written
+in Go.")
+    (license license:asl2.0)))
 
 (define-public js-context-menu
   (package
@@ -1395,4 +1469,3 @@ and vice versa.")
        "Rhino implements ECMAScript, also known as JavaScript, in Java as
 specified in the fifth edition of ECMA-262.")
       (license license:mpl2.0)))
-
