@@ -40,7 +40,8 @@
                (base32
                 "0ajic0jgiyfk2sk3brn1wsshq0kp9za8x7i4qcgiariwc4xzv1fm"))
               (patches
-               (search-patches "musl-CVE-2026-40200.patch"))))
+               (search-patches "musl-CVE-2026-40200.patch"
+                               "musl-CVE-2026-107891.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; musl has no tests
