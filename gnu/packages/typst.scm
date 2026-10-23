@@ -126,7 +126,7 @@ allowing documents to be compiled to PDF, PNG or SVG from Python code.")
 (define-public typst
   (package
     (name "typst")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method git-fetch)
@@ -136,7 +136,7 @@ allowing documents to be compiled to PDF, PNG or SVG from Python code.")
        (file-name (git-file-name name version))
        (patches (search-patches "typst-support-GUIX_TYPST_PACKAGE_PATH.patch"))
        (sha256
-        (base32 "0y727lyicn3ciq36mdpbcg8d09naff39y1i52467mlmr11p0l9xa"))))
+        (base32 "19vdybdzn6wx1kma1vcwjj4d251cff4rrf5lyz0i0q3mqnrfwbg4"))))
     (build-system cargo-build-system)
     (arguments
      (list

@@ -1361,7 +1361,7 @@ language models.")
   (hidden-package
    (package
      (name "rust-typst-dev-assets")
-     (version "0.15.0")
+     (version "0.15.1")
      (source
       (origin
         (method git-fetch)
@@ -1370,7 +1370,7 @@ language models.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0il0rb7qj8qd1k34vxbvj3lqql1jbgn2q2m451mqz7xkibmn5drf"))))
+         (base32 "1swl76rhll88m8q8d7dxfz289l3sssxsx3fk67wnn2ywnivad06l"))))
      (build-system cargo-build-system)
      (arguments
       (list
