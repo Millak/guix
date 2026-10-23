@@ -590,17 +590,19 @@ with PEP 484 argument (and return) type annotations.")
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
-    (version "4.15.0")
+    (version "4.16.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "typing_extensions" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python/typing_extensions")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rhlhs28jndgp9fghdhidn6g7xiwx8vvihxbxhlgl4ncfg8lishc"))))
+        (base32 "1p712cgvsychdrmhpv5k676rpc4i90y2j7l82fc8ml9k6qh52l1g"))))
     (build-system pyproject-build-system)
-    ;; Disable the test suite to keep the dependencies to a minimum.  Also,
-    ;; the test suite requires Python's test module, not available in Guix.
-    (arguments (list #:tests? #f))
+    (arguments (list #:test-backend #~'unittest
+                     #:test-flags #~(list "discover" "-s" "src")))
     (native-inputs (list python-flit-core))
     (home-page "https://github.com/python/typing_extensions")
     (synopsis "Experimental type hints for Python")
