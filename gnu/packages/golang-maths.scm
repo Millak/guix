@@ -778,50 +778,36 @@ format as binary16.")
 (define-public go-gonum-org-v1-gonum
   (package
     (name "go-gonum-org-v1-gonum")
-    (version "0.16.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gonum/gonum")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gonum/gonum")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01mj449mlvp863d6k9zaz3y2z3vc0l5vcn046f17s83f49r0sh58"))))
+        (base32 "08mxx6r7jmq7xdc57sggx2a2hhmhjiagjspw1gzbjm1692dfjc5f"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; go-gonum-org-v1-plot is not packed yet; it's required for the CLI
+        ;; in dsp/window/cmd/leakage and related tests.
+        #~(begin (for-each delete-file-recursively
+                           (list "dsp/window/cmd/leakage"
+                                 "graph/layout/eades_example_test.go"
+                                 "graph/layout/eades_test.go"
+                                 "graph/layout/isomap_test.go"
+                                 "graph/layout/layout_test.go"))))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "gonum.org/v1/gonum"
-      #:test-subdirs
-      #~(list "."
-              "blas/..."
-              "cmplxs/..."
-              "diff/..."
-              "dsp/fourier/..."
-              "floats/..."
-              "integrate/..."
-              "internal/..."
-              "interp/..."
-              "lapack/..."
-              "mat/..."
-              "mathext/..."
-              "num/..."
-              "optimize/..."
-              ;; Tests failing to compile on ARM systems with errors in
-              ;; goroutines.
-              #$@(if (target-x86-64?)
-                     '("spatial/...")
-                     '())
-              "stat/..."
-              "uniti/...")
-      #:test-flags #~(list "-vet=off")))
+      ;; Tests failing to compile on ARM systems with errors in goroutines.
+      #:tests? (not (target-aarch64?))
+      #:import-path "gonum.org/v1/gonum"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
-     (list go-github-com-goccmack-gocc
-           go-github-com-google-go-cmp
-           go-golang-org-x-exp
-           go-golang-org-x-tools
-           #;go-gonum-org-v1-plot ; not packed yet
-           ))
+     (list go-golang-org-x-tools))
     (home-page "https://www.gonum.org/")
     (synopsis "Set of numeric libraries for Golang")
     (description
