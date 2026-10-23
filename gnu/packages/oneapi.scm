@@ -329,7 +329,7 @@ for OpenCL targeting Intel graphics hardware.")
   ;; See doc/build/build.md.
   (package
     (name "onednn")
-    (version "3.13.2")
+    (version "3.14")
     (source
      (origin
        (method git-fetch)
@@ -338,7 +338,7 @@ for OpenCL targeting Intel graphics hardware.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0abrqhj33prdc17dw9r4mil1x9vg53kq615w0dncqm6vyvgx57ib"))
+        (base32 "0ghc38192q0amdlyxvyxhhsd9zqgnj6j78psqaxjyaq084yi2ap8"))
        (modules '((guix build utils)
                   (ice-9 rdelim)))
        ;; Copyright date used by code generation script
