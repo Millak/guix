@@ -26955,6 +26955,31 @@ interactive applications through a pseudo-terminal.  It is an alternative fork
 of @url{https://github.com/Netflix/go-expect}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-peter-evans-patience
+  (package
+    (name "go-github-com-peter-evans-patience")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/peter-evans/patience")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a26p7xwh4lkpamyap8ws9wg95jbbkk8bm0i9xhjxyvnbqfk2bg0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/peter-evans/patience"))
+    (home-page "https://github.com/peter-evans/patience")
+    (synopsis "Go implementation of the Patience Diff algorithm")
+    (description
+     "Package patience implements the Patience Diff algorithm.  It generates
+line-oriented diffs between source and destination inputs, using the Patience
+Diff algorithm.")
+    (license license:expat)))
+
 (define-public go-github-com-peterbourgon-diskv
   (package
     (name "go-github-com-peterbourgon-diskv")
