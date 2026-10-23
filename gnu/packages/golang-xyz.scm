@@ -5352,7 +5352,7 @@ web server.")
 (define-public go-github-com-burntsushi-toml
   (package
     (name "go-github-com-burntsushi-toml")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -5361,7 +5361,7 @@ web server.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "075ay86gn99wlz26x7hp40s4lpc9r026pd2r0ap0pcrvb88inzy1"))))
+        (base32 "0iilgim9bbkmc06fw257l3fxmyfb3af36zmvg2qminwwzck59mx6"))))
     (build-system go-build-system)
     (arguments
      (list
