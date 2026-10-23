@@ -1167,14 +1167,14 @@ compatible build front-ends to build Poetry managed projects.")
   ;; (gnu packages python-build).
   (package
     (name "python-filelock-bootstrap")
-    (version "3.16.1")
+    (version "3.32.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "filelock" version))
        (sha256
         (base32
-         "0d8ljvmsfgriiqf5dqii91gfcpj7cpjrh8fnsvifaiyvspygnjf2"))))
+         "19qdcs3i3n2sdz6rpjp6a7gm5pi0ncdwgiaygvprl3qvh7cs7f1p"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; avoid extra dependencies.
     (native-inputs

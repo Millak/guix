@@ -7511,14 +7511,14 @@ Python's built-in @code{re} module with compatible interfaces.")
   ;; (gnu packages python-build).
   (package
     (name "python-filelock")
-    (version "3.16.1")
+    (version "3.32.7")          ;it's the last 3.* version
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "filelock" version))
        (sha256
         (base32
-         "0d8ljvmsfgriiqf5dqii91gfcpj7cpjrh8fnsvifaiyvspygnjf2"))))
+         "19qdcs3i3n2sdz6rpjp6a7gm5pi0ncdwgiaygvprl3qvh7cs7f1p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7530,7 +7530,7 @@ Python's built-in @code{re} module with compatible interfaces.")
            python-pytest
            python-pytest-asyncio
            python-pytest-mock
-           python-setuptools-scm))
+           python-pytest-timeout))
     (home-page "https://github.com/tox-dev/py-filelock")
     (synopsis "Platform independent file lock")
     (description "@code{filelock} contains a single module implementing
