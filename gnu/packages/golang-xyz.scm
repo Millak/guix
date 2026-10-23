@@ -22586,29 +22586,34 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 (define-public go-github-com-mattn-go-sixel
   (package
     (name "go-github-com-mattn-go-sixel")
-    (version "0.0.5")
+    (version "0.0.14")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mattn/go-sixel")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mattn/go-sixel")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0icv1mcavdw867s47kwvd16q19h2a4znph850lyq18d5z00kpjjs"))))
+        (base32 "1qg645wm7w7za0r0j8jv7wr7isdwhb7gj6zrp9h228y4diydvxz8"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/mattn/go-sixel"))
     (native-inputs
-     (list go-github-com-burntsushi-graphics-go)) ; for the CLI command
+     ;; For the CLI commands.
+     (list go-github-com-burntsushi-graphics-go
+           go-github-com-mattn-go-tty-v2
+           go-github-com-nfnt-resize))
     (propagated-inputs
-     (list go-github-com-soniakeys-quant))
+     (list go-github-com-soniakeys-quant
+           go-golang-org-x-sys
+           go-golang-org-x-term))
     (home-page "https://github.com/mattn/go-sixel")
     (synopsis "DRCS/Sixel Encoder/Decoder")
     (description
      "This package implements functionality to encode and decode
-@acronym{DRCS,Dynamically Redefinable Character Sets} Sixel.")
+@acronym{DRCS, Dynamically Redefinable Character Sets} Sixel.")
     (license license:expat)))
 
 (define-public go-github-com-mattn-go-sqlite3
@@ -39901,8 +39906,7 @@ tool."))))
   (package/inherit go-github-com-mattn-go-sixel
     (name "go-sixel")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-mattn-go-sixel)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:install-source? _ #t) #f)
        ((#:import-path _) "github.com/mattn/go-sixel/cmd/...")
