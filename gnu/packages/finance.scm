@@ -1328,13 +1328,7 @@ Ledger Blue/Nano S.")
                           "test_legacy_basic"
                           "test_unsigned"
                           "test_vendor_header")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("platformdirs>=4.4.0") "platformdirs")))))))
+                    " and not "))))
     (propagated-inputs
      (list python-click
            python-construct
