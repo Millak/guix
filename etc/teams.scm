@@ -1566,7 +1566,7 @@ the \"texlive\" importer."
   gnome release)
 
 (define-member (person "Ashvith Shetty"
-                       "ashvithshetty0010@zohomail.in"
+                       "ashvith@disroot.org"
                        "Ashvith")
   javascript xfce)
 
