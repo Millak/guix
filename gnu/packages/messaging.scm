@@ -1366,7 +1366,14 @@ basic IRC protocol, CTCP, and DCC connections.")
                                "test_rename_from_contact_with_forbidden_char"
                                "test_unassigned_code_points"
                                "test_control_chars_and_unassigned_code_points")
-                         " and not "))))
+                         " and not "))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     ;; Pillow 13: 92b5e8c5efdb2f9b83269bf0f0e048a3936c1ab7
+                     (("\"pillow~=.*\"") "\"pillow\"")))))))
     (propagated-inputs (list python-aiohttp
                              python-alembic
                              python-configargparse
