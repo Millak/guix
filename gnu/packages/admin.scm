@@ -169,6 +169,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
@@ -4459,7 +4460,7 @@ information tool.")
 (define-public fastfetch-minimal
   (package
     (name "fastfetch-minimal")
-    (version "2.66.0")
+    (version "2.70.0")
     (source
      (origin
        (method git-fetch)
@@ -4468,7 +4469,7 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19a5dmn13pnjygwqhj4frd8q0r9k2yb2j63s331wrhijy4837nxn"))
+        (base32 "0482hpmn02sfly16cknq08m36xhzsxzyjb2ngyr8my71vgsh3f2r"))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "src/3rdparty"))))
     (build-system cmake-build-system)
@@ -4479,7 +4480,7 @@ information tool.")
                                 "-DBUILD_FLASHFETCH=OFF"
                                 "-DBUILD_TESTS=ON"
                                 "-DINSTALL_LICENSE=OFF")))
-    (inputs (list yyjson))
+    (inputs (append (if (target-hurd?) (list hurd) '()) (list yyjson)))
     (native-inputs (list pkg-config python-minimal))
     (home-page "https://github.com/fastfetch-cli/fastfetch")
     (synopsis "Display system information in a stylized manner")
