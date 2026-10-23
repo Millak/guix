@@ -226,7 +226,7 @@ authentication and support for SSL3 and TLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method git-fetch)
@@ -240,7 +240,7 @@ authentication and support for SSL3 and TLS.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02vswv02cwqkysypj1nammh109in9qi2aflsrh883ls7w4w07svq"))))
+         "1hwqf0v5y5d45mai6r942frvyncgd169bm6n6h7mmsajwyxxlnff"))))
     (build-system meson-build-system)
     (inputs
      (list bluez
