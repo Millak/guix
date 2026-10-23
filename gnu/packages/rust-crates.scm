@@ -16712,9 +16712,7 @@ fn main() {
   (crate-source "hyphenation_commons" "0.8.4"
                 "1gq59h9h8597k04yl53an0j56cvb0in98pxpp27dkiz5mnifgssz"))
 
-(define rust-hypher-0.1.6 package:rust-hypher-0.1)
-
-(define rust-hypher-0.1.7 package:rust-hypher-0.1)
+(define rust-hypher-0.1.8 package:rust-hypher-0.1)
 
 (define rust-hyprland-0.3.13
   (crate-source "hyprland" "0.3.13"
@@ -90983,7 +90981,7 @@ fn main() {
                                  rust-httpdate-1.0.3
                                  rust-hyper-1.8.1
                                  rust-hyper-util-0.1.20
-                                 rust-hypher-0.1.6
+                                 rust-hypher-0.1.8
                                  rust-iana-time-zone-0.1.65
                                  rust-iana-time-zone-haiku-0.1.2
                                  rust-icu-collections-1.5.0
@@ -110792,7 +110790,7 @@ fn main() {
                                 rust-hayro-syntax-0.7.2
                                 rust-hayro-write-0.7.0
                                 rust-heck-0.5.0
-                                rust-hypher-0.1.7
+                                rust-hypher-0.1.8
                                 rust-iana-time-zone-0.1.65
                                 rust-iana-time-zone-haiku-0.1.2
                                 rust-icu-collator-2.2.0
