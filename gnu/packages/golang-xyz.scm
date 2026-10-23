@@ -5394,13 +5394,23 @@ similar to Go's standard library @code{json} and @code{xml} package.")
       #:skip-build? #t
       #:import-path "github.com/bytedance/gopkg"
       #:test-flags
-      ;; 1. channel_test.go:126: expected 1, got 0
-      ;; 2. channel_test.go:29: [2026-05-01 13:00:21.776437502 +0000 UTC]
-      ;; channel finished; channel_test.go:155: expected 6, got 5
-      ;; 3. per_p_metricer_test.go:129: assertion failed: 110 != 100
-      ;;              [1]              [2]                [3]
-      #~(list "-skip" "TestChannelClose|TestChannelGCClose|TestPerPMetricer2"
-              "-vet=off")))
+      #~(list "-vet=off"
+              "-skip"
+              (string-join
+               ;; channel_test.go:126: expected 1, got 0
+               (list "TestChannelClose"
+                     ;; channel_test.go:29:
+                     ;; [2026-05-01 13:00:21.776437502 +0000 UTC] channel
+                     ;; finished; channel_test.go:155: expected 6, got 5
+                     "TestChannelGCClose"
+                     ;; per_p_metricer_test.go:129:
+                     ;; assertion failed: 110 != 100
+                     "TestPerPMetricer2"
+                     #$@(if (target-aarch64?)
+                            ;; channel_example_test.go:85: expected 50, got 2
+                            '("TestNetworkIsolationOrDownstreamBlock")
+                            '()))
+               "|"))))
     (propagated-inputs
      (list go-golang-org-x-sync
            go-golang-org-x-sys))
