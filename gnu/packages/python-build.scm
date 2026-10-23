@@ -273,13 +273,13 @@ matching of file paths.")
   ;; (gnu packages python-build).
   (package
     (name "python-platformdirs-bootstrap")
-    (version "4.3.6")
+    (version "4.13.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "platformdirs" version))
        (sha256
-        (base32 "01xrwajkmxv3jp6n14y8jndkrhb48p9kxknkmwch8nw8pjnb4zrm"))))
+        (base32 "18488xa4gjqdd11vvfdr305s3dcsayahlfjw9c7pd4nkhzgim0q5"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; avoid introducing more dependencies.
     (native-inputs
