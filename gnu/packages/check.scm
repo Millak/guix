@@ -855,7 +855,7 @@ format.")
 (define-public cppcheck
   (package
     (name "cppcheck")
-    (version "2.21.0")
+    (version "2.22.0")
     (source (origin
       (method git-fetch)
       (uri (git-reference
@@ -863,7 +863,7 @@ format.")
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0skh0rpv7vkadwzisz0sgbag7mmp0s2p6273q849w2sb73jzdcyb"))
+       (base32 "0s17g3hdw64dylr8nyii3qy3h4m2c0zh8pm0hzwgdpv87h2cvfhx"))
        (patches (search-patches "cppcheck-fix-basedir-test.patch"))))
     (build-system cmake-build-system)
     (arguments
