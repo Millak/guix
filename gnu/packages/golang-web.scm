@@ -6983,7 +6983,7 @@ Dropbox API.")
 (define-public go-github-com-dunglas-httpsfv
   (package
     (name "go-github-com-dunglas-httpsfv")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -6992,11 +6992,18 @@ Dropbox API.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jy6wmbij9fh1q72j198afxxl1d6rjj6pigk6kp4qwjp8qr08hyd"))))
+        (base32 "001x44yvh01f7lbfsxyqhv7rsr28xk32s2j8x8dg23xw088hc46i"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/dunglas/httpsfv"))
+      #:import-path "github.com/dunglas/httpsfv"
+      ;; Some tests depend on external JSON test data from
+      ;; <https://github.com/httpwg/structured-field-tests>.
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestOfficialTestSuiteParsing"
+                             "TestOfficialTestSuiteSerialization")
+                       "|"))))
     (home-page "https://github.com/dunglas/httpsfv")
     (synopsis "Structured Field Values for HTTP in Go")
     (description
