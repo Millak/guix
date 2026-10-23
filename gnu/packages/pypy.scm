@@ -290,10 +290,10 @@ Python code natively, including C extensions.")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.python.org/pypy/"
-                                  "pypy3.11-v" version "-src.tar.gz"))
+                                  "pypy3.12-v" version "-src.tar.gz"))
               (sha256
                (base32
-                "17kklfgh202mpa6jgzmmv1f61md4pi8bcvq9vss2zmc7xq0jhpvy"))))
+                "1nkcalwgvfin7004r0n9rmq0arqxn8w1fwplfx3c03arkp9q4p4x"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)
@@ -334,13 +334,14 @@ Python code natively, including C extensions.")
                   (("libname = 'sqlite3'")
                    (format #f "libname = ~s"
                            (search-input-file inputs "lib/libsqlite3.so.0"))))
+                (substitute* "pypy/tool/release/package.py"
+                  ;; Don't download setuptools.
+                  (("subprocess\\.check_call\\([^]]*\"setuptools\"\\]\\)")
+                   "pass"))
                 (substitute* '("lib-python/3/subprocess.py")
                   ;; Fix shell path
                   (("/bin/sh")
-                   (search-input-file inputs "/bin/sh")))
-                (substitute* '("lib-python/3/distutils/unixccompiler.py")
-                  ;; gcc-toolchain does not provide symlink cc -> gcc
-                  (("\"cc\"") (format #f "~s" #$(cc-for-target))))))
+                   (search-input-file inputs "/bin/sh")))))
             (replace 'build
               (lambda _
                 (with-directory-excursion "pypy/goal"
@@ -381,21 +382,16 @@ Python code natively, including C extensions.")
                     (for-each
                      (lambda (x)
                        (delete-file-recursively (string-append
-                                                 "lib/pypy3.11/" x)))
-                     '("tkinter/test"
-                       "test"
-                       "lib2to3/tests"
-                       "idlelib/idle_test"
-                       "distutils/tests"
-                       "ctypes/test"
-                       "unittest/test"))
+                                                 "lib/pypy3.12/" x)))
+                     '("test"
+                       "idlelib/idle_test"))
                     ;; Patch shebang referencing python.
-                    (substitute* '("lib/pypy3.11/cgi.py"
-                                   "lib/pypy3.11/encodings/rot_13.py")
+                    (substitute* '("lib/pypy3.12/cgi.py"
+                                   "lib/pypy3.12/encodings/rot_13.py")
                       ((shebang-match-python) shebang-pypy3))
                     (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                      (substitute* '("lib/pypy3.11/_md5.py"
-                                     "lib/pypy3.11/_sha1.py")
+                      (substitute* '("lib/pypy3.12/_md5.py"
+                                     "lib/pypy3.12/_sha1.py")
                         ((shebang-match-python) shebang-pypy3))))
                   (copy-recursively dist-dir #$output))))))))
     (native-inputs
