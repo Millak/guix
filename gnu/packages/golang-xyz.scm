@@ -31421,7 +31421,7 @@ standard library.")
 (define-public go-github-com-templexxx-xorsimd
   (package
     (name "go-github-com-templexxx-xorsimd")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -31430,7 +31430,7 @@ standard library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01227dcf5mjc2v9f3shvqvbx3vxz89la7imjnjfmas61fcjwdlj5"))))
+        (base32 "1f5zynvi07jx6lbv3lxwkfsf27vxzj7kmgf7hnvybhqcr31338gc"))))
     (build-system go-build-system)
     (arguments
      (list
