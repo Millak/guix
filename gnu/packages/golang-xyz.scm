@@ -22037,6 +22037,33 @@ generation.")
 (define-public go-github-com-lyft-protoc-gen-star-v2-next
   go-github-com-lyft-protoc-gen-star-v2)
 
+(define-public go-github-com-mackerelio-go-osstat
+  (package
+    (name "go-github-com-mackerelio-go-osstat")
+    (version "0.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mackerelio/go-osstat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011nfcr7lhr6fzh75zbb08z3z1vi594x8f0zsw431zawlg7kqbd5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/mackerelio/go-osstat"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/mackerelio/go-osstat")
+    (synopsis "OS system statistics library for Go")
+    (description
+     "This is a library to get system metrics like cpu load and memory usage.
+The library is created for @url{https://github.com/mackerelio/mackerel-agent,
+mackerel-agent}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
