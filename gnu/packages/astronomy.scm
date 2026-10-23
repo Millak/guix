@@ -5253,10 +5253,6 @@ Cesium.")
               "--deselect=dkist/net/tests/test_client.py::test_fetch_with_headers")
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("platformdirs>=4.5") "platformdirs>=4.3.6"))))
           (add-before 'sanity-check 'set-home-env
             (lambda _
               (setenv "HOME" "/tmp"))))))
