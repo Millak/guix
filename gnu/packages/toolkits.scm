@@ -313,8 +313,12 @@ standard operating system features.")
 (define-public imgui-with-sdl2
   (package/inherit imgui
     (name "imgui-with-sdl2")
+    ;; XXX: “replace” keeps the sdl3 input label, which tricks
+    ;; “this-package-input” as used in the make-flags of imgui. Rather, use
+    ;; “delete” and “append”.
     (inputs (modify-inputs inputs
-              (replace "sdl3" sdl2)))))
+              (delete "sdl3")
+              (append sdl2)))))
 
 (define-public imgui-1.91
   (package
