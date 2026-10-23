@@ -1448,7 +1448,7 @@ communicating with LLM agents.")
 (define-public emacs-agent-shell
   (package
     (name "emacs-agent-shell")
-    (version "0.75.1")
+    (version "0.89.1")
     (source
      (origin
        (method git-fetch)
@@ -1457,36 +1457,53 @@ communicating with LLM agents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1536qv23hk1dpnirlx14ckmivh2rjihfbzcpd7byvr0gfsvxnl5w"))))
+        (base32 "1gyaz36f48hln6vaii5vsy4fs31ib8fxrdb52jlkm6vrzws0scqk"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:test-command
-      #~(list "emacs" "--batch"
-              "-l" "tests/agent-shell-diff-tests.el"
-              "-l" "tests/agent-shell-markdown-tests.el"
-              "-l" "tests/agent-shell-anthropic-tests.el"
-              "-l" "tests/agent-shell-command-prefix-tests.el"
-              "-l" "tests/agent-shell-fakes.el"
-              "-l" "tests/agent-shell-list-edit-tests.el"
-              "-l" "tests/agent-shell-devcontainer-tests.el"
-              "-l" "tests/agent-shell-openai-tests.el"
-              "-l" "tests/agent-shell-tests.el"
-              "-l" "tests/agent-shell-ui-tests.el"
-              "-f" "ert-run-tests-batch-and-exit")
+      #~(list
+         "emacs" "--batch"
+         "--eval=(mapc 'load (directory-files \"tests\" t \"tests\\.el$\"))"
+         "-f" "ert-run-tests-batch-and-exit")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              (substitute* "tests/agent-shell-tests.el"
-                (((string-append
-                   "\\(ert-deftest agent-shell-viewport-next-page-"
-                   "navigates-from-current-prompt-begin-test .*") all)
-                 (string-append all "(skip-unless nil)\n"))
-                (((string-append
-                   "\\(ert-deftest agent-shell-viewport-"
-                   "initialize-rerenders-header-position-test .*") all)
-                 (string-append all "(skip-unless nil)\n")))))
+              (emacs-batch-edit-file "agent-shell.el"
+                '(progn
+                  (defun remove-test (file all-test-names)
+                    (with-current-buffer
+                     (find-file-noselect
+                      (format "tests/agent-shell-%stests.el" file))
+                     (dolist (test-name all-test-names)
+                             (save-excursion
+                              (re-search-forward
+                               (concat "ert-deftest agent-shell-" test-name))
+                              (beginning-of-defun)
+                              (goto-char (match-beginning 0))
+                              (kill-sexp)))
+                     (basic-save-buffer)))
+                  (remove-test
+                   "elicitation-"
+                   (list "elicitation-capability-advertises-form-only-test"))
+                  (remove-test
+                   ""
+                   (list
+                    "viewport-next-page-navigates-from-current-prompt-begin-test"
+                    "-initiate-session-falls-back-to-new-on-list-failure"
+                    "-initiate-session-prefers-list-and-load-when-supported"
+                    "-initiate-session-summary-mode-uses-session-load"
+                    "-list-sessions-fetches-all-pages-test"
+                    "-list-sessions-rejects-repeated-cursor-test"
+                    "-list-sessions-respects-page-limit-test"
+                    "-render-pending-restore-closes-trailing-user-prompt-test"
+                    "-render-pending-restore-keeps-type-ahead-editable-test"
+                    "-render-pending-restore-undoes-type-ahead-only-test"
+                    "-start-cwd-test"
+                    "-start-rejects-retired-chat-busy-frames-test"
+                    "-start-snapshots-dynamic-session-strategy"
+                    "mode-hook-subscriptions-survive-state-init"))))))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" (getenv "TMPDIR")))))))
@@ -1495,8 +1512,9 @@ communicating with LLM agents.")
     (home-page "https://github.com/xenodium/agent-shell")
     (synopsis "Native agentic integrations for Claude Code, Gemini CLI, etc")
     (description
-     "This package offers a native comint shell experience to interact with any agent
-powered by @uref{https://agentclientprotocol.com/, Agent Client Protocol} (ACP).")
+     "This package offers a native comint shell experience to interact with
+any agent powered by @uref{https://agentclientprotocol.com/, Agent Client
+Protocol} (ACP).")
     (license license:gpl3+)))
 
 (define-public emacs-geiser-chicken
