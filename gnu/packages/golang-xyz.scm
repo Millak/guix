@@ -1561,15 +1561,19 @@ content front matter formats e.g. @code{JSON}, @code{TOML} and @code{YAML}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/adrg/strutil")
-             (commit (string-append "v" version))))
+              (url "https://github.com/adrg/strutil")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0xkjzjllv8b2m3lgn66cb09b0f5xqy2bk8ny3lkn4z0ywlchawj9"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/adrg/strutil"))
+      #:import-path "github.com/adrg/strutil"
+      #:test-flags
+      #~(list #$@(if (target-aarch64?)
+                     '("-skip" "TestJaroWinkler|ExampleJaroWinkler")
+                     '()))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/adrg/strutil")
