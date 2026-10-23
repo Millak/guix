@@ -1085,26 +1085,30 @@ compile does not support generics.")
      (list
       #:skip-build? #t
       #:test-flags
-      #~(list "-skip" (string-join
-                       (append
-                        ;; Permission denied to read or write go.mod file.
-                        (list "TestDocs/Modules"
-                              "TestGobind/Modules"
-                              ;; build_test.go:100: cannot set -o when
-                              ;; building non-main package
-                              "TestAndroidBuild"
-                              ;; iOS test fails; bind_test.go:460: error
-                              ;; message does not contain
-                              ;; "go.dev/issue/77183".
-                              "TestBindMissingMobileModule")
-                        ;; archNDK() in cmd/gomobile/env.go only maps
-                        ;; GOARCH 386 and amd64 (plus arm64 on darwin)
-                        ;; and panics otherwise, so TestInit crashes
-                        ;; with "unsupported GOARCH" on non-x86 Linux.
-                        (if #$(target-x86?)
+      #~(list "-skip"
+              (string-join
+               ;; Permission denied to read or write go.mod file.
+               (list "TestDocs/Modules"
+                     "TestGobind/Modules"
+                     ;; build_test.go:100: cannot set -o when building
+                     ;; non-main package
+                     "TestAndroidBuild"
+                     ;; iOS test fails; bind_test.go:460: error message does
+                     ;; not contain "go.dev/issue/77183".
+                     "TestBindMissingMobileModule"
+                     ;; archNDK() in cmd/gomobile/env.go only maps GOARCH 386
+                     ;; and amd64 (plus arm64 on darwin) and panics otherwise,
+                     ;; so TestInit crashes with "unsupported GOARCH" on
+                     ;; non-x86 Linux.
+                     #$@(if (target-x86?)
                             '()
-                            (list "TestInit")))
-                       "|"))
+                            '("TestInit"))
+                     ;; panic: unsupported GOARCH: arm64 [recovered,
+                     ;; repanicked]
+                     #$@(if (target-aarch64?)
+                            '("TestBuildEnvInitCleanup")
+                            '()))
+               "|"))
       #:import-path "golang.org/x/mobile"
       #:phases
       #~(modify-phases %standard-phases
