@@ -563,17 +563,19 @@ PyPI (pypi.org).")
 (define-public python-typeguard
   (package
     (name "python-typeguard")
-    (version "4.4.4")
+    (version "4.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "typeguard" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/agronholm/typeguard")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
+        (base32 "0pv701x5d9v6jp589n8ixbgbxj63m5dxa2j6amq1275dbcdgd5av"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags #~(list "--ignore-glob=tests/mypy/*.py")))
+     (list #:test-flags #~(list "--ignore=tests/mypy/")))
     (native-inputs
      (list python-pytest-bootstrap
            python-setuptools-bootstrap
