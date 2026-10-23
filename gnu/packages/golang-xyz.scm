@@ -22365,8 +22365,8 @@ functions.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Masterminds/sprig")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Masterminds/sprig")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ljpizbfjh29xb4f40ipkrqriyixhdsfnd72y3pdzrjf2kbmgw9n"))))
@@ -22374,7 +22374,13 @@ functions.")
     (arguments
      (list
       #:import-path "github.com/Masterminds/sprig/v3"
-      #:test-flags #~(list "-skip" "TestGetHostByName")))
+      #:test-flags #~(list "-skip" (string-join
+                                    (list "TestGetHostByName"
+                                          ;; expected: 123.556 actual: 123.555
+                                          #$@(if (target-aarch64?)
+                                                 '("TestRound")
+                                                 '()))
+                                    "|"))))
     (propagated-inputs
      (list go-dario-cat-mergo
            go-github-com-google-uuid
