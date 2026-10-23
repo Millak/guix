@@ -36264,7 +36264,9 @@ written in YAML or JSON.")
                      "TestServerSelectionSpecInWindow"
                      "TestTimeCodec"
                      "TestTopologyConstructionLogging"
-                     "TestURIOptionsSpec")
+                     "TestURIOptionsSpec"
+                     ;; Test is time sensitive.
+                     "TestWithServerSelectionTimeout")
                "|"))
       #:test-subdirs
       ;; Test submodules which don't require running MongoDB instance.
