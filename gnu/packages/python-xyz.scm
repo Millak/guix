@@ -7538,24 +7538,8 @@ a platform independent file lock in Python, which provides a simple way of
 inter-process communication.")
     (license license:unlicense)))
 
-(define-public python-filelock-next
-  (package
-    (inherit python-filelock)
-    (name "python-filelock")
-    (version "3.20.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "filelock" version))
-       (sha256
-        (base32 "1x0k9hrk8gr91hfb6ss6cwlq4p0pvi40nsg6skhl5gn69qxr87ki"))))
-    (native-inputs
-     (list python-hatch-vcs
-           python-hatchling
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-mock
-           python-pytest-timeout))))
+;; XXX: Deprecated on <2026-10-23>.
+(define-public python-filelock-next python-filelock)
 
 (define-public python-seedir
   (package

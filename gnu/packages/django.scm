@@ -1195,7 +1195,7 @@ for Django sites.")
            python-setuptools))
     (propagated-inputs
      (list python-django
-           python-filelock-next))
+           python-filelock))
     (home-page "https://github.com/pinax/django-mailer")
     (synopsis "Mail queuing and management for Django")
     (description
