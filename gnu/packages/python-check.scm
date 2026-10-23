@@ -5437,7 +5437,6 @@ when writing automated tests in Python.")
             (lambda _
               (substitute* "pyproject.toml"
                 (("cachetools>=7.0.1") "cachetools")
-                (("filelock>=3.24") "filelock")
                 (("virtualenv>=20.36.1") "virtualenv"))))
           (add-before 'check 'pre-check
             (lambda _
