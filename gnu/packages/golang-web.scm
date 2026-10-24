@@ -20118,59 +20118,6 @@ platform.")
 implementation with sing.")
     (license license:gpl3+)))
 
-(define-public go-github-com-santhosh-tekuri-jsonschema-v5
-  (package
-    (name "go-github-com-santhosh-tekuri-jsonschema-v5")
-    (version "5.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/santhosh-tekuri/jsonschema")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0fjklx6sik1pp4qpmzsvwfmavd1m9pcsyap1wvajhm2d8wx3vnh0"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately.
-            (delete-file-recursively "cmd")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/santhosh-tekuri/jsonschema/v5"
-      #:test-flags
-      ;; Figure out why these test patterns fail.
-      #~(list "-skip" "TestDraft2020"
-              "-vet=off")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'copy-json-schema-specs
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (copy-recursively
-                 (string-append #$(this-package-native-input
-                                   "specification-json-schema-test-suite")
-                                "/share/tests")
-                 "testdata/JSON-Schema-Test-Suite/tests")
-                (copy-recursively
-                 (string-append #$(this-package-native-input
-                                   "specification-json-schema-test-suite")
-                                "/share/remotes")
-                 "testdata/JSON-Schema-Test-Suite/remotes"))))
-          (add-after 'check 'remove-json-schema-specs
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "testdata")))))))
-    (native-inputs
-     (list specification-json-schema-test-suite))
-    (home-page "https://github.com/santhosh-tekuri/jsonschema")
-    (synopsis "JSONSchema validation using Golang")
-    (description
-     "Package jsonschema provides json-schema compilation and validation.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-santhosh-tekuri-jsonschema-v6
   (package
     (name "go-github-com-santhosh-tekuri-jsonschema-v6")
