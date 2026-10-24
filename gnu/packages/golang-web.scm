@@ -20073,36 +20073,62 @@ implementation with sing.")
 
 (define-public go-github-com-santhosh-tekuri-jsonschema-v6
   (package
-    (inherit go-github-com-santhosh-tekuri-jsonschema-v5)
     (name "go-github-com-santhosh-tekuri-jsonschema-v6")
     (version "6.0.2")
     (source
-     (origin (inherit
-              (package-source go-github-com-santhosh-tekuri-jsonschema-v5))
-             (method git-fetch)
-             (uri (git-reference
-                    (url "https://github.com/santhosh-tekuri/jsonschema")
-                    (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32 "0d1mpp77a9080r7n45wi2avf2zpgjyvxk5zqzxdyd8q0rvb811h0"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/santhosh-tekuri/jsonschema")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d1mpp77a9080r7n45wi2avf2zpgjyvxk5zqzxdyd8q0rvb811h0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-santhosh-tekuri-jsonschema-v5)
-       ((#:import-path _) "github.com/santhosh-tekuri/jsonschema/v6")
-       ((#:test-flags _) #~'())
-       ((#:phases _ '%standard-phases)
-        #~(modify-phases %standard-phases
+     (list
+      #:import-path "github.com/santhosh-tekuri/jsonschema/v6"
+      #:phases
+      #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-example-tests
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 ;; Tests try to download from
                 ;; https://raw.githubusercontent.com/santhosh-tekuri/boon\
                 ;; /main/tests/examples/schema.json
-                (delete-file "example_http_test.go"))))))))
+                (delete-file "example_http_test.go"))))
+          (add-after 'unpack 'copy-json-schema-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (copy-recursively
+                 (string-append #$(this-package-native-input
+                                   "specification-json-schema-test-suite")
+                                "/share/tests")
+                 "testdata/JSON-Schema-Test-Suite/tests")
+                (copy-recursively
+                 (string-append #$(this-package-native-input
+                                   "specification-json-schema-test-suite")
+                                "/share/remotes")
+                 "testdata/JSON-Schema-Test-Suite/remotes"))))
+          (add-after 'check 'remove-json-schema-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
+    (native-inputs
+     (list specification-json-schema-test-suite))
     (propagated-inputs
      (list go-github-com-dlclark-regexp2
-           go-golang-org-x-text))))
+           go-golang-org-x-text))
+    (home-page "https://github.com/santhosh-tekuri/jsonschema")
+    (synopsis "JSONSchema validation using Golang")
+    (description
+     "Package jsonschema provides json-schema compilation and validation.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-sassoftware-relic-v7
   (package
