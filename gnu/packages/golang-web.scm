@@ -4778,7 +4778,6 @@ network,using GOCACHEPROG.")
 
 (define-public go-github-com-brianvoe-gofakeit-v7
   (package
-    (inherit go-github-com-brianvoe-gofakeit-v6)
     (name "go-github-com-brianvoe-gofakeit-v7")
     (version "7.14.0")
     (source
@@ -4790,6 +4789,7 @@ network,using GOCACHEPROG.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0wvp9h3wyx131y2jk48r3ymhzq3p16isxa1a6chw410ixxi497lh"))))
+    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/brianvoe/gofakeit/v7"
@@ -4819,7 +4819,12 @@ network,using GOCACHEPROG.")
                                       "ExampleStruct_array"
                                       "ExampleFaker_Struct_array")
                                     '()))
-                       "|"))))))
+                       "|"))))
+    (home-page "https://github.com/brianvoe/gofakeit")
+    (synopsis "Random fake data generator written in Go")
+    (description
+     "This package provides a set of functions that generate random data.")
+    (license license:expat)))
 
 (define-public go-github-com-brunoscheufler-aws-ecs-metadata-go
   (package
