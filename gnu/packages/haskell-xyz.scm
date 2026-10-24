@@ -13055,6 +13055,25 @@ datatypes reachable from an initial datatype, and passing these names to some
 function which generates instances.")
     (license license:bsd-3)))
 
+(define-public ghc-tidal-core
+  (package
+    (name "ghc-tidal-core")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "tidal-core" version))
+       (sha256
+        (base32 "1wgzfmhmw5f0jzmrjksr84fbc2yhm836b45vyr9mdzgrs8872v9j"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "tidal-core")))
+    (inputs (list ghc-colour ghc-hspec))
+    (home-page "https://hackage.haskell.org/package/tidal-core")
+    (synopsis "Core pattern library for TidalCycles")
+    (description "This package provides the core pattern library for
+TidalCycles, a pattern language for improvised music.")
+    (license license:gpl3+)))
+
 (define-public ghc-tidal-link
   (package
     (name "ghc-tidal-link")
