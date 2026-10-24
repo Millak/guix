@@ -2495,7 +2495,7 @@ comparing large files in batches.")
 (define-public emacs-package-build
   (package
     (name "emacs-package-build")
-    (version "5.0.0")
+    (version "5.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2504,7 +2504,7 @@ comparing large files in batches.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00v3fi2ssq9z9z5qf40b49z2yw9dsjkhcdfzy7qk1wdgv0pjbq0h"))))
+                "1rb7p9y4qzd4di2avgq549j38j51adznjrldhljlv4sghv0mir84"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f))  ; No tests.
