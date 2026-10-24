@@ -6703,40 +6703,6 @@ package provides an API for comparing Golden files.")
      "Package strings provides utility functions for working with strings in Go.")
     (license license:expat)))
 
-(define-public go-github-com-charmbracelet-x-input
-  (package
-    (name "go-github-com-charmbracelet-x-input")
-    (version "0.3.7")
-    (source
-     (origin
-       (method git-fetch/lfs)
-       (uri (git-reference
-              (url "https://github.com/charmbracelet/x")
-              (commit (go-version->git-ref version
-                                           #:subdir "input"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yp3hx5b4z61yfbgphabhz16v8alfwd7nwyq40bzls4hcg91hqw5"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "ansi")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/charmbracelet/x/input"
-      #:unpack-path "github.com/charmbracelet/x"))
-    (propagated-inputs
-     (list go-github-com-charmbracelet-x-ansi
-           go-github-com-muesli-cancelreader
-           go-github-com-rivo-uniseg
-           go-github-com-xo-terminfo
-           go-golang-org-x-sys))
-    (home-page "https://github.com/charmbracelet/x")
-    (synopsis "Terminal event input handler and driver")
-    (description
-     "This package provides a terminal event input handler and driver.")
-    (license license:expat)))
-
 (define-public go-github-com-charmbracelet-x-term
   (package
     (name "go-github-com-charmbracelet-x-term")
