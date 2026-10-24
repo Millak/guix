@@ -6123,13 +6123,13 @@ duration of a block in MiniTest.")
 (define-public ruby-minitest-bacon
   (package
     (name "ruby-minitest-bacon")
-    (version "1.0.3")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest-bacon" version))
               (sha256
                (base32
-                "0zhdwcl6bgha61qiyfvr7zs7ywaxc33wmj9xhxl8jdmpdvifvfaj"))))
+                "0g77mda029is4qdnrvgy8rglrrkbsahazmwqas92ay3rpilaa4vs"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-hoe))
