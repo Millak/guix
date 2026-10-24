@@ -15957,14 +15957,14 @@ and social networks to better index and display your site's content.")
 (define-public ruby-taskjuggler
   (package
     (name "ruby-taskjuggler")
-    (version "3.8.1")
+    (version "3.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "taskjuggler" version))
        (sha256
         (base32
-         "16d5vgz54all8vl3haqy6j69plny3np4kc3wq7wy3xa3i0h7v60z"))))
+         "0mq8991sxdrsmwkfqbpzc6x4gfs03aia7zsy7n0yw21km42lj7ln"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-rspec tzdata-for-tests))
     (propagated-inputs
@@ -15985,7 +15985,10 @@ and social networks to better index and display your site's content.")
                     ;; test_BatchProcessor fails with exception:
                     ;; run> terminated with exception (report_on_exception is true)
                     (lambda _
-                      (delete-file "test/test_BatchProcessor.rb"))))))
+                      (delete-file "test/test_BatchProcessor.rb")))
+                  (add-before 'check 'suppress-warnings
+                    (lambda _
+                      (setenv "RUBYOPT" "--disable-frozen-string-literal"))))))
     (synopsis
      "Project management command line tool with a domain specific language")
     (description
