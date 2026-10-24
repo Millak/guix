@@ -6271,32 +6271,6 @@ compatible terminals.  You can create your own stylesheet or use one of our
 glamorous default themes.")
     (license license:expat)))
 
-;; For chezmoi@2.1.0
-(define-public go-github-com-charmbracelet-glamour-0.3
-  (hidden-package (package (inherit go-github-com-charmbracelet-glamour)
-   (name "go-github-com-charmbracelet-glamour")
-   (version "0.3.0")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/charmbracelet/glamour")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0fk7wvn0yvsvhnwz6g4q4qb42r513b66131cgk8ahzs3va6flxk3"))))
-    (arguments
-     (list
-      #:tests? #f
-      #:import-path "github.com/charmbracelet/glamour"))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs
-                     go-github-com-charmbracelet-glamour)
-       (replace "go-github-com-alecthomas-chroma-v2"
-         go-github-com-alecthomas-chroma)
-       (append go-github-com-dlclark-regexp2
-               go-github-com-olekukonko-tablewriter-0.0.5))))))
-
 (define-public go-github-com-charmbracelet-harmonica
   (package
     (name "go-github-com-charmbracelet-harmonica")
