@@ -298,7 +298,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.12")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -307,20 +307,31 @@ human.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mh5h1dxfpqc196ai3kzi10f33pl6028rig6j7b81z5q4936niiw"))))
+        (base32 "19v1bkjz4ra7akfmz3f8skydcrz2dvnsgr52dw41xp8xqb3yi1lv"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled sources.
+        '(begin
+           (apply delete-all-but "src/thirdparty"
+                  ;; Keep ykcore, which is forked from the now-unmaintained
+                  ;; yubikey-personalization, with downstream modifications.
+                  '("CMakeLists.txt"
+                    "ykcore"))
+           ;; Provided by libyubikey.
+           (delete-file "src/thirdparty/ykcore/yubikey.h")))))
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(append
          (list "-DKEEPASSXC_BUILD_TYPE=Release"
-               "-DWITH_XC_ALL=YES"
-               "-DWITH_XC_UPDATECHECK=NO")
+               "-DKPXC_FEATURE_UPDATES=NO")
          #$(if (member (%current-system)
                        (package-transitive-supported-systems
                         ruby-asciidoctor/minimal))
                #~'()
-               #~(list "-DWITH_XC_DOCS=NO")))
+               #~(list "-DKPXC_FEATURE_DOCS=NO")))
       ;; Entries have recently become sorted per the locale, and
       ;; causes testentrymodel to fail when using the C locale (see:
       ;; https://github.com/keepassxreboot/keepassxc/issues/11813).
@@ -337,48 +348,38 @@ human.")
               ;; Note: Use 'QString::fromUtf8' rather than 'QStringLiteral' so
               ;; that the store reference is stored as ASCII instead of
               ;; UTF-16, which would be invisible to the GC's scanner.
-              (substitute* "src/cli/Utils.cpp"
-                (("QStringLiteral\\(\"xclip\"\\)")
-                 (string-append
-                  "QString::fromUtf8(\""
-                  (search-input-file inputs "bin/xclip")
-                  "\")"))
-                (("QStringLiteral\\(\"wl-copy\"\\)")
-                 (string-append
-                  "QString::fromUtf8(\""
-                  (search-input-file inputs "bin/wl-copy")
-                  "\")")))
-              (substitute* "src/gui/Clipboard.cpp"
-                (("\"wl-copy\"")
-                 (format #f "~s" (search-input-file inputs "bin/wl-copy")))))))))
+              (substitute* '("src/cli/Utils.cpp"
+                             "src/gui/osutils/nixutils/NixUtils.cpp")
+                (("QStringLiteral\\(\"(wl-copy|xclip)\"\\)" _ cmd)
+                 (format #f "QString::fromUtf8(~s)"
+                         (search-input-file inputs
+                                            (in-vicinity "bin" cmd))))))))))
     (native-inputs
      (append
-      (list qttools-5)
+      (list pkg-config qttools)
       (if (member (%current-system)
                   (package-transitive-supported-systems
                    ruby-asciidoctor/minimal))
           (list ruby-asciidoctor/minimal)
           '())))
     (inputs
-     (list argon2
-           botan
-           libgcrypt
-           libsodium                    ; XC_BROWSER
+     (list botan
+           keyutils
            libusb
-           libyubikey                   ; XC_YUBIKEY
            libxi
+           libxkbcommon
            libxtst
+           libyubikey
            minizip
            pcsc-lite
            qrencode
-           qtsvg-5
-           qtwayland-5
-           qtx11extras
+           qtsvg
+           qtwayland
            readline
            wl-clipboard                 ;for 'wl-copy'
            xclip                        ;for 'xclip'
-           yubikey-personalization      ; XC_YUBIKEY
-           zlib))
+           zlib
+           zxcvbn-c))
     (home-page "https://keepassxc.org")
     (synopsis "Password manager")
     (description "KeePassXC is a password manager or safe which helps you to
