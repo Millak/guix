@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Nemin <bergengocia@protonmail.com>
+;;; Copyright © 2026 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1752,6 +1753,41 @@ running;
 @item background image for eye candy.
 @end itemize")
     (license license:gpl2+)))
+
+(define-public vttest
+  (package
+    (name "vttest")
+    (version "20251205")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://invisible-island.net/archives/vttest/vttest-" version
+             ".tgz"))
+       (sha256
+        (base32 "1k3ppy2ajsipyl5n7744f4d9042plmqi59kgarn3yspymvwqcs6d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; no automated test suite; manual/interactive only
+      #:configure-flags
+      #~(list (string-append "--prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file "vttest"
+                            (string-append #$output "/bin"))
+              (install-file "vttest.1"
+                            (string-append #$output "/share/man/man1")))))))
+    (home-page "https://invisible-island.net/vttest/")
+    (synopsis "Test VT100-compatible terminals and terminal emulators")
+    (description
+     "Vttest tests the functionality of VT100-compatible terminals and
+terminal emulators.  It exercises display and keyboard handling, including
+ escape-sequence processing, and provides additional tests for VT220,
+VT420, VT520, and xterm features.")
+    (license license:x11)))
 
 ;; See https://github.com/wezterm/wezterm/blob/main/README-DISTRO-MAINTAINER.md
 (define-public wezterm
