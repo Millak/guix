@@ -5893,7 +5893,6 @@ the source code, it only prints out style mistakes.")
 
 (define-public go-gopkg-in-dnaeon-go-vcr-v4
   (package
-    (inherit go-gopkg-in-dnaeon-go-vcr-v3)
     (name "go-gopkg-in-dnaeon-go-vcr-v4")
     (version "4.0.7")
     (source
@@ -5905,6 +5904,7 @@ the source code, it only prints out style mistakes.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1q84gcwsbnk1i6a540rf9220j80wmfm5gpxhgq5bgw6a18lmbvkk"))))
+    (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
@@ -5923,7 +5923,14 @@ the source code, it only prints out style mistakes.")
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))
     (propagated-inputs
-     (list go-go-yaml-in-yaml-v4))))
+     (list go-go-yaml-in-yaml-v4))
+    (home-page "https://github.com/dnaeon/go-vcr")
+    (synopsis "Record and replay your HTTP interactions")
+    (description
+     "@@code{go-vcr} simplifies testing by recording your HTTP interactions
+and replaying them in future runs in order to provide fast, deterministic and
+accurate testing of your code.")
+    (license license:bsd-2)))
 
 (define-public go-gopkg-in-h2non-gock-v1
   (package/inherit go-github-com-h2non-gock
