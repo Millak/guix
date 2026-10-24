@@ -10243,28 +10243,6 @@ Protocol (DAP) specification.")
 GitHub API v3.")
     (license license:bsd-3)))
 
-;; For chezmoi@2.1.0
-(define-public go-github-com-google-go-github-v36
-  (package
-    (inherit go-github-com-google-go-github-v31)
-    (name "go-github-com-google-go-github-v36")
-    (version "36.0.0")
-    (source
-     (origin
-       (inherit (package-source go-github-com-google-go-github-v31))
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/google/go-github")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "041a1rmi7pipimxiwjnsd0dngzb4djmcz8a8x4xv53d3373szaj6"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:import-path _) "github.com/google/go-github/v36")))
-    (native-inputs
-     (list go-github-com-google-go-cmp))))
-
 (define-public go-github-com-google-go-github-v61
   (package
     (inherit go-github-com-google-go-github-v31)
