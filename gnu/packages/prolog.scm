@@ -133,7 +133,7 @@ manner.  It also features an interactive interpreter.")
             (if (%current-target-system)
                 (list this-package)
                 '())))
-    (home-page "https://github.com/mthom/scryer-prolog")
+    (home-page "https://www.scryer.pl/")
     (synopsis "Modern Prolog implementation written mostly in Rust")
     (description
      "Scryer Prolog aims to provide an open source industrial strength
