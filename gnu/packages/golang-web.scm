@@ -10177,7 +10177,7 @@ GitHub API v3.")
 
 (define-public go-github-com-google-go-github-v61
   (package
-    (inherit go-github-com-google-go-github-v50)
+    (inherit go-github-com-google-go-github-v31)
     (name "go-github-com-google-go-github-v61")
     (version "61.0.0")
     (source
@@ -10203,6 +10203,8 @@ GitHub API v3.")
        ((#:import-path _) "github.com/google/go-github/v61")
        ((#:test-flags test-flags #~(list))
         #~(list "-vet=off"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-github-com-google-go-querystring))))
 
