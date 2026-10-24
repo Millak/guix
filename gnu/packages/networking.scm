@@ -294,7 +294,7 @@ protocols.")
 (define-public geteduroam-cli
   (package
     (name "geteduroam-cli")
-    (version "0.14")
+    (version "0.15")
     (source
      (origin
        (method git-fetch)
@@ -303,7 +303,7 @@ protocols.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d55h22n855zn3cnl6a6k6qh03x91bsrvasyk5baxqcsr5mrpz36"))))
+        (base32 "1a1m9w50amn519qi794q3lfzhvsb644x48ahp33blh95b2ahpnwg"))))
     (build-system go-build-system)
     (arguments
      (list
