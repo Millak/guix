@@ -1423,7 +1423,7 @@ for multiple backends.")
 (define-public emacs-acp
   (package
     (name "emacs-acp")
-    (version "0.14.3")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -1432,7 +1432,7 @@ for multiple backends.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fz2vlb1a6d8y9yvbgfx5zh5l8kn7j074s9q2ji28lwn4m34c5ys"))))
+        (base32 "039zqvhd1lhfk3dhnngzzxj439avn7pgh4mpvjy9ichxyyw7gv98"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command
                      #~(list "ert-runner" "tests")))
