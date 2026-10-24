@@ -3322,7 +3322,7 @@ IPFIX, RSPAN, CLI, LACP, 802.1ag).")
 (define-public python-ipy
   (package
     (name "python-ipy")
-    (version "1.01")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -3331,7 +3331,7 @@ IPFIX, RSPAN, CLI, LACP, 802.1ag).")
              (commit (string-append "IPy-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "106rirmirlpb5ppznn3fd8189a8z02zf99jvk6j4hcq05ajclfc6"))))
+        (base32 "0nmily9bzj6al0nd3pnx5lv176nfi2zbyhq6vfl8w3is4lbk90c3"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/autocracy/python-ipy/")
