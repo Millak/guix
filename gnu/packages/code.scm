@@ -711,7 +711,7 @@ results and determine build stability.")
                (("/bin/(bash|sh)" shell)
                 (search-input-file inputs shell))))))))
     (inputs
-     (list curl elfutils libelf openssl zlib))
+     (list bash-minimal curl elfutils libelf openssl zlib))
     (native-inputs
      (list python))
     (home-page "https://github.com/SimonKagstrom/kcov")
