@@ -5869,28 +5869,6 @@ the source code, it only prints out style mistakes.")
     (description "This package provides a test library for the Go language.")
     (license license:bsd-2)))
 
-(define-public go-gopkg-in-dnaeon-go-vcr-v3
-  (package
-    (inherit go-github-com-dnaeon-go-vcr)
-    (name "go-gopkg-in-dnaeon-go-vcr-v3")
-    (version "3.2.2")
-    (source
-     (origin
-       (inherit (package-source go-github-com-dnaeon-go-vcr))
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/dnaeon/go-vcr")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0p8lnkksjajnil1cwsfmpdajvnx1i3z6sfpgqk4hyvlz3apki8vg"))))
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-dnaeon-go-vcr)
-       ((#:import-path _) "gopkg.in/dnaeon/go-vcr.v3")))
-    (propagated-inputs
-     (list go-gopkg-in-yaml-v3))))
-
 (define-public go-gopkg-in-dnaeon-go-vcr-v4
   (package
     (name "go-gopkg-in-dnaeon-go-vcr-v4")
