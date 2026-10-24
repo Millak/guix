@@ -8676,33 +8676,41 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
       #:import-path "github.com/go-jose/go-jose/v4"))))
 
 (define-public go-github-com-go-json-experiment-json
-  (package
-    (name "go-github-com-go-json-experiment-json")
-    (version "0.0.0-20251027170946-4849db3c2f7e")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/go-json-experiment/json")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02baiz4vy02zr4319mr1k8s85zz4x418kh7bddg2k82h2k6qy5gf"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-skip" "TestSynctestMarshal")
-      #:import-path "github.com/go-json-experiment/json"))
-    (home-page "https://github.com/go-json-experiment/json")
-    (synopsis "JSON serialization in Go")
-    (description
-     "This package implements semantic processing of JSON as specified in
+  (let ((commit "c27c302e5fc3f63878d1faaf2971f132bae3b152")
+        (revision "0")
+        (go-pseudo-version "0.0.0-20260820222146-c27c302e5fc3"))
+    (package
+      (name "go-github-com-go-json-experiment-json")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/go-json-experiment/json")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03mg934r3hh94mskcm898pbdrjfjfllhcy2bxx5nzbcpw13s0w9p"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/go-json-experiment/json"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; See: <https://go.dev/blog/synctest>.
+                  (setenv "GODEBUG" "asynctimerchan=0")))))))
+      (home-page "https://github.com/go-json-experiment/json")
+      (synopsis "JSON serialization in Go")
+      (description
+       "This package implements semantic processing of JSON as specified in
 @url{https://rfc-editor.org/rfc/rfc8259.html, RFC 8259}.  JSON is a simple
 data interchange format that can represent primitive data types such as
 booleans, strings, and numbers, in addition to structured data types such as
 objects and arrays.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public go-github-com-go-ldap-ldap-v3
   (package
