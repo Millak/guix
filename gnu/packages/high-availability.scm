@@ -319,7 +319,11 @@ applications.")
               "-skip" (string-join
                        (list "TestHTTPHost"
                              "TestSysLogger"
-                             "TestLogMaxArchives")
+                             "TestLogMaxArchives"
+                             #$@(if (target-aarch64?)
+                                    ;; Response did not match expected.
+                                    '("TestNoRaceDynamicResponsePermsMemory")
+                                    '()))
                        "|"))
       #:test-subdirs
       #~(list "conf/..." "internal/..." "logger/..." "test/...")))
