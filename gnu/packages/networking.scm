@@ -1066,7 +1066,7 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
 (define-public nanomsg
   (package
     (name "nanomsg")
-    (version "1.2.5")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1076,7 +1076,7 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x1n8zr7d0h4bjqy5z0698vas4l52160v35gma8xx81xq425cyhs"))))
+        (base32 "0hx9gb5c9akvjd760n68na0bpjsn1iwhrr4p75hvdz62cd8m8ah3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
