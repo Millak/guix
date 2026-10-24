@@ -2390,6 +2390,7 @@ streaming, tool calling, and integration with Amazon Bedrock.")
     (arguments
      (list
       #:skip-build? #t
+      #:tests? (not (target-aarch64?)) ;undefined: openSharedLib
       #:import-path "github.com/antithesishq/antithesis-sdk-go"
       #:test-flags
       #~(list "-skip" (string-join
