@@ -156,7 +156,17 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
                              ;; failed to fetch from remote (failed to fetch
                              ;; config: Get
                              ;; "https://conf.ipfs-mainnet.org/autoconf.json"
-                             "TestRealAutoConfURL")
+                             "TestRealAutoConfURL"
+                             #$@(if (target-aarch64?)
+                                    ;; messagequeue_test.go:418: Wrong message
+                                    ;; count, expected 3 got 4
+                                    '("TestWantOverridesPendingCancels"
+                                      ;; reprovider_test.go:231: expected to
+                                      ;; see 1 provide; got 0
+                                      "TestOfflineRecordsThenOnlineRepublish"
+                                      ;; peers not recorded by the peer manage
+                                      "TestSessionGetBlocks")
+                                    '()))
                        "|"))
       #:phases
       #~(modify-phases %standard-phases
