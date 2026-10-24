@@ -32511,26 +32511,6 @@ Merkle tree} implementation in Golang.")
 @code{ioutil} packages that is easy to test.")
     (license license:expat)))
 
-;; For chezmoi@2.1.0
-(define-public go-github-com-twpayne-go-vfs-v3
-  (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
-   (name "go-github-com-twpayne-go-vfs-v3")
-   (version "3.0.0")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/twpayne/go-vfs")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0w7alyd2pdafny4xfi0ybpnhrwwbkb3fk73yjrwjj6h0rysvpxy2"))))
-    (arguments
-     (list
-      #:import-path "github.com/twpayne/go-vfs/v3"))
-    (native-inputs
-     (list go-github-com-stretchr-testify)))))
-
 (define-public go-github-com-twpayne-go-xdg-v6
   (package
     (name "go-github-com-twpayne-go-xdg-v6")
