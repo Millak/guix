@@ -38685,7 +38685,8 @@ replacement for mattn/go-sqlite3.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "modernc.org/y"))
+      #:import-path "modernc.org/y"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-modernc-org-mathutil
            go-modernc-org-parser
