@@ -4810,7 +4810,15 @@ network,using GOCACHEPROG.")
                              "ExamplePerson"
                              "ExampleSQL"
                              "ExampleYear"
-                             "TestStructToDateTime")
+                             "TestStructToDateTime"
+                             #$@(if (target-32bit?)
+                                    '("ExampleSlice_struct"
+                                      "ExampleFaker_Slice_struct"
+                                      "ExampleStruct"
+                                      "ExampleFaker_Struct"
+                                      "ExampleStruct_array"
+                                      "ExampleFaker_Struct_array")
+                                    '()))
                        "|"))))))
 
 (define-public go-github-com-brunoscheufler-aws-ecs-metadata-go
