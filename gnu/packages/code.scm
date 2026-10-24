@@ -19,7 +19,7 @@
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
@@ -690,7 +690,7 @@ results and determine build stability.")
 (define-public kcov
   (package
     (name "kcov")
-    (version "42")
+    (version "43")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -699,7 +699,7 @@ results and determine build stability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14pyahpgadh845q2p1gjw2yrlqcan4n870icrn2yqdpf33cprzgk"))))
+                "01iz98cb8xl0h9ffwk382q3h3xsw1wigyi9ha1l28psjffw5h4l5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
