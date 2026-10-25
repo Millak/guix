@@ -1085,7 +1085,7 @@ desired format.")
 (define-public git-pages
   (package
     (name "git-pages")
-    (version "0.9.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1094,7 +1094,7 @@ desired format.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "029zas5pfky6qkbw4j9whrlyxd1pa4jfhj9jm8dg6fav292kf973"))))
+        (base32 "1l5km76mcbn796yh6slnmvk4xcnzp9ylkcrbfm3kjapajx2c36ig"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1105,6 +1105,7 @@ desired format.")
       #:install-source? #f))
     (native-inputs
      (list go-codeberg-org-git-pages-go-headers
+           go-codeberg-org-git-pages-go-redirects
            go-codeberg-org-git-pages-go-slog-syslog
            go-github-com-bits-and-blooms-bloom-v3
            go-github-com-burntsushi-toml
