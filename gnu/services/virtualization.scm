@@ -1713,21 +1713,39 @@ CONFIG, a <virtual-build-machine>, is up and running."
   (scheme-file "check-build-vm-availability.scm"
                #~(begin
                    (use-modules (gnu services herd)
-                                (srfi srfi-34))
+                                (srfi srfi-34)
+                                (ice-9 match))
 
-                   ;; Query the system shepherd.  FIXME: When guix-daemon is
-                   ;; running without root privileges, this fails, unless the
-                   ;; socket is made accessible to the 'guix-daemon' user.
-                   ;; See #7625.
+                   (define (can-connect-to-ssh?)
+                     ;; Return true if we managed to connect to the SSH port
+                     ;; specified by CONFIG, false otherwise.
+                     (let ((address
+                            (make-socket-address AF_INET INADDR_LOOPBACK
+                                                 #$(virtual-build-machine-ssh-port
+                                                    config)))
+                           (sock (socket AF_INET
+                                         (logior SOCK_STREAM SOCK_NONBLOCK
+                                                 SOCK_CLOEXEC)
+                                         0)))
+                       (define connected?
+                         (or (connect sock address)
+                             ;; Wait for at most 0.5s to avoid blocking the
+                             ;; build process for too long.
+                             (match (select (list sock) '() '() 0 500000)
+                               (((_) () ()) #t)
+                               (_ #f))))
+
+                       (close-port sock)
+                       connected?))
+
+                   ;; Query the system shepherd.  When guix-daemon is running
+                   ;; without root privileges, it cannot connect to shepherd;
+                   ;; in that case, probe the SSH port of the VM, which is
+                   ;; more general but might take more time.
                    (parameterize ((%shepherd-socket-file
                                    "/var/run/shepherd/socket"))
                      (guard (c ((service-not-found-error? c) #f)
-                               (else
-                                (format (current-error-port)
-                                        "exception while checking '~a' \
-service availability: ~s~%"
-                                        '#$service-name c)
-                                #f))
+                               (else (can-connect-to-ssh?)))
                        (->bool (live-service-running
                                 (current-service '#$service-name))))))))
 
