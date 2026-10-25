@@ -1261,6 +1261,21 @@ https://guix.gnu.org/security/ ."))
                       "gnu/tests/virtualization.scm"
                       "gnu/tests/vnc.scm")))
 
+(define-team system
+  (team 'system
+        #:name "Guix System team"
+        #:description "Guix System and its services."
+        #:scope (list (make-regexp* "^gnu/system")
+                      (make-regexp* "^gnu/services")
+                      (make-regexp* "^gnu/tests")
+                      (make-regexp* "^gnu/build")
+                      (make-regexp* "^gnu/bootloader")
+                      (make-regexp* "^gnu/machine")
+                      (make-regexp* "^tests/services")
+                      "tests/file-systems.scm"
+                      "tests/guix-system.sh"
+                      "tests/system.scm")))
+
 (define-team telephony
   (team 'telephony
         #:name "Telephony team"
@@ -1349,7 +1364,7 @@ the \"texlive\" importer."
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org"
                        "civodul")
-  codeberg core core-packages guile hpc installer)
+  codeberg core core-packages system guile hpc installer)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr"
@@ -1379,7 +1394,7 @@ the \"texlive\" importer."
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il"
                        "efraim")
-  maintainers codeberg embedded bootstrap rust)
+  maintainers codeberg embedded bootstrap rust system)
 
 (define-member (person "jgart"
                        "jgart@dismail.de"
@@ -1639,7 +1654,7 @@ the \"texlive\" importer."
 (define-member (person "Nguyễn Gia Phong"
                        "cnx@loang.net"
                        "cnx")
-  build-tools lua qa-packages sysadmin vcs)
+  build-tools lua qa-packages sysadmin system vcs)
 
 (define-member (person "Lilah Tascheter"
                        "lilah@lunabee.space"

@@ -487,6 +487,17 @@ gnu/tests/samba\.scm                               @guix/sysadmin
 gnu/tests/virtualization\.scm                      @guix/sysadmin
 gnu/tests/vnc\.scm                                 @guix/sysadmin
 
+gnu/system                                         @guix/system
+gnu/services                                       @guix/system
+gnu/tests                                          @guix/system
+gnu/build                                          @guix/system
+gnu/bootloader                                     @guix/system
+gnu/machine                                        @guix/system
+tests/services                                     @guix/system
+tests/file-systems\.scm                            @guix/system
+tests/guix-system\.sh                              @guix/system
+tests/system\.scm                                  @guix/system
+
 gnu/build/jami-service\.scm                        @guix/telephony
 gnu/packages/jami\.scm                             @guix/telephony
 gnu/packages/linphone\.scm                         @guix/telephony
