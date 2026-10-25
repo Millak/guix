@@ -417,10 +417,14 @@ algorithm for community detection in large networks.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 230 passed, 1 deselected
+      ;; tests: 229 passed, 2 deselected
       #:test-flags
+      ;; Some tests are numerically unstable.  Upstream fix reported in
+      ;; https://github.com/KrishnaswamyLab/graphtools/pull/90
       ;; XXX: Arrays are not equal.
-      #~(list "--deselect=test/test_mnn.py::test_mnn_graph_decay")
+      #~(list "--deselect=test/test_mnn.py::test_mnn_graph_decay"
+              ;; "At index 0 diff: 299 != 300"
+              "--deselect=test/test_landmark.py::test_set_param")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
