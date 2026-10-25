@@ -456,8 +456,8 @@ as shepherd package."
             ;; asked not to.  TODO: Remove this once the Shepherd 1.1 is the
             ;; default.
             (if (getenv "GUIX_SHEPHERD_FAIL_HARD")
-                (lambda (thunk) (thunk))
-                (lambda (thunk)
+                (lambda (file thunk) (thunk))
+                (lambda (file thunk)
                   (with-exception-handler
                       (lambda (exception)
                         (format #t "Exception caught \
@@ -486,11 +486,12 @@ while loading '~a': ~s~%"
            (parameterize ((current-warning-port (%make-void-port "w")))
              (filter-map (lambda (file)
                            (maybe-fail-safe
-                             (lambda ()
-                               (save-module-excursion
-                                (lambda ()
-                                  (set-current-module (make-user-module))
-                                  (primitive-load file))))))
+                            file
+                            (lambda ()
+                              (save-module-excursion
+                               (lambda ()
+                                 (set-current-module (make-user-module))
+                                 (primitive-load file))))))
                          ;; Note: We used to pre-compile FILES, but the
                          ;; problem is that 'load-compiled' is a continuation
                          ;; barrier as of 3.0.10, which could be a problem
