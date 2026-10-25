@@ -1360,6 +1360,7 @@ that will be listening to receive secret keys on ADDRESS."
      (shepherd-service
       (provision '(gc))
       (requirement '(user-processes guix-daemon))
+      (modules '((shepherd service timer)))
       (start #~(make-timer-constructor
                 (calendar-event #:minutes '(12))
                 (command
