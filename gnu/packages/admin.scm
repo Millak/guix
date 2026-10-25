@@ -361,7 +361,7 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public hetznercloud-cli
   (package
     (name "hetznercloud-cli")
-    (version "1.69.0")
+    (version "1.70.2")
     (source
      (origin
        (method git-fetch)
@@ -370,7 +370,7 @@ characters can be replaced as well, as can UTF-8 characters.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s45shkqkw22q2n1sfc2a1l1iia14nd2jqfxg5mp0l8vhzdwdiv2"))))
+        (base32 "01nwzb25w48jqlzvwihavqppg7x4vklcabzl5a101qzyp3irsdch"))))
     (build-system go-build-system)
     (arguments
      (list
