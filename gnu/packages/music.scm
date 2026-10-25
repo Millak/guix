@@ -6609,7 +6609,7 @@ as a whole to realisticly reproduce the features and flaws of the real deal.")
 (define-public fooyin
   (package
     (name "fooyin")
-    (version "0.12.4")
+    (version "0.14.1")
     (source
      (origin
        (method git-fetch)
@@ -6618,7 +6618,7 @@ as a whole to realisticly reproduce the features and flaws of the real deal.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cikdp97dq969g63103p30r24apd2fql66imxpapf3c8rv5qy8pc"))))
+        (base32 "1ad8rmdn0j3piw4jxrjda2fl8vc83mh8l2nvhcpp6d0r0ad40jyh"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -6638,6 +6638,7 @@ as a whole to realisticly reproduce the features and flaws of the real deal.")
                   ffmpeg
                   icu4c
                   kdsingleapplication
+                  libarchive
                   pipewire
                   qcoro-qt6
                   qtsvg
