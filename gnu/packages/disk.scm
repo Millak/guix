@@ -1815,7 +1815,7 @@ of choice for all light thinking Unix addicts!")
     (name "hddtemp")
     ;; <https://savannah.nongnu.org/projects/hddtemp/> advertises the project as
     ;; ‘orphaned/unmaintained’.  Use a maintained fork/continuation.
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1824,7 +1824,7 @@ of choice for all light thinking Unix addicts!")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04kylb2ka0jimi238zpfq1yii2caidpmj3ck51rvxz03y5lpq8fw"))))
+        (base32 "07ffdi6lybydcl2dwwg4lfrmv5kfh98j316ps6c93gr4jprr0cph"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append
