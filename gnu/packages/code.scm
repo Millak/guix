@@ -797,16 +797,16 @@ produce colored output.")
 (define-public makefile2graph
   (package
     (name "makefile2graph")
-    (version "1.5.0")
+    (version "2021.11.06")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/lindenb/makefile2graph")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gjfk3d8qg3cla7qd2y7r9s03whlfwy83q8k76xfcnqrjjfavdgk"))))
+        (base32 "0969jb8z7nl69a3n8lhpypkl14agl52viy7jbxvrs20y5ns9yg72"))))
     (build-system gnu-build-system)
     (arguments
      (list
