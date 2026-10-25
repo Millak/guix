@@ -1140,7 +1140,7 @@ single-user deployments.")
 (define-public git-pages-cli
   (package
     (name "git-pages-cli")
-    (version "1.9.0")
+    (version "1.12.1")
     (source
      (origin
        (method git-fetch)
@@ -1149,16 +1149,18 @@ single-user deployments.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ijkbc9d4jh5hn9lmcb39v0x03nbrf4zgzm0mb0c1p132py8p2mn"))))
+        (base32 "181yj746npjkh5hawlklya179hp77mkabl0cx2crp6lriajhfw7b"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
       #:import-path "codeberg.org/git-pages/git-pages-cli"))
     (native-inputs
-     (list go-github-com-google-uuid
+     (list go-codeberg-org-git-pages-go-redirects
+           go-github-com-google-uuid
            go-github-com-klauspost-compress
-           go-github-com-spf13-pflag))
+           go-github-com-spf13-pflag
+           go-golang-org-x-net))
     (home-page "https://codeberg.org/git-pages/git-pages-cli")
     (synopsis "Command-line tool for publishing a site to a git-pages server")
     (description
