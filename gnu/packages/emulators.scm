@@ -3418,7 +3418,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.287")
+    (version "0.289")
     (source
      (origin
        (method git-fetch)
@@ -3427,7 +3427,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p9v71gvaqiyj6sa1b0wkdksa9wnr6yr2a43ckycljjfas5s36kq"))
+        (base32 "1fwlhmdd12fwls6birzzif2nll8jjy3rjzbs92jz03a4rqlqlddw"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -3602,7 +3602,7 @@ This is a part of the TiLP project.")
            pugixml
            pulseaudio
            python-wrapper
-           qtbase-5
+           qtbase
            rapidjson
            (sdl-union (list sdl2 sdl2-ttf))
            sqlite
