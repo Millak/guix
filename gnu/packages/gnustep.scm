@@ -194,6 +194,10 @@ to easily create cross-compiled binaries.")
                        ,@#$(make-gnustep-make-flags '(assoc-ref %outputs "out")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-bundled-certs
+            (lambda _
+              ;; Fallback ca-certificates.
+              (delete-file "Resources/GSTLS/ca-certificates.crt")))
           (add-before 'configure 'patch-makefile
             ;; install fails because it wants to install into gnustep-make
             (lambda _
