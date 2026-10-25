@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -568,6 +568,24 @@ sure that the childhurd boots and runs its SSH server.")
                 (mount "none" "/run/writable-store" "tmpfs")
                 (mount-cow-store "/run/writable-store" "/backing-store")
                 (system* "df" "-hT"))
+             marionette))
+
+          (test-assert "guix-daemon restarted"
+            ;; Restart 'guix-daemon' after the above so that 'guix-ownership'
+            ;; has a chance to successfully run if needed--e.g., because the
+            ;; host store is not root-owned but the guest is running
+            ;; 'guix-daemon' as root.  See #8872.
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (restart-service 'guix-daemon))
+             marionette))
+
+          (test-equal "guix build hello"
+            ;; Make sure the local 'guix-daemon' is operational.
+            0
+            (marionette-eval
+             '(system* "guix" "build" "hello" "--no-grafts" "-d")
              marionette))
 
           (test-equal "offloading"
