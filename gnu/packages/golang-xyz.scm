@@ -936,6 +936,30 @@ applications.")
 (define-deprecated-package go-codeberg-org-emersion-go-sqlite-fts5
   go-codeberg-org-emersion-go-sqlite3-fts5)
 
+(define-public go-codeberg-org-git-pages-go-redirects
+  (package
+    (name "go-codeberg-org-git-pages-go-redirects")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/git-pages/go-redirects.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f1g38i9iv53vsqh5bqsm4wk5q33yzwxsry2kxfhaz18kw5nvjy6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/git-pages/go-redirects"))
+    (propagated-inputs (list go-github-com-pkg-errors go-github-com-tj-assert))
+    (home-page "https://codeberg.org/git-pages/go-redirects")
+    (synopsis "Redirect")
+    (description
+     "Package redirects provides Netlify style _redirects file format parsing.")
+    (license license:expat)))
+
 (define-public go-codeberg-org-git-pages-go-slog-syslog
   (package
     (name "go-codeberg-org-git-pages-go-slog-syslog")
