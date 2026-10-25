@@ -14936,6 +14936,19 @@ fn main() {
 (define rust-glycin-common-1.0.4 package:rust-glycin-3)
 (define rust-glycin-utils-4.1.0 package:rust-glycin-3)
 
+;; As long as future versions of gmp/mpc/mpfr are addative in bindings then
+;; using a later version should probably work, after patching version numbers
+;; in the source code.
+(define rust-gmp-mpfr-sys-1.6.8
+  (crate-source "gmp-mpfr-sys" "1.6.8"
+                "151klhndiycvv6p8fsilm1gj3p8nl5l6g777i8pvn1n0fl59gy30"
+                #:snippet
+                '(begin
+                   ;; Remove vendored GMP, MPC, MPFR
+                   (delete-file-recursively "gmp-6.3.0-c")
+                   (delete-file-recursively "mpc-1.3.1-c")
+                   (delete-file-recursively "mpfr-4.2.2-c"))))
+
 (define rust-gobject-sys-0.16.3
   (crate-source "gobject-sys" "0.16.3"
                 "1wd0c2vrp9xi7x0mcsd88s0iq8qizi74vcpvyb3i4amf0yfbn81m"))
@@ -30112,6 +30125,10 @@ fn main() {
   (crate-source "rubato" "0.14.1"
                 "1mdh2xyczy9nwn1s5xr58sp3ha80fdb4lmfzx96qj8gw1kl55pg6"))
 
+(define rust-rug-1.28.1
+  (crate-source "rug" "1.28.1"
+                "0fcnhakhwk80mwr2ha1ijcrv6fb1ajgf2c6ssk57jz4qb340w6fy"))
+
 ;; Git version for codex which pins a specific commit.
 ;; The runfiles crate is in rust/runfiles/ subdirectory of rules_rust.
 
@@ -30900,6 +30917,10 @@ fn main() {
   (crate-source "rustyline" "17.0.2"
                 "0r05yl3yzjgpz269izw3p8i4xxahmld19q58q7nm178l4n5980p9"))
 
+(define rust-rustyline-7.1.0
+  (crate-source "rustyline" "7.1.0"
+                "1v1czmy3ir7d06xldp8bg94l97hrm15hcgdxxkq3cwbizhdk09w2"))
+
 (define rust-rustyline-9.1.2
   (crate-source "rustyline" "9.1.2"
                 "0f8069ljhiv9nf97y975wvv9yvx82w3lm9g50d5n298fkiw2cy6v"))
@@ -31329,6 +31350,10 @@ fn main() {
   (crate-source "seahash" "4.1.0"
                 "0sxsb64np6bvnppjz5hg4rqpnkczhsl8w8kf2a5lr1c08xppn40w"
                 #:snippet '(delete-file "logo.png")))
+
+(define rust-seahorse-1.1.2
+  (crate-source "seahorse" "1.1.2"
+                "1garn1xr6ng0ip2kplj2pblrdjmsvhx3vjq7d8iisvvqakj1zvlb"))
 
 (define rust-sealed-0.6.0
   (crate-source "sealed" "0.6.0"
@@ -35027,6 +35052,10 @@ fn main() {
 (define rust-termwiz-0.23.3
   (crate-source "termwiz" "0.23.3"
                 "1xzq6l7rx285ax57dz8gdh44kp1790x0knvfynmimgfc89rb6xj6"))
+
+(define rust-test-case-1.2.3
+  (crate-source "test-case" "1.2.3"
+                "0siwpm8g40g5gcvwcn6g4iq0bdhm6lb3dq6wcspfhhsb814g1rg9"))
 
 (define rust-test-case-3.3.1
   (crate-source "test-case" "3.3.1"
@@ -39678,6 +39707,10 @@ fn main() {
   (crate-source "wasm-bindgen-test" "0.3.77"
                 "18bvvi6lx1bvp0m7skfwxbgi1skmlf2212fzl7ns84jlaw3jcnl9"))
 
+(define rust-wasm-bindgen-test-0.3.80
+  (crate-source "wasm-bindgen-test" "0.3.80"
+                "08pm3jj6xpymwahs3drcl7pp1w1q2msd482baymh2zp0mp016jav"))
+
 (define rust-wasm-bindgen-test-macro-0.3.50
   (crate-source "wasm-bindgen-test-macro" "0.3.50"
                 "16znd6wz79v2i3b2sf5n4ld2kcci8br3wcx7z5c9c07sqln09m8p"))
@@ -39694,6 +39727,10 @@ fn main() {
   (crate-source "wasm-bindgen-test-macro" "0.3.77"
                 "0nd75ajqghvavjwj8zqm5b1s9ni6cw2gvqcsjjzk6l11pq7cp222"))
 
+(define rust-wasm-bindgen-test-macro-0.3.80
+  (crate-source "wasm-bindgen-test-macro" "0.3.80"
+                "1h21jbdpzm0fg7gxnm8ws6fw40r45qd6460hs9bqw9jv9jm73013"))
+
 (define rust-wasm-bindgen-test-shared-0.2.115
   (crate-source "wasm-bindgen-test-shared" "0.2.115"
                 "05myqafcklb87mlf3723snxs4b3z8jzzbkn645cnvlxqrrvf0cph"))
@@ -39701,6 +39738,10 @@ fn main() {
 (define rust-wasm-bindgen-test-shared-0.2.127
   (crate-source "wasm-bindgen-test-shared" "0.2.127"
                 "11yrv6ym2fng57i92vx12w4bl7gp6r4c1acfdlxyk0h96qdirzrk"))
+
+(define rust-wasm-bindgen-test-shared-0.2.130
+  (crate-source "wasm-bindgen-test-shared" "0.2.130"
+                "062rj23gb9yv7x2vygfk2k1ajxxfar2qkch2flv340ms5776bcws"))
 
 (define rust-wasm-encoder-0.201.0
   (crate-source "wasm-encoder" "0.201.0"
@@ -72198,6 +72239,102 @@ fn main() {
                         rust-wit-parser-0.244.0
                         rust-yansi-1.0.1
                         rust-zmij-1.0.21))
+ (kalker =>
+         (list rust-aho-corasick-1.1.5
+               rust-ansi-term-0.12.1
+               rust-atty-0.2.14
+               rust-autocfg-1.5.1
+               rust-az-1.3.0
+               rust-bitflags-1.3.2
+               rust-bumpalo-3.20.4
+               rust-cast-0.3.0
+               rust-cc-1.11.2
+               rust-cfg-if-1.0.5
+               rust-dirs-3.0.2
+               rust-dirs-next-2.0.0
+               rust-dirs-sys-0.3.7
+               rust-dirs-sys-next-0.1.2
+               rust-find-msvc-tools-0.1.15
+               rust-fs2-0.4.3
+               rust-futures-core-0.3.34
+               rust-futures-task-0.3.34
+               rust-futures-util-0.3.34
+               rust-getrandom-0.2.17
+               rust-gmp-mpfr-sys-1.6.8
+               rust-hermit-abi-0.1.19
+               rust-itoa-1.0.19
+               rust-js-sys-0.3.107
+               rust-lazy-static-1.5.1
+               rust-libc-0.2.191
+               rust-libm-0.2.16
+               rust-libredox-0.1.25
+               rust-log-0.4.35
+               rust-memchr-2.8.3
+               rust-minicov-0.3.8
+               rust-nix-0.19.1
+               rust-nu-ansi-term-0.50.3
+               rust-num-traits-0.2.19
+               rust-oorandom-11.1.5
+               rust-pin-project-lite-0.2.17
+               rust-proc-macro2-1.0.107
+               rust-quote-1.0.47
+               rust-redox-users-0.4.6
+               rust-regex-1.13.1
+               rust-regex-automata-0.4.18
+               rust-regex-syntax-0.8.11
+               rust-rug-1.28.1
+               rust-rustversion-1.0.23
+               rust-rustyline-7.1.0
+               rust-same-file-1.0.6
+               rust-scopeguard-1.2.0
+               rust-seahorse-1.1.2
+               rust-serde-1.0.229
+               rust-serde-core-1.0.229
+               rust-serde-derive-1.0.229
+               rust-serde-json-1.0.154
+               rust-shlex-2.0.1
+               rust-slab-0.4.12
+               rust-syn-1.0.109
+               rust-syn-2.0.119
+               rust-syn-3.0.10
+               rust-test-case-1.2.3
+               rust-thiserror-1.0.69
+               rust-thiserror-impl-1.0.69
+               rust-tokio-1.54.1
+               rust-toml-0.5.11
+               rust-unicode-ident-1.0.27
+               rust-unicode-segmentation-1.13.3
+               rust-unicode-width-0.1.14
+               rust-utf8parse-0.2.2
+               rust-version-check-0.9.5
+               rust-walkdir-2.5.0
+               rust-wasi-0.11.1+wasi-snapshot-preview1
+               rust-wasm-bindgen-0.2.130
+               rust-wasm-bindgen-futures-0.4.80
+               rust-wasm-bindgen-macro-0.2.130
+               rust-wasm-bindgen-macro-support-0.2.130
+               rust-wasm-bindgen-shared-0.2.130
+               rust-wasm-bindgen-test-0.3.80
+               rust-wasm-bindgen-test-macro-0.3.80
+               rust-wasm-bindgen-test-shared-0.2.130
+               rust-winapi-0.3.9
+               rust-winapi-i686-pc-windows-gnu-0.4.0
+               rust-winapi-util-0.1.11
+               rust-winapi-x86-64-pc-windows-gnu-0.4.0
+               rust-windows-link-0.2.1
+               rust-windows-sys-0.60.2
+               rust-windows-sys-0.61.2
+               rust-windows-targets-0.53.5
+               rust-windows-aarch64-gnullvm-0.53.1
+               rust-windows-aarch64-msvc-0.53.1
+               rust-windows-i686-gnu-0.53.1
+               rust-windows-i686-gnullvm-0.53.1
+               rust-windows-i686-msvc-0.53.1
+               rust-windows-x86-64-gnu-0.53.1
+               rust-windows-x86-64-gnullvm-0.53.1
+               rust-windows-x86-64-msvc-0.53.1
+               rust-winres-0.1.12
+               rust-zmij-1.0.23))
  (kanata =>
          (list rust-addr2line-0.25.1
                rust-adler2-2.0.1

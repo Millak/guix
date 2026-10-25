@@ -117,6 +117,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages shells)
@@ -2510,6 +2511,43 @@ with other physical backends.")
     (description "This package provides @code{just}, a command runner.
 @code{just} is a handy way to save and run project-specific commands.")
     (license license:cc0)))
+
+(define-public kalker
+  (package
+    (name "kalker")
+    (version "2.2.3")
+    (source
+     (origin
+       ;; crates.io is missing the internal kalk crate.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PaddiM8/kalker")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13yfgrsg7q8b2b0c9ykzpwvampp1rajngvpsf700ya601hd2vr02"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; Use Guix's GMP, MPC, MPFR
+      #:features '(list "kalk/use-system-libs")
+      ;; List features for tests manually (despite guix lint saying not to)
+      ;; because the test program tries to build & link gmp-mpfr-sys again.
+      ;; The #:features argument is only passed to the build command, not the
+      ;; test command.
+      #:cargo-test-flags '(list "--features=kalk/use-system-libs")
+      #:cargo-install-paths ''("cli")))
+    (inputs
+     ;; Note that the versions of gmp/mpc/mpfr must match
+     ;; the version in the gmp-mpfr-sys crate.
+     (cons* gmp mpc mpfr (cargo-inputs 'kalker)))
+    (home-page "https://github.com/PaddiM8/kalker")
+    (synopsis "Calculator with user-defined functions, variables and units")
+    (description
+     "kalker is an advanced calculator that supports user-defined functions,
+variables, units, and can handle fairly ambiguous syntax.")
+    (license license:expat)))
 
 (define-public kanata
   (package
