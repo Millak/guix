@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Murilo <murilo@disroot.org>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,14 +84,14 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "7.7")
+    (version "7.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "01k65yyyfl00h8kbc418px614m7g35g2w7nnyjx3zmyxlndax2ig"))))
+                "15h25k1qchxcx2ff7rbgwvjpgspnbm4gslpbr311a2sj0bs50dwz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config
