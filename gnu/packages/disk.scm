@@ -1008,31 +1008,29 @@ reformatted.  It can recover lost files from at least:
     (license license:gpl2+)))
 
 (define-public pydf
-  (let ((commit "af38bb3b7aacbcc32271e6dafa8b8b0a77ffead8")
-        (revision "0"))
-    (package
-      (name "pydf")
-      (version (git-version "15" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/garabik/pydf")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "18ljigg8zm9pc3qg3alpyh3n4a4f1wcza4p36cchjn2vd4466jf4"))))
-      (build-system pyproject-build-system)
-      (arguments (list #:tests? #f)) ; No tests.
-      (native-inputs (list python-setuptools))
-      (home-page "http://kassiopeia.juls.savba.sk/~garabik/software/pydf/")
-      (synopsis "Colourised @command{df} clone")
-      (description
-       "All-singing, all-dancing, fully colourised @command{df} clone written
+  (package
+    (name "pydf")
+    (version "16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/garabik/pydf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l7kczgsrr118xybvx9v7wrnsmw2gk7l380wjgzgs34d73vssqqa"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (home-page "http://kassiopeia.juls.savba.sk/~garabik/software/pydf/")
+    (synopsis "Colourised @command{df} clone")
+    (description
+     "All-singing, all-dancing, fully colourised @command{df} clone written
 in Python.  It displays the amount of disk space available on the mounted file
 systems, using different colours for different types of file systems.  Output
 format is completely customizable.")
-      (license license:public-domain))))
+    (license license:public-domain)))
 
 (define-public f3
   (package
