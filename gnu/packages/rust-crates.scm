@@ -9050,11 +9050,6 @@ fn main() {
                 "02m8k3wix7gzc9mjc72l0zx8aiqfhsf1zd79c81b48g4x58chy58"
                 #:snippet '(delete-file-recursively "tests")))
 
-(define rust-der-0.8.2
-  (crate-source "der" "0.8.2"
-                "02m8k3wix7gzc9mjc72l0zx8aiqfhsf1zd79c81b48g4x58chy58"
-                #:snippet '(delete-file-recursively "tests")))
-
 (define rust-der-derive-0.7.3
   (crate-source "der_derive" "0.7.3"
                 "065d2wy7zd0dank99hh58l5x7lv50hxnr7j6f3sphlb7i4ihjd40"))
@@ -34918,6 +34913,11 @@ fn main() {
 (define rust-spdx-0.13.4
   (crate-source "spdx" "0.13.4"
                 "1mrj5y7dxvf1l6ypsdihxgjl82rjk2w2wl14jky91dxy60z5knm8"
+                #:snippet '(delete-file "src/detection/cache.bin.zstd")))
+
+(define rust-spdx-0.13.5
+  (crate-source "spdx" "0.13.5"
+                "1afz713nhyrzid00ngb7nb0lmqp04j2d636cj1bdbgnz6g1705h8"
                 #:snippet '(delete-file "src/detection/cache.bin.zstd")))
 
 (define rust-spdx-0.13.6
