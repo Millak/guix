@@ -35,6 +35,7 @@
 ;;; Copyright © 2025 Grigory Shepelev <shegeley@gmail.com>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Murilo <murilo@disroot.org>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1036,7 +1037,7 @@ format is completely customizable.")
 (define-public f3
   (package
     (name "f3")
-    (version "9.0")
+    (version "10.0")
     (source
      (origin
       (method git-fetch)
@@ -1045,7 +1046,7 @@ format is completely customizable.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0k9299phdxp0yag0mm58sfrbqmb19zvia57wgcaqawf9clafba35"))))
+       (base32 "1byxwcln9mxbnvhqwyg876a6q1smc2sk9gfsl71yy8ngm3m688q3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; no check target
