@@ -31,11 +31,8 @@
 
 (define-module (gnu system vm)
   #:use-module (guix config)
-  #:use-module (guix store)
   #:use-module (guix gexp)
-  #:use-module (guix derivations)
   #:use-module (guix packages)
-  #:use-module (guix monads)
   #:use-module (guix records)
   #:use-module (guix modules)
   #:use-module (guix utils)
@@ -293,22 +290,22 @@ VOLATILE? is true, an overlay is created on top of a read-only
 storage. Otherwise the storage is made persistent.  The DISK-IMAGE-SIZE
 parameter specifies the size in bytes of the root disk image; it is mostly
 useful when FULL-BOOT?  is true."
-  (mlet* %store-monad ((os ->  (virtualized-operating-system
-                                os mappings
-                                #:spice? spice
-                                #:full-boot? full-boot?
-                                #:volatile? volatile?
-                                #:system system
-                                #:target target))
-                       (base-image -> (system-image
-                                       (image
-                                        (inherit
-                                         (raw-with-offset-disk-image))
-                                        (operating-system os)
-                                        (size disk-image-size)
-                                        (shared-store?
-                                         (and (not full-boot?) volatile?))
-                                        (volatile-root? volatile?)))))
+  (let* ((os (virtualized-operating-system
+              os mappings
+              #:spice? spice
+              #:full-boot? full-boot?
+              #:volatile? volatile?
+              #:system system
+              #:target target))
+         (base-image (system-image
+                      (image
+                        (inherit
+                         (raw-with-offset-disk-image))
+                        (operating-system os)
+                        (size disk-image-size)
+                        (shared-store?
+                         (and (not full-boot?) volatile?))
+                        (volatile-root? volatile?)))))
     (define kernel-arguments
       #~(list #$@(if graphic? #~() #~("console=ttyS0"))
               #$@(operating-system-kernel-arguments os "/dev/vda1")))
