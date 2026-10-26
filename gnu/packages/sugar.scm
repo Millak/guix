@@ -58,7 +58,7 @@
 (define-public sugar
   (package
     (name "sugar")
-    (version "0.121")
+    (version "0.122")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -67,7 +67,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s31sz1j7x82vynd233k7jqqp881bpz7486r78wfz2i84f2n4n06"))))
+                "1baz5w9z2p1m6h842ap2ygl5fb47pp2zshjzm9cmhbwfl9zdw4fa"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -176,7 +176,7 @@
            upower
            webkitgtk-for-gtk3))
     (native-inputs
-     (list autoconf automake
+     (list autoconf-2.72 automake
            gettext-minimal
            intltool
            (list glib "bin")
