@@ -369,6 +369,52 @@ and file system, if appropriate."
                                        "--check")
                              marionette))
 
+          (test-equal "build runs script from /tmp with interpreter in store"
+            0
+            ;; Test for the presence of the AppArmor script observed on Ubuntu
+            ;; with 'guix-daemon' running without root privileges: see
+            ;; guix/guix#11467.
+            (marionette-eval
+             ;; '#$'(...) keeps the inner gexp from being expanded by the
+             ;; outer one.
+             '(let ((code
+                     '#$'(begin
+                           (use-modules (guix derivations)
+                                        (guix gexp)
+                                        (guix monads)
+                                        (guix store))
+
+                           (define hello
+                             ;; Create a script with an interpreter in the store.
+                             (program-file "test"
+                                           #~(display "Hello, world!\n")))
+
+                           (define script-invocation
+                             (computed-file
+                              "invoke-hello"
+                              (with-imported-modules '((guix build utils))
+                                #~(begin
+                                    (use-modules (guix build utils))
+                                    (mkdir #$output)
+                                    (copy-file #$hello "./hello")
+                                    (chmod "./hello" #o755)
+
+                                    ;; On AppArmor distros, this invocation
+                                    ;; would fail with EACCES.
+                                    (invoke "./hello")))))
+
+                           ;; Try to build it.
+                           (with-store store
+                             (run-with-store store
+                               (mlet %store-monad ((drv (lower-object
+                                                         script-invocation)))
+                                 (build (list (derivation-file-name drv)))))))))
+                (call-with-output-file "/tmp/test-apparmor-bug.scm"
+                  (lambda (port)
+                    (write code port)))
+                (system* "guix" "repl" "--" "/tmp/test-apparmor-bug.scm"))
+             marionette))
+
           (test-equal "guix gc after guix-daemon.service"
             0
             (marionette-eval '(system* "guix" "gc")
