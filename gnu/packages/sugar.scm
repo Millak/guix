@@ -1225,11 +1225,13 @@ a Command-Line Interface (CLI) to the system.")
       (license (list license:gpl2+ license:gpl3+)))))
 
 (define-public sugar-turtleart-activity
-  (let ((commit "a4340adea18efbdb987eca6477fa71d5c924811f")
-        (revision "1"))
+  ;; The last tag release was in 2020 and since then commits have been
+  ;; published that include fixes and translation updates.
+  (let ((commit "35541bfa7f3e0ba747901702868c44036c825371")
+        (revision "2"))
     (package
       (name "sugar-turtleart-activity")
-      (version (git-version "202" revision commit))
+      (version (git-version "220" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1238,7 +1240,7 @@ a Command-Line Interface (CLI) to the system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "11agqyahjhxb7bakzix63lazcbin0jfiypqx0sm2i85bsl30fp7y"))))
+          (base32 "10214hahq76p187yp5r46hvsfw88blhym2jm89s9v4d0azp4la55"))))
       (build-system pyproject-build-system)
       (arguments
        (list
