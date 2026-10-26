@@ -7898,6 +7898,32 @@ are used in the context of graph databases.")
 files, which are used in the context of graph databases.")
     (license license:gpl3+)))
 
+(define-public emacs-ttl-mode
+  ;; No releases.
+  (let ((commit "b3e963b280344ebbbd61095ce9d49356adf5a424")
+        (revision "0"))
+    (package
+      (name "emacs-ttl-mode")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/jeeger/ttl-mode")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1j8dcpsszbpz123231ln6f7rk32brvhfv00gj6s23synq9m6c88a"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; No tests upstream.
+      (home-page "https://github.com/jeeger/ttl-mode")
+      (synopsis "Emacs Turtle and Notation 3 mode")
+      (description
+       "This package provides an Emacs mode for editing Turtle (RDF)
+files, supporting indentation some electric punctuation, and hungry
+delete.")
+      (license license:bsd-2))))
+
 (define-public emacs-org-block-capf
   ;; There are no tagged releases upstream
   (let ((commit "080cfd2ed630a6739633b07a8ab6b896a1b5ef4a")
