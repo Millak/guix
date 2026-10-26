@@ -300,12 +300,12 @@
      (let ((creat (pointer->procedure int
                                       (dynamic-func "creat" (dynamic-link))
                                       (list '* int))))
-       (creat (string->pointer (string-append directory "/α")
-                               "UTF-8")
-              #o644)
-       (creat (string->pointer (string-append directory "/λ")
-                               "UTF-8")
-              #o644)
+       (close-fdes (creat (string->pointer (string-append directory "/α")
+                                           "UTF-8")
+                          #o644))
+       (close-fdes (creat (string->pointer (string-append directory "/λ")
+                                           "UTF-8")
+                          #o644))
        (let ((locale (setlocale LC_ALL)))
          (dynamic-wind
            (lambda ()
@@ -338,7 +338,7 @@
 (test-assert "getxattr, setxattr"
   (let ((key "user.translator")
         (value "/hurd/pfinet\0")
-        (file (open-file temp-file "w0")))
+        (file (close (open-file temp-file "w0"))))
     (catch 'system-error
       (lambda ()
         (setxattr temp-file key value)
@@ -353,28 +353,36 @@
   (let ((key "user.translator")
         (value "/hurd/pfinet\0")
         (fd (open-fdes temp-file (logior O_NOTRANS O_CREAT))))
-    (catch 'system-error
+    (dynamic-wind
+      (lambda () #t)
       (lambda ()
-        (setxattr fd key value)
-        (string=? (getxattr fd key) value))
-      (lambda args
-        ;; Accept ENOTSUP, if the file-system does not support extended user
-        ;; attributes.
-        (memv (system-error-errno args) (list ENOTSUP))))))
+        (catch 'system-error
+          (lambda ()
+            (setxattr fd key value)
+            (string=? (getxattr fd key) value))
+          (lambda args
+            ;; Accept ENOTSUP, if the file-system does not support extended user
+            ;; attributes.
+            (memv (system-error-errno args) (list ENOTSUP)))))
+      (lambda () (close-fdes fd)))))
 
 (false-if-exception (delete-file temp-file))
 (test-assert "fgetxattr, fsetxattr: file port"
   (let ((key "user.translator")
         (value "/hurd/pfinet\0")
         (port (open temp-file (logior O_NOTRANS O_CREAT))))
-    (catch 'system-error
+    (dynamic-wind
+      (lambda () #t)
       (lambda ()
-        (setxattr port key value)
-        (string=? (getxattr port key) value))
-      (lambda args
-        ;; Accept ENOTSUP, if the file-system does not support extended user
-        ;; attributes.
-        (memv (system-error-errno args) (list ENOTSUP))))))
+        (catch 'system-error
+          (lambda ()
+            (setxattr port key value)
+            (string=? (getxattr port key) value))
+          (lambda args
+            ;; Accept ENOTSUP, if the file-system does not support extended user
+            ;; attributes.
+            (memv (system-error-errno args) (list ENOTSUP)))))
+      (lambda () (close-port port)))))
 
 (false-if-exception (delete-file temp-file))
 (test-equal "fcntl-flock wait"
@@ -758,14 +766,20 @@
           (not (string-contains %host-type "linux")))
   (test-skip 1))
 (test-assert "kexec-load-file"
-  (catch 'system-error
-    (lambda ()
-      (let ((fd1 (open-fdes "/dev/null" O_RDONLY))
-            (fd2 (open-fdes "/dev/null" O_RDONLY)))
-        (kexec-load-file fd1 fd2 "gnu.repl=yes")))
-    (lambda args
-      (member (system-error-errno args)
-              (list EPERM ENOSYS)))))
+  (let ((fd1 (open-fdes "/dev/null" O_RDONLY))
+        (fd2 (open-fdes "/dev/null" O_RDONLY)))
+    (dynamic-wind
+      (lambda () #t)
+      (lambda ()
+        (catch 'system-error
+          (lambda ()
+            (kexec-load-file fd1 fd2 "gnu.repl=yes"))
+          (lambda args
+            (member (system-error-errno args)
+                    (list EPERM ENOSYS)))))
+      (lambda ()
+        (close-fdes fd1)
+        (close-fdes fd2)))))
 
 (test-skip (if (zero? (getuid)) 1 0))
 (test-equal "setdomainname, EPERM"
