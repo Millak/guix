@@ -1437,8 +1437,10 @@ typist.")
     (license license:gpl3+)))
 
 (define-public sugar-write-activity
-  (let ((commit "dd854c06378cabf0d064d8dc87b5789d2a1a7746")
-        (revision "1"))
+  ;; The last tag release was in 2019 and since then commits have been
+  ;; published that include fixes and translation updates.
+  (let ((commit "bb4417e3a42c62fab4ff86cf5b12c65267d55912")
+        (revision "2"))
     (package
       (name "sugar-write-activity")
       (version (git-version "101" revision commit))
@@ -1450,7 +1452,7 @@ typist.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0lw34hf31fyfvqilzlmcz3c7zki0iqkn1zp2sv3dih016gwqg5pw"))))
+          (base32 "113l5ava25v36lrxgmc2krhihpna1y2r4wyj8k86a24jr7xv3fji"))))
       (build-system pyproject-build-system)
       (arguments
        (list
