@@ -29,16 +29,19 @@
 
 (define-module (gnu packages toolkits)
   #:use-module (gnu packages)
+  #:use-module (gnu packages animation)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -555,3 +558,61 @@ does not have any dependencies, a default render backend or OS window/input
 handling.  The library is self contained in one single header file and can be
 used either in header only mode or in implementation mode.")
     (license (list license:unlicense license:expat))))
+
+(define-public rmlui
+  (package
+    (name "rmlui")
+    (version "6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/mikke89/RmlUi")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0awlkphjn7xd7qhfabmhl1jzw02wp87hw8431bih3bjxg4gvm0k6"))))
+    (build-system cmake-build-system)
+    ;; XXX: Tests use vendored fonts and header-only libraries.
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DRMLUI_LOTTIE_PLUGIN=ON"
+              "-DRMLUI_LUA_BINDINGS=ON"
+              "-DRMLUI_SVG_PLUGIN=ON")
+      #:out-of-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Guix builds rlottie with Meson, which does not install
+          ;; rlottieConfig.cmake.  We do its work here instead.
+          (add-before 'configure 'configure-rlottie-cmake-target
+            (lambda _
+              (let* ((rlottie-include-dir
+                      ;; rlottie installs headers directly in `include/'
+                      ;; without a distinguishing subdirectory, so we cannot
+                      ;; use `search-input-directory'.
+                      (dirname
+                       (search-input-file %build-inputs "include/rlottie.h")))
+                     (rlottie-lib
+                      (search-input-file %build-inputs "lib/librlottie.so")))
+                (substitute* "CMake/Dependencies.cmake"
+                  (("find_package\\(\"rlottie\"\\)")
+                   (format #f "add_library(rlottie::rlottie SHARED IMPORTED)~%\
+target_include_directories(rlottie::rlottie INTERFACE ~a)~%\
+set_target_properties(rlottie::rlottie PROPERTIES IMPORTED_LOCATION ~a)"
+                           rlottie-include-dir rlottie-lib)))))))))
+    (inputs (list freetype
+                  lua                   ;for RMLUI_LUA_BINDINGS
+                  lunasvg               ;for RMLUI_SVG_PLUGIN
+                  rlottie))             ;for RMLUI_LOTTIE_PLUGIN
+    (native-inputs (list glfw-3.4))     ;for tests
+    (home-page "https://github.com/mikke89/RmlUi")
+    (synopsis "HTML/CSS C++ UI library")
+    (description
+     "RmlUI is a cross-platform C++ user interface library based on the HTML
+and CSS standards, designed as a complete solution for any project's interface
+needs.  It aims to be light-weight and performant, using its own layout engine
+and few dependencies.  It transforms HTML/CSS-like source files into vertices,
+indices, and draw commands to be used with an external renderer.  This package
+is compiled with support for Lua scripting of source files.")
+    (license license:expat)))
