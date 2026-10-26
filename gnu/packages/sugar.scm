@@ -738,8 +738,8 @@ the Journal.")
       (license license:gpl2+))))
 
 (define-public sugar-help-activity
-  (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
-        (revision "1"))
+  (let ((commit "3aa03e300e5bf30afbee529ce5130402a8833640")
+        (revision "2"))
     (package
       (name "sugar-help-activity")
       (version (git-version "20" revision commit))
@@ -751,7 +751,7 @@ the Journal.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0awjbqyc9f74dx0d7fgjk42vfsygxr8jhwqiv4hpggqcawc02xv8"))))
+          (base32 "19xs2633341h6xwgzss7pv2i46vxa44qic5bbxqb47yfkdmd4w0w"))))
       (build-system pyproject-build-system)
       (arguments
        (list
