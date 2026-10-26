@@ -345,6 +345,75 @@ standard operating system features.")
         #~(delete "-DImDrawIdx=unsigned int" #$flags))))
     (inputs (list mesa))))
 
+(define-public implot
+  (package
+    (name "implot")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/epezent/implot")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pcq6nn82qpkwk27kyiaxky4pnaz9kj3fc3q25laj154r83ppikl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            ;; Build a shared library from the source code.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke #$(cc-for-target) "-I" (getcwd)
+                      "-I" (search-input-directory inputs "include/imgui")
+                      "-g" "-O2" "-fPIC" "-shared"
+                      "-o" "libimplot.so"
+                      "implot.cpp"
+                      "implot_items.cpp")))
+          (replace 'install
+            ;; Copy the library and header files to the output.
+            (lambda _
+              (install-file "libimplot.so" (string-append #$output "/lib"))
+              (for-each (lambda (file-name)
+                          (install-file file-name
+                                        (string-append #$output
+                                                       "/include/implot")))
+                        '("implot.h" "implot_internal.h")))))
+      #:tests? #f))                     ; no test suite
+    (inputs (list imgui))
+    (home-page "https://github.com/epezent/implot")
+    (synopsis "Immediate-mode C++ plotting library for ImGui")
+    (description "ImPlot is an immediate-mode, GPU-accelerated plotting
+library in C++ for the ImGui GUI library, suitable for creating real-time
+visualizations or interactive plots.  Like ImGui, ImPlot is self-contained and
+requires only minimal code to integrate with existing applications.")
+    (license license:expat)))
+
+(define-public implot-0
+  (package
+    (inherit implot)
+    (name "implot")
+    (version "0.17")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/epezent/implot")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rp4lxgr11yc3z3cmlrpyaf916n74wp7401r21v7xbybfd2cvp0w"))))))
+
+(define-public implot-for-mangohud
+  (package
+    (inherit implot-0)
+    (inputs (modify-inputs inputs
+              (replace "imgui" imgui-for-mangohud)))))
+
 (define-public motif
   ;; This commit is from February 2023 and v2.3.8 from 2017.
   (let ((commit "0f556b0873c72ba1152a12fd54c3198ee039e413")
@@ -486,72 +555,3 @@ does not have any dependencies, a default render backend or OS window/input
 handling.  The library is self contained in one single header file and can be
 used either in header only mode or in implementation mode.")
     (license (list license:unlicense license:expat))))
-
-(define-public implot
-  (package
-    (name "implot")
-    (version "1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/epezent/implot")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1pcq6nn82qpkwk27kyiaxky4pnaz9kj3fc3q25laj154r83ppikl"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'bootstrap)
-          (delete 'configure)
-          (replace 'build
-            ;; Build a shared library from the source code.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (invoke #$(cc-for-target) "-I" (getcwd)
-                      "-I" (search-input-directory inputs "include/imgui")
-                      "-g" "-O2" "-fPIC" "-shared"
-                      "-o" "libimplot.so"
-                      "implot.cpp"
-                      "implot_items.cpp")))
-          (replace 'install
-            ;; Copy the library and header files to the output.
-            (lambda _
-              (install-file "libimplot.so" (string-append #$output "/lib"))
-              (for-each (lambda (file-name)
-                          (install-file file-name
-                                        (string-append #$output
-                                                       "/include/implot")))
-                        '("implot.h" "implot_internal.h")))))
-      #:tests? #f))                     ; no test suite
-    (inputs (list imgui))
-    (home-page "https://github.com/epezent/implot")
-    (synopsis "Immediate-mode C++ plotting library for ImGui")
-    (description "ImPlot is an immediate-mode, GPU-accelerated plotting
-library in C++ for the ImGui GUI library, suitable for creating real-time
-visualizations or interactive plots.  Like ImGui, ImPlot is self-contained and
-requires only minimal code to integrate with existing applications.")
-    (license license:expat)))
-
-(define-public implot-0
-  (package
-    (inherit implot)
-    (name "implot")
-    (version "0.17")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/epezent/implot")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1rp4lxgr11yc3z3cmlrpyaf916n74wp7401r21v7xbybfd2cvp0w"))))))
-
-(define-public implot-for-mangohud
-  (package
-    (inherit implot-0)
-    (inputs (modify-inputs inputs
-              (replace "imgui" imgui-for-mangohud)))))
