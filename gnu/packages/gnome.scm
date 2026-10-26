@@ -14290,9 +14290,11 @@ applications.")
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums))))
-          (add-after 'install 'wrap-glycin-loaders
+          (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/fractal")
+                `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
                 `("XDG_DATA_DIRS" ":" prefix
                   ,(map dirname
                         (search-path-as-list
@@ -14315,11 +14317,14 @@ applications.")
                    gsettings-desktop-schemas
                    gstreamer
                    gst-plugins-bad
+                   gst-plugins-base
+                   `(,gst-plugins-rs "video")
                    gtk
                    gtksourceview
                    libadwaita
                    libglycin
                    libwebp
+                   pipewire
                    (cargo-inputs 'fractal)))
     (home-page "https://gitlab.gnome.org/World/fractal")
     (synopsis "Matrix client for GNOME")
