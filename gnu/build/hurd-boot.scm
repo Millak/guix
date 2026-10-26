@@ -150,37 +150,38 @@ Return the value associated with OPTION, or #f on failure."
     '())
   (for-each scope-set-translator devices))
 
-(define (passive-translator-xattr? file-name)
-  "Return true if FILE-NAME has an extended @code{gnu.translator} attribute
-set.
+(define (file-passive-translator file-name)
+  "Return the extended @code{gnu.translator} attribute stored in file-name
+set as a list of strings or #f.
 
 Note that reading \"gnu.*\" xattrs on Linux only work with ext4; for tmpfs,
 used during image creation, linux-7.0 with linux-shmem-hurd-xattr patch is
-needed."
-  (and (file-exists? file-name)
-       (catch 'system-error
-         (lambda _ (not (string-null? (getxattr file-name "gnu.translator"))))
-         (lambda args
-           (if (= ENODATA (system-error-errno args))
-               #f
-               (apply throw args))))))
+needed.
 
-(define (passive-translator-installed? file-name)
-  "Return true if @file{showtrans} finds a translator installed on FILE-NAME."
-  (with-output-to-port (%make-void-port "w")
-    (lambda _
-      (with-error-to-port (%make-void-port "w")
-        (lambda _
-          (zero? (system* "showtrans" "--silent" file-name)))))))
+This uses fgetxattr to be able to open the file with O_NOTRANS on the Hurd.
+"
+  (let ((fd (open-fdes file-name O_NOTRANS)))
+    (dynamic-wind
+      (lambda () #t)
+      (lambda ()
+        (catch 'system-error
+          (lambda _
+            (string-tokenize (getxattr fd "gnu.translator")
+                             (char-set-complement (char-set #\nul))))
+          (lambda args
+            (if (= ENODATA (system-error-errno args))
+               #f
+               (apply throw args)))))
+      (lambda () (close-fdes fd)))))
 
 (define (translated? file-name)
   "Return true if a translator is installed on FILE-NAME."
-  ;; On GNU/Hurd, 'getxattr' in glibc opens the file without O_NOTRANS, and
-  ;; then, for "gnu.translator", it calls 'file_get_translator', resulting in
-  ;; EOPNOTSUPP (conversely, 'showtrans' opens the file with O_NOTRANS).
-  (if (string-contains %host-type "linux-gnu")
-      (passive-translator-xattr? file-name)
-      (passive-translator-installed? file-name)))
+  (catch 'system-error
+    (lambda _ (->bool (file-passive-translator file-name)))
+    (lambda args
+      (if (= ENOENT (system-error-errno args))
+          #f
+          (apply throw args)))))
 
 (define* (set-translator file-name command #:optional (mode #o600))
   "Setup translator COMMAND on FILE-NAME.
