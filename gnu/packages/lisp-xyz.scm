@@ -20119,7 +20119,7 @@ and DOM cleaning, to ensure that all remote DOMs are the same.")
 (define-public sbcl-iterate
   (package
     (name "sbcl-iterate")
-    (version "1.5.3")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -20128,7 +20128,7 @@ and DOM cleaning, to ensure that all remote DOMs are the same.")
              (commit version)))
        (file-name (git-file-name "cl-iterate" version))
        (sha256
-        (base32 "0l6l8fpgcpwpmi00jwmamxbspbqa8fil6dv11bf9gaxxbw41f8c2"))))
+        (base32 "0k3cfvz186cnd3rpjb95zls9bxjhxynw6m04kv0nrivw17w1gdp9"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
