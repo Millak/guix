@@ -628,7 +628,7 @@ GEXP)."
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
 
-(define-public linux-libre-6.18-version "6.18.58")
+(define-public linux-libre-6.18-version "6.18.59")
 (define-public linux-libre-6.18-gnu-revision "gnu")
 (define deblob-scripts-6.18
   (linux-libre-deblob-scripts
@@ -638,7 +638,7 @@ GEXP)."
    (base32 "1dl6lm9lajxvqqqh2xim0b8085p2242i7qqk3fwa8h9dmshpjxam")))
 (define-public linux-libre-6.18-pristine-source
   (let ((version linux-libre-6.18-version)
-        (hash (base32 "04w0h6dwm9jvwlpdbxm9887wmssxqch6ajxf960sqk9c0gwik6q6")))
+        (hash (base32 "0qrrw85mbg2dqjkjhm3x2b8hs962wka83qxqjbi4fm9shv4mm9ak")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.18)))
