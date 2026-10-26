@@ -1119,8 +1119,10 @@ low power consumption and simple navigation controls.")
     (license license:gpl2+)))
 
 (define-public sugar-river-crossing-activity
-  (let ((commit "0abbeb455363672ed29d734e6e48f50ef78ec48b")
-        (revision "1"))
+  ;; The last tag release was in 2024 and since then commits have been
+  ;; published that include fixes.
+  (let ((commit "a108365b43c8b6542585e876d260196639beee22")
+        (revision "2"))
     (package
       (name "sugar-river-crossing-activity")
       (version (git-version "1" revision commit))
@@ -1132,7 +1134,7 @@ low power consumption and simple navigation controls.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0h7c3i288vwz249figw3jwyylwhlh9qlgjhlbs902ldpmib0k237"))))
+          (base32 "0sm389y1qas00pn7jqplgsswd8nwry4nx71nqls589mn0lglrcj5"))))
       (build-system pyproject-build-system)
       (arguments
        (list
