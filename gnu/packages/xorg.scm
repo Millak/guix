@@ -2266,7 +2266,7 @@ as USB mice.")
     (arguments
      (list #:configure-flags
            #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
-    (inputs (list xorg-server))
+    (inputs (list eudev xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "AMD Radeon video driver for X server")
