@@ -305,7 +305,7 @@ and metadata, and the journal with querying and full text search.")
 (define-public sugar-toolkit-gtk3
   (package
     (name "sugar-toolkit-gtk3")
-    (version "0.121")
+    (version "0.122")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -314,7 +314,7 @@ and metadata, and the journal with querying and full text search.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x80jqx0z89jxfy2dvn4l35qbyvq3c2hg9jq4i0llq1qgkc4034b"))))
+                "158gcilx25g8pivy42dk8ncc12bmn8g8iibpbik0s2zs1n42ibpy"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -392,7 +392,7 @@ and metadata, and the journal with querying and full text search.")
            telepathy-glib
            webkitgtk-for-gtk3))
     (native-inputs
-     (list autoconf-2.71
+     (list autoconf-2.72
            automake
            gettext-minimal
            glib
