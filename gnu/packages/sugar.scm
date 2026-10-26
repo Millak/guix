@@ -953,8 +953,9 @@ or you can also play with a friend!")
     (license license:gpl3+)))
 
 (define-public sugar-physics-activity
-  (let ((commit "cfd17b82b783f1ce4952ccdef6a8ddbe3d8f3e46")
-        (revision "1"))
+  ;; New commits includes fixes and translation updates
+  (let ((commit "d3b739667ac94af3f961ced12aed9b20a0129571")
+        (revision "2"))
     (package
       (name "sugar-physics-activity")
       (version (git-version "35" revision commit))
@@ -966,7 +967,7 @@ or you can also play with a friend!")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0yzq4cbgcngf1ayi4bsn04l3mz6pnayd6db9bv0v9xfrpjmffvyk"))))
+          (base32 "06g61bd1dpqpniv211sbv40v5drp1jg5h2m24yp5pspsydlpb84p"))))
       (build-system pyproject-build-system)
       (arguments
        (list
