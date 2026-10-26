@@ -42777,7 +42777,7 @@ debugging key translation, see @file{kkp-debug.el}.")
 (define-public emacs-org-noter
   (package
     (name "emacs-org-noter")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method git-fetch)
@@ -42787,7 +42787,7 @@ debugging key translation, see @file{kkp-debug.el}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14n9bq0vxz6gnd5d8nzfc327647iww7gxly43rd4lw7fza8dk380"))))
+         "1zs3yah0z2v1ph5hl07b2rjhgk1b9vjhhnlww7fh6gax3wbr64zv"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include
