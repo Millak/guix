@@ -97,6 +97,10 @@ BUILT_SOURCES        += $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 EXTRA_DIST           += $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 MAINTAINERCLEANFILES  = $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 
+# Automake has no recipe for 'version*.texi' so add one so Make rereads its
+# mtime.
+$(srcdir)/%D%/version%texi: ; @:
+
 # When a change to guix.texi occurs, it is not translated immediately.
 # Because @pxref and @xref commands are references to sections by name, they
 # should be translated. If a modification adds a reference to a section, this
