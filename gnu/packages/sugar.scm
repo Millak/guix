@@ -194,7 +194,7 @@ used every school day by children in more than forty countries.")
 (define-public sugar-artwork
   (package
     (name "sugar-artwork")
-    (version "0.121")
+    (version "0.122")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -203,7 +203,7 @@ used every school day by children in more than forty countries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00m3dmwswfy4whc2hs51lqckz1z1f2jnw94jhxgw40b17w00pzwj"))))
+                "1mqd5kk7x51drd0p8vwb2v85lqq796gwqdq3p9vj2ih5gxvqdxxz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -218,7 +218,7 @@ used every school day by children in more than forty countries.")
                 (string-append "#" m))))))))
     (inputs (list cairo gtk+))
     (native-inputs
-     (list autoconf-2.71 automake
+     (list autoconf-2.72 automake
            icon-naming-utils
            libtool
            pkg-config
