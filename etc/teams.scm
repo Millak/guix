@@ -1626,11 +1626,6 @@ the \"texlive\" importer."
                        "conroj")
   ocaml)
 
-(define-member (person "Rutherther"
-                       "rutherther@ditigal.xyz"
-                       "Rutherther")
-  core release)
-
 (define-member (person "Morgan Arnold"
                        "morgan.arnold@proton.me"
                        "mra")
