@@ -349,6 +349,34 @@
         (memv (system-error-errno args) (list ENOTSUP))))))
 
 (false-if-exception (delete-file temp-file))
+(test-assert "fgetxattr, fsetxattr: file descritor"
+  (let ((key "user.translator")
+        (value "/hurd/pfinet\0")
+        (fd (open-fdes temp-file (logior O_NOTRANS O_CREAT))))
+    (catch 'system-error
+      (lambda ()
+        (setxattr fd key value)
+        (string=? (getxattr fd key) value))
+      (lambda args
+        ;; Accept ENOTSUP, if the file-system does not support extended user
+        ;; attributes.
+        (memv (system-error-errno args) (list ENOTSUP))))))
+
+(false-if-exception (delete-file temp-file))
+(test-assert "fgetxattr, fsetxattr: file port"
+  (let ((key "user.translator")
+        (value "/hurd/pfinet\0")
+        (port (open temp-file (logior O_NOTRANS O_CREAT))))
+    (catch 'system-error
+      (lambda ()
+        (setxattr port key value)
+        (string=? (getxattr port key) value))
+      (lambda args
+        ;; Accept ENOTSUP, if the file-system does not support extended user
+        ;; attributes.
+        (memv (system-error-errno args) (list ENOTSUP))))))
+
+(false-if-exception (delete-file temp-file))
 (test-equal "fcntl-flock wait"
   42                                              ; the child's exit status
   (let ((file (open-file temp-file "w0b")))

@@ -1065,50 +1065,69 @@ backend device."
              (list (strerror err))
              (list err))))))
 
-(define getxattr
-  (let ((proc (syscall->procedure ssize_t "getxattr"
-                                  `(* * * ,size_t))))
-    (lambda (file key)
-      "Get the extended attribute value for KEY on FILE."
-      (let-values (((size err)
-                    ;; Get size of VALUE for buffer.
-                    (proc (string->pointer/utf-8 file)
-                          (string->pointer key)
-                          (string->pointer "")
-                          0)))
-        (cond ((< size 0)
-               (throw 'system-error "getxattr" "~S ~S: ~A"
-                      (list file key (strerror err))
-                      (list err)))
-              ((zero? size) "")
-              ;; Get VALUE in buffer of SIZE.  XXX actual size can race.
-              (else (let*-values (((buf) (make-bytevector size))
-                                  ((size err)
-                                   (proc (string->pointer/utf-8 file)
-                                         (string->pointer key)
-                                         (bytevector->pointer buf)
-                                         size)))
-                      (if (>= size 0)
-                          (utf8->string buf)
-                          (throw 'system-error "getxattr" "~S ~S: ~A"
-                                 (list file key (strerror err))
-                                 (list err))))))))))
+(define %libc-getxattr (syscall->procedure ssize_t "getxattr"
+                                           `(* * * ,size_t)))
+(define %libc-fgetxattr (syscall->procedure ssize_t "fgetxattr"
+                                            `(,int * * ,size_t)))
+
+(define (getxattr object key)
+  "Get the extended attribute value for KEY on OBJECT.
+OBJECT can be either a string, file-port or file descriptor."
+  (let* ((use-fdes? (or (integer? object)
+                        (file-port? object)))
+         (proc (if use-fdes? %libc-fgetxattr %libc-getxattr))
+         (arg  (if use-fdes?
+                   (if (file-port? object) (fileno object) object)
+                   (string->pointer/utf-8 object))))
+    (let-values (((size err)
+                  ;; Get size of VALUE for buffer.
+                  (proc arg
+                        (string->pointer key)
+                        (string->pointer "")
+                        0)))
+      (cond ((< size 0)
+             (throw 'system-error "getxattr" "~S ~S: ~A"
+                    (list object key (strerror err))
+                    (list err)))
+            ((zero? size) "")
+            ;; Get VALUE in buffer of SIZE.  XXX actual size can race.
+            (else (let*-values (((buf) (make-bytevector size))
+                                ((size err)
+                                 (proc arg
+                                       (string->pointer key)
+                                       (bytevector->pointer buf)
+                                       size)))
+                    (if (>= size 0)
+                        (utf8->string buf)
+                        (throw 'system-error "getxattr" "~S ~S: ~A"
+                               (list object key (strerror err))
+                               (list err)))))))))
+
+(define %libc-setxattr (syscall->procedure int "setxattr"
+                                           `(* * * ,size_t ,int)))
+(define %libc-fsetxattr (syscall->procedure int "fsetxattr"
+                                           `(,int * * ,size_t ,int)))
 
 (define setxattr
-  (let ((proc (syscall->procedure int "setxattr"
-                                  `(* * * ,size_t ,int))))
-    (lambda* (file key value #:optional (flags 0))
-      "Set extended attribute KEY to VALUE on FILE."
+  (lambda* (object key value #:optional (flags 0))
+    "Set extended attribute KEY to VALUE on OBJECT.
+OBJECT can be either a string, file-port or file descriptor."
+    (let* ((use-fdes? (or (integer? object)
+                          (file-port? object)))
+           (proc (if use-fdes? %libc-fsetxattr %libc-setxattr))
+           (arg  (if use-fdes?
+                     (if (file-port? object) (fileno object) object)
+                     (string->pointer/utf-8 object))))
       (let*-values (((bv) (string->utf8 value))
                     ((ret err)
-                     (proc (string->pointer/utf-8 file)
+                     (proc arg
                            (string->pointer key)
                            (bytevector->pointer bv)
                            (bytevector-length bv)
                            flags)))
         (unless (zero? ret)
           (throw 'system-error "setxattr" "~S ~S: ~A"
-                 (list file key value (strerror err))
+                 (list object key value (strerror err))
                  (list err)))))))
 
 
