@@ -7924,6 +7924,28 @@ files, supporting indentation some electric punctuation, and hungry
 delete.")
       (license license:bsd-2))))
 
+(define-public emacs-ttl-ts-mode
+  (package
+   (name "emacs-ttl-ts-mode")
+   (version "0.2")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://codeberg.org/nutcase/ttl-ts-mode")
+           (commit version)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "1z9ijzw909bakqqysk36bjlzarnil4sxwslrgcn4qvqnz878kb0d"))))
+   (build-system emacs-build-system)
+   (arguments (list #:tests? #f))      ; No tests upstream.
+   (home-page "https://codeberg.org/nutcase/ttl-ts-mode")
+   (synopsis "Emacs Turtle and Notation 3 mode based on tree sitter grammar")
+   (description
+    "This package provides a tree-sitter based Emacs mode for editing
+ Turtle (RDF) files, supporting indentation.")
+   (license license:gpl3+)))
+
 (define-public emacs-org-block-capf
   ;; There are no tagged releases upstream
   (let ((commit "080cfd2ed630a6739633b07a8ab6b896a1b5ef4a")
