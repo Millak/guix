@@ -1180,8 +1180,9 @@ hesitate to feast on the goat.")
       (license license:gpl3+))))
 
 (define-public sugar-terminal-activity
-  (let ((commit "a1f92b9da6121bc9a6fbba2c3f3b885dd26d4617")
-        (revision "1"))
+  ;; New commits includes fixes and translation updates
+  (let ((commit "e810f0397b6d105642d8653af41e7dc909b3302e")
+        (revision "2"))
     (package
       (name "sugar-terminal-activity")
       (version (git-version "47" revision commit))
@@ -1193,7 +1194,7 @@ hesitate to feast on the goat.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "11p7rrnlaw374h3qravhp915vdblvn07i2mnrzn7mhapkwvkg4h5"))))
+          (base32 "0ahmv6ynand6xww4w2p2654hmm4k2kmsdjb73xlwsa4b5ss224av"))))
       (build-system pyproject-build-system)
       (arguments
        (list
