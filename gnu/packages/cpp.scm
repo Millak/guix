@@ -5346,14 +5346,16 @@ Unicode Technical Standard}.")
 (define-public tclap
   (package
     (name "tclap")
-    (version "1.4.0-rc2")
+    (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/" name "/" name "-" version
-                           ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DAarno/tclap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xy5q78ff7z22gnia320qlaf0mawv2m02rl6b7dawxy4mmdwwlna"))))
+        (base32 "0psfndg6nxgp9ps2dbisf1bhiqvfwb4zf9mhscmirc59vvv0q1gz"))))
     (build-system cmake-build-system)
     (arguments
      (list
