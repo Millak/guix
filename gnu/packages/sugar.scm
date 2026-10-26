@@ -571,8 +571,8 @@ present in gene regulatory networks.")
 (define-public sugar-chat-activity
   ;; The last release was in 2019 and since then commits have been published
   ;; that include build fixes and translation updates.
-  (let ((commit "a6a14b99576619639fd82fd265c4af096bcf52dc")
-        (revision "1"))
+  (let ((commit "fbab21ebddd5a11ab37b8a5a622214836ec1ffe7")
+        (revision "2"))
     (package
       (name "sugar-chat-activity")
       (version (git-version "86" revision commit))
@@ -584,7 +584,7 @@ present in gene regulatory networks.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1gp1ljazm119hqzwz0rkr6k588ngd68manndm808pj5vgbv7qsdq"))))
+          (base32 "190vkrnc3s97gnc69ddr4agh8qf04cbasibf74whn3amnsbch1yn"))))
       (build-system pyproject-build-system)
       (arguments
        (list
