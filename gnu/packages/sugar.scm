@@ -788,8 +788,10 @@ users with easy access to documentation and manuals.")
       (license license:gpl3+))))
 
 (define-public sugar-jukebox-activity
-  (let ((commit "44ad1da717904a7c7d93a08985b94468a9b7ab7a")
-        (revision "2"))
+  ;; The last tag release was in 2020 and since then commits have been
+  ;; published that include translation updates.
+  (let ((commit "787c44927883dccc9bb19324e332d8dd67054387")
+        (revision "3"))
     (package
       (name "sugar-jukebox-activity")
       (version (git-version "36" revision commit))
@@ -801,7 +803,7 @@ users with easy access to documentation and manuals.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1c8g4h52jnwzk5vlkrkm8j0p5dbrjqd8hv3bdz5rp39w9in3skzk"))))
+          (base32 "0g9naqpkmyla4fpvs9g699yv2nrrr96xld8ljj8ylmmgymj8wi66"))))
       (build-system pyproject-build-system)
       (arguments
        (list
