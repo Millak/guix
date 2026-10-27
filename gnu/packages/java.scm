@@ -1940,7 +1940,7 @@ OpenJDK.")
   (package
     (inherit openjdk17)
     (name "jbr")
-    (version "17.0.11b1207.30")
+    (version "17.0.14b1367.22")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1949,10 +1949,19 @@ OpenJDK.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "5bbf5z8faf9sdkig2fwkj06hb7hs9s3bpzzvbqn2i75lbwqk3bln"))
+                "1kiqlbm96dia942qmb33l4h7lmrwff5xzdlk9fxw0wxq5r7vyjh1"))
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'do-not-disable-new-dtags
+              (lambda _
+                ;; JBR backports the switch to DT_RPATH, but Guix validates
+                ;; DT_RUNPATH (as in the openjdk22 workaround).
+                (substitute* "make/autoconf/flags-cflags.m4"
+                  ((" -Wl,--disable-new-dtags")
+                   ""))))))
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "--with-jvm-features=shenandoahgc"
