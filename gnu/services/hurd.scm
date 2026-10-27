@@ -140,6 +140,7 @@
            (system? #t)
            (comment "login user")
            (home-directory "/etc/login")
+           (create-home-directory? #f)
            (shell (file-append hurd "/bin/loginpr"))))))
 
 (define hurd-login-service-type
