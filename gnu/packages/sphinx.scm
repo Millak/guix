@@ -71,6 +71,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages uml)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
@@ -943,6 +944,27 @@ feedformatter package or of Django utils to generate the feed.")
     (description
      "Create tabbed content in Sphinx documentation when building HTML.")
     (license license:expat)))
+
+(define-public python-sphinxcontrib-plantuml
+  (package
+    (name "python-sphinxcontrib-plantuml")
+    (version "0.31")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sphinx-contrib/plantuml")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jdl049v4xsryqsv0rp4c0c18hd7n648dyqrxjsv6qn81q7xmm2w"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sphinx plantuml))
+    (native-inputs (list python-pytest texlive-epstopdf-pkg python-setuptools))
+    (home-page "https://github.com/sphinx-contrib/plantuml/")
+    (synopsis "PlantUML for Sphinx")
+    (description "A Sphinx extension that renders PlantUML diagrams.")
+    (license license:bsd-2)))
 
 (define-public python-sphinxcontrib-programoutput
   (package
