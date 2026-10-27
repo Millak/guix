@@ -53,6 +53,7 @@
 ;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
 ;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
+;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4057,6 +4058,80 @@ diagnostics, autocompletion, documentation, and formatting.")
 TeX/LaTeX engine.  Tectonic is forked from the XeTeX extension to the
 classic Web2C implementation of TeX and uses the TeXLive distribution
 of support files.")
+    (license license:expat)))
+
+(define-public tombi
+  (package
+    (name "tombi")
+    (version "1.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tombi-toml/tombi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32
+                "093pry6ng7mzvarc35g9a2wkzjvl2qbwjwsw3lrk3i85r9c3gbq7"))
+       (snippet '(delete-file
+                  "editors/intellij/gradle/wrapper/gradle-wrapper.jar"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:modules
+       '((guix build cargo-build-system)
+         (guix build utils)
+         (ice-9 match))
+       #:cargo-install-paths ''("rust/tombi-cli")
+       #:cargo-test-flags
+       ''(;; Many tests require downloaded schema files.
+          "--lib" "--bins"
+          "--"
+          ;; The phase set-version makes this test fail.
+          "--skip=command::dist::tests::unix_targets_always_use_tar_gz")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-version
+             (lambda _
+               (substitute* "Cargo.toml"
+                 (("0\\.0\\.0-dev")
+                  #$version))))
+           ;; Some unit tests need whatever catalogs tombi.toml refers to.
+           (add-before 'check 'delete-url
+             (lambda _
+               (substitute* "tombi.toml"
+                 (((string-append "\"https://www\\.schemastore\\.org"
+                                  "/api/json/catalog\\.json\",?"))
+                  ""))))
+           (add-after 'install 'install-completions
+             (lambda* (#:key native-inputs #:allow-other-keys)
+               (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/tombi")
+                              (in-vicinity #$output "bin/tombi"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "completion" shell))))))
+                '(("bash"   . "share/bash-completion/completions/tombi")
+                  ("elvish" . "share/elvish/lib/tombi.elv")
+                  ("fish"   . "share/fish/vendor_completions.d/tombi.fish")
+                  ("zsh"    . "share/zsh/site-functions/_tombi"))))))))
+    (native-inputs (if (%current-target-system)
+                       (list this-package)
+                       '()))
+    (inputs (cargo-inputs 'tombi))
+    (home-page "https://tombi-toml.github.io/tombi/")
+    (synopsis "Formatter, linter and language server for TOML")
+    (description
+     "This is a toolkit for @acronym{TOML, Tom's Obvious Minimal Language}, of
+a formatter (@code{tombi format}), linter (@code{tombi lint}) and language
+server (@code{tombi lsp}).  These can evaluate documents against JSON Schemas;
+ones for @file{Cargo.toml} and @file{pyproject.toml} are built in.")
     (license license:expat)))
 
 (define-public treefmt
