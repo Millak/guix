@@ -29625,11 +29625,11 @@ library are feedforward neural networks trained using backpropagation.")
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-fiveam))
     (inputs (list sbcl-simple-matrix))
-    (synopsis "Solving unconstrained optimization problems in Common Lisp")
+    (synopsis "Solving optimization problems in Common Lisp")
     (description
      "@code{simple-optimization} is a Common Lisp library providing a function
-to solve unconstrained optimization problems numerically using either the
-gradient descent or a quasi-Newton method.")
+to solve optimization problems numerically using either the gradient descent
+or a quasi-Newton method.")
     (home-page "https://codeberg.org/glv/cl-simple-optimization")
     (license license:gpl3+)))
 
