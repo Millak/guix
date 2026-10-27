@@ -370,6 +370,7 @@ expressions and blanks that were read."
    ('search-paths '(package))
    ('native-search-paths '(package))
    ('search-path-specification '())
+   ('define-cargo-inputs '())
 
    ('services '(operating-system))
    ('set-xorg-configuration '())
