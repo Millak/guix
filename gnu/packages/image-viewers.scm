@@ -37,7 +37,7 @@
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2025, 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
@@ -314,7 +314,7 @@ actions.")
 (define-public geeqie
   (package
     (name "geeqie")
-    (version "2.7")
+    (version "3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -322,7 +322,7 @@ actions.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "139ffzqqq79d3k5q99r8i1jr9v9vfwv89dkh6vvw1mdnv6b3s9n8"))
+                "14xa1mllm7rhyyjnxbik42dxcdiqwrpi0p3zkxvphqf1n0mvybsm"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -341,7 +341,7 @@ actions.")
            evince
            exiv2
            ffmpegthumbnailer
-           gtk+
+           gtk
            gspell
            lcms
            libarchive
