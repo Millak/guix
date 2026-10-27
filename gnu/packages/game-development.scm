@@ -40,6 +40,7 @@
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Samuel Sehnert <mail@buffersquid.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2627,7 +2628,9 @@ of use.")
     (arguments
      (list
       #:tests? #f ;No test target
-      #:configure-flags #~(list "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")
+      #:configure-flags #~(list "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON"
+                                (string-append "-DICONDIR="
+                                               #$output "/share/icons/hicolor/256x256/apps"))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'add-qtsvg
                      (lambda _
