@@ -132,11 +132,17 @@ Some ACTIONS support additional ARGS.\n"))
 
   (show-build-options-help)
   (display (G_ "
+  -d, --derivation       return the derivation of the given home environment"))
+  (display (G_ "
   -e, --expression=EXPR  consider the home-environment EXPR evaluates to
                          instead of reading FILE, when applicable"))
   (display (G_ "
       --allow-downgrades for 'reconfigure', allow downgrades to earlier
                          channel revisions"))
+  (display (G_ "
+      --on-error=STRATEGY
+                         apply STRATEGY (one of nothing-special, backtrace,
+                         or debug) when an error occurs while reading FILE"))
   (newline)
   (display (G_ "
   -N, --network          allow containers to access the network"))
@@ -157,6 +163,10 @@ Some ACTIONS support additional ARGS.\n"))
   -I, --list-installed[=REGEXP]
                          for 'describe' or 'list-generations', list installed
                          packages matching REGEXP"))
+  (newline)
+  (show-cross-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -191,10 +201,17 @@ Some ACTIONS support additional ARGS.\n"))
          (option '(#\e "expression") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'expression arg result)))
+         (option '(#\d "derivation") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'derivations-only? #t result)))
          (option '("allow-downgrades") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'validate-reconfigure
                                warn-about-backward-reconfigure
+                               result)))
+         (option '("on-error") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'on-error (string->symbol arg)
                                result)))
          (option '("graph-backend") #t #f
                  (lambda (opt name arg result)
@@ -218,10 +235,14 @@ Some ACTIONS support additional ARGS.\n"))
                                (specification->file-system-mapping arg #f)
                                result)))
 
-         %standard-build-options))
+         (append %standard-build-options
+                 %standard-cross-build-options
+                 %standard-native-build-options)))
 
 (define %default-options
-  `((graft? . #t)
+  `((system . ,(%current-system))
+    (target . #f)
+    (graft? . #t)
     (substitutes? . #t)
     (offload? . #t)
     (print-build-trace? . #t)
@@ -527,7 +548,7 @@ resulting from command-line parsing."
                    ((x . _) x)))
          (expr   (assoc-ref opts 'expression))
          (system (assoc-ref opts 'system))
-
+         (target (assoc-ref opts 'target))
          (transform   (lambda (obj)
                         (home-environment-with-provenance obj file)))
 
@@ -577,7 +598,9 @@ resulting from command-line parsing."
                             #:network? (assoc-ref opts 'network?)
                             #:file-system-mappings mappings
                             #:container-command
-                            (or (assoc-ref opts 'container-command) '()))))))
+                            (or (assoc-ref opts 'container-command) '())))
+          #:target target
+          #:system system)))
     (warn-about-disk-space)))
 
 

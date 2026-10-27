@@ -525,6 +525,7 @@ complete -x -c guix -n "__fish_guix_using_command $guix_commands_with_build_opti
 set -l guix_commands_with_cross_build_options \
     archive \
     build \
+    home \
     pack \
     system
 
@@ -538,6 +539,7 @@ set -l guix_commands_with_native_build_options \
     build \
     environment \
     graph \
+    home \
     pack \
     pull \
     shell \
@@ -738,8 +740,10 @@ complete -x -c guix -n "__fish_guix_using_command $guix_command" -s S -l seriali
 
 
 set -l guix_command home
+complete -f -c guix -n "__fish_guix_using_command $guix_command" -s d -l derivation       -d "return the derivation of the given home environment"
 complete -x -c guix -n "__fish_guix_using_command $guix_command" -s e -l expression=      -d "consider the home-environment EXPR evaluates to instead of reading FILE, when applicable"
 complete -f -c guix -n "__fish_guix_using_command $guix_command"      -l allow-downgrades -d "for 'reconfigure', allow downgrades to earlier channel revisions"
+complete -x -c guix -n "__fish_guix_using_command $guix_command"      -l on-error=        -d "apply STRATEGY when an error occurs while reading FILE" -a "nothing-special backtrace debug"
 complete -f -c guix -n "__fish_guix_using_command $guix_command" -s N -l network          -d "allow containers to access the network"
 complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l share=           -d "for containers, share writable host file system according to SPEC"
 complete -r -c guix -n "__fish_guix_using_command $guix_command"      -l expose=          -d "for containers, expose read-only host file system according to SPEC"

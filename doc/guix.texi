@@ -51723,7 +51723,7 @@ configuration triplets,, autoconf, Autoconf}).
 @item --derivation
 @itemx -d
 Return the derivation file name of the given operating system without
-building anything.
+building it.
 
 @cindex provenance tracking, of the operating system
 @item --save-provenance
@@ -51806,6 +51806,7 @@ Make sure you understand its security implications before using
 @cindex on-error
 @cindex on-error strategy
 @cindex error strategy
+@anchor{on-error strategy}
 @item --on-error=@var{strategy}
 Apply @var{strategy} when an error occurs when reading @var{file}.
 @var{strategy} may be one of the following:
@@ -58577,15 +58578,30 @@ Build Options}).  In addition, @var{options} can contain one of the
 following:
 
 @table @option
-
 @item --expression=@var{expr}
 @itemx -e @var{expr}
 Consider the home-environment @var{expr} evaluates to.
 This is an alternative to specifying a file which evaluates to a home
 environment.
 
+@item --system=@var{system}
+@itemx -s @var{system}
+Attempt to build for @var{system} instead of the host system type.
+This works as per @command{guix build} (@pxref{Invoking guix build}).
+
+@item --target=@var{triplet}
+Cross-build for @var{triplet}, which must be a valid GNU triplet, such
+as @code{"aarch64-linux-gnu"} (@pxref{Specifying target triplets, GNU
+configuration triplets,, autoconf, Autoconf}).
+
+@item --derivation
+@itemx -d
+Return the derivation file name of the given home environment without
+building it.
+
 @item --allow-downgrades
-Instruct @command{guix home reconfigure} to allow system downgrades.
+Instruct @command{guix home reconfigure} to allow home environment
+downgrades.
 
 Just like @command{guix system}, @command{guix home reconfigure}, by
 default, prevents you from downgrading your home to older or unrelated
@@ -58594,6 +58610,9 @@ it---those shown by @command{guix home describe}.  Using
 @option{--allow-downgrades} allows you to bypass that check, at the risk
 of downgrading your home---be careful!
 
+@item --on-error=@var{strategy}
+Apply @var{strategy} when an error occurs when reading @var{file}.
+(@pxref{on-error strategy})
 @end table
 
 @node Documentation
