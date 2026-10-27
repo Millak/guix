@@ -1692,6 +1692,53 @@ While it does not seek to mirror all of find's powerful functionality, it provid
 defaults for 80% of the use cases.")
      (license (list license:expat license:asl2.0))))
 
+(define-public ffsend
+  (package
+    (name "ffsend")
+    (version "0.2.77")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/timvisee/ffsend")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ffyss0gw1wij9szid7s3ir6mnvca3rijnln2hndfxdqswn6gbda"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+	                         %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+	          ((guix build copy-build-system) #:prefix copy:)
+	          (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("contrib/completions/ffsend.bash"
+                        "share/bash-completion/completions/ffsend")
+                       ("contrib/completions/ffsend.elv"
+                        "share/elvish/lib/ffsend")
+                       ("contrib/completions/ffsend.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("contrib/completions/_ffsend"
+                        "share/zsh/site-functions/"))
+                     args))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* openssl (cargo-inputs 'ffsend)))
+    (home-page "https://timvisee.com/projects/ffsend")
+    (synopsis "Easily and securely share files from the command line")
+    (description
+     "This package provides a firefox send client command-line utility
+@code{ffsend} to easily and securely share files from the command line.  All
+files are end-to-end encrypted.")
+    (license license:gpl3)))
+
 (define-public forgejo-cli
   (package
     (name "forgejo-cli")
