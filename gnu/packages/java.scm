@@ -2030,7 +2030,7 @@ OpenJDK.")
   (package
     (inherit openjdk25)
     (name "jbr")
-    (version "25.0.2b329.72")
+    (version "25.0.4.1b635.79")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2039,7 +2039,7 @@ OpenJDK.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1m7pbz2ypx4h7n6iqss8bgymg9hqn14lnis4a2w87mgy51p370ib"))
+                "0zi5gqil5a61dn1bh0jxa4dkjxwd2fkb561vqr3lwgrmzpcawxzx"))
               (patches
                (search-patches "jbr-25-wayland-drag-icon.patch"
                                "jbr-25-wayland-intra-jvm-dnd.patch"))))
