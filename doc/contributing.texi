@@ -2101,7 +2101,7 @@ copyright-related project policies.
 @cindex copyright notices, usage in Guix
 The copyright notices in Guix follow the guidance provided by the GNU
 Project (@pxref{Copyright Notices,,,maintain,Information for Maintainers
-of GNU Software}.  Using ranges for adjacent years is preferred to
+of GNU Software}).  Using ranges for adjacent years is preferred to
 listing each individual years.  Below is an example of the preferred
 style used for copyright notices in source file headers:
 
