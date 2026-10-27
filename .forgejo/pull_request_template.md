@@ -53,6 +53,7 @@ total: ...
 
 - [ ] Commit messages follow [the "ChangeLog" style](https://www.gnu.org/prep/standards/html_node/Change-Logs.html).
 - [ ] The change doesn't break `guix pull` (`guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --no-channel-files --disable-authentication`).
+- [ ] [The change doesn't include any LLM output](https://guix.gnu.org/manual/devel/en/html_node/Copyright-Matters.html), either verbatim or with modifications.
 
 - Successfully cross-compiled to the following target(s) (this is optional):
   - [ ] x86_64-linux-gnu
