@@ -38560,7 +38560,7 @@ music.")
     (native-inputs (list makel))
     (propagated-inputs
      (list emacs-libmpdel emacs-navigel))
-    (home-page "https://gitea.petton.fr/mpdel/mpdel")
+    (home-page "https://github.com/mpdel/mpdel")
     (synopsis "Emacs user interface for Music Player Daemon (MPD)")
     (description
      "MPDel provides an Emacs user interface to control playback (play, pause,
