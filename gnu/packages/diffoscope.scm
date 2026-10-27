@@ -79,7 +79,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "333")
+    (version "335")
     (source
      (origin
        (method git-fetch)
@@ -88,18 +88,12 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g0pih0gdlhsjmfdysh0fxhp60jcwgk44f673ym4yq4vvpmgz527"))))
+        (base32 "1hjbwgg937r5rggzh1c7657ij76va7x20wd2adbxs7f09ka2xgga"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; These tests are broken because our `file` package has a
-          ;; bug in berkeley-db and wasm file type detection.
-          (add-after 'unpack 'remove-broken-file-type-detection-test
-            (lambda _
-              (delete-file "tests/comparators/test_berkeley_db.py")
-              (delete-file "tests/comparators/test_wasm.py")))
           (add-after 'compress-documentation 'make-extract-vmlinux-executable
             ;; The script extract-vmlinux needs to be marked executable to be
             ;; able to extract vmlinux files.
@@ -128,10 +122,6 @@
           (add-after 'build 'build-man-page
             (lambda _
               (invoke "make" "-C" "doc")))
-          (add-before 'check 'writable-test-data
-            (lambda _
-              ;; Tests may need write access to tests directory.
-              (for-each make-file-writable (find-files "tests"))))
           (add-before 'check 'fix-failing-test
             (lambda _
               ;; There is no user name mapping in the build environment.
