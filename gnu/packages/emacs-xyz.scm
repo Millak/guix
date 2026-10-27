@@ -38568,6 +38568,31 @@ next, volume) and display and control the current playlist as well as your
 stored playlists.")
     (license license:gpl3+)))
 
+(define-public emacs-mpdel-embark
+  (package
+    (name "emacs-mpdel-embark")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mpdel/mpdel-embark")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "129ay53zrq4gzqf2vh41q3yp613vzi9b57jlzyl8jnbn0wfbjx65"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (propagated-inputs
+     (list emacs-embark emacs-libmpdel emacs-mpdel))
+    (home-page "https://github.com/mpdel/mpdel-embark")
+    (synopsis "Embark actions for MPDel")
+    (description
+     "This package adds Embark actions for MPDel music library entries.  It
+also provides a minibuffer interface for browsing artists, albums, and
+songs.")
+    (license license:gpl3+)))
 
 (define-public emacs-kodi-remote
   (let ((commit "f5e932036c16e2b61a63020e006fc601e38d181e")
