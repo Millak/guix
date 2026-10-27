@@ -48754,7 +48754,7 @@ complementary packages.")
 (define-public emacs-wisp-mode
   (package
     (name "emacs-wisp-mode")
-    (version "1.0.12")
+    (version "1.0.14")
     (source
      (origin
        (method hg-fetch)
@@ -48763,13 +48763,14 @@ complementary packages.")
              (changeset (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m5ssl4ngk2jl1zk0fnsss0asyvwanjaa5rrcksldqnh2ikcr4bm"))))
+        (base32 "037abiacr4lb0d8zqh1v418mwl6jsszxfv3nvmgyrj4gdivxyfny"))))
     (build-system emacs-build-system)
     (home-page "https://www.draketo.de/software/wisp")
-    (synopsis "Syntax highlighting and indentation support for Wisp files")
+    (synopsis "Syntax highlighting, indentation, and Org-babel for Wisp")
     (description
      "This package provides @code{wisp-mode}, an Emacs major mode for Wisp
-files, providing syntax highlighting and indentation rules.")
+files, providing syntax highlighting and indentation rules, as well as support
+for working with Wisp code blocks with @code{org-babel} in @code{org-mode}.")
     (license license:gpl3+)))
 
 (define-public emacs-ivy-hydra
