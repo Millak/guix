@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2026 Yan Abu Arab <yanabuarab@gmail.com>
 ;;; Copyright © 2026 Julian Flake <julian@flake.de>
+;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1101,6 +1102,31 @@ builder does not support SVG images natively (e.g. LaTeX).")
      "This package provides a Python API to easily integrate Sphinx
 documentation into your web application.  It provides tools to integrate
 Sphinx documents in web templates and to handle searches.")
+    (license license:bsd-3)))
+
+(define-public python-sphinxnotes-strike
+  (package
+    (name "python-sphinxnotes-strike")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sphinx-notes/strike")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h3qsfxbz1adm002y11qjsy78njc49m5mz6ay61yxry27pcmdafw"))))
+    (build-system pyproject-build-system)
+    ;; No tests in version 2.0, they will be on the next release.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://sphinx.silverrainz.me/strike/")
+    (synopsis "Strikethrough text support to Sphinx")
+    (description
+     "@code{sphinxnotes-strike} is a Sphinx extension that adds strikethrough
+text support to Sphinx.")
     (license license:bsd-3)))
 
 (define-public python-sphinx-gallery
