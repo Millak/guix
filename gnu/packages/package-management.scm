@@ -1261,6 +1261,7 @@ by using a Xapian cache.")
       #~(mkdir #$output)))
     (propagated-inputs (list guix-compose
                              guix-diff-channels
+                             guix-diff-drv
                              guix-explorer
                              guix-list
                              guix-modules
