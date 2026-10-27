@@ -89750,37 +89750,39 @@ fn main() {
                      (python-cryptography =>
                                           (list rust-asn1-0.20.0
                                            rust-asn1-derive-0.20.0
-                                           rust-autocfg-1.4.0
+                                           rust-autocfg-1.5.1
                                            rust-base64-0.22.1
-                                           rust-bitflags-2.9.0
-                                           rust-cc-1.2.18
-                                           rust-cfg-if-1.0.0
+                                           rust-bitflags-2.13.2
+                                           rust-cc-1.10.0
+                                           rust-cfg-if-1.0.5
+                                           rust-find-msvc-tools-0.1.15
                                            rust-foreign-types-0.3.2
                                            rust-foreign-types-shared-0.1.1
                                            rust-heck-0.5.0
-                                           rust-indoc-2.0.6
-                                           rust-itoa-1.0.15
-                                           rust-libc-0.2.171
+                                           rust-indoc-2.0.8
+                                           rust-itoa-1.0.18
+                                           rust-libc-0.2.191
                                            rust-memoffset-0.9.1
-                                           rust-once-cell-1.21.3
-                                           rust-openssl-0.10.72
+                                           rust-once-cell-1.21.4
+                                           rust-openssl-0.10.81
                                            rust-openssl-macros-0.1.1
-                                           rust-openssl-sys-0.9.107
-                                           rust-pem-3.0.5
-                                           rust-pkg-config-0.3.32
-                                           rust-portable-atomic-1.11.0
-                                           rust-proc-macro2-1.0.94
+                                           rust-openssl-sys-0.9.117
+                                           rust-pem-3.0.6
+                                           rust-pkg-config-0.3.34
+                                           rust-portable-atomic-1.15.0
+                                           rust-proc-macro2-1.0.107
                                            rust-pyo3-0.23.5
                                            rust-pyo3-build-config-0.23.5
                                            rust-pyo3-ffi-0.23.5
                                            rust-pyo3-macros-0.23.5
                                            rust-pyo3-macros-backend-0.23.5
-                                           rust-quote-1.0.40
-                                           rust-self-cell-1.1.0
-                                           rust-shlex-1.3.0
-                                           rust-syn-2.0.100
+                                           rust-quote-1.0.47
+                                           rust-rustversion-1.0.23
+                                           rust-self-cell-1.3.0
+                                           rust-shlex-2.0.1
+                                           rust-syn-2.0.119
                                            rust-target-lexicon-0.12.16
-                                           rust-unicode-ident-1.0.18
+                                           rust-unicode-ident-1.0.27
                                            rust-unindent-0.2.4
                                            rust-vcpkg-0.2.15))
                      (python-gseapy =>
