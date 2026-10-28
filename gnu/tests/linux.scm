@@ -51,12 +51,7 @@
                           (guix combinators))))
 
   (define vm
-    (virtual-machine
-      (operating-system os)
-      (volatile? #f)
-      (memory-size 1024)
-      (disk-image-size (* 5000 (expt 2 20)))
-      (port-forwardings '())))
+    (virtual-machine os))
 
   (define test
     (with-imported-modules '((gnu build dbus-service)
