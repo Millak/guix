@@ -2099,7 +2099,12 @@ in C/C++.")
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
-        #~(delete "--enable-rust-simd" #$flags))
+        #~(cons
+            ;; x86_64-linux-gnu gets converted to x86_64-pc-linux-gnu instead of
+            ;; x86_64-unknown-linux-gnu so we give the configure script a hint.
+            #$(string-append "--host=" (nix-system->gnu-triplet
+                                         (%current-system)))
+            (delete "--enable-rust-simd" #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
           (replace 'adjust-tests
