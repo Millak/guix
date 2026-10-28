@@ -17739,9 +17739,6 @@ may contain sets, maps may be keyed by sets, etc.")
 (define-public cl-fset
   (sbcl-package->cl-source-package sbcl-fset))
 
-(define-public clasp-fset
-  (sbcl-package->clasp-package sbcl-fset))
-
 (define-public ecl-fset
   (package
     (inherit (sbcl-package->ecl-package sbcl-fset))
