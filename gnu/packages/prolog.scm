@@ -31,6 +31,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -106,7 +107,8 @@ manner.  It also features an interactive interpreter.")
        (uri (crate-uri "scryer-prolog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08sn216bcwjx8y62pl3idfjpc1kxw0p0kq5zj3ydpjnnm0gmn03i"))))
+        (base32 "08sn216bcwjx8y62pl3idfjpc1kxw0p0kq5zj3ydpjnnm0gmn03i"))
+       (patches (search-patches "scryer-prolog-compat-newer-rust.patch"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
