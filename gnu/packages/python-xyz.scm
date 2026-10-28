@@ -5688,7 +5688,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "9.0.0")
+    (version "10.1.0")
     (source
      (origin
        (method git-fetch)
@@ -5697,7 +5697,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19zbpy35bfcq3m49xd80qsy7f4b4r98dhv4vx76199a425n61932"))))
+        (base32 "0amz405p1hl7n8m093f5mmijpydp6slzxn293da016ny7d6bv0x5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5711,7 +5711,13 @@ configuration file.")
          ;; These tests try to access the network.
          "--deselect=tests/unit/Dependency/Python.py::PyPI::test_SphinxReports"
          "--deselect=tests/unit/Dependency/Python.py::PyPI::test_pyTooling"
-         "--deselect=tests/unit/Dependency/Python.py::PyPI::test_pyVersioning")
+         "--deselect=tests/unit/Dependency/Python.py::PyPI::test_pyVersioning"
+         (string-append
+          "--deselect=tests/unit/Testing/Markers.py::"
+          "MarkedTestCaseClass::test_Xdist")
+         (string-append
+          "--deselect=tests/unit/Dependency/Python.py::ReleaseDetails::"
+          "test_EachReleaseGetsItsOwnRequirements"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-git-bin-for-tests
