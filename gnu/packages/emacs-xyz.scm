@@ -39355,32 +39355,48 @@ constant expressions.")
     (license license:gpl3+)))
 
 (define-public emacs-docker
-  (package
-    (name "emacs-docker")
-    (version "2.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Silex/docker.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yql0k5bw1vsqh44g5aq6ip6dn3c36k8gpljvbghsj01fcqdlvj6"))))
-    (inputs
-     (list emacs-undercover))
-    (propagated-inputs
-     (list emacs-aio
-           emacs-dash
-           emacs-json-mode
-           emacs-s
-           emacs-tablist))
-    (arguments `(#:tests? #false))      ;no tests
-    (build-system emacs-build-system)
-    (home-page "https://github.com/Silex/docker.el")
-    (synopsis "Manage docker from Emacs")
-    (description "This package provides an Emacs interface for Docker.")
-    (license license:gpl3+)))
+  ;; Fixes JSON parsing when warnings are present in the command output.
+  (let ((commit "58a812d8f14b8dc3830a914740dedac50b70bc6c")
+        (revision "0"))
+    (package
+      (name "emacs-docker")
+      (version (git-version "2.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Silex/docker.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03n6lprkg5v0jb07a01h7h8r7my43llg4xa0aiimjghwfb868hsw"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-l" "test/docker-test-helpers.el"
+                "-l" "ert"
+                "--eval=(mapc 'load (directory-files \"test\" t \"\\.el$\"))"
+                "--eval" "(ert-run-tests-batch-and-exit
+                '(not
+                   (or docker-core-test-generic-action-reverts-its-own-buffer
+                       docker-process-test-remote-commands-overlap)))")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'patch-el-files))))
+      (inputs
+       (list emacs-undercover))
+      (propagated-inputs
+       (list emacs-aio
+             emacs-dash
+             emacs-json-mode
+             emacs-s
+             emacs-tablist))
+      (home-page "https://github.com/Silex/docker.el")
+      (synopsis "Manage docker from Emacs")
+      (description "This package provides an Emacs interface for Docker.")
+      (license license:gpl3+))))
 
 (define-public emacs-kubed
   (package
