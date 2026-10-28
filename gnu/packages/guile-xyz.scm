@@ -4792,14 +4792,14 @@ serializing continuations or delimited continuations.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://files.spritely.institute/releases"
                            "/guile-hoot/guile-hoot-" version ".tar.gz"))
        (sha256
-        (base32 "1gfi2wggvsfsmqnxc4k27ir7vz6xkc7fwcjzsl72n118skig94pj"))))
+        (base32 "0w5006ph2dwd9yl99rsfi7h15lka8a4zxmd1yy50lgxk80kg5brl"))))
     (build-system gnu-build-system)
     (arguments
      (list
