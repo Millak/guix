@@ -8939,9 +8939,10 @@ reduction.")
                (base32
                 "08w7v2dx1s164q3vc5lzf864nlxrf8s0kgsa26mmkgfqfqcwdgjj"))))
     (inputs
-     (list boost glu mesa qtbase))
-    (build-system cmake-build-system)
-    (arguments (list #:tests? #f))
+     (list boost glu mesa qtbase qtwayland))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (synopsis "Toolset for the mCRL2 formal specification language")
     (description
      "@dfn{mCRL2} (micro Common Representation Language 2) is a formal
@@ -8957,6 +8958,7 @@ analysed.")
   (package
     (inherit mcrl2)
     (name "mcrl2-minimal")
+    (build-system cmake-build-system)
     (inputs
      (list boost))
     (arguments
