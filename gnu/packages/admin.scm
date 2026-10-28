@@ -6952,7 +6952,7 @@ it from @file{~/.bashrc} for example.")
 (define-public zeptofetch
   (package
     (name "zeptofetch")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -6961,7 +6961,7 @@ it from @file{~/.bashrc} for example.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fg8c5lsvcjspwb64c8hax80i3h0nq1jswf93n3vdgf48l76jpyh"))))
+        (base32 "02radg85wcqn8diyg0865c3ff5xh7c3alvsnjhwmg6j6p0s8m5kg"))))
     (build-system gnu-build-system)
     (arguments
      (list
