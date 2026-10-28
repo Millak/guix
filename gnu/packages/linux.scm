@@ -5333,7 +5333,7 @@ user-space processes.")
 (define-public unionfs-fuse
   (package
     (name "unionfs-fuse")
-    (version "3.3")
+    (version "3.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5342,7 +5342,7 @@ user-space processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wl5m5qnwf3s1792xphr35pb80sx8ybaqi3n3ddi5vvk3qjc4iws"))))
+                "1ndc11y00v201h2afbf94llykcy9w42qdici26xmfbmw8pzz9j8v"))))
     (build-system cmake-build-system)
     (arguments
      (list
