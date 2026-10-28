@@ -552,35 +552,6 @@ sure that the childhurd boots and runs its SSH server.")
             (wait-for-tcp-port 11022 marionette
                                #:peek? #t))
 
-          (test-assert "copy-on-write store"
-            ;; Set up a writable store.  The root partition is already an
-            ;; overlayfs, which is not suitable as the bottom part of this
-            ;; additional overlayfs; thus, create a tmpfs for the backing
-            ;; store.
-            ;; TODO: Remove this when <virtual-machine> creates a writable
-            ;; store.
-            (marionette-eval
-             '(begin
-                (use-modules (gnu build install)
-                             (guix build syscalls))
-
-                (mkdir "/run/writable-store")
-                (mount "none" "/run/writable-store" "tmpfs")
-                (mount-cow-store "/run/writable-store" "/backing-store")
-                (system* "df" "-hT"))
-             marionette))
-
-          (test-assert "guix-daemon restarted"
-            ;; Restart 'guix-daemon' after the above so that 'guix-ownership'
-            ;; has a chance to successfully run if needed--e.g., because the
-            ;; host store is not root-owned but the guest is running
-            ;; 'guix-daemon' as root.  See #8872.
-            (marionette-eval
-             '(begin
-                (use-modules (gnu services herd))
-                (restart-service 'guix-daemon))
-             marionette))
-
           (test-equal "guix build hello"
             ;; Make sure the local 'guix-daemon' is operational.
             0

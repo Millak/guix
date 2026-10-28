@@ -36,6 +36,7 @@
   #:use-module (guix records)
   #:use-module (guix modules)
   #:use-module (guix utils)
+  #:use-module ((guix store) #:select (%store-prefix))
   #:use-module (gcrypt hash)
   #:use-module (guix base32)
   #:use-module ((guix self) #:select (make-config.scm))
@@ -68,6 +69,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services spice)
+  #:use-module (gnu services shepherd)
   #:use-module (gnu system uuid)
 
   #:use-module ((srfi srfi-1) #:hide (partition))
@@ -139,6 +141,65 @@
        (check? #f)
        (create-mount-point? #t)))))
 
+(define (writable-store-shepherd-service backing-store)
+  "Return a Shepherd service that mounts an overlay file system on the store
+such that writes go to BACKING-STORE."
+  (define (import-module? module)
+    ;; Since we don't use deduplication support in 'populate-store', don't
+    ;; import (guix store deduplication) and its dependencies, which
+    ;; includes Guile-Gcrypt.
+    (and (guix-module-name? module)
+         (not (equal? module '(guix store deduplication)))))
+
+  (list (shepherd-service
+          (provision '(writable-store))
+          (requirement
+           (list (symbol-append 'file-system-
+                                (string->symbol backing-store))))
+          (documentation
+           "Make the store writable inside the virtual machine.")
+          (modules `((gnu build install)
+                     ,@%default-modules))
+          (start
+           (with-imported-modules (source-module-closure
+                                   '((gnu build install))
+                                   #:select? import-module?)
+             #~(lambda ()
+                 (mount-cow-store #$backing-store "/backing-store")
+                 #$backing-store)))
+          (stop #~(lambda (target)
+                    (umount #$(%store-prefix)))))))
+
+(define (writable-store-file-systems backing-store)
+  (list (file-system
+          (mount-point backing-store)
+          (device "none")
+          (type "tmpfs")
+          (flags '(no-suid no-dev))
+          (options "mode=755,size=50%")
+          (check? #f))))
+
+(define writable-store-service-type
+  (service-type
+    (name 'writable-store)
+
+    ;; Set up a writable store.  In 'virtualized-operating-system', the root
+    ;; partition is already an overlayfs, which is not suitable as the bottom
+    ;; part of this additional overlayfs.  Thus, create a tmpfs for the
+    ;; backing store.
+    (extensions
+     (list (service-extension shepherd-root-service-type
+                              writable-store-shepherd-service)
+           (service-extension file-system-service-type
+                              writable-store-file-systems)
+           (service-extension user-processes-service-type
+                              (const '(writable-store)))))
+    (description
+     "Make the store writable (and volatile) by setting up an overlay file
+system.  This is meant to be used inside a virtual machine as created by
+@command{guix system vm} where the store is a 9p mount of the host's
+store---and thus read-only.")))
+
 (define* (virtualized-operating-system os
                                        #:optional (mappings '())
                                        #:key
@@ -179,14 +240,20 @@ environment with the store shared with the host.  MAPPINGS is a list of
     (inherit os)
 
     (services
-     (if (and spice?
-              (not (find (lambda (service)
-                           (eq? (service-kind service)
-                                spice-vdagent-service-type))
-                         services)))
-         (cons (service spice-vdagent-service-type)
-               services)
-         services))
+     (let ((services
+            (if full-boot?
+                services
+                (cons (service writable-store-service-type
+                               "/var/tmp/writable-store")
+                      services))))
+       (if (and spice?
+                (not (find (lambda (service)
+                             (eq? (service-kind service)
+                                  spice-vdagent-service-type))
+                           services)))
+           (cons (service spice-vdagent-service-type)
+                 services)
+           services)))
 
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
