@@ -3448,14 +3448,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.8.0p1")
+    (version "7.9.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "1hz3c28b6kss2dwrjxi8nbv7q0zzwv8nd521d63g4h1l5srv2wzl"))))
+        (base32 "1i14lyr1nmfbk17bj076wb685syid8ddnbds8gpn7sm833g41rkl"))))
     (build-system gnu-build-system)
     (inputs
      ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
