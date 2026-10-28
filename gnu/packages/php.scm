@@ -8,6 +8,7 @@
 ;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,7 @@
                 "--enable-inifile"
                 "--enable-intl"
                 "--enable-mbstring"
+                "--disable-mbregex"     ;requires deprecated Oniguruma
                 "--enable-pcntl"
                 "--enable-sockets"
                 "--enable-sysvsem"      ;Required for, e.g. Nextcloud
@@ -360,7 +362,6 @@
            libxml2
            libxslt
            libzip
-           oniguruma
            openldap
            openssl
            pcre2
