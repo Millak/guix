@@ -1058,7 +1058,7 @@ clone.")
 (define-public trizbort-qt
   (package
     (name "trizbort-qt")
-    (version "1.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1066,7 +1066,7 @@ clone.")
              (url "https://jxself.org/git/trizbort-qt.git")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1nb0361snbj73kkh82y239vdja2w0rpcc2mnnndyykq26q212pm6"))
+        (base32 "0qmzcvyjridlb2f1an9dckl24vg3h90njwlkfsv5qfhv5ai124n2"))
        (file-name (git-file-name name version))))
     (build-system qt-build-system)
     (inputs (list qtsvg))
