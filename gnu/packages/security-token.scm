@@ -1244,7 +1244,7 @@ base64url, base32, base32hex and hex.")
               (sha256
                (base32
                 "1imbvaf0yncz36ckjr99x94jwg2hnid49hsiqlxsv7ccxgk058bk"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:tests? #f)) ;no test suite
     (native-inputs (list pkg-config qttools-5))
@@ -1253,7 +1253,8 @@ base64url, base32, base32hex and hex.")
                   libnitrokey
                   libusb
                   qtbase-5
-                  qtsvg-5))
+                  qtsvg-5
+                  qtwayland-5))
     (home-page "https://github.com/Nitrokey/nitrokey-app")
     (synopsis "GUI tool for Nitrokey devices")
     (description
