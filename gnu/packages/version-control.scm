@@ -1085,7 +1085,7 @@ desired format.")
 (define-public git-pages
   (package
     (name "git-pages")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -1094,7 +1094,7 @@ desired format.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l5km76mcbn796yh6slnmvk4xcnzp9ylkcrbfm3kjapajx2c36ig"))))
+        (base32 "1wh52jbjxck53ijrrw7vbs4d6x53imnbc7p5nz8ixjy2qpnrnmgh"))))
     (build-system go-build-system)
     (arguments
      (list
