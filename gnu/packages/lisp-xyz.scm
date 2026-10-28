@@ -17706,7 +17706,7 @@ of the files and the line numbers where they were found.")
 (define-public sbcl-fset
   (package
     (name "sbcl-fset")
-    (version "2.4.6")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -17715,7 +17715,7 @@ of the files and the line numbers where they were found.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-fset" version))
        (sha256
-        (base32 "0h7jsw9cpgqzkksw3wgh9nnwqwdjlp8wb0klfby2w10vxn23rhk2"))))
+        (base32 "1zgqlqgpbgpxq40d35sfba0zy29vaacpg6jz2r2bib9mnpw2zkk8"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
