@@ -374,13 +374,14 @@ moment, supported SPICE files are:
        (file-name (git-file-name name version))
        (sha256
         (base32 "0yavkxb15j8ylgsk6jbw3ni0vcky2wpmcl12qnv2py4j0cpcgq02"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:qtbase qtbase
+           #:configure-flags
            #~(list "-DQT_VERSION=6"
                    "-DCMAKE_CXX_FLAGS=-fPIC")))
     (inputs
-     (list eigen glm qtbase))
+     (list eigen glm qtbase qtwayland))
     (home-page "https://10110111.github.io/CalcMySky/")
     (synopsis "Simulator of light scattering by planetary atmospheres")
     (description
