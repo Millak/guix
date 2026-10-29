@@ -31,6 +31,7 @@
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;; Copyright © 2026 Nemin <nemin@protonmail.com>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2596,4 +2597,30 @@ way they prefer.")
     (description
      "Ptyxis is a terminal emulator with an emphasis on multi-tabbed,
 container-oriented workflows.")
+    (license license:gpl3+)))
+
+(define-public gnome-online-accounts-gtk
+  (package
+    (name "gnome-online-accounts-gtk")
+    (version "3.50.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xapp-project/gnome-online-accounts-gtk")
+              (commit version)))
+       (sha256
+        (base32 "179pm5g4wawdqdp0fhz6gxikrgj9x2jibgl316zyi680iryx7gsz"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (arguments (list #:glib-or-gtk? #t))
+    (native-inputs
+     (list gettext-minimal pkg-config (list glib "bin")))
+    (inputs
+     (list glib gtk gnome-online-accounts))
+    (home-page "https://github.com/xapp-project/gnome-online-accounts-gtk")
+    (synopsis "GTK frontend for GNOME Online Accounts")
+    (description "@command{gnome-online-accounts-gtk} is a standalone application
+designed to make the setup of gnome-online-accounts possible outside of
+GNOME.")
     (license license:gpl3+)))
