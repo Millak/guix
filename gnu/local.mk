@@ -78,6 +78,7 @@
 # Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 # Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
 # Copyright © 2026 Goran Vukoman <g@odyss3us.net>
+# Copyright © 2026 Stampede <stampde@tutamail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -2058,6 +2059,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ngit-cli-tests-libgit2-version.patch	\
   %D%/packages/patches/nlopt_CMake-Assume-working-c-compiler-597.patch \
   %D%/packages/patches/nnpack-system-libraries.patch		\
+  %D%/packages/patches/noctalia-material-color-utilities-cpp-patch.patch	\
   %D%/packages/patches/noctalia-shell-system-libraries.patch	\
   %D%/packages/patches/node-latest-i686.patch                   \
   %D%/packages/patches/nsis-env-passthru.patch			\

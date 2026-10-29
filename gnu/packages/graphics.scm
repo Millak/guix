@@ -48,6 +48,7 @@
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastor-perez@inria.fr>
+;;; Copyright © 2026 Stampede <stampede@tutamail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3724,6 +3725,36 @@ creating accessible color schemes from dynamic inputs.  Its C++ library
 supports blending, contrast calculation, HCT colors, tonal palettes,
 quantization, scoring, temperature calculations, and Material color schemes.")
       (license license:asl2.0))))
+
+(define-public noctalia-material-color-utilities-cpp
+  ;; Upstream Noctalia developers say that the cpp part of
+  ;; material color utilites is unmaintained for 2 years
+  ;; and this is a patched version to make colors look right
+  ;; in Noctalia
+  (let ((commit "1a34bd2d696a5dd669beca679546ad72209d0937")
+        (revision "0"))
+    (package
+      (inherit material-color-utilities-cpp)
+      (name "noctalia-material-color-utilities-cpp")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url (string-append "https://github.com/material-foundation/"
+                                    "material-color-utilities"))
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (patches
+          (search-patches "material-color-utilities-cpp-build.patch"
+                          "noctalia-material-color-utilities-cpp-patch.patch"))
+         (sha256
+          (base32 "0cjlr0s5bh752zajcsf64rd4wn01nzcndfn4yw32z5mlak47b19a"))))
+      (synopsis "Noctalia's patched material color utilities")
+      (description
+       "This is a patched material color utilities cpp package for use in
+Noctalia-shell.  It modifies quantization and temperature calculations compared
+to the original package."))))
 
 (define-public meshoptimizer
   (package
