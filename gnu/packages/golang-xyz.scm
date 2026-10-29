@@ -20694,16 +20694,16 @@ representation suitable for computing diffs.")
 (define-public go-github-com-landlock-lsm-go-landlock
   (package
     (name "go-github-com-landlock-lsm-go-landlock")
-    (version "0.0.0-20250303204525-1544bccde3a3")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/landlock-lsm/go-landlock")
-              (commit (go-version->git-ref version))))
+             (url "https://github.com/landlock-lsm/go-landlock")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00qis8gg2ajyph9jyrjghm6cn0h22pwjwdp6qa22ji6jslgnm02n"))))
+        (base32 "1if6sqhxf554ylv4r7n8cd9qvn3q1yfp1nc71hpxxzdg34nbyzpc"))))
     (build-system go-build-system)
     (arguments
      (list
