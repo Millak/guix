@@ -1739,7 +1739,7 @@ match from local for any action outbound
   (match-record config <opensmtpd-configuration>
                        (package config-file log-file shepherd-requirement)
     (list (shepherd-service
-           (provision '(smtpd))
+           (provision '(smtpd mta))
            (requirement `(pam loopback ,@shepherd-requirement))
            (documentation "Run the OpenSMTPD daemon.")
            (start (let ((smtpd (file-append package "/sbin/smtpd")))
