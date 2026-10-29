@@ -1749,7 +1749,10 @@ match from local for any action outbound
                        #$@(if log-file
                               (list #:log-file log-file)
                               (list #:pid-file "/var/run/smtpd.pid")))))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions
+             (list
+              (shepherd-configuration-action config-file)))))))
 
 (define %opensmtpd-accounts
   (list (user-group
