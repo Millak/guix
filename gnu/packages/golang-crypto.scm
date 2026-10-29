@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1959,6 +1960,42 @@ low-level framework for building crypto protocols.  Noise protocols support
 mutual and optional authentication, identity hiding, forward secrecy, zero
 round-trip encryption, and other advanced features.")
     (license license:bsd-3)))
+
+(define-public go-github-com-foxboron-go-tpm-keyfiles
+  (package
+    (name "go-github-com-foxboron-go-tpm-keyfiles")
+    (properties '((commit . "515ba073c4c178a74ba559629f51bf7052334888")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260902202739-8c9c2d1005f4")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foxboron/go-tpm-keyfiles")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0746zj3xhlbyc6iha7xh3r90cacy5x43jj8gk5hnyx1p9y0yc789"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/foxboron/go-tpm-keyfiles"))
+    (native-inputs
+     ;; Tests run against the in-process TPM simulator, whose C code needs
+     ;; libcrypto.
+     (list go-github-com-google-go-tpm-tools openssl))
+    (propagated-inputs (list go-github-com-google-go-tpm
+                             go-golang-org-x-crypto))
+    (home-page "https://github.com/foxboron/go-tpm-keyfiles")
+    (synopsis "Go implementation of the ASN.1 TPM 2.0 key file format")
+    (description
+     "This library implements the @code{TPM 2.0 Key File} format used to
+store TPM-wrapped private keys on disk, as consumed by ssh-tpm-agent and the
+OpenSSL TPM2 provider.")
+    (license license:expat)))
 
 (define-public go-github-com-gaukas-godicttls
   (package
