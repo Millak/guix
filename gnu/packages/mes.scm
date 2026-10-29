@@ -152,14 +152,14 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))))))))
 (define-public mes
   (package
     (name "mes")
-    (version "0.27.2")
+    (version "0.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "1c7fa0kmwi9ggz1y9qp0pazfh7vwzvzcam4ip5b1fp9dm0vh0ypp"))))
+                "0hkqy0pllpam8yj1b9cs708z29ir15jbhvda5v6xl4ylfq5jxn92"))))
     (supported-systems '("armhf-linux" "i686-linux"
                          "x86_64-linux" "riscv64-linux"))
     (propagated-inputs (list mescc-tools
