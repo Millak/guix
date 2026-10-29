@@ -20,11 +20,12 @@
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
@@ -77,6 +79,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -1098,6 +1101,69 @@ connecting to.
 
 @end itemize")
     (license license:gpl3)))
+
+(define-public ssh-tpm-agent
+  (package
+    (name "ssh-tpm-agent")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Foxboron/ssh-tpm-agent")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xadz9v4grzhri46dk1k2im59k1kxiz3hs2g82gr4aissg4a4f3i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/foxboron/ssh-tpm-agent/..."
+      #:unpack-path "github.com/foxboron/ssh-tpm-agent"
+      #:test-flags
+      ;; See: <https://github.com/NixOS/nixpkgs/pull/394097>.
+      #~(list "-skip" (string-join
+                       (list "TestAgent/agent_confirm"
+                             "TestAgent/agent"
+                             "TestNoKey"
+                             "TestRemoveKey"
+                             "TestNoKeyThreaded"
+                             "TestRemoveKeyThreaded")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (let* ((man  (string-append #$output "/share/man/man1")))
+                  (invoke "make" "man")
+                  (for-each (lambda (file) (install-file file man))
+                            (find-files "man" ".*\\.1$")))))))))
+    (inputs (list openssl))
+    (native-inputs
+     (list go-github-com-awnumar-memcall
+           go-github-com-foxboron-go-tpm-keyfiles
+           go-github-com-google-go-tpm
+           go-github-com-google-go-tpm-tools
+           go-github-com-landlock-lsm-go-landlock
+           go-github-com-rogpeppe-go-internal
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           openssh
+           ruby-asciidoctor))
+    (home-page "https://github.com/Foxboron/ssh-tpm-agent")
+    (synopsis "SSH agent backed by TPM 2.0 keys")
+    (description
+     "@code{ssh-tpm-agent} is an @command{ssh-agent} whose private keys are
+created and used inside a @acronym{Trusted Platform Module, TPM} 2.0.  Keys
+never leave the chip; the agent signs authentication challenges on behalf of
+@command{ssh}.  It supports PINs backed by the TPM's dictionary-attack
+lockout, proxying to another agent for non-TPM keys, and TPM-backed host keys
+for @command{sshd}.")
+    (license license:expat)))
 
 (define-public webssh
   (package
