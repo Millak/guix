@@ -20554,6 +20554,7 @@ indentation guides in Emacs:
               (lambda _
                 (with-directory-excursion "test"
                   (delete-file "elpy-shell-send-region-or-buffer-test.el")
+                  (delete-file "elpy-module-company-test.el")
                   (for-each
                    delete-file
                    (find-files "." "elpy-(refactor|multiedit|pdb|promise)"))
