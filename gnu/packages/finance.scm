@@ -164,7 +164,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "31.1")
+    (version "32.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -172,7 +172,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1jdgqrpqnqrxi508hwmy5my6xp9adkmmjirrk40ckr678ddishah"))))
+                "1y8kg3idgzrm3xmraik9amd7pjl87im31v698437jzyg68ggdwm5"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -184,14 +184,11 @@
            #:qtbase qtbase
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'build 'set-no-git-flag
-                 (lambda _
-                   ;; Make it clear we are not building from within a git repository
-                   ;; (and thus no information regarding this build is available
-                   ;; from git).
-                   (setenv "BITCOIN_GENBUILD_NO_GIT" "1")))
                (add-after 'check 'check-functional
                  (lambda _
+                   ;; Fontconfig writes to stderr when it has no writable
+                   ;; cache directory, which makes interface_gui.py fail.
+                   (setenv "XDG_CACHE_HOME" "/tmp")
                    (invoke
                     "python3" "./test/functional/test_runner.py" "--timeout-factor=2"
                     (string-append "--jobs=" (number->string (parallel-job-count)))))))))
@@ -203,7 +200,6 @@
     (inputs
      (list boost
            capnproto
-           libevent
            qrencode
            qtwayland
            sqlite
