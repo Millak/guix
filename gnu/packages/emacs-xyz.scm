@@ -28542,7 +28542,7 @@ part, which includes creating tokens.")
 (define-public emacs-auth-source-xoauth2-plugin
   (package
     (name "emacs-auth-source-xoauth2-plugin")
-    (version "0.4.1")
+    (version "0.5")
     (source
      (origin
        (method url-fetch)
@@ -28550,7 +28550,7 @@ part, which includes creating tokens.")
              "https://elpa.gnu.org/packages/auth-source-xoauth2-plugin-"
              version ".tar"))
        (sha256
-        (base32 "038wikkg4lmgjjnwkliwwx8iif55vlc6720qz55lkr7pkrzp5vas"))))
+        (base32 "00xf62rkkj47gsi8f15h9g3z0i5358warn4yr3kn9c41cgmsa00m"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ;no tests
     (propagated-inputs (list emacs-oauth2))
