@@ -1266,7 +1266,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-eat-fix-dec-line-drawing.patch	\
   %D%/packages/patches/emacs-elisp-autofmt-fix-region-send.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
-  %D%/packages/patches/emacs-futur-skip-broken-interruption-test.patch	\
   %D%/packages/patches/emacs-gnus-alias-reference-signature.patch	\
   %D%/packages/patches/emacs-helpful-fix-signature.patch	\
   %D%/packages/patches/emacs-helpful-fix-tests.patch	\

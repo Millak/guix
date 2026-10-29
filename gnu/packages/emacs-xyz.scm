@@ -39681,7 +39681,7 @@ indexing of modern Fortran.")
 (define-public emacs-futur
   (package
     (name "emacs-futur")
-    (version "2.0")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
@@ -39689,10 +39689,7 @@ indexing of modern Fortran.")
              "https://elpa.gnu.org/packages/futur-" version ".tar"))
        (sha256
         (base32
-         "06dpsis282z6zyq7g5lccq8r2dqcwbg7jbsc6zf0vv49wnsqd3sr"))
-       (patches
-        (search-patches
-         "emacs-futur-skip-broken-interruption-test.patch"))))
+         "1y8lj60g4lzvdgzfbrzl4pnzdqna6hmx6fvj4w7m5f0758k4i4cx"))))
     (build-system emacs-build-system)
     (arguments
      (list
