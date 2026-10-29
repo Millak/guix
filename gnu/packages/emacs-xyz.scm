@@ -5334,7 +5334,7 @@ for red/green colour blind users.")
 (define-public emacs-ace-jump-mode
   (package
     (name "emacs-ace-jump-mode")
-    (version "2.0")
+    (version "3.0")
     (home-page "https://github.com/winterTTr/ace-jump-mode")
     (source (origin
               (method git-fetch)
@@ -5343,9 +5343,10 @@ for red/green colour blind users.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1bwvzh056ls2v7y26a0s4j5mj582dmds04lx4x6iqihs04ss74bb"))
+                "06lnl2zp2vy4cqc35z9pqnndj6m1qisfxz2v5c6hrqxiypcw8jsr"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (synopsis "Cursor location minor mode for fast navigation")
     (description "Ace-jump-mode is a fast/direct cursor location minor
 mode.  It creates an N-Branch search tree internally and marks all
