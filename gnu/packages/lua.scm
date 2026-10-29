@@ -92,6 +92,7 @@
   #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages python)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
@@ -340,7 +341,7 @@ some projects.")))
 (define-public luau
   (package
     (name "luau")
-    (version "0.724")
+    (version "0.744")
     (source
      (origin
        (method git-fetch)
@@ -350,7 +351,7 @@ some projects.")))
        (file-name (git-file-name name version))
        (patches (search-patches "luau-use-system-isocline.patch"))
        (sha256
-        (base32 "1r5kw7xk62qwv2gsc3yxc5rngcgc4d824y2h0k0713i34jn9zgnv"))
+        (base32 "1rpvp2ziwmxbpvp1rshv3awxj3h8qpbbfbd23vp89knfirx27nsx"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -405,7 +406,7 @@ some projects.")))
                    "Require"
                    "VM"))))))))
     (native-inputs
-     (list doctest))
+     (list doctest python))
     (inputs
      (list isocline))
     (home-page "https://luau.org/")

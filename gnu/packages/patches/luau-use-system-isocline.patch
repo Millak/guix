@@ -54,7 +54,7 @@ index d2dade5b..ddd34850 100644
  
 -    target_include_directories(Luau.Repl.CLI PRIVATE extern extern/isocline/include)
 -
-     target_link_libraries(Luau.Repl.CLI PRIVATE Luau.Compiler Luau.Config Luau.CodeGen Luau.VM Luau.Require Luau.CLI.lib isocline)
+     target_link_libraries(Luau.Repl.CLI PRIVATE Luau.Compiler Luau.Inliner Luau.Config Luau.CodeGen Luau.VM Luau.Require Luau.CLI.lib isocline)
  
      target_link_libraries(Luau.Repl.CLI PRIVATE osthreads)
 diff --git a/Sources.cmake b/Sources.cmake
