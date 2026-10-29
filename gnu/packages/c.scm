@@ -2192,7 +2192,7 @@ Cflags: -I${includedir}
 (define-public yyjson
   (package
     (name "yyjson")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -2201,7 +2201,7 @@ Cflags: -I${includedir}
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v7vgb0wkhh23vyqnch1aiswrgy8rb7yhbyrm7gcwl8c0l92f9nl"))))
+        (base32 "0whkhjahhrs5pq4y88xzsc0smk7w8pdyhzff8q7zx8r492m5by9p"))))
     (build-system cmake-build-system)
     (arguments
      (list
