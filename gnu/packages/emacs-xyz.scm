@@ -983,7 +983,7 @@ configuration changes, e.g. after splitting or deleting a window.")
     (version "1.1.0")
     (source
      (origin
-       (method git-fetch) 
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/bbatsov/batppuccin-emacs")
               (commit (string-append "v" version))))
@@ -38476,7 +38476,7 @@ music.")
 (define-public emacs-mpdel
   (package
     (name "emacs-mpdel")
-    (version "2.1.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -38486,7 +38486,7 @@ music.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1i7ymg0ls984vjmzjz0sbg280i47c6j79vr725x94xdpj6ci35qr"))))
+         "057id51khbzml9653v5j7lhw8nhc938ki9zmj09vsj1imhh8b49f"))))
     (build-system emacs-build-system)
     (arguments
      (list
