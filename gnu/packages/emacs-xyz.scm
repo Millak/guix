@@ -16668,7 +16668,7 @@ interface.")
 (define-public emacs-orderless
   (package
     (name "emacs-orderless")
-    (version "1.7")
+    (version "1.8")
     (source
      (origin
        (method git-fetch)
@@ -16676,7 +16676,7 @@ interface.")
              (url "https://github.com/oantolin/orderless")
              (commit version)))
        (sha256
-        (base32 "0qw3lcn5iqmfa7lmkhrlzpwxm80k1bxb11h0w8akp6910iiq12b8"))
+        (base32 "0djv3ylif5gqxyz71qvdvc85cs3yg6xdrzh8wafckcll17rxvrrf"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
