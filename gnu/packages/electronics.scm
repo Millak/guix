@@ -4576,7 +4576,7 @@ automated testing of HDL code.")
 (define-public python-vunit-bridge
   (package
     (name "python-vunit-bridge")
-    (version "0.1.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4585,7 +4585,7 @@ automated testing of HDL code.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hx4w2949cgyrqnxh76v34laihafwwchm5c9bcimm9rs9iazn99m"))))
+        (base32 "0izc2v6yxbwp21vw7s6wlw9j03b88f3gpq2cvyx4jrw77ff1gajq"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools))
