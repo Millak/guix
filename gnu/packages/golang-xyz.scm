@@ -84,6 +84,7 @@
 ;;; Copyright © 2026 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3811,6 +3812,32 @@ interfaces.")
       (description
        "This package provides a golang wrapper for parsing gocui keybindings.")
       (license license:expat))))
+
+(define-public go-github-com-awnumar-memcall
+  (package
+    (name "go-github-com-awnumar-memcall")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/awnumar/memcall")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13iri047l53xlcgxgzp165hf2n2wfx1lm73803ipn3z3yhwmndw2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/awnumar/memcall"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/awnumar/memcall")
+    (synopsis "Cross-platform memory locking and protection for Go")
+    (description
+     "memcall wraps the system calls needed to allocate, lock and protect
+memory pages, used to keep secrets out of swap and core dumps.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-axiomhq-hyperloglog
   (package
