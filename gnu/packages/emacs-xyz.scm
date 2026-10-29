@@ -16126,7 +16126,7 @@ variants.")
 (define-public emacs-color-theme-sanityinc-tomorrow
   (package
     (name "emacs-color-theme-sanityinc-tomorrow")
-    (version "1.18")
+    (version "1.19")
     (source
      (origin
        (method git-fetch)
@@ -16136,7 +16136,7 @@ variants.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r8q6ld2zma1bqq5pv61gpy99a4vx6bwx4v820ijzbymmi62vv3z"))))
+        (base32 "1b3drm8s145m7h4rgwiawv9mfjj4lzzq94gj5bw69q3zfxsd8cz0"))))
     (build-system emacs-build-system)
     (arguments
      (list
