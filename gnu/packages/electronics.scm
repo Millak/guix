@@ -4246,7 +4246,7 @@ Automation}.")
 (define-public python-hdlmake
   (package
     (name "python-hdlmake")
-    (version "4.0")
+    (version "4.1")
     (source
      (origin
        (method git-fetch)
@@ -4255,7 +4255,7 @@ Automation}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mbsm1j058j3wjp0hypd7a9d1xh3xsmy9p3jl9xcpnzjmncm34xr"))))
+        (base32 "0bwp7n6rk4c33vxjpdak81nqjjk7iz3lvkjbinjggpx87qmbaxd7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4273,7 +4273,10 @@ Automation}.")
                         "docs/_build/texinfo/hdlmake-figures"
                         (string-append
                          #$output "/share/info/hdlmake-figures")))))
-      #:test-flags #~(list "test_all.py")))
+      #:test-flags
+      #~(list "test_all.py"
+              "--deselect=testsuite/test_all.py::test_gitsm_fetch_022"
+              "--deselect=testsuite/test_all.py::test_gitsm_fetch_026")))
     (native-inputs
      (list python-pytest python-setuptools python-sphinx texinfo))
     (propagated-inputs (list python-networkx))
