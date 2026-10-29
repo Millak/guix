@@ -61,6 +61,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)  
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -1002,3 +1003,72 @@ nowhere else.  A batch job, or cron job, can access web pages on the internet, s
 forms, and send email, with no human intervention whatsoever.  edbrowse can also tap
 into databases through odbc.  It was primarily written by Karl Dahlke.")
     (license license:gpl2+)))
+
+(define-public badwolf
+  (package
+    (name "badwolf")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://distfiles.hacktivis.me/releases/badwolf/badwolf-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32 "1lsrbg4v14qc43a034n0ak1h40ilmlywq0yqhvipkwgyfy59fhlm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              "WITH_WEBKITGTK=4.1")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Patch paths for Guix sandbox.
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "uri_test.c"
+                (("/root") "/tmp")
+                (("/usr/\\.\\./dev/null") "/tmp/../dev/null"))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "sh" "./configure" configure-flags)))
+          (replace 'build
+            (lambda _ (invoke "ninja")))
+          (replace 'check
+            (lambda _ (invoke "ninja" "test")))
+          (replace 'install
+            (lambda _ (invoke "ninja" "install")))
+          (add-after 'install 'wrap-badwolf
+            (lambda _
+              (let ((gio-mods (string-append
+                               #$(this-package-input "glib-networking")
+                               "/lib/gio/modules"))
+                    (schema-dir (string-append
+                                 #$(this-package-input "gsettings-desktop-schemas")
+                                 "/share")))
+                (wrap-program (string-append #$output "/bin/badwolf")
+                  `("GIO_EXTRA_MODULES" ":" prefix (,gio-mods))
+                  ;; The below fixes the `org.gnome.system.proxy' error.
+                  `("XDG_DATA_DIRS" ":" prefix (,schema-dir)))))))))
+    (native-inputs
+     (list gettext-minimal
+           ninja
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           glib-networking
+           gsettings-desktop-schemas
+           gtk+
+           libpsl
+           webkitgtk-for-gtk3))
+    (home-page "https://hacktivis.me/projects/badwolf")
+    (synopsis "Minimalist and privacy-oriented WebKitGTK browser")
+    (description "BadWolf is a minimalist and privacy-oriented web browser
+built on WebKitGTK.  It features a small codebase designed to be lightweight
+and easily maintainable.  JavaScript can be easily enabled or disabled
+(off by default) and the browser spawns separate, ephemeral, isolated sessions
+for new unrelated tabs.")
+    (license license:bsd-3)))
