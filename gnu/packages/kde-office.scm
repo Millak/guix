@@ -251,13 +251,13 @@ translation engines.")
 (define-public ghostwriter
   (package
     (name "ghostwriter")
-    (version "26.04.1")
+    (version "26.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ghostwriter-" version ".tar.xz"))
               (sha256
-               (base32 "18z12pgcan6nl74wxjf4vm3nbh1bq12cavzqs95xc7np3j2vmqpv"))))
+               (base32 "000ps9qzkap2d4qyz25sw2jc9rq43r6crl6wyqrnmg0589h5vb83"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
