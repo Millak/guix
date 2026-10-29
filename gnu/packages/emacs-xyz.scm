@@ -16148,7 +16148,7 @@ extensive face definitions than the \"official\" Emacs variant.")
 (define-public emacs-solarized-theme
   (package
     (name "emacs-solarized-theme")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -16157,7 +16157,7 @@ extensive face definitions than the \"official\" Emacs variant.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17h3kncdkdnn2c64g0hlbl45yvv6vqvvy8akcgzn32iw7nlx7b9a"))))
+        (base32 "1fya8yagymd3dvgnvbrrz2mxj9mjf981xdfp5dis57i6j69ifhks"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f  ; Tests require a standard tty.
