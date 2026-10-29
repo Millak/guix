@@ -10079,13 +10079,13 @@ the URL for a commit.  URLs are added to the kill ring.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/duckwork/frowny.el")
+             (url "https://codeberg.org/acdw/frowny.el")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "01ss3js71as1jpqcf0x9hfvapiyyhj9ni4y1n6wvqsghv5dcaiy0"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/duckwork/frowny.el")
+    (home-page "https://codeberg.org/acdw/frowny.el")
     (synopsis "Insert frownies in Emacs :(")
     (description "This package ships @code{frowny-mode}, which makes it so that
 inserting a single @code{(} when after a @code{:} will not automatically close
