@@ -13463,14 +13463,14 @@ also displayed.")
 (define-public emacs-company
   (package
     (name "emacs-company")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "company-" version ".tar"))
        (sha256
-        (base32 "00vmqra0fav0w4q13ngwpyqpxqah0ahfg7kp5l2nd0h2l8sp79qr"))))
+        (base32 "0kqk9h9y5wscb0lcak7bxyfz90r9yafid5k4hb403rnx35r2yj9c"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -13486,6 +13486,8 @@ also displayed.")
                     image
                     (string-append #$output "/share/info/images/small")))
                  images)))))))
+    (propagated-inputs
+     (list emacs-posframe))
     (home-page "https://company-mode.github.io/")
     (synopsis "Modular text completion framework")
     (description
