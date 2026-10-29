@@ -1050,8 +1050,9 @@ for information on Texinfo markup language.
 @item po
 This is the location of translations of Guix itself, of package synopses
 and descriptions, of the manual, and of the cookbook.  Note that
-@file{.po} files that live here are pulled directly from Weblate
-(@pxref{Translating Guix}).
+@file{.po} files that live here are pulled directly from the
+@url{https://codeberg.org/guix/translations/, guix/translations
+repository} (@pxref{Translating Guix}).
 
 @item etc
 Miscellaneous files: shell completions, support for systemd and other
@@ -1425,8 +1426,7 @@ such as @command{guix show} take care of rendering it
 appropriately.
 
 Synopses and descriptions are translated by volunteers
-@uref{https://translate.codeberg.org/projects/guix/packages, at
-Weblate} so that as many users as possible can read them in
+so that as many users as possible can read them in
 their native language.  User interfaces search them and display them in
 the language specified by the current locale.
 
@@ -3299,8 +3299,9 @@ section), or @file{doc/guix-cookbook.texi} for the cookbook.  If
 you compiled the Guix repository before, you will have
 many more @file{.texi} files that are translations of these
 documents.  Do not modify them, the translation is managed through
-@uref{https://translate.codeberg.org/projects/guix, Weblate}.
-@xref{Translating Guix} for more information.
+@url{https://codeberg.org/guix/translations/, a separate
+guix/translations repository}.  @xref{Translating Guix} for more
+information.
 
 To render documentation, you must first make sure that you ran
 @command{./configure} in your source tree (@pxref{Running Guix Before
@@ -3332,9 +3333,12 @@ get involved, what can be translated, what mistakes you should avoid and
 what we can do to help you!
 
 Guix is a big project that has multiple components that can be translated.
-We coordinate the translation effort on a
+We used to coordinate the translation effort on a
 @uref{https://translate.codeberg.org/projects/guix/,Weblate instance}
-hosted by Codeberg.  You will need an account to submit translations.
+hosted by Codeberg.  However, like on a barely moderated wiki, we
+struggled with many erroneous contributions and machine translations.
+Currently, translations of Guix itself can only be contributed as pull
+requests.
 
 Some of the software packaged in Guix also contain translations.  We do not
 host a translation platform for them.  If you want to translate a package
@@ -3348,7 +3352,8 @@ Many GNU and non-GNU packages can be translated on the
 with multiple components have their own platform.  For instance, GNOME has
 its own platform, @uref{https://l10n.gnome.org/,Damned Lies}.
 
-Guix has five components hosted on Weblate.
+Guix has five components hosted on
+@url{https://codeberg.org/guix/translations/}.
 
 @itemize
 @item @code{guix} contains all the strings from the Guix software (the
@@ -3363,33 +3368,18 @@ Guix has five components hosted on Weblate.
 
 @subsubheading General Directions
 
-Once you get an account, you should be able to select a component from
-@uref{https://translate.codeberg.org/projects/guix/,the guix project},
-and select a language.  If your language does not appear in the list, go
-to the bottom and click on the ``Start new translation'' button.  Select
-the language you want to translate to from the list, to start your new
-translation.
-
 Like lots of other free software packages, Guix uses
 @uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations,
 with which translatable strings are extracted from the source code to so-called
 PO files.
 
 Even though PO files are text files, changes should not be made with a text
-editor but with PO editing software.  Weblate integrates PO editing
-functionality.  Alternatively, translators can use any of various
+editor but with PO editing software.  Translators can use any of various
 free-software tools for filling in translations, of which
-@uref{https://poedit.net/,Poedit} is one example, and (after logging in)
-@uref{https://docs.weblate.org/en/latest/user/files.html,upload} the changed
-file.  There is also a special
+@uref{https://poedit.net/,Poedit} is one example.  There is also a special
 @uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU
 Emacs.  Over time translators find out what software they are happy with and
 what features they need.
-
-On Weblate, you will find various links to the editor, that will show various
-subsets (or all) of the strings.  Have a look around and at the
-@uref{https://docs.weblate.org/en/latest/,documentation} to familiarize
-yourself with the platform.
 
 @subsubheading Translation Components
 
