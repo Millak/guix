@@ -96,6 +96,7 @@
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
 ;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
+;;; Copyright © 2026 Stampede <stampede@tutamail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1502,17 +1503,16 @@ tools in a live programming environment.")
 (define-public noctalia-shell
   (package
     (name "noctalia-shell")
-    (version "5.3.0")
+    (version "5.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/noctalia-dev/noctalia")
-             (commit (string-append "v" version))))
+              (url "https://github.com/noctalia-dev/noctalia")
+              (commit (string-append "v" version))))
        (file-name (git-file-name "noctalia" version))
        (sha256
-        (base32 "14i92npvw9brc3c1jiv7wfxb2nwx6qw0bsj7hzd36lzlv8zpa8c0"))
-       (patches (search-patches "noctalia-shell-system-libraries.patch"))
+        (base32 "0ih3aizacgi1v5b5qq907p3j6vsx0wjvnf9hc9gqwasb1dqir8cg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1523,21 +1523,27 @@ tools in a live programming environment.")
      (list
       #:build-type "release"
       #:configure-flags
-      #~(list "-Dtests=enabled" "-Dnative_optimizations=false"
-              "-Djemalloc=enabled")
+      #~(list "-Dtests=enabled"
+              "-Dnative_optimizations=false"
+              "-Djemalloc=enabled"
+              "-Dsystem_libraries=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-shell-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((shell (search-input-file inputs "bin/sh")))
-                (substitute* '("src/core/process/process.cpp"
-                               "tests/template_undo_signal_test.sh"
-                               "tests/app_identity_test.cpp"
-                               "tests/process_test.cpp")
+                (substitute* (cons* "src/capture/screenshot_service.cpp"
+                                    "src/core/process/process.cpp"
+                                    "src/scripting/luau_host.cpp"
+                                    (find-files "tests" "\\.(sh|cpp)$"))
                   (("/bin/sh") shell))
                 (substitute* "assets/dev.noctalia.Noctalia.desktop"
                   (("Exec=sh ")
                    (string-append "Exec=" shell " "))))))
+          (add-after 'unpack 'fix-stb-header-paths
+            (lambda _
+              (substitute* (find-files "." "\\.cpp$|^meson\\.build$")
+                (("\\bstb/stb_") "stb_"))))
           (add-before 'check 'set-test-tmpdir
             (lambda _
               ;; Prevent test failure due to too long a socket path
@@ -1581,7 +1587,6 @@ tools in a live programming environment.")
                             "bin/git"          ;plugin Git sources and updates
                             "bin/grep"         ;theme hook text processing
                             "bin/pgrep"        ;theme hook process detection
-                            "bin/pkexec"       ;privileged helper actions
                             "bin/sed"          ;theme hook text processing
                             "bin/wlr-randr"    ;fallback display power control
                             "bin/xdg-open")))) ;open links and OAuth pages.
@@ -1594,56 +1599,56 @@ tools in a live programming environment.")
            tzdata-for-tests))
     (inputs
      (list
-      bash-minimal                       ;generated wrapper and shell commands
-      cairo                              ;2D and text rendering
-      coreutils-minimal                  ;standard tools for theme hooks
-      curl                               ;HTTP client library
-      dconf                              ;optional GTK theme synchronization
-      ddcutil                            ;optional external monitor brightness
-      diffutils                          ;cmp for theme hooks
-      fontconfig                         ;font discovery and fc-list
-      freetype                           ;font rasterization
-      gawk                               ;awk for theme hooks
-      git-minimal                        ;plugin Git sources and updates
-      glib                               ;GIO and GObject support
-      gmp                                ;arbitrary-precision arithmetic
-      grep                               ;pattern matching for theme hooks
-      harfbuzz                           ;text shaping
-      jemalloc                           ;recommended allocator on glibc
-      libical                            ;iCalendar parsing
-      libjxl                             ;JPEG XL image decoding
-      libqalculate                       ;calculator launcher provider
-      libsndfile                         ;sound effect decoding
-      (librsvg-for-system)               ;SVG image decoding
-      libsecret                          ;Secret Service client
-      libsodium                          ;encrypted state storage
-      libwebp                            ;WebP image decoding
-      libxkbcommon                       ;keyboard handling
-      libxml2                            ;XML parsing
-      linux-pam                          ;lock-screen authentication
-      md4c                               ;notification Markdown parsing
-      mesa                               ;EGL and OpenGL ES rendering
-      mpfr                               ;floating-point arithmetic
-      nlohmann-json                      ;JSON parsing
-      (list fzy "static")                ;fuzzy matcher library
-      (list luau "static")               ;plugin scripting engine
-      material-color-utilities-cpp       ;color utilities
-      wuffs                              ;image decoder
-      pango                              ;text layout
-      pipewire-minimal                   ;PipeWire client library
-      polkit                             ;authorization agent and pkexec
-      procps                             ;pgrep and pkill for theme hooks
-      sdbus-c++                          ;D-Bus client and service support
-      sed                                ;stream editing for theme hooks
-      stb-image-resize2                  ;image resizing headers
-      stb-image-write                    ;image encoding headers
-      tomlplusplus                       ;configuration parsing
-      upower                             ;UPower daemon; enabled separately
-      wayland                            ;Wayland client library and scanner
-      wayland-protocols                  ;Wayland protocol definitions
-      wireplumber-minimal                ;WirePlumber client library
-      wlr-randr                          ;fallback display power control
-      xdg-utils))                        ;Open links and OAuth pages.
+      bash-minimal                          ;for wrapper and shell commands
+      cairo                                 ;2D and text rendering
+      coreutils-minimal                     ;standard tools for theme hooks
+      curl                                  ;HTTP client library
+      dconf                                 ;(opt) GTK theme synchronization
+      ddcutil                               ;(opt) external monitor brightness
+      diffutils                             ;cmp for theme hooks
+      fontconfig                            ;font discovery and fc-list
+      freetype                              ;font rasterization
+      gawk                                  ;awk for theme hooks
+      git-minimal                           ;plugin Git sources and updates
+      glib                                  ;GIO and GObject support
+      gmp                                   ;arbitrary-precision arithmetic
+      grep                                  ;pattern matching for theme hooks
+      harfbuzz                              ;text shaping
+      jemalloc                              ;recommended allocator on glibc
+      libical                               ;iCalendar parsing
+      libjxl                                ;JPEG XL image decoding
+      libqalculate                          ;calculator launcher provider
+      libsndfile                            ;sound effect decoding
+      (librsvg-for-system)                  ;SVG image decoding
+      libsecret                             ;Secret Service client
+      libsodium                             ;encrypted state storage
+      libwebp                               ;WebP image decoding
+      libxkbcommon                          ;keyboard handling
+      libxml2                               ;XML parsing
+      linux-pam                             ;lock-screen authentication
+      md4c                                  ;notification Markdown parsing
+      mesa                                  ;EGL and OpenGL ES rendering
+      mpfr                                  ;floating-point arithmetic
+      nlohmann-json                         ;JSON parsing
+      (list fzy "static")                   ;fuzzy matcher library
+      (list luau "static")                  ;plugin scripting engine
+      noctalia-material-color-utilities-cpp ;color utilities
+      wuffs                                 ;image decoder
+      pango                                 ;text layout
+      pipewire-minimal                      ;PipeWire client library
+      polkit                                ;authorization agent and pkexec
+      procps                                ;pgrep and pkill for theme hooks
+      sdbus-c++                             ;D-Bus client and service support
+      sed                                   ;stream editing for theme hooks
+      stb-image-resize2                     ;image resizing headers
+      stb-image-write                       ;image encoding headers
+      tomlplusplus                          ;configuration parsing
+      upower                                ;UPower daemon; enabled separately
+      wayland                               ;Wayland client library and scanner
+      wayland-protocols                     ;Wayland protocol definitions
+      wireplumber-minimal                   ;WirePlumber client library
+      wlr-randr                             ;fallback display power control
+      xdg-utils))                           ;Open links and OAuth pages.
     (home-page "https://github.com/noctalia-dev/noctalia")
     (synopsis "Wayland desktop shell")
     (description
