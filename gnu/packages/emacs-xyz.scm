@@ -251,6 +251,7 @@
   #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages nushell)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -31796,7 +31797,7 @@ mode.")
 (define-public emacs-crux
   (package
     (name "emacs-crux")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -31806,8 +31807,13 @@ mode.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00n4k09x3slchs81xw1q0rcb78ncb5k2lvsigb9j7s3kxbj6bvvy"))))
+         "03bj2hhw71yanhr8vq80d5nmnx36i494fbaqdda6430vxl969lwq"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")))
+    (native-inputs
+     (list emacs-buttercup emacs-eldev nushell zsh))
     (home-page "https://github.com/bbatsov/crux")
     (synopsis "Collection of useful functions for Emacs")
     (description
