@@ -50878,7 +50878,7 @@ accomplish different tasks.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/duckwork/titlecase.el/")
+              (url "https://codeberg.org/acdw/titlecase.el/")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -50906,7 +50906,7 @@ accomplish different tasks.")
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-l" "tests/titlecase-tests.el"
                              "-f" "ert-run-tests-batch-and-exit")))
-    (home-page "https://github.com/duckwork/titlecase.el/")
+    (home-page "https://codeberg.org/acdw/titlecase.el/")
     (synopsis "Capitalise titles")
     (description
      "This package provides a best-effort attempt at capitalizing titles, only
