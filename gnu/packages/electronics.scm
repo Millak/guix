@@ -2809,14 +2809,14 @@ window, for hardware engineers, students, and FPGA hobbyists alike.")
 (define-public pcb-rnd
   (package
     (name "pcb-rnd")
-    (version "3.1.8")
+    (version "3.1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://repo.hu/projects/pcb-rnd/"
                                   "releases/pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "1q8zq8w11rjlwddrqz2w5jcq3rmxqv2scgapgfjy6bw2660c9k8z"))))
+                "0qr2hw17mld9ngi839qqqzglk9pvv9sv7z0xicnhz5ckaryhdb2c"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
