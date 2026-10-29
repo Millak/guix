@@ -43350,7 +43350,7 @@ a decentralized social network that runs on an Org Mode file over HTTP.")
 (define-public emacs-fedi
   (package
     (name "emacs-fedi")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -43359,7 +43359,7 @@ a decentralized social network that runs on an Org Mode file over HTTP.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xlsh4a42mymi4jrb32ak4srbm28hq67jwijnpbyfzfkchjsqimj"))))
+        (base32 "0dmr3jqj36j3mxzyb741nf1qqccri4fmkmnqn31n6p72s9x3l3lz"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list emacs-markdown-mode))
