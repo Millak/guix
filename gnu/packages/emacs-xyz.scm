@@ -44859,7 +44859,7 @@ managers such as XMonad.")
 (define-public emacs-modalka
   (package
     (name "emacs-modalka")
-    (version "0.1.5")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -44868,8 +44868,9 @@ managers such as XMonad.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ggj8q92sb6wp3hs1vhpmy56id0p3i9zwnw24g2v7xa7w8ac9s7l"))))
+        (base32 "1lf6i6c84gpw1vrlg48hmbg87cjqgrhcnachgpjpdbspxyyrk7z6"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
     (home-page "https://github.com/mrkkrp/modalka")
     (synopsis "Minor mode to easily define native custom modal editing")
     (description
