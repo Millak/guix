@@ -47,8 +47,8 @@
 
   ;; Optionally, transform every package referred to by this operating system
   ;; by its Skylake-optimized variant, where applicable.
-  (transformation (options->transformation '((tune . "skylake"))
-                                           #:warn? #f))
+  ;; (transformation (options->transformation '((tune . "skylake"))
+  ;;                                          #:warn? #f))
 
   ;; Add services to the baseline: a DHCP client and an SSH
   ;; server.  You may wish to add an NTP service here.
