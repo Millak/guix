@@ -10,7 +10,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 wrobell <wrobell@riseup.net>
 ;;; Copyright © 2023 Tim Johann <t1m@phrogstar.de>
-;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024-2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -50,7 +50,7 @@
 (define-public erlang
   (package
     (name "erlang")
-    (version "28.4.3")
+    (version "28.5.0.8")
     (source (origin
               (method git-fetch)
               ;; The tarball from http://erlang.org/download contains many
@@ -62,7 +62,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dsdmp2rccc0rhzy2w8r4amxmc6nr9hbi053j2s0bg9db30b48rc"))
+                "1pgwl3fkir9x9xwva9yyjw7f0m38may0zqr35jcgrh275ij289hc"))
               (patches (search-patches "erlang-man-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -75,7 +75,7 @@
                                "/OTP-" version "/otp_doc_man_" version ".tar.gz"))
            (sha256
             (base32
-             "1g17wzv8j12g9272yvv55nj4wqs09hxkv3i0vnp7d6gcs24bmphi"))))))
+             "1zc6a6pv3ndn2mm2dp5q6k5bgnq2y4mgcs3d6x0jm7c0zgjiaiym"))))))
     (inputs
      (list ncurses openssl wxwidgets))
     (propagated-inputs
@@ -137,6 +137,12 @@
                   (string-append "SHELL \"" sh "\"")))
                (substitute* "lib/kernel/src/os.erl"
                  (("/bin/sh") sh)))))
+         ;; `make clean` seems to be broken after 28.4.3, but is fixed in 29+.
+         ;; Remove the following phase when bumping erlang to 29+.
+         (add-after 'unpack 'fix-make-clean
+           (lambda _
+             (substitute* "lib/erl_interface/src/Makefile.in"
+               (("rm -f erts/\\*; rmdir erts") "rm -rf erts"))))
          (add-after 'patch-source-shebangs 'patch-source-env
            (lambda _
              (let ((escripts
