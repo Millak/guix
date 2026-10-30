@@ -313,8 +313,8 @@ such as @url{https://taler.net, GNU Taler}.")
 
 (define-public taler-docs
   ;; No tag or commit; use the latest commit.
-  (let ((commit "7944885e71fbf970d21e0d9f4fe88dcc08146457")
-        (revision "1"))
+  (let ((commit "546383b1df85904bb233f183eb912b347bc170af")
+        (revision "2"))
     (package
       (name "taler-docs")
       (version (git-version "0.0.0" revision commit))
@@ -326,7 +326,7 @@ such as @url{https://taler.net, GNU Taler}.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1bn9594qh8p88llglgvr71qwl27i8c5sjx0b49wsjfz93d9d0bsa"))
+                  "0j15y9wbr4bfarwpkm15nzk9fqxyqqb2r6s132drrlrm3clymdv5"))
                 (modules '((guix build utils)))
                 (snippet
                  #~(begin
