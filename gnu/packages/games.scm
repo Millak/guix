@@ -387,9 +387,10 @@ the style of similar games for the Commodore+4.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1vbg17lzbm0xl9yy9qymd1vgpz6f7fbr2hffl2ap0nm4zg0mnafm"))
+         (patches (search-patches "adanaxisgpl-gcc12.patch"))
          (modules '((guix build utils)))
          (snippet
-          '(begin
+          #~(begin
              ;; Necessary for building with gcc >=4.7.
              (substitute* "src/Mushcore/MushcoreSingleton.h"
                (("SingletonPtrSet\\(new SingletonType\\);")

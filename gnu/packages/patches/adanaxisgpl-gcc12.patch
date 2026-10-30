@@ -1,0 +1,57 @@
+Fix build with GCC 12+.
+
+Upstream-status: https://github.com/mushware/adanaxis/issues/3
+
+diff -up adanaxisgpl-1.2.5/src/MushGame/MushGameMessageControlInfo.cpp.orig adanaxisgpl-1.2.5/src/MushGame/MushGameMessageControlInfo.cpp
+--- adanaxisgpl-1.2.5/src/MushGame/MushGameMessageControlInfo.cpp.orig	2007-04-18 11:22:42.000000000 +0200
++++ adanaxisgpl-1.2.5/src/MushGame/MushGameMessageControlInfo.cpp	2022-03-07 18:25:24.986105136 +0100
+@@ -65,13 +65,20 @@ MushcoreInstaller AutoInstaller(AutoInst
+ void
+ MushGameMessageControlInfo::AutoPrint(std::ostream& ioOut) const
+ {
++    MushcoreXMLOStream xmlOut(ioOut);
++    xmlOut.TagSet("");
++
+     ioOut << "[";
+     MushGameMessage::AutoPrint(ioOut);
+-    ioOut << "timestamp=" << m_timestamp << ", ";
+-    ioOut << "axisEvents=" << m_axisEvents << ", ";
+-    ioOut << "keyEvents=" << m_keyEvents;
++    ioOut << "timestamp=";
++    ioOut << m_timestamp;
++    ioOut << ", axisEvents=";
++    xmlOut << m_axisEvents;
++    ioOut << ", keyEvents=";
++    xmlOut << m_keyEvents;
+     ioOut << "]";
+ }
++
+ bool
+ MushGameMessageControlInfo::AutoXMLDataProcess(MushcoreXMLIStream& ioIn, const std::string& inTagStr)
+ {
+diff -up adanaxisgpl-1.2.5/src/MushMesh/MushMesh4Face.cpp~ adanaxisgpl-1.2.5/src/MushMesh/MushMesh4Face.cpp
+--- adanaxisgpl-1.2.5/src/MushMesh/MushMesh4Face.cpp~	2007-04-18 11:22:45.000000000 +0200
++++ adanaxisgpl-1.2.5/src/MushMesh/MushMesh4Face.cpp	2022-03-07 22:45:52.675146721 +0100
+@@ -297,6 +297,9 @@ MushcoreInstaller AutoInstaller(AutoInst
+ void
+ MushMesh4Face::AutoPrint(std::ostream& ioOut) const
+ {
++    MushcoreXMLOStream xmlOut(ioOut);
++    xmlOut.TagSet("");
++
+     ioOut << "[";
+     MushMeshFace::AutoPrint(ioOut);
+     ioOut << "faceType=" << m_faceType << ", ";
+@@ -305,10 +308,10 @@ MushMesh4Face::AutoPrint(std::ostream& i
+     ioOut << "texCoordList=" << m_texCoordList << ", ";
+     ioOut << "materialNum=" << m_materialNum << ", ";
+     ioOut << "edgeSmoothness=" << m_edgeSmoothness << ", ";
+-    ioOut << "internal=" << m_internal << ", ";
++    xmlOut << "internal=" << m_internal << ", ";
+     ioOut << "extrusionMap=" << m_extrusionMap << ", ";
+     ioOut << "extrudedFaces=" << m_extrudedFaces << ", ";
+-    ioOut << "extrusionTransformList=" << m_extrusionTransformList << ", ";
++    xmlOut << "extrusionTransformList=" << m_extrusionTransformList << ", ";
+     ioOut << "uniqueVertexList=" << m_uniqueVertexList << ", ";
+     ioOut << "faceCentroid=" << m_faceCentroid << ", ";
+     ioOut << "boundingRadius=" << m_boundingRadius << ", ";
