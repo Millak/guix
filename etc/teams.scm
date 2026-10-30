@@ -1472,10 +1472,14 @@ the \"texlive\" importer."
   reproduciblebuilds)
 
 (define-member (person "Maxim Cournoyer"
-                       "maxim@guixotic.coop"
+                       "maxim.cournoyer+guix@gmail.com"
                        "apteryx")
-  maintainers codeberg core documentation electronics javascript gnome
-  qt telephony)
+  codeberg core documentation electronics javascript gnome qt telephony)
+
+(define-member (person "Maxim Cournoyer"
+                       "maxim.cournoyer+guix-maintainers@gmail.com"
+                       "apteryx")
+  maintainers)
 
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com"
