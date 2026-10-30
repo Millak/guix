@@ -1390,7 +1390,7 @@ of various aspects of your desktop.")
 (define-public marco
   (package
     (name "marco")
-    (version "1.28.1")
+    (version "1.28.2")
     (source
      (origin
        (method git-fetch)
@@ -1399,7 +1399,7 @@ of various aspects of your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0la9y1nhhfslf1rn5a84ncv8p6xykslqf809ckgyv6yhm48nslnf"))))
+        (base32 "1clzznp9q6kriy9hcm0pkikk0jckm9v18hivk0pjxiwgv7in93lk"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs (list pkg-config
                          autoconf
