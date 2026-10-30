@@ -27964,16 +27964,16 @@ that can use multiple signing keys
 (define-public lyrebird
   (package
     (name "lyrebird")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
-             (commit (string-append "lyrebird-" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "175g1d8n2ss1szsn6knmnbmhpz5cyq7cbbf8bgi2da9618cnv3r8"))))
+        (base32 "0qzwkjlsn4jg02hzsqhayqy64njd7ps3csb9n8ni2q2vlqmlcg7b"))))
     (build-system go-build-system)
     (arguments
      (list
