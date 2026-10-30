@@ -298,6 +298,7 @@ purposes.  Its goal is to be as close as possible to
     (build-system mix-build-system)
     (arguments
      (list
+      #:tests? #f ; TODO: tests still require network access
       #:test-flags
       ;; These tests require network access to badssl.com.
       #~(list "--exclude" "network")
