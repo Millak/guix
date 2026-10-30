@@ -32,7 +32,7 @@
 (define-module (gnu packages pretty-print)
   #:use-module (guix gexp)
   #:use-module (guix packages)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
@@ -124,7 +124,7 @@ printing.  It accomplishes this by being able to delegate files to external
 handlers, such as Groff and Gzip.  It handles as many steps as is necessary to
 produce a pretty-printed file.  It also includes some extra abilities for
 special cases, such as pretty-printing @samp{-help} output.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public ansifilter
   (package
@@ -180,7 +180,7 @@ special cases, such as pretty-printing @samp{-help} output.")
      "Ansifilter handles text files containing ANSI terminal escape codes.
 The command sequences may be stripped or be interpreted to generate formatted
 output (HTML, RTF, TeX, LaTeX, BBCode, Pango).")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public trueprint
   (package
@@ -205,7 +205,7 @@ output (HTML, RTF, TeX, LaTeX, BBCode, Pango).")
      "GNU Trueprint translates C source code files as PostScript files.
 In addition to the basic source code output, it can also perform diff-marking,
 indentation counting, function and file indices and more.")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public enscript
   (package
@@ -227,7 +227,7 @@ indentation counting, function and file indices and more.")
 HTML or RTF formats, to be stored in files or sent immediately to a printer.
 It also includes the capability to perform syntax highlighting for several
 different programming languages.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public fmt-12
   (package
@@ -250,7 +250,7 @@ different programming languages.")
 library for C++.  It can be used as a safe alternative to @code{printf} or as
 a fast alternative to @code{IOStreams}.")
     ;; The library is bsd-2, but documentation and tests include other licenses.
-    (license (list bsd-2 bsd-3 psfl))))
+    (license (list license:bsd-2 license:bsd-3 license:psfl))))
 
 (define-public fmt-11
   (package
@@ -381,7 +381,7 @@ their syntactic role.  It supports over 150 different languages and it can
 output to 8 different formats, including HTML, LaTeX and ODF.  It can also
 output to ANSI color escape sequences, so that highlighted source code can be
 seen in a terminal.")
-    (license gpl3+)
+    (license license:gpl3+)
     (properties '((ftp-directory . "/gnu/src-highlite")))))
 
 (define-public highlight
@@ -448,5 +448,5 @@ seen in a terminal.")
      "Highlight converts source code to HTML, XHTML, RTF, LaTeX,
 TeX, SVG, BBCode and terminal escape sequences with colored syntax
 highlighting.  Language definitions and color themes are customizable.")
-    (license gpl3+)
+    (license license:gpl3+)
     (properties '((lint-hidden-cpe-vendors . ("highlight"))))))
