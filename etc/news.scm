@@ -49,7 +49,8 @@
  (entry (commit "e4d01554e863d3cb88f654f160ccb05e28222b67")
         (title
          (en "PHP critical security updates")
-         (de "Kritische PHP-Sicherheitsupdates"))
+         (de "Kritische PHP-Sicherheitsupdates")
+         (pt "Atualizações críticas de segurança para PHP"))
         (body
          (en "If you use Guix's PHP package, you must update to newer PHP
 versions i.e 8.5.21 and 8.4.27, as soon as possible as it fixes two critical
@@ -93,7 +94,35 @@ Zustand ausgelesen werden, bevor er bei der normalen Initialisierung
 zurückgesetzt wird.
 
 Weitere Informationen finden Sie in
-@url{https://www.php.net/archive/2026.php#2026-10-21-5, PHPs Empfehlungen.}")))
+@url{https://www.php.net/archive/2026.php#2026-10-21-5, PHPs Empfehlungen.}")
+         (pt "Se você usa o pacote PHP do Guix, você deve atualizar para
+versões mais recentes, como por exemplo 8.5.21 e 8.4.27, assim que possível,
+dado que elas consertam duas falhas críticas de segurança que podem permitir
+execução remota de código não autenticado.  As vulnerabilidades são:
+
+@itemize
+
+@item Execução remota de código mediante corrupção por falta de memória,
+CVE-2026-109618
+@url{https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w,
+(GHSA-w8hw-w9fx-j79w)}: tratamento de falta de memória pode interromper o PHP
+enquuanto os dados internos de solicitação foram inicializados apenas
+parcialmente.  A solicitação de limpeza pode então tratar dados inválidos como
+se válidos fossem.
+
+@item Execução remota de código mediante estado global defasado,
+CVE-2026-109619
+@url{https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp,
+(GHSA-6wmf-4rv5-p3rp)}: dado interno de estado pertencente ao requisitor pode
+sobreviver após sua memória de suporte foi liberada.  Uma requisição posterior
+tratada pelo mesmo trabalhador pode usar este estado defasado antes da
+inicialização normal reiniciá-lo.
+
+@end itemize
+
+Para mais informação, você pode ler o
+@url{https://www.php.net/archive/2026.php#2026-10-21-5, anúncio consultivo do
+PHP.}")))
 
  (entry (commit "fb0bf8a0d1e6f0f3fae31a4d0a2d70e76a4a069d")
         (title
