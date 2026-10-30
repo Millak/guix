@@ -24,7 +24,7 @@
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
-;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2025, 2026 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1295,7 +1295,7 @@ devices.")
 (define-public ausweisapp
   (package
     (name "ausweisapp")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method git-fetch)
@@ -1304,7 +1304,7 @@ devices.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nk2gqhyp8y51k60hf0h85vxnd7qrabsz5qxcfjymlr97h5xn3d8"))))
+        (base32 "1vx62h2q1k120zb7izvxkd3qrxrclf9savds83bmg3fj1q449cka"))))
     (build-system qt-build-system)
     (native-inputs
      (list qttools pkg-config python-wrapper))
