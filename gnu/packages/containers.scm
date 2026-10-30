@@ -3413,7 +3413,7 @@ Guix machinery.")
 (define-public libslirp
   (package
     (name "libslirp")
-    (version "4.9.4")
+    (version "4.9.7")
     (source
      (origin
        (method git-fetch)
@@ -3421,7 +3421,7 @@ Guix machinery.")
              (url "https://gitlab.freedesktop.org/slirp/libslirp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "19f1p37b4ybqbgk817g3sqhdvr1gl3d1063hj7zg1jqa301s2afw"))
+        (base32 "0pplahxmy8l795nf2xpg9gdlwg7szyv9gshsaaps2sz8nkcrj2m6"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (propagated-inputs
