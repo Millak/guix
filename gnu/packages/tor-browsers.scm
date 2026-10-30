@@ -91,8 +91,8 @@
 
 ;; See browser/locales/l10n-changesets.json for the commit.
 (define firefox-locales
-  (let ((commit "412690f1368e37f70af57eecabb93497167eb9ba")
-        (revision "2"))
+  (let ((commit "1e95d1c5f519c3fbde715345ae7beb56a2c79077")
+        (revision "3"))
     (package
       (name "firefox-locales")
       (version (git-version "0.0.0" revision commit))
@@ -105,7 +105,7 @@
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "15614g94zdk3n1nnx5jy622zryv2ydd5cmn4pidwrl07g1f3xxxa"))))
+            "12rlba5g46sw22fxqyjj2jfvplxw45dm2m82lq17ajgqh21frdzf"))))
       (build-system copy-build-system)
       (home-page "https://github.com/mozilla-l10n/firefox-l10n")
       (synopsis "Firefox Locales")
@@ -115,16 +115,16 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20261020213900")
+(define %torbrowser-build-date "20261026134500")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "15.0.26")
+(define %torbrowser-version "16.0")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "140.17.0esr-15.0-1-build7")
+(define %torbrowser-firefox-version "153.6.0esr-16.0-1-build3")
 
 ;; See tor-browser-build/rbm.conf for the list.
 (define %torbrowser-locales (list "ar" "be" "bg" "ca" "cs" "da" "de" "el" "es-ES" "fa"
@@ -139,11 +139,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "16c3128a5ddff8cc75f07ceba540e036221f6f1d")))
+          (commit "e1166567b3a76662f0b6223b4eb3ff55a2eca34b")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1sp7c6vps4w6l5fs6syklj0rrm8wgf7zlbgi7iv5mm34m580bqj5"))))
+      "04qp10jl0bqn65zwca06cbf8hss4ql9yjjmvmv5y9idy838x407v"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +151,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "4671f57fa0aa42dfe83877a41ce9779fbfcac266")))
+          (commit "523ce42af96512b616417c3b5f229887abd9f565")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "03f54qhn80jhll2sz7d9zwbl4wxisaadaqgqr82s21lq1kyqgz73"))))
+      "18n2yifn6hl5kadzls1yshzmw7jwpppa60wnyq8kw19rsbg3hb9n"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,12 +171,12 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0x5zzwbgr9na67blphdx76bibvhhn68n6l4p6rnypf946x2cfyij"))))
+         "090s54xc9i4587kym41jx552l8rv5sxibmfd723q9hl9ffv70cyy"))))
     (arguments
      (list
       #:install-plan
       ''(("Browser" "." #:include-regexp
-          ("^\\./TorBrowser/Data/Tor/torrc-defaults"
+          ("^\\./TorBrowser/Tor/torrc-defaults"
            "^\\./fonts/")))))
     (build-system copy-build-system)
     (home-page "https://www.torproject.org")
@@ -186,8 +186,8 @@ Browser.")
     (license license:silofl1.1)))
 
 ;;; A LLD wrapper that can be used as a (near) drop-in replacement to GNU ld.
-(define lld-as-ld-wrapper-19
-  (make-lld-wrapper lld-19 #:lld-as-ld? #t))
+(define lld-as-ld-wrapper-21
+  (make-lld-wrapper lld-21 #:lld-as-ld? #t))
 
 (define* (make-torbrowser #:key
                           moz-app-name
@@ -212,7 +212,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1a2v43c5933mdrgmi083cy0kb4hbf1schj3difzhx1qjci5877i0"))))
+         "0zx87pnm6wrjdxrwyxjz3x2z20v0vsfysxvw8yigx0kxc61in5v4"))))
     (build-system mozilla-build-system)
     (inputs
      (list lyrebird
@@ -243,7 +243,7 @@ Browser.")
            ;; See <https://bugzilla.mozilla.org/show_bug.cgi?id=1962139>
            ffmpeg-6
            libvpx
-           icu4c-76
+           ;; icu4c-78 needs mozilla patches
            pixman
            pulseaudio
            mesa
@@ -263,10 +263,10 @@ Browser.")
       (list
        rust
        `(,rust "cargo")
-       rust-cbindgen-0.28
-       lld-as-ld-wrapper-19  ; for cargo rustc
-       llvm-19
-       clang-19
+       rust-cbindgen-0.29
+       lld-as-ld-wrapper-21  ; for cargo rustc
+       llvm-21
+       clang-21
        perl
        node-lts
        python-wrapper
@@ -343,7 +343,7 @@ Browser.")
          "--with-system-zlib"
          "--with-system-libevent"
          "--with-system-libvpx"
-         "--with-system-icu"
+         ;; "--with-system-icu" needs mozilla patches
          "--with-system-nspr"
          "--with-system-nss"
          "--with-system-ffi"
@@ -481,7 +481,6 @@ Browser.")
             (lambda* (#:key configure-flags #:allow-other-keys)
               (let ((arch (cond (#$(target-arm32?) "arm")
                                 (#$(target-aarch64?) "aarch64")
-                                (#$(target-x86-32?) "i686")
                                 (#$(target-x86-64?) "x86_64"))))
                 (with-output-to-file "mozconfig"
                   (lambda ()
@@ -684,21 +683,21 @@ Browser.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (in-vicinity #$output "lib/torbrowser"))
                     (tor #$(this-package-input "tor-client")))
-                ;; TorBrowser/Data/Tor/torrc-defaults
+                ;; TorBrowser/Tor/torrc-defaults
                 (copy-recursively (in-vicinity #$assets "TorBrowser")
                                   (in-vicinity lib "TorBrowser"))
                 (substitute*
-                    (in-vicinity lib "TorBrowser/Data/Tor/torrc-defaults")
+                    (in-vicinity lib "TorBrowser/Tor/torrc-defaults")
                   (("exec ./TorBrowser/Tor/PluggableTransports/lyrebird")
                    (string-append
                     "exec " (search-input-file inputs "bin/lyrebird"))))
                 ;; The geoip and geoip6 files are in the same directory as
                 ;; torrc-defaults.  (See TorProcess.sys.mjs.)
-                (mkdir-p (in-vicinity lib "TorBrowser/Data/Tor"))
+                (mkdir-p (in-vicinity lib "TorBrowser/Tor"))
                 (copy-file (in-vicinity tor "share/tor/geoip6")
-                           (in-vicinity lib "TorBrowser/Data/Tor/geoip6"))
+                           (in-vicinity lib "TorBrowser/Tor/geoip6"))
                 (copy-file (in-vicinity tor "share/tor/geoip")
-                           (in-vicinity lib "TorBrowser/Data/Tor/geoip")))))
+                           (in-vicinity lib "TorBrowser/Tor/geoip")))))
           (add-after 'install 'autoconfig
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (string-append #$output "/lib/" #$moz-app-name))
@@ -746,7 +745,7 @@ Browser.")
                   (format port "pref(~s, ~s);~%"
                           "extensions.torlauncher.torrc-defaults_path"
                           (in-vicinity
-                           lib "TorBrowser/Data/Tor/torrc-defaults"))
+                           lib "TorBrowser/Tor/torrc-defaults"))
                   (format port "pref(~s, ~s);~%"
                           "extensions.torlauncher.tor_path"
                           (search-input-file inputs "bin/tor"))
@@ -758,8 +757,7 @@ Browser.")
             (variable "ICECAT_SYSTEM_DIR")
             (separator #f)              ;single entry
             (files '("lib/icecat")))))
-    (supported-systems (list "x86_64-linux" "i686-linux"
-                             "aarch64-linux" "armhf-linux"))
+    (supported-systems (list "x86_64-linux" "aarch64-linux" "armhf-linux"))
     (home-page "https://www.torproject.org")
     (synopsis "Anonymous browser derived from Mozilla Firefox")
     (description
