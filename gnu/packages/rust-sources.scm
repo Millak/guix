@@ -1193,8 +1193,8 @@ intelligence.")
   ;; Things are a bit unstable at the moment for depolymerization, and
   ;; building from tagged releases does not work.  Use what its Cargo.lock
   ;; refers to for now.
-  (let ((commit "91ff47a5fc84ee85c8c54eab7e03b649d9608ef8")
-        (revision "0"))
+  (let ((commit "3ce4de773233fad0b30fa5f8cba4efd0bf8dff8f")
+        (revision "2"))
     (hidden-package
      (package
        (name "rust-taler")
@@ -1203,12 +1203,12 @@ intelligence.")
         (origin
           (method git-fetch)
           (uri (git-reference
-                 (url "https://git.taler.net/taler-rust.git")
+                 (url "git://git.taler.net/taler-rust.git")
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "0353cwmcq2wky9wdfxwmzfyg67094wjpgp5rirw3mhw4i7nn3xmr"))))
+            "0gyj5c6ffrsg71ilhw7n6b53qmcaxj011x0rsc7xn909pfyi8kxk"))))
        (build-system cargo-build-system)
        (arguments
         (list

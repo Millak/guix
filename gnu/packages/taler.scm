@@ -38,8 +38,8 @@
 (define-public depolymerization
   ;; The last v0.0.1 release does not current build with a recent rust-taler;
   ;; use the latest commit available.
-  (let ((commit "db9f7c37411027149abfbb45d071771a9026f059")
-        (revision "0"))
+  (let ((commit "490206c65340babfcdad9d18a9d72cc111d829e9")
+        (revision "1"))
     (package
       (name "depolymerization")
       (version (git-version "0.0.1" revision commit))
@@ -51,10 +51,11 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i4dprlgl35pwifiix29fcn8gdizv215r24zxa5c5c2f4z5d3z1b"))))
+                  "00r2i4l20jmw0ps5iqi80pr95zf059nx22rm56iznmg2qaclidnb"))))
       (build-system cargo-build-system)
       (arguments
        (list
+        #:rust rust-1.96
         #:install-source? #f
         #:cargo-package-crates
         '(list "uri-pack"
