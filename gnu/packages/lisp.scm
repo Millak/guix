@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2026 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
@@ -329,16 +329,16 @@ integration with code written in C.")
     (name "ccl")
     ;; XXX When updating this package, check whether we can simply append
     ;; VERSION to the ccl-bootstrap URL again, instead of per architecture.
-    (version "1.13")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Clozure/ccl/")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "ccl" version))
-              (sha256
-               (base32
-                "12cb3gp43bhl7nyms3a4lix8j1s3arnp124d3ahc2lhlrjirs0mr"))))
+    (version "1.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Clozure/ccl/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sk6v5672w9ahkbva16q4gyflprpj2gpqnhf1yib8idih7ylzh32"))))
     (build-system gnu-build-system)
     ;; CCL consists of a "lisp kernel" and "heap image", both of which are
     ;; shipped in precompiled form in source tarballs.  The former is a C
@@ -352,18 +352,21 @@ integration with code written in C.")
            (uri (string-append
                  "https://github.com/Clozure/ccl/releases/download/v"
                  (match (%current-system)
-                   ("armhf-linux" "1.13/linuxarm")
+                   ("aarch64-linux" "1.14/linuxarm64")
+                   ("armhf-linux" "1.14/linuxarm")
                    ;; XXX: This source only works on x86, but provide it as a
                    ;; catch-all to prevent errors when querying this package
                    ;; on unsupported platforms.
-                   (_ "1.13/linuxx86"))
+                   (_ "1.14/linuxx86"))
                  ".tar.gz"))
            (sha256
             (base32
              (match (%current-system)
+               ("aarch64-linux"
+                "0mbzr8kxfzv0zkdnwglzk3lg32cjhy8d4msfhll2bii61ja68xz7")
                ("armhf-linux"
-                "1mlj7lgn4p9bw1ki7gk00sj89cjv0cjpdmpp65brhx9q3fvkk9xf")
-               (_ "04ry8zwrcjjmzbxp43nkknchabk6i6mclrzg5biwfp1h64bcnzfx"))))))))
+                "1bjbwypcahjc7g4jmnkhrzivd6ir9idpdbwdmi34wvppk2klvrrc")
+               (_ "0b9b4n6w97rpk05av2ylca8l56zqd3xgdd4zv6raz7plny28llqz"))))))))
     (native-inputs
      (list cl-asdf m4))
     (arguments
@@ -399,6 +402,7 @@ integration with code written in C.")
                      (match system
                        ("i686-linux" "linuxx8632")
                        ("x86_64-linux" "linuxx8664")
+                       ("aarch64-linux" "linuxarm64")
                        ("armhf-linux" "linuxarm")
                        (_ (string-append "unknown system: " system)))))
              (substitute* '("Makefile")
@@ -422,6 +426,7 @@ integration with code written in C.")
                      (match system
                        ("i686-linux" "lx86cl")
                        ("x86_64-linux" "lx86cl64")
+                       ("aarch64-linux" "arm64cl")
                        ("armhf-linux" "armcl")
                        ;; Unlikely to work, but try it anyway...
                        (_ system)))
