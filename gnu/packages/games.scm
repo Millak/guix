@@ -100,6 +100,7 @@
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
+;;; Copyright © 2026 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9982,7 +9983,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public the-powder-toy
   (package
     (name "the-powder-toy")
-    (version "100.0.399")
+    (version "100.1.400")
     (source
      (origin
        (method git-fetch)
@@ -9991,7 +9992,7 @@ elements to achieve a simple goal in the most complex way possible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f2gdjykavsz944j4ahpjbj6k8v4sh09d1y82c4y46wayl78cp97"))
+        (base32 "1vaylh3z680cbnikgp7vxxjyih5x0drx0mn513sqgzdmyv2fsq91"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "meson.build"
