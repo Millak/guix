@@ -1216,7 +1216,7 @@ and make for REPLs that start blazing fast.
 (define-public picolisp
   (package
     (name "picolisp")
-    (version "25.6")
+    (version "26.9")
     (supported-systems '("aarch64-linux"
                          "powerpc64le-linux"
                          "x86_64-linux"))
@@ -1225,9 +1225,9 @@ and make for REPLs that start blazing fast.
        (method url-fetch)
        (uri (string-append "https://software-lab.de/picoLisp-" version ".tgz"))
        (sha256
-        (base32 "0cr1w4lcszipfp7d0pk7v42dzqrd6i7b498f81lqymijgp3v4vkd"))))
+        (base32 "1fkyp1j04kq5lkvbxa0d22fqgyhwwjksflw7b87lc1m42pbxgxxs"))))
     (build-system gnu-build-system)
-    (inputs (list clang-13 readline libffi openssl pkg-config))
+    (inputs (list clang readline libffi openssl pkg-config))
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (delete 'configure)
