@@ -213,7 +213,7 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "6.2.0")
+    (version "6.3.0")
     (source
      (origin
        (method git-fetch)
@@ -222,21 +222,31 @@ belonging to various licenses.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m76vrjqbr3a6bmzgxqkf0qdfk41v1mnhh524q67pincvqi533r7"))))
+        (base32 "04zya9fs29br2njvk9rz83k21syvlpf3yb2yyrbbik09l888y5ap"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 907 passed, 21 skipped, 8 warnings
-      #:test-flags #~(list "--ignore=src/reuse")))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; (Testing) Fossil requires a writable $HOME.
+          (add-before 'check 'set-home
+            (lambda _ (setenv "HOME" "/tmp"))))
+      ;; tests: 1069 passed, 43 skipped, 5 deselected, 9 warnings
+      #:test-flags
+      #~'("--ignore=src/reuse"
+          ;; See https://codeberg.org/fsfe/reuse-tool/pulls/1395
+          "--deselect=tests/test_cli_lint.py::TestLint::test_custom_root_vcs")))
+    ;; FIXME: Jujutsu and Pijul tests failed.
     (native-inputs
-     (list python-freezegun
-           python-poetry-core
-           python-pytest))
-    (inputs
-     (list git
-           jujutsu
+     (list fossil
+           git
            mercurial
-           python-attrs
+           python-freezegun
+           python-poetry-core
+           python-pytest
+           python-pytest-lazy-fixtures))
+    (inputs
+     (list python-attrs
            python-binaryornot
            python-charset-normalizer
            python-click
