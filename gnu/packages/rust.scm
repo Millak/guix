@@ -701,6 +701,14 @@ safety and thread safety guarantees.")
                 (display "Building RUSTCSRC...\n")
                 (apply invoke "make" "RUSTCSRC" make-flags)
 
+                ;; Don't try to use the __bswapdi2 builtin, it's not available
+                ;; on the riscv64-linux baseline.
+                #$@(if (target-riscv64?)
+                       #~((substitute*
+                            "rustc-1.90.0-src/library/compiler-builtins/compiler-builtins/src/int/bswap.rs"
+                            (("__bswap") "__builtin_bswap")))
+                       #~())
+
                 ;; This probably doesn't need to be called explicitly.
                 (display "Building LIBS...\n")
                 (apply invoke "make" "-f" "minicargo.mk" "LIBS" make-flags)
@@ -749,7 +757,7 @@ safety and thread safety guarantees.")
     (home-page "https://github.com/thepowersgang/mrustc")
 
     ;; List of systems where rust-bootstrap is explicitly known to build:
-    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))
