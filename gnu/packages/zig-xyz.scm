@@ -109,7 +109,7 @@ performance of multiple commands with a colorful terminal user interface.")
                      (("\\.wayland") ".@\"zig-wayland\"")
                      (("\\.wlroots") ".@\"zig-wlroots\"")
                      (("\\.xkbcommon") ".@\"zig-xkbcommon\""))))
-               (add-before 'build 'revert-build.zig.zon
+               (add-before 'build+install 'revert-build.zig.zon
                  (lambda _
                    (substitute* "build.zig.zon"
                      (("\\.@\"zig-pixman\"") ".pixman")
@@ -117,7 +117,7 @@ performance of multiple commands with a colorful terminal user interface.")
                      (("\\.@\"zig-wayland\"") ".wayland")
                      (("\\.@\"zig-wlroots\"") ".wlroots")
                      (("\\.@\"zig-xkbcommon\"") ".xkbcommon"))))
-               (add-after 'install 'install-wayland-session
+               (add-after 'build+install 'install-wayland-session
                  (lambda _
                    (let ((wayland-sessions
                           (string-append #$output "/share/wayland-sessions")))

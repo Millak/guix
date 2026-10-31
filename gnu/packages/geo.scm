@@ -582,7 +582,7 @@ writing GeoTIFF information tags.")
                       (search-input-file
                         inputs
                         "libexec/geoclue-2.0/demos/where-am-i")))))
-               (add-after 'install 'wrap-scripts
+               (add-after 'build+install 'wrap-scripts
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((bin-dirs
                           (map (lambda (bin)

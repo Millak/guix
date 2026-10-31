@@ -31,9 +31,6 @@
             zig-build
             zig-source-install-path))
 
-;; Interesting guide here:
-;; https://github.com/riverwm/river/blob/master/PACKAGING.md
-
 (define (zig-source-install-path output)
   (string-append output "/src/zig/" (strip-store-file-name output)))
 
@@ -135,20 +132,28 @@
          (reverse zig-inputs)))))
    (find-files "." "^build\\.zig\\.zon$")))
 
-(define* (build #:key
-                zig-build-flags
-                zig-build-target
-                ;; "safe", "fast" or "small", empty for a "debug" build.
-                zig-release-type
-                parallel-build?
-                skip-build?
-                #:allow-other-keys)
-  "Build a given Zig package."
+;; Zig doesn't make any difference between phases, so why should we?
+(define* (build+install #:key
+                        zig-build-flags
+                        zig-build-target
+                        ;; "safe", "fast" or "small", empty for a "debug" build.
+                        zig-release-type
+                        parallel-build?
+                        skip-build?
+                        outputs
+                        install-source?
+                        #:allow-other-keys)
+  "Build and install given Zig package."
+
+  (when install-source?
+    (let ((source-install-path (zig-source-install-path (assoc-ref outputs "out"))))
+      (mkdir-p source-install-path)
+      (copy-recursively "." source-install-path)))
+
   (when (not skip-build?)
-    (setenv "DESTDIR" "out")
     (let* ((arguments (zig-arguments))
            (call `("zig" "build"
-                   "--prefix"             ""            ;; Don't add /usr
+                   "--prefix"             ,(assoc-ref outputs "out")
                    "--prefix-lib-dir"     "lib"
                    "--prefix-exe-dir"     "bin"
                    "--prefix-include-dir" "include"
@@ -175,41 +180,26 @@
                 #:allow-other-keys)
   "Run all the tests"
   (when (and tests? (not target))
-    (let ((old-destdir (getenv "DESTDIR")))
-      (setenv "DESTDIR" "test-out") ;; Avoid colisions with the build output
-      (let* ((arguments (zig-arguments))
-             (call `("zig" "build" ,(or test-target "test") "--verbose"
-                     ,@(if parallel-tests?
-                           ((assoc-ref arguments "parallel-jobs")
-                            (parallel-job-count))
-                           ((assoc-ref arguments "parallel-jobs")
-                            1))
-                     ,@zig-test-flags)))
-        (format #t "running: ~s~%" call)
-        (apply invoke call))
-      (if old-destdir
-        (setenv "DESTDIR" old-destdir)
-        (unsetenv "DESTDIR")))))
-
-(define* (install #:key outputs install-source? #:allow-other-keys)
-  "Install a given Zig package."
-  (let* ((out (assoc-ref outputs "out"))
-         (source-install-path (zig-source-install-path out)))
-    (when (file-exists? "out")
-      (copy-recursively "out" out)
-      (delete-file-recursively "out"))
-    (when install-source?
-      (mkdir-p source-install-path)
-      (copy-recursively "." source-install-path))))
+    (let* ((arguments (zig-arguments))
+           (call `("zig" "build" ,(or test-target "test") "--verbose"
+                   ,@(if parallel-tests?
+                       ((assoc-ref arguments "parallel-jobs")
+                        (parallel-job-count))
+                       ((assoc-ref arguments "parallel-jobs")
+                        1))
+                   ,@zig-test-flags)))
+      (format #t "running: ~s~%" call)
+      (apply invoke call))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
     (replace 'configure zig-configure)
     (add-after 'configure 'unpack-dependencies unpack-dependencies)
-    (replace 'build build)
+    (delete 'build)
+    (add-after 'unpack-dependencies 'build+install build+install)
     (replace 'check check)
-    (replace 'install install)))
+    (delete 'install)))
 
 
 (define* (zig-build #:key inputs (phases %standard-phases)
