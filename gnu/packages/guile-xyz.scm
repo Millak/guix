@@ -1138,10 +1138,10 @@ tables.")
                          (replace "guile-lib" guile2.2-lib)
                          (replace "guile-smc" guile2.2-smc)))))
 
-(define-public guile-fibers-1.4
+(define-public guile-fibers-2.0
   (package
     (name "guile-fibers")
-    (version "1.4.3")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1150,36 +1150,22 @@ tables.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q0a9y0cc8rld1z7mcj61fkldhd0kn9n4yq25izxslbgg4g5h9j6"))
-       (patches (search-patches "guile-fibers-fix-timer-wheel-remove.patch"))))
+        (base32 "1d8xg3w54s8rzfr9b8jrali8w78b46sxap8rwc18k2ks887dfa7i"))))
     (build-system gnu-build-system)
     (arguments
-     (if (target-aarch64?)
+     (if (target-hurd?)
          (list #:phases
                #~(modify-phases %standard-phases
-                   (add-before 'check 'disable-jit
+                   (add-before 'check 'disable-more-tests
                      (lambda _
-                       ;; XXX: Due to a JIT bug in Guile 3.0.9 on AArch64,
-                       ;; some tests would hang:
-                       ;; <https://codeberg.org/fibers/fibers/issues/83>.
-                       ;; Disable JIT for now; re-enable it when Guile 3.0.10+
-                       ;; is used.  (Note: The Shepherd disables JIT on
-                       ;; AArch64 so it can safely use Fibers.)
-                       (setenv "GUILE_JIT_THRESHOLD" "-1")))))
-         (if (target-hurd?)
-             (list #:phases
-                   #~(modify-phases %standard-phases
-                       (add-before 'check 'disable-more-tests
-                         (lambda _
-                           (substitute* "Makefile"
-                             ;; clock_nanosleep with a clock from
-                             ;; pthread-getcpuclockid fails with EINVAL
-                             ;; https://codeberg.org/guile/fibers/issues/171
-                             (("tests/preemption.scm") "")
-                             ;; heap grows too much
-                             (("tests/cancel-port-waiters.scm") "")
-                             (("tests/cancel-timer.scm") ""))))))
-             '())))
+                       (substitute* "Makefile"
+                         ;; clock_nanosleep with a clock from
+                         ;; pthread-getcpuclockid fails with EINVAL
+                         ;; https://codeberg.org/guile/fibers/issues/171
+                         (("tests/preemption.scm") "")
+                         ;; heap grows too much
+                         (("tests/cancel-port-waiters.scm") ""))))))
+         '()))
     (native-inputs
      (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
@@ -1205,6 +1191,51 @@ Note that Fibers makes use of some Guile 2.1/2.2-specific features and
 is not available for Guile 2.0.")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
+
+(define-public guile-fibers-1.4
+  (package
+    (inherit guile-fibers-2.0)
+    (name "guile-fibers")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/guile/fibers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q0a9y0cc8rld1z7mcj61fkldhd0kn9n4yq25izxslbgg4g5h9j6"))
+       (patches (search-patches "guile-fibers-fix-timer-wheel-remove.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (cond ((target-aarch64?)
+            (list #:phases
+                  #~(modify-phases %standard-phases
+                      (add-before 'check 'disable-jit
+                        (lambda _
+                          ;; XXX: Due to a JIT bug in Guile 3.0.9 on AArch64,
+                          ;; some tests would hang:
+                          ;; <https://codeberg.org/fibers/fibers/issues/83>.
+                          ;; Disable JIT for now; re-enable it when Guile 3.0.10+
+                          ;; is used.  (Note: The Shepherd disables JIT on
+                          ;; AArch64 so it can safely use Fibers.)
+                          (setenv "GUILE_JIT_THRESHOLD" "-1"))))))
+           ((target-hurd?)
+            (list #:phases
+                  #~(modify-phases %standard-phases
+                      (add-before 'check 'disable-more-tests
+                        (lambda _
+                          (substitute* "Makefile"
+                            ;; clock_nanosleep with a clock from
+                            ;; pthread-getcpuclockid fails with EINVAL
+                            ;; https://codeberg.org/guile/fibers/issues/171
+                            (("tests/preemption.scm") "")
+                            ;; heap grows too much
+                            (("tests/cancel-port-waiters.scm") "")
+                            ;; same here (not necessary with 2.0)
+                            (("tests/cancel-timer.scm") "")))))))
+           (else arguments)))))
 
 (define-public guile-fibers guile-fibers-1.4)
 
