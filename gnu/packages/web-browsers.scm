@@ -891,7 +891,7 @@ saved to a file for further viewing in another window.")
 (define-public chawan
   (package
     (name "chawan")
-    (version "0.4.4")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -899,8 +899,7 @@ saved to a file for further viewing in another window.")
              (url "https://git.sr.ht/~bptato/chawan")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1il1z8hw9hyv8jq892mw9d8pkv2fbpr9ghkgsgqjdqah2fhckjp0"))
-       (patches (search-patches "chawan-0.4.4-tmp-nimcache.patch"))
+        (base32 "0yha58x3phvjxvlrp791did2sd2iaqbg1yk4pmhqfwrarz0p4wwa"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -914,7 +913,7 @@ saved to a file for further viewing in another window.")
           ;; must override absolute shell path set by test configurations.
           (add-after 'unpack 'patch-shell-path
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("src/local/pager.nim" "adapter/protocol/man.nim")
+              (substitute* (find-files "." "\\.nim$")
                 (("\"/bin/sh\"")
                  (format #f "~s" (search-input-file inputs "bin/sh"))))))
           (delete 'configure))))
