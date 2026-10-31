@@ -306,7 +306,7 @@ Line Interface} client for the BitTorrent client Transmission.")
 (define-public libtorrent
   (package
     (name "libtorrent")
-    (version "0.16.25")
+    (version "0.16.27")
     (source
      (origin
        (method git-fetch)
@@ -316,7 +316,7 @@ Line Interface} client for the BitTorrent client Transmission.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0aj1dy3q9a0ma0k8ixi46nwkjb1bwz2v826si67mmijpc2xl062v"))))
+         "0cp4x8l9qfqh5dmjh3pp1mdwsvl3a1zdv5mhlvg8kgcm9mpx1fcv"))))
     (build-system gnu-build-system)
     (inputs
      (list curl
