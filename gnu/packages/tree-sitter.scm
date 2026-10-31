@@ -1972,6 +1972,14 @@ files.")))
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-toml"))
 
+(define-public tree-sitter-turtle
+  (tree-sitter-grammar
+   "turtle" "Turtle"
+   "1l5djvz90sq9w14kfcrffdigqs61r1p8v17xpj92sxz8z3ngpgmr"
+   "0.1.0"
+   #:repository-url "https://github.com/GordianDziwis/tree-sitter-turtle"
+   #:commit "0.1.0"))
+
 (define-public tree-sitter-twig
   (let ((version "0.7.0")
         (commit "40d17f0eb990215e12531abe29ee7691d7ca99a5")
