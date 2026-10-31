@@ -1237,7 +1237,7 @@ is not available for Guile 2.0.")
                             (("tests/cancel-timer.scm") "")))))))
            (else arguments)))))
 
-(define-public guile-fibers guile-fibers-1.4)
+(define-public guile-fibers guile-fibers-2.0)
 
 (define-public guile-fibers-1.1
   (package

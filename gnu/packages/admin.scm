@@ -647,7 +647,10 @@ interface and is based on GNU Guile.")
          (if (or (target-arm?)
                  (target-riscv64?))
              guile-fibers-1.1
-             guile-fibers)))) ;use latest guile-fibers available
+
+             ;; The Shepherd 1.0 doesn't work with Fibers 2.0, which removed
+             ;; 'timer-operation'.
+             guile-fibers-1.4))))
     (propagated-inputs
      (modify-inputs propagated-inputs
        (replace "guile-fibers"
@@ -751,7 +754,7 @@ manager.")
     (propagated-inputs
      (list btrfs-progs
            guile-config
-           guile-fibers
+           (lookup-package-propagated-input shepherd-1.0 "guile-fibers")
            guile-netlink
            (lookup-package-input guix "guile")
            guix

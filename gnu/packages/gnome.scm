@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014-2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -7848,7 +7848,7 @@ such as gzip tarballs.")
             (delete 'shrink-runpath)))))
     (native-inputs
      (list guile-3.0
-           guile-fibers
+           (lookup-package-propagated-input shepherd-1.0 "guile-fibers")
            guile-ini
            guile-gi
            pkg-config
@@ -7857,7 +7857,7 @@ such as gzip tarballs.")
     (inputs
      (list gsettings-desktop-schemas
            `(,glib "bin")
-           guile-fibers
+           (lookup-package-propagated-input shepherd-1.0 "guile-fibers")
            guile-ini
            guile-gi
            shepherd-1.0))
