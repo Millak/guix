@@ -1084,7 +1084,7 @@ version, or several package versions at once.")
 (define-public guix-removal-reporter
   (package
     (name "guix-removal-reporter")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1093,7 +1093,7 @@ version, or several package versions at once.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11lwqngwkbhk0qhfzmhg767grss6609jx2g2ix6va0jx424kbija"))))
+        (base32 "040zx63sxpw6bf1h7i8w66n10n64l91g3lndbwkss1rvd7x7wcny"))))
     (build-system guile-build-system)
     (arguments
      (list
