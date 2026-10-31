@@ -4360,7 +4360,7 @@ but it can be adapted to other engines/frameworks.")
              "0fycffd6pbh9ilmr032dlrwd6dhvpkjp2r9x98r0kmwqpxc4x90d")))))
     (package
       (name "tic80")
-      (version "1.3.1")
+      (version "1.4.1")
       (source
        (origin
          (method git-fetch)
@@ -4370,7 +4370,7 @@ but it can be adapted to other engines/frameworks.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1vzk4f9b73mmal2kh4q9yc8hmvmg62am45ds28cq9m27y0z6psj2"))
+           "0dd3chbz5jw9bj5f62nfmfnvcggk3xdvvdy3brc20p5gsdvgh483"))
          (modules '((guix build utils)))
          (snippet
           #~(begin
@@ -4382,10 +4382,10 @@ but it can be adapted to other engines/frameworks.")
        (list #:tests? #f                ;no tests
              #:configure-flags
              #~'("-DBUILD_STATIC=ON" ;don't build runtimes as shared libraries
+                 "-DBUILD_SDL=ON"
+                 "-DBUILD_SOKOL=OFF"    ;not packaged in Guix
                  "-DPREFER_SYSTEM_LIBRARIES=ON"
                  "-DCMAKE_EXE_LINKER_FLAGS=-lpulse" ;for miniaudio
-                 "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
-                                                    ;for miniaudio
                  ;; TODO: moon, python, wren, yue, forth, miniscript
                  "-DBUILD_WITH_FENNEL=ON"
                  "-DBUILD_WITH_JANET=ON"
@@ -4441,7 +4441,7 @@ but it can be adapted to other engines/frameworks.")
              mruby
              naett
              pulseaudio
-             quickjs
+             quickjs-ng
              s7
              sdl2
              squirrel
