@@ -27653,6 +27653,30 @@ be used as both a binary and a library.")
 protocol.")
     (license license:isc)))
 
+(define-public go-pkg-nimblebun-works-go-lsp
+  (package
+    (name "go-pkg-nimblebun-works-go-lsp")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nimblebun/go-lsp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14hdbk0h85930phnsih5k33dj2qx9b3j4vvsf24g6v3qqjvbp54q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "pkg.nimblebun.works/go-lsp"))
+    (home-page "https://pkg.nimblebun.works/go-lsp")
+    (synopsis "Language Server Protocol types for Go")
+    (description
+     "Package lsp contains type definitions and documentation for the Language
+Server Protocol.")
+    (license license:expat)))
+
 (define-public go-sigs-k8s-io-knftables
   (package
     (name "go-sigs-k8s-io-knftables")
