@@ -27,21 +27,20 @@ exec guile -e main -s "$0" "$@"
              ((gnu system) #:select (%base-packages %base-firmware))
              (gnu tests install)
              (ice-9 match)
+             ((ice-9 session) #:select (procedure-arguments))
              (guix utils)
              (srfi srfi-26)
              (srfi srfi-1)
              (ice-9 receive))
 
-;; TODO find a better way to check for thunked fields
+;; Thunked fields hold a procedure of exactly one argument: the record.
+;; This cannot be told apart from a plain one-argument procedure field.
 (define* (thunked-field? field obj)
-  (and
-   (procedure? obj)
-   (eq?
-    (car (procedure-minimum-arity obj))
-    1)
-   ; Uhhh
-   (string-suffix? "(x)>"
-                   (format #f "~a" obj))))
+  (and (procedure? obj)
+       (match (procedure-arguments obj)
+         ;; One required argument. No optional, keyword or rest arguments.
+         ((('required _) ('optional) ('keyword) _ ('rest . #f)) #t)
+         (_ #f))))
 
 ;; Returns a heterogenous list of packages or services.
 ;; Each service is followed by the list of packages it depends on.
@@ -53,7 +52,7 @@ exec guile -e main -s "$0" "$@"
      (list))
     ((a . b)
      (append (all-packages a pred)
-           (all-packages b pred)))
+             (all-packages b pred)))
     ((_ ...)
      (apply append
             (map (cut all-packages <> pred)
@@ -64,19 +63,28 @@ exec guile -e main -s "$0" "$@"
          (? origin?))
      (list))
     ((? record?)
-      (let* ((record-type (record-type-descriptor obj))
-             (record-fields (record-type-fields record-type))
-             (child-pkgs (apply append
-               (map (lambda (field)
-                      (let* ((accessor (record-accessor record-type field))
-                             (field-obj (accessor obj)))
-                        (if (thunked-field? field field-obj)
-                            (all-packages (field-obj obj) pred)
-                            (all-packages field-obj pred))))
-                    record-fields))))
-        (if (service? obj)
-            (cons obj child-pkgs)
-            child-pkgs)))
+     (let* ((record-type (record-type-descriptor obj))
+            (record-fields (record-type-fields record-type))
+            (child-pkgs (apply append
+                               (map (lambda (field)
+                                      (let* ((accessor (record-accessor record-type field))
+                                             (field-obj (accessor obj)))
+                                        (if (thunked-field? field field-obj)
+                                            (let ((value (field-obj obj)))
+                                              ;; A procedure-valued field such as
+                                              ;; 'transformation' maps a record to another
+                                              ;; record of the same type; don't descend to prevent
+                                              ;; infinite identity loops
+                                              (if (and (record? value)
+                                                       (eq? (record-type-descriptor value)
+                                                            record-type))
+                                                  '()
+                                                  (all-packages value pred)))
+                                            (all-packages field-obj pred))))
+                                    record-fields))))
+       (if (service? obj)
+           (cons obj child-pkgs)
+           child-pkgs)))
     ((? parameter?)
      (list))
     (_
