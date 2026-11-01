@@ -362,7 +362,7 @@ for the MATE desktop environment.")
 (define-public mate-terminal
   (package
     (name "mate-terminal")
-    (version "1.28.1")
+    (version "1.28.3")
     (source
      (origin
        (method git-fetch)
@@ -372,7 +372,7 @@ for the MATE desktop environment.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07336r3pdk6bnkj20071v5v5l0psq36lhmxbklfaw999vasl6w8f"))))
+        (base32 "1hf73nrdprkkdc4vn52nk1wvlj5d843ywham70is9pzyrflrh2by"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs (list pkg-config
                          autoconf
