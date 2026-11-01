@@ -1233,7 +1233,7 @@ replacement for the syslog() call, but retains its ease of use.")
 (define-public liblognorm
   (package
     (name "liblognorm")
-    (version "2.0.7")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1243,7 +1243,7 @@ replacement for the syslog() call, but retains its ease of use.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1syh3lx58q6izzgmpq8pj4j5aw6qr5nzplnmk42f2alrw38sprd5"))))
+         "1nyyi28p9jm3gdp3zzxnn8bhsy1bq2zrm3rxdp2hf16q5h1rfhx6"))))
     (build-system gnu-build-system)
     (arguments
      (list
