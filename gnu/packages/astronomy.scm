@@ -3423,17 +3423,31 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            ;; Remove cextern bundles. Check bundled versions against available
            ;; in Guix in the future update of astropy.
            ;; Linking against an external cfitsio version has been removed,
-           ;; see https://github.com/astropy/astropy/pull/14311
+           ;; see: <https://github.com/astropy/astropy/pull/14311>.
            (with-directory-excursion "cextern"
              (for-each delete-file-recursively '("expat" "wcslib")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 31959 passed, 410 skipped, 261 xfailed
+      ;; tests: 32008 passed, 355 skipped, 261 xfailed
       #:test-flags
       #~(list "--pyargs" "astropy"
               ;; XXX: Tests are not thread save when they are more than 8.
-              "--numprocesses" (number->string (min 8 (parallel-job-count))))
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "-k" (string-join
+                    ;; subprocess.CalledProcessError <...> returned non-zero
+                    ;; exit status 1.
+                    ;; See: <https://github.com/astropy/astropy/issues/17775>.
+                    (list "not test_imports[tests.bench]"
+                          "test_imports[tests.hazmat.backends]"
+                          "test_imports[tests.hazmat.primitives.decrepit]"
+                          "test_imports[tests.hazmat.primitives.twofactor]"
+                          "test_imports[tests.hazmat.primitives]"
+                          "test_imports[tests.hazmat]"
+                          "test_imports[tests.wycheproof]"
+                          "test_imports[tests.x509.verification]"
+                          "test_imports[tests.x509]")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'install-coordinates/sites.json
