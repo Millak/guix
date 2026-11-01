@@ -101,6 +101,7 @@
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;; Copyright © 2026 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2026 Gary Wong <gtw@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1959,6 +1960,79 @@ real-time combat.")
     (license (list license:expat        ; lua/
                    license:gpl3         ; src/gen_savestruct.py
                    license:gpl2+))))    ; the rest
+
+(define-public gargoyle
+  (package
+    (name "gargoyle")
+    (version "2026.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/garglk/garglk")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "113n6xzh78ww6gg1ig8797541smyfkgikfh51dm6qsyhnp2nq4bh"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:qtbase qtbase
+      #:build-type "Release"))
+    (inputs
+     (list fmt
+           fontconfig
+           ijg-libjpeg
+           sdl2
+           sdl2-mixer
+           zlib))
+    (native-inputs (list pkg-config))
+    (home-page "https://ccxvii.net/gargoyle/")
+    (synopsis "Interactive fiction player")
+    (description
+     ;; The formats listed here are closely related to (but not the same
+     ;; as) the software components in the licensing comments below.  For
+     ;; instance, Glulxe is an interpreter for the Glulx format.  The
+     ;; description lists the _formats_, since users are presumably
+     ;; interested in those, but _interpreters_ are the licensed software
+     ;; components.
+     "Gargoyle is an @acronym{IF,Interactive Fiction} player that supports
+many @acronym{IF} formats, including:
+@itemize
+@item ADRIFT (4 and 5)
+@item AdvSys
+@item AGT
+@item Alan (2 and 3)
+@item Glulx
+@item Hugo
+@item JACL
+@item Level 9
+@item Magnetic Scrolls
+@item Plus
+@item ScottFree
+@item TADS (2 and 3)
+@item TaylorMade
+@item Z-code
+@end itemize")
+    (license
+     (list
+      ;; Alan:
+      license:clarified-artistic
+      ;; Hugo:
+      license:bsd-2
+      ;; AdvSys, ADRIFT, Go Mono fonts:
+      license:bsd-3
+      ;; Bocfel, FrankenDrift, Git, Glulxe:
+      license:expat
+      ;; JACL:
+      license:gpl1+
+      ;; AGiliTy, Magnetic, SCARE, SCARIER, TADS:
+      license:gpl2
+      ;; Gargoyle, Level 9, ScottFree:
+      license:gpl2+
+      ;; Charis SIL fonts:
+      license:silofl1.1))))
 
 (define-public golly
   (package
