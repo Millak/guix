@@ -1198,7 +1198,7 @@ with essential JSON handling functions, sufficiently good JSON support (not
 (define-public liblogging
   (package
     (name "liblogging")
-    (version "1.0.6")
+    (version "1.0.8")
     (source
      (origin
        (method git-fetch)
@@ -1208,7 +1208,7 @@ with essential JSON handling functions, sufficiently good JSON support (not
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1l32m0y65svf5vxsgw935jnqs6842rcqr56dmzwqvr00yfrjhjkp"))))
+         "1cb0ind864vv202m67s73sknkyr3y3nzfk2pv4k4yl47zd4f7qhg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
