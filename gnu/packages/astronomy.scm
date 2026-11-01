@@ -3600,11 +3600,10 @@ astronomy and astrophysics.")
         (sha256
          (base32 "0apwrw8r5bvhmih11ffa8ja6adi66fvjfi9k0w8ilhv2f88b970g"))))
      (build-system pyproject-build-system)
-     (arguments
-      (list #:tests? #f)) ; no tests
      (native-inputs
       (list python-hatch-vcs
-            python-hatchling))
+            python-hatchling
+            python-pytest))
      (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
      (synopsis "IERS Earth Rotation and Leap Second tables for Astropy core")
      (description
@@ -3638,11 +3637,6 @@ celestial-to-terrestrial coordinate transformations.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0h747r0mb7ra5db0msidh89ivxc0qlxajgvl362xdlr1p4s85q37"))))
-    ;; XXX: Move to primary variant with python-astropy update.
-    (arguments '())
-    (native-inputs
-     (modify-inputs native-inputs
-       (append python-pytest)))
     (properties
      (alist-delete 'hidden?
                    (package-properties python-astropy-iers-data-primary)))))
