@@ -78,6 +78,8 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages freedesktop)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -431,4 +433,57 @@ sharing.")
      "Messenger-CLI is a ncurses-based messaging application using
 libgnunetchat and the Messenger service of GNUnet.")
     (home-page "https://git.gnunet.org/gnunet/messenger-cli")
+    (license license:agpl3+)))
+
+(define-public gnunet-messenger-gtk
+  (package
+    (name "gnunet-messenger-gtk")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gnunet/messenger-gtk-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "123msn7x7w44mm7g3md5s948m99yrw5nn50bz15ysjg3081nchp8"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'wrap-gst-plugins
+            (lambda _
+              (wrap-program (string-append #$output "/bin/messenger-gtk")
+                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           (list glib "bin")
+           (list gtk+ "bin")
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           gst-libav            ;avdec_h264
+           gst-plugins-bad      ;zbar
+           gst-plugins-base
+           gst-plugins-good     ;gtksink, rtp
+           gst-plugins-ugly     ;x264enc
+           gstreamer
+           gtk+
+           libgnunetchat
+           libhandy
+           libnotify
+           libportal
+           libsecret
+           libunistring
+           pipewire             ;pipewiresrc
+           qrencode))
+    (synopsis "GTK client for the GNUnet Messenger service")
+    (description
+     "Messenger-GTK is a convergent GTK messaging application using the
+GNUnet Messenger service.  It supports private and group chats, file
+sharing, voice and video calls.")
+    (home-page "https://git.gnunet.org/gnunet/messenger-gtk")
     (license license:agpl3+)))
