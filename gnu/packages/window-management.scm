@@ -78,7 +78,7 @@
 ;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024-2026 Josep Bigorra <jjbigorra@gmail.com>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025-2026 Andrew Wong <wongandj@icloud.com>

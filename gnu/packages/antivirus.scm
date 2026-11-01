@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2023 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2023 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;

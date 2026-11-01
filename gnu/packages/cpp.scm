@@ -41,7 +41,7 @@
 ;;; Copyright © 2023-2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>

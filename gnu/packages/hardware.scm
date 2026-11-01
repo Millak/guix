@@ -19,7 +19,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>

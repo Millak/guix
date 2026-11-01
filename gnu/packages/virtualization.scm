@@ -37,7 +37,7 @@
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2024-2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>

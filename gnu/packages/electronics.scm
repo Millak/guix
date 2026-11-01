@@ -19,7 +19,7 @@
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025, Ekaitz Zarraga <ekaitz@elenq.tech>

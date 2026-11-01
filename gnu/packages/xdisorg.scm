@@ -68,7 +68,7 @@
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
-;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2024 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 iamawacko <iamawacko@protonmail.com>
