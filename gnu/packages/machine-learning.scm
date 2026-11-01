@@ -6683,7 +6683,7 @@ of Hidden Markov Models.")
 (define-public llm-proxy
   (package
     (name "llm-proxy")
-    (version "0.23.0")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -6692,9 +6692,24 @@ of Hidden Markov Models.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "125lfhx28fs8s3fzhcqbs87b7crswn9x0br3dnv6qnbybrg0bacd"))))
+        (base32 "1sgr06bf7ixsl7ngdcbnjl626rxfphgs8dq96ifch1b2vbmcr5p5"))))
     (build-system cargo-build-system)
-    (arguments (list #:install-source? #f))
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-env
+            (lambda _
+              (install-file
+               ".env.example"
+               (string-append #$output "/share/llm-proxy"))))
+          (add-after 'install 'install-clients
+            (lambda _
+              (install-file
+               "clients/claude-code/claude-albert.sh"
+               (string-append
+                #$output "/share/llm-proxy/clients/claude-code")))))))
     (inputs (cargo-inputs 'llm-proxy))
     (home-page "https://jbousquie.codeberg.page/llm-proxy/")
     (synopsis "Network proxy for LLM API vendors")
