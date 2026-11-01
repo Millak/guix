@@ -885,7 +885,9 @@
                   (("(_libclang_path = )rust_bindgen_root" _ libclang)
                    (string-append libclang "clang_base_path"))
                   (("(_rustfmt_path = \")\\$\\{rust_bindgen_root\\}" _ rustfmt)
-                   (string-append rustfmt "${rust_sysroot_absolute}"))))))
+                   (string-append
+                     rustfmt (dirname (dirname (search-input-file
+                                                 inputs "bin/rustfmt")))))))))
           (add-after 'patch-stuff 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((cups-config (search-input-file inputs "/bin/cups-config"))
@@ -1102,6 +1104,7 @@
            python-pyyaml
            python-wrapper
            rust
+           `(,rust "tools")
            rust-bindgen-cli
            rust-cbindgen
            wayland))
