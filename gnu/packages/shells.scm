@@ -59,6 +59,10 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libbsd)
@@ -86,6 +90,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
@@ -781,6 +786,87 @@ components: a process notation for running programs and setting up pipelines
 and redirections, and a complete syscall library for low-level access to the
 operating system.")
       (license license:bsd-3))))
+
+(define-public elvish
+  (package
+    (name "elvish")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elves/elvish")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yrah4xbm8jsmr578676bd0yq1n3dc6ahs0hav6csnl7739jpags"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "src.elv.sh/..."
+      #:unpack-path "src.elv.sh"
+      #:build-flags
+      #~(list (string-append "-ldflags=-X src.elv.sh/pkg/buildinfo.Version="
+                             #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'exclude-website
+            (lambda _
+              (delete-file-recursively "src/src.elv.sh/website")))
+          (add-after 'exclude-website 'fix-shell-dependent-tests
+            (lambda* (#:key inputs unpack-path #:allow-other-keys)
+              (let* ((bash (search-input-file inputs "/bin/bash"))
+                     (bash-bin (dirname bash))
+                     (compile-test "pkg/eval/compile_effect_test.elvts")
+                     (cmd-test "pkg/eval/builtin_fn_cmd_test.elvts")
+                     (exec-test "pkg/eval/external_cmd_unix_internal_test.go"))
+                (with-directory-excursion (string-append "src/" unpack-path)
+                  ;; Transcript tests: replace shell shebangs and invocations.
+                  (substitute* compile-test
+                    (("#!/bin/sh")
+                     (string-append "#!" bash))
+                    (("/bin/sh")
+                     bash))
+                  ;; External-command transcript: use the sandbox shell
+                  ;; directory as PATH and update the expected search result.
+                  (substitute* cmd-test
+                    (("//set-env PATH /bin")
+                     (string-append "//set-env PATH " bash-bin))
+                    (("▶ /bin/sh")
+                     (string-append "▶ " bash-bin "/sh")))
+                  ;; Use the sandbox shell path in the absolute-command case.
+                  (chmod exec-test #o644)
+                  (substitute* exec-test
+                    (("\"exec /bin/sh foo bar\"")
+                     (string-append "\"exec " bash " foo bar\""))
+                    (("wantArgv0: \"/bin/sh\"")
+                     (string-append "wantArgv0: \"" bash "\""))
+                    (("\\[\\]string\\{\"/bin/sh\", \"foo\", \"bar\"\\}")
+                     (string-append
+                      "[]string{\"" bash "\", \"foo\", \"bar\"}"))))))))))
+    (native-inputs
+     (list bash-minimal
+           go-github-com-creack-pty
+           go-github-com-google-go-cmp
+           go-github-com-mattn-go-isatty
+           go-github-com-sourcegraph-jsonrpc2
+           go-go-etcd-io-bbolt
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-pkg-nimblebun-works-go-lsp))
+    (home-page "https://elv.sh/")
+    (synopsis "Expressive programming language and interactive shell")
+    (description
+     "Elvish is a cross-platform shell and programming language with support
+for namespaces and anonymous functions, alongside a fully programmable user
+interface with friendly defaults, designed to be suitable for both interactive
+use and scripting.")
+    (license
+     (list license:bsd-2
+           license:bsd-3
+           license:epl1.0
+           license:cc-by-sa4.0))))
 
 (define-public linenoise
   (let ((commit "e26268de5e56bfaad773786471844578fe9f7f4b")
