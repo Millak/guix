@@ -562,14 +562,14 @@ POSIX Shell}, @url{https://www.gnu.org/software/bash/, Bash}, and
 (define-public starship
   (package
     (name "starship")
-    (version "1.26.0")
+    (version "1.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "starship" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15jm2frr3l946drv1lazc9pa8fxpf324zcdwgya2p6h8r0505zv6"))
+        (base32 "1adqbh14wb67kxaz4344z8h0wdbq6v6y44az4dg7lqwzipc6gkrl"))
        (patches
         (search-patches "starship-test-timezone-fix.patch"))))
     (build-system cargo-build-system)
