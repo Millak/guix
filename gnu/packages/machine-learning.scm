@@ -270,7 +270,7 @@ libraries such as PyTorch and TensorFlow.")
   (package
     (inherit ggml)
     (name "ggml-for-whisper")
-    (version "0.15.1")                  ;sync whisper.cpp
+    (version "0.26.0")                  ;sync whisper.cpp
     (source
      (origin
        (method git-fetch)
@@ -279,7 +279,7 @@ libraries such as PyTorch and TensorFlow.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06bw4dbnzmy9wz3k6g4a2vf7yjn7xpqzam4ra6mxv3lkvhz0fhsg"))))))
+        (base32 "1qamd2n0d9z8rgjfds4hibcg8cn7cd5g5aw3bw32xfxmamgpp7y6"))))))
 
 (define-public git-ai
   (package
@@ -1084,7 +1084,7 @@ generation, etc.")
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
-    (version "1.9.1")                   ;keep in sync with ggml-for-whisper
+    (version "1.9.5")                   ;keep in sync with ggml-for-whisper
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1093,13 +1093,14 @@ generation, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mpmmqm83qy39a1zqphy059x2crzwll2j34ypgwwghy2ji6nc2xm"))))
+                "1kix0qlllqkpl0jkfbf4nvfbxfkgvmbaz096dw90q2bgxavskaj2"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-DBUILD_SHARED_LIBS=ON"
               "-DWHISPER_SDL2=TRUE"
+              "-DWHISPER_USE_SYSTEM_LLAMA=ON"
               "-DWHISPER_COMMON_FFMPEG=TRUE"
               "-DWHISPER_USE_SYSTEM_GGML=ON")
       #:phases
@@ -1137,7 +1138,7 @@ generation, etc.")
     (native-inputs
      (list git-minimal/pinned pkg-config))
     (inputs
-     (list ffmpeg ggml-for-whisper sdl2))
+     (list ffmpeg ggml-for-whisper llama-cpp-for-whisper sdl2))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
