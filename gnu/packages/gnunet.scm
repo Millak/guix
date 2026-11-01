@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023, 2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 Uladzislau Bolbas <artich0ke@tuta.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -383,3 +384,30 @@ The following services are supported:
     ;; or GPL.  Documentation is licensed as GFDL.
     (license (list license:agpl3+ license:gpl3+ license:fdl1.3+ license:lgpl3+))
     (home-page "https://git.gnunet.org/gnunet-scheme.git")))
+
+(define-public libgnunetchat
+  (package
+    (name "libgnunetchat")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gnunet/libgnunetchat-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "19kadq2fkff6k0cfdzs618rpfxdwhr7kba8gsv01hqn1y821j90w"))))
+    (build-system meson-build-system)
+    (arguments
+     ; Tests require running GNUnet services.
+     (list #:tests? #f))
+    (native-inputs (list pkg-config))
+    ;; gnunetchat.pc requires the GNUnet libraries; gnunetfs.pc requires
+    ;; libextractor, which gnunet does not propagate.
+    (propagated-inputs (list gnunet libextractor))
+    (synopsis "Client library for the GNUnet Messenger service")
+    (description
+     "libgnunetchat is a client-side library for applications to use the
+Messenger service of GNUnet, providing chats, groups, contacts and file
+sharing.")
+    (home-page "https://git.gnunet.org/libgnunetchat.git")
+    (license license:agpl3+)))
