@@ -1175,7 +1175,7 @@ more, like escaping special characters.")
 (define-public libfastjson
   (package
     (name "libfastjson")
-    (version "1.2304.0")
+    (version "1.2609.0")
     (source
      (origin
        (method git-fetch)
@@ -1184,7 +1184,7 @@ more, like escaping special characters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gmyzplnb4cfbg4yai0s8yi13xbaq606d5h50zwlkky712aklwss"))))
+        (base32 "03a9bh6rwnd7y1jmbqn8fqrd0pgsavxv6v472grbwslvwg4psraz"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool))
     (home-page "https://github.com/rsyslog/libfastjson")
