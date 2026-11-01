@@ -376,24 +376,40 @@ Python code natively, including C extensions.")
                 (let* ((bin-pypy3 (string-append #$output "/bin/pypy3"))
                        (shebang-match-python "#!.+/bin/python")
                        (shebang-pypy3 (string-append "#!" bin-pypy3))
-                       (dist-dir "pypy/tool/release/pypy-dist"))
+                       (dist-dir "pypy/tool/release/pypy-dist")
+                       (python-lib-dir
+                        (match (find-files "lib" "^pypy3.*$"
+                                           #:directories? #t)
+                                ((python-version)
+                                 python-version))))
                   (with-directory-excursion dist-dir
                     ;; Delete test data.
                     (for-each
                      (lambda (x)
                        (delete-file-recursively (string-append
-                                                 "lib/pypy3.12/" x)))
+                                                 python-lib-dir "/" x)))
                      '("test"
                        "idlelib/idle_test"))
                     ;; Patch shebang referencing python.
-                    (substitute* '("lib/pypy3.12/cgi.py"
-                                   "lib/pypy3.12/encodings/rot_13.py")
+                    (substitute* (list (string-append python-lib-dir
+                                                      "/cgi.py")
+                                       (string-append python-lib-dir
+                                                      "/encodings/rot_13.py"))
                       ((shebang-match-python) shebang-pypy3))
                     (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                      (substitute* '("lib/pypy3.12/_md5.py"
-                                     "lib/pypy3.12/_sha1.py")
+                      (substitute* (list (string-append python-lib-dir
+                                                        "/_md5.py")
+                                         (string-append python-lib-dir
+                                                        "/_sha1.py"))
                         ((shebang-match-python) shebang-pypy3))))
-                  (copy-recursively dist-dir #$output))))))))
+                  (copy-recursively dist-dir #$output)
+                  ;; Note: Compare phase "enable-bytecode-determinism" in
+                  ;; python-build-system.
+                  (setenv "PYTHONHASHSEED" "0")
+                  (invoke (string-append #$output "/bin/pypy3")
+                          "-m" "compileall" "-f" "-q"
+                          (string-append #$output "/"
+                          python-lib-dir)))))))))
     (native-inputs
      (modify-inputs native-inputs
        (replace "python2" pypy2)))
