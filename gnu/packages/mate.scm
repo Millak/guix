@@ -1898,7 +1898,7 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public pluma
   (package
     (name "pluma")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method git-fetch)
@@ -1908,7 +1908,8 @@ can be used as backgrounds in the MATE Desktop environment.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17l64v3d3i3i0a37f56d3wpi2c7zp7qljr4169hvaciha894491q"))))
+        (base32 "0d241ll8mznknn739f2gpmk2abdkcw08j3c3nppcwif91vfdhz7v"))
+       (patches (search-patches "pluma-fix-girepository.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1948,7 +1949,7 @@ can be used as backgrounds in the MATE Desktop environment.")
     (inputs (list at-spi2-core
                   cairo
                   enchant
-                  glib
+                  (list glib "bin")
                   gtk+
                   gtksourceview-4
                   gdk-pixbuf
