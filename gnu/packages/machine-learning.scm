@@ -4857,7 +4857,7 @@ engine.  Features include:
 (define-public koboldcpp
   (package
     (name "koboldcpp")
-    (version "1.123.1")
+    (version "1.124")
     (source
      (origin
        (method git-fetch)
@@ -4872,7 +4872,7 @@ engine.  Features include:
                          (srfi srfi-26))
             (for-each delete-file (find-files "." "\\.(dll|exe|bat)$"))))
        (sha256
-        (base32 "1pqkklvdmkkxy2yyyqqs9ffskp1lbwnk7yfrpgrmi9fyif34brff"))))
+        (base32 "0z14yfn7k8m9m1s7r5m5pjlq024n70nic8i9lshpgxl3gpvzwjky"))))
     (build-system gnu-build-system)
     (arguments
      (list
