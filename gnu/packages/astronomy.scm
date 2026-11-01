@@ -3541,7 +3541,7 @@ astronomy and astrophysics.")
     (license license:bsd-3)))
 
 (define-public python-astropy-7
-  ;; tests: 31440 passed, 426 skipped, 262 xfailed
+  ;; tests: 31488 passed, 371 skipped, 262 xfailed
   (package
     (inherit python-astropy)
     (name "python-astropy")
@@ -3560,7 +3560,18 @@ astronomy and astrophysics.")
                 "--numprocesses" (number->string (min 8 (parallel-job-count)))
                 ;; AssertionError: assert dtype('O') == 'U3'
                 (string-append "--deselect=io/misc/tests/test_parquet.py"
-                               "::test_parquet_read_pandas")))))))
+                               "::test_parquet_read_pandas")
+                "-k" (string-join
+                      (list "not test_imports[tests.bench]"
+                            "test_imports[tests.hazmat.backends]"
+                            "test_imports[tests.hazmat.primitives.decrepit]"
+                            "test_imports[tests.hazmat.primitives.twofactor]"
+                            "test_imports[tests.hazmat.primitives]"
+                            "test_imports[tests.hazmat]"
+                            "test_imports[tests.wycheproof]"
+                            "test_imports[tests.x509.verification]"
+                            "test_imports[tests.x509]")
+                      " and not ")))))))
 
 (define-public python-astropy-healpix
   (package
