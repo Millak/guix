@@ -411,3 +411,24 @@ Messenger service of GNUnet, providing chats, groups, contacts and file
 sharing.")
     (home-page "https://git.gnunet.org/libgnunetchat.git")
     (license license:agpl3+)))
+
+(define-public gnunet-messenger-cli
+  (package
+    (name "gnunet-messenger-cli")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/gnunet/messenger-cli-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1fm288vj8j6ijfgzz7ja12gb1i9ha6rzddn86sp6zrirn29lxnm5"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libgnunetchat libsecret ncurses))
+    (synopsis "Terminal client for the GNUnet Messenger service")
+    (description
+     "Messenger-CLI is a ncurses-based messaging application using
+libgnunetchat and the Messenger service of GNUnet.")
+    (home-page "https://git.gnunet.org/gnunet/messenger-cli")
+    (license license:agpl3+)))
