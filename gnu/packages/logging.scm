@@ -47,6 +47,7 @@
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages compiler-tools)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages kerberos)
@@ -61,6 +62,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls))
 
@@ -306,7 +308,7 @@ library.")
 (define-public rsyslog
   (package
     (name "rsyslog")
-    (version "8.2512.0")
+    (version "8.2610.0")
     (source
      (origin
        (method git-fetch)
@@ -315,7 +317,7 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w0yg5gwj0153z4vpcqayij6m6asji4jyshlji0i4gz1kic53mab"))))
+        (base32 "1b474fm0wx683rwb8xgpcm7cabnpvih1b69irnmzs21fjq018g1v"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -341,6 +343,7 @@ library.")
              "--enable-imkafka"
              "--enable-improg"
              "--enable-impstats"
+             "--disable-impstats-push"  ;avoid snappy and protoc-c
              "--enable-imptcp"
              "--enable-imtuxedoulog"
 
@@ -407,6 +410,7 @@ library.")
              "--enable-generate-man-pages")))
     (native-inputs
      (list autoconf
+           autoconf-archive
            automake
            bison
            flex
@@ -427,6 +431,7 @@ library.")
            libmaxminddb
            libnet
            librdkafka
+           libyaml
            lz4
            (list mariadb "dev")
            (list mariadb "lib")
@@ -436,6 +441,7 @@ library.")
            postgresql
            tcl
            (list util-linux "lib")
+           xxhash
            zeromq
            zlib))
     (home-page "https://www.rsyslog.com/")
