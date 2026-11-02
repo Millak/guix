@@ -108,7 +108,7 @@ servers.")
             (lambda _
               (setenv "PIMSYNC_VERSION"
                       #$version)))
-          (add-after 'install 'install-man-pages
+          (add-after 'install 'install-extras
             (lambda _
               (let ((man (string-append #$output "/share/man/man")))
                 (install-file "pimsync.1"
@@ -116,7 +116,12 @@ servers.")
                 (install-file "pimsync.conf.5"
                               (string-append man "5"))
                 (install-file "pimsync-migration.7"
-                              (string-append man "7"))))))))
+                              (string-append man "7"))
+                (install-file "pimsync-status.7"
+                              (string-append man "7"))
+                (install-file "contrib/_pimsync"
+                              (string-append #$output
+                                             "/share/zsh/site-functions"))))))))
     (native-inputs (list nss-certs-for-test ;needed to start pimsync in 'check.
                          xandikos)) ;needed for 'check.
     (inputs (cons* sqlite
