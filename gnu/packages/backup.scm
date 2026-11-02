@@ -870,7 +870,7 @@ is like a time machine for your data.")
 (define-public partclone
   (package
     (name "partclone")
-    (version "0.3.49")
+    (version "0.3.52")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -879,7 +879,7 @@ is like a time machine for your data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b8gk6z55ck2q5fpgyb7cwfmzl57hddqqpr7g8crcinslq2bvxnr"))))
+                "1ac0drib4lprmkkmn0sh1d77sxmdfa1z160y78gqgw072x6v9lhb"))))
     (build-system gnu-build-system)
     (arguments
      (list
