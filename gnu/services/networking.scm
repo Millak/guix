@@ -2682,10 +2682,10 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
                      #:group "yggdrasil"
                      #:environment-variables
                      (append
-                      (if #$proxy
-                          (list #$(string-append "http_proxy=" proxy)
-                                #$(string-append "https_proxy=" proxy))
-                          '())
+                      #$(if proxy
+                            (list (string-append "http_proxy=" proxy)
+                                  (string-append "https_proxy=" proxy))
+                            '())
                       (default-environment-variables)))))
          (stop #~(make-kill-destructor)))))
 
