@@ -889,6 +889,48 @@ with arbitrary time-dependence, commonly found in a wide range of physics
 applications.")
     (license license:bsd-3)))
 
+(define-public python-qutip-qip
+  (package
+    (name "python-qutip-qip")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qutip/qutip-qip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12j97ap3k5xzg2j5g1slrka6qg00cxylbcamyzd1m7a4i10xilng"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-numpy
+           python-packaging
+           python-qutip
+           python-scipy))
+    (native-inputs
+     (list python-matplotlib            ;For tests.
+           python-packaging
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/qutip/qutip-qip")
+    (synopsis "Quantum Information Processing package for QuTiP")
+    (description
+     "This is the QuTiP package for Quantum Information Processing.  Compared
+to other libraries, QuTiP-QIP places stronger emphasis on the underlying physics
+and seamless integration with QuTiP.
+
+The package offers two approaches for simulating quantum circuits:
+
+@itemize
+@item A standard matrix-based approach for unitary evolution under quantum
+gates.
+@item A Pulse level approach to simulate Quantum Circuits on noisy Quantum
+devices (e.g. Superconducting Qubits, Spin Chains) using QuTiP's open system
+solvers.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-shiver
   (package
     (name "python-shiver")
