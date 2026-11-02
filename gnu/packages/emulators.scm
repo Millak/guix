@@ -25,7 +25,7 @@
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.comg>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
-;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2025, 2026 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
@@ -5444,16 +5444,16 @@ symbolic execution of p-code.")
 (define-public fceux
   (package
     (name "fceux")
-    (version "2.6.6")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/TASEmulators/fceux")
-             (commit (string-append "v" version))))
+             (commit (string-append "fceux-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02s5qmxdxpsa71977z9bs5vfhnszn5nr5hk05wns8cm9nshbg7as"))
+        (base32 "067zp27d33alpkzvj95bb9yz6zzcr8gakn8x4f598v0kn02155hd"))
        (modules '((guix build utils)))
        (snippet #~(map delete-file-recursively
                        (list "output/lua5.1.dll" "output/lua51.dll"
