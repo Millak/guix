@@ -56,30 +56,29 @@
 
 ;; Cirq source provides multiple Python packages all them share the same
 ;; version.
-(define %cirq-source
+(define (cirq-source name)
   (origin
     (method git-fetch)
     (uri (git-reference
            (url "https://github.com/quantumlib/Cirq")
            (commit (string-append "v" %cirq-version))))
-    (file-name (git-file-name "python-cirq" %cirq-version))
+    (file-name (git-file-name name %cirq-version))
     (sha256
-     (base32 "1bd8bsigfq9f00420bxj4snpcp4kr8x54y8kjx62a5q46diq231q"))))
+     (base32 "1bd8bsigfq9f00420bxj4snpcp4kr8x54y8kjx62a5q46diq231q"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(let ((src #$(string-replace-substring name "python-" "")))
+         (delete-all-but "." src)
+         (copy-recursively src ".")
+         (delete-file-recursively src)))))
 
 (define-public python-cirq-aqt
   (package
     (name "python-cirq-aqt")
     (version %cirq-version)
-    (source %cirq-source)
+    (source (cirq-source name))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f     ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "cirq-aqt"))))))
+    (arguments (list #:tests? #f))     ;no tests
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
@@ -97,7 +96,7 @@ Technologies GmbH}.")
   (package
     (name "python-cirq-core")
     (version %cirq-version)
-    (source %cirq-source)
+    (source (cirq-source name))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -106,9 +105,6 @@ Technologies GmbH}.")
       #~(list "--ignore=cirq/contrib")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "cirq-core")))
           (add-before 'sanity-check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
@@ -148,15 +144,8 @@ integrations.")
   (package
     (name "python-cirq-google")
     (version %cirq-version)
-    (source %cirq-source)
+    (source (cirq-source name))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "cirq-google"))))))
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
@@ -176,16 +165,9 @@ Service.")
   (package
     (name "python-cirq-ionq")
     (version %cirq-version)
-    (source %cirq-source)
+    (source (cirq-source name))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f     ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "cirq-ionq"))))))
+    (arguments (list #:tests? #f))     ;no tests
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
