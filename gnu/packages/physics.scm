@@ -931,6 +931,32 @@ solvers.
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-qutip-qtrl
+  (package
+    (name "python-qutip-qtrl")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qutip/qutip-qtrl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k2b6ai8zwp6y4i3004kz57b2rqjyq53cqy8jxpf382kzj9jgvf7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-qutip))
+    (native-inputs (list python-cython python-pytest python-setuptools))
+    (home-page "https://github.com/qutip/qutip-qtrl")
+    (synopsis "Quantum optimal control basis package for QuTiP")
+    (description
+     "The @code{qutip-qtrl} package, QuTiP quantum optimal control, aims at providing
+advanced tools for the optimal control of quantum devices.  Compared to other libraries
+for quantum optimal control, @code{qutip-qtrl} puts additional emphasis on the physics
+layer and the interaction with the QuTiP package.  The package offers support for both
+the CRAB and GRAPE methods.")
+    (license license:bsd-3)))
+
 (define-public python-shiver
   (package
     (name "python-shiver")
