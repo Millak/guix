@@ -44,51 +44,46 @@ exec guile -e main -s "$0" "$@"
 
 ;; Returns a heterogenous list of packages or services.
 ;; Each service is followed by the list of packages it depends on.
-(define* (all-packages obj #:optional (pred package?))
-  (match obj
-    ((? pred)
-     (list obj))
-    ((? gexp?)
-     (list))
-    ((a . b)
-     (append (all-packages a pred)
-             (all-packages b pred)))
-    ((_ ...)
-     (apply append
-            (map (cut all-packages <> pred)
-                 obj)))
-    (#(_ ...)
-     (all-packages (vector->list obj) pred))
-    ((or (? service-type?)
-         (? origin?))
-     (list))
-    ((? record?)
-     (let* ((record-type (record-type-descriptor obj))
-            (record-fields (record-type-fields record-type))
-            (child-pkgs (apply append
-                               (map (lambda (field)
-                                      (let* ((accessor (record-accessor record-type field))
-                                             (field-obj (accessor obj)))
-                                        (if (thunked-field? field field-obj)
-                                            (let ((value (field-obj obj)))
-                                              ;; A procedure-valued field such as
-                                              ;; 'transformation' maps a record to another
-                                              ;; record of the same type; don't descend to prevent
-                                              ;; infinite identity loops
-                                              (if (and (record? value)
-                                                       (eq? (record-type-descriptor value)
-                                                            record-type))
-                                                  '()
-                                                  (all-packages value pred)))
-                                            (all-packages field-obj pred))))
-                                    record-fields))))
-       (if (service? obj)
-           (cons obj child-pkgs)
-           child-pkgs)))
-    ((? parameter?)
-     (list))
-    (_
-     (list))))
+(define* (all-packages obj #:optional (pred package?) #:key (seen (make-hash-table)))
+  (define already-visited? (hash-ref seen obj))
+  (hash-set! seen obj #t)
+  (define (all-packages-rec node)
+    (all-packages node pred #:seen seen))
+  (if already-visited?
+      (list)
+      (match obj
+        ((? pred)
+         (list obj))
+        ((? gexp?)
+         (list))
+        ((a . b)
+         (append (all-packages-rec a)
+                 (all-packages-rec b)))
+        ((_ ...)
+         (apply append (map all-packages-rec obj)))
+        (#(_ ...)
+         (all-packages-rec (vector->list obj)))
+        ((or (? service-type?)
+             (? origin?))
+         (list))
+        ((? record?)
+         (let* ((record-type (record-type-descriptor obj))
+                (record-fields (record-type-fields record-type))
+                (child-pkgs (apply append
+                                   (map (lambda (field)
+                                          (let* ((accessor (record-accessor record-type field))
+                                                 (field-obj (accessor obj)))
+                                            (if (thunked-field? field field-obj)
+                                                (all-packages-rec (field-obj obj))
+                                                (all-packages-rec field-obj))))
+                                        record-fields))))
+           (if (service? obj)
+               (cons obj child-pkgs)
+               child-pkgs)))
+        ((? parameter?)
+         (list))
+        (_
+         (list)))))
 
 ;; Remove from pkgs-or-services all packages which do not need to be named
 ;; explicitly because they are pulled in by another listed package.
