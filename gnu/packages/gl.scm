@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021-2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021-2026 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
@@ -274,7 +274,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "26.0.2")
+    (version "26.2.4")
     (source
      (origin
        (method url-fetch)
@@ -283,7 +283,7 @@ also known as DXTn or DXTC) for Mesa.")
                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
                                  "mesa-" version ".tar.xz")))
        (sha256
-        (base32 "0ikk7hb60q581i2wb1pasphv7sgqkv74qaw4cdiiq8dy45956gwp"))))
+        (base32 "1s9jr2768ijkz63z4mywg1c0dd9gsmja16f9hqxkfd5rxgxzgrdw"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -454,8 +454,8 @@ panfrost,r300,r600,svga,softpipe,lima,llvmpipe,tegra,v3d,vc4,virgl,zink"))
                              (string-append
                                "source_url = file:///tmp/rust-crates/rust-"
                                (string-join
-                                 (string-split (list-ref split-url 6) #\_) "-")
-                               "-" (list-ref split-url 7) ".tar.gz\n"))))
+                                 (string-split (list-ref split-url 4) #\_) "-")
+                               "-" (list-ref split-url 5) ".tar.gz\n"))))
                         ;; "Download" the packages.
                         (for-each
                           (lambda (wrapper)
