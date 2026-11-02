@@ -1367,15 +1367,43 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
                              #$output "/etc/systemd/user"))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-introspection-install-dir
+               (add-after 'unpack 'fix-settings-schema-path
                  (lambda _
                    (substitute* "src/libgpaste/gpaste/gpaste-settings.c"
                      (("@gschemasCompiled@")
-                      (string-append #$output "/share/glib-2.0/schemas/")))
-                   (substitute* '("src/gnome-shell/extension.js"
-                                  "src/gnome-shell/prefs.js")
-                     (("@typelibDir@")
-                      (string-append #$output "/lib/girepository-1.0/"))))))))
+                      (string-append #$output "/share/glib-2.0/schemas/")))))
+               ;; Extensions in Gnome Shell v45+ are now ES modules, so their
+               ;; static imports are resolved before the module body runs.
+               ;;
+               ;; Let's install a wrapper that prepends the package's
+               ;; lib/girepository-1.0 to the GIRepository search path, and
+               ;; only then dynamically imports the real module, so the whole
+               ;; module graph is loaded once the path is in place.
+               (add-after 'install 'wrap-gnome-shell-extension
+                 (lambda _
+                   (define (wrap file)
+                     ;; Move FILE aside and replace it with a module that
+                     ;; prepends the typelib search path before importing
+                     ;; the real module.
+                     (let ((name (basename file ".js")))
+                       (rename-file file (string-append "." name "-wrapped.js"))
+                       (call-with-output-file file
+                         (lambda (port)
+                           (display
+                            (string-append
+                             "import GIRepository from 'gi://GIRepository';\n"
+                             "GIRepository.Repository.dup_default()"
+                             ".prepend_search_path('"
+                             #$output "/lib/girepository-1.0');\n"
+                             "export default (await import('./."
+                             name "-wrapped.js')).default;\n")
+                            port)))))
+                   (let ((extension-dir
+                          (string-append
+                           #$output "/share/gnome-shell/extensions/"
+                           "GPaste@gnome-shell-extensions.gnome.org")))
+                     (with-directory-excursion extension-dir
+                       (for-each wrap '("extension.js" "prefs.js")))))))))
     (home-page "https://github.com/Keruspe/GPaste")
     (synopsis "Clipboard management system for GNOME Shell")
     (description "GPaste is a clipboard manager, a tool which allows you to

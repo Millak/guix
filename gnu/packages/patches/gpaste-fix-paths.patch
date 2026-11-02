@@ -1,34 +1,7 @@
-Adjust search paths so GIR typelibs and GLib schemas are found.
+Adjust search paths so GLib schemas are found.
+
 Adapted from Nixpkgs: <https://github.com/NixOS/nixpkgs/tree/master/pkgs/by-name/gp/gpaste>.
 
-diff --git a/src/gnome-shell/extension.js b/src/gnome-shell/extension.js
-index cb862a30..6c24175b 100644
---- a/src/gnome-shell/extension.js
-+++ b/src/gnome-shell/extension.js
-@@ -4,6 +4,9 @@
-  * Copyright (c) 2010-2023, Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
-  */
- 
-+import GIRepository from 'gi://GIRepository';
-+GIRepository.Repository.dup_default().prepend_search_path('@typelibDir@');
-+
- import * as Main from 'resource:///org/gnome/shell/ui/main.js';
- import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
- 
-diff --git a/src/gnome-shell/prefs.js b/src/gnome-shell/prefs.js
-index 4c0d9bde..6a376b32 100644
---- a/src/gnome-shell/prefs.js
-+++ b/src/gnome-shell/prefs.js
-@@ -4,6 +4,9 @@
-  * Copyright (c) 2010-2023, Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
-  */
- 
-+import GIRepository from 'gi://GIRepository';
-+GIRepository.Repository.prepend_search_path('@typelibDir@');
-+
- import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
- 
- import GPasteGtk from 'gi://GPasteGtk?version=4';
 diff --git a/src/libgpaste/gpaste/gpaste-settings.c b/src/libgpaste/gpaste/gpaste-settings.c
 index 830f5e0b..c8df0e11 100644
 --- a/src/libgpaste/gpaste/gpaste-settings.c
