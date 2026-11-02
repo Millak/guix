@@ -12022,8 +12022,8 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 
 (define-public python-stcal
   ;; 1.20.0 (2026-08-13); to support drizzle >= 3 and tweakwcs >= 9.
-  (let ((commit "e0e2df9e58d17e8ff28db2cadbbc77fe840b19dc")
-        (revision "0"))
+  (let ((commit "0d7730acb4d9831ae40787d5a916701d2eb4498f")
+        (revision "1"))
   (package
     (name "python-stcal")
     (version (git-version "1.20.0" revision commit))
@@ -12035,11 +12035,11 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6l8fbq35cfz503ilb21acrh4ffg9r4zsjh40qfzrax17kjcflx"))))
+        (base32 "0bs3zmkml382fiz82k8i8ia9sz6fhvjmn8m714265msx7l3p53a7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 704 passed, 12 warnings
+      ;; tests: 713 passed, 12 warnings
       #:test-flags
       #~(list "--pyargs" "stcal"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
@@ -12047,7 +12047,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               ;; download test data from
               ;; <s3://stpubdata/gaia/gaia_dr3/public/hats/gaia/>.
               "--ignore=tests/test_tweakreg.py"
-              "tests")))
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYTHONPATH" ".")
+              (delete-file-recursively "src"))))))
     (native-inputs
      (list python-cython
            python-psutil
