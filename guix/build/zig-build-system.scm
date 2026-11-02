@@ -145,11 +145,6 @@
                         #:allow-other-keys)
   "Build and install given Zig package."
 
-  (when install-source?
-    (let ((source-install-path (zig-source-install-path (assoc-ref outputs "out"))))
-      (mkdir-p source-install-path)
-      (copy-recursively "." source-install-path)))
-
   (when (not skip-build?)
     (let* ((arguments (zig-arguments))
            (call `("zig" "build"
@@ -171,6 +166,16 @@
                    ,@zig-build-flags)))
       (format #t "running: ~s~%" call)
       (apply invoke call))))
+
+(define* (install-source #:key
+                         outputs
+                         install-source?
+                         #:allow-other-keys)
+  "Install sources for given Zig package."
+  (when install-source?
+    (let ((source-install-path (zig-source-install-path (assoc-ref outputs "out"))))
+      (mkdir-p source-install-path)
+      (copy-recursively "." source-install-path))))
 
 (define* (check #:key tests?
                 test-target
@@ -198,6 +203,7 @@
     (add-after 'configure 'unpack-dependencies unpack-dependencies)
     (delete 'build)
     (add-after 'unpack-dependencies 'build+install build+install)
+    (add-after 'build+install 'install-source install-source)
     (replace 'check check)
     (delete 'install)))
 
