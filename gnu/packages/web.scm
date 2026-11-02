@@ -501,7 +501,7 @@ one.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method git-fetch)
@@ -510,10 +510,11 @@ one.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19kl37h2v36h207919gmbdk5xyr37hcwv96rk4xfn5kk57sjaj11"))))
+        (base32 "0lwry07z07zl44bsf039zlbrqy00mw97y5b5lcx4rfx4g5gbj9ma"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:embed-files #~(list "children" "nodes" "text")
       #:install-source? #f
       #:import-path "miniflux.app/v2"
       #:build-flags
