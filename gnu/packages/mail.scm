@@ -2866,13 +2866,15 @@ separation to safely deliver mail in multi-user setups.")
                          (assoc-ref %outputs "out"))
                         (("/bin/rm")
                          (which "rm")))
+                      (substitute* "src/autoconf"
+                        (("#define SENDMAIL \\\\\"\\$a\\\\\"")
+                         "#define SENDMAIL \\\"/run/privileged/bin/sendmail\\\""))
                       #t)))
        #:tests? #f)) ;; There are no tests indicating a successful
     ;; build.  Some tests of basic locking mechanisms provided by the
     ;; file system are performed during 'make install'.  However, these
     ;; are performed before the actual build process.
     (build-system gnu-build-system)
-    (inputs (list exim))
     (home-page "https://github.com/BuGlessRB/procmail")
     (synopsis "Versatile mail delivery agent (MDA)")
     (description "Procmail is a mail delivery agent (MDA) featuring support
