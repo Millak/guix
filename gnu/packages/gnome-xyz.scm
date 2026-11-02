@@ -1329,7 +1329,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "45.10")
+    (version "45.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1338,7 +1338,7 @@ dark, switch backgrounds and run custom commands at sunset and sunrise.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k24djs1w35v8nf1r8qfha4y24qs9niy59i2l3r59224402byi38"))
+                "00pszzsfdlx3wijabmippdcy5mlgmn2ghj8dwa5y46sgllk6d22p"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
