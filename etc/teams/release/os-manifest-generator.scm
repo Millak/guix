@@ -44,15 +44,15 @@ exec guile -e main -s "$0" "$@"
 
 ;; Returns a heterogenous list of packages or services.
 ;; Each service is followed by the list of packages it depends on.
-(define* (all-packages obj #:optional (pred package?) #:key (seen (make-hash-table)))
+(define* (all-packages obj #:key (seen (make-hash-table)))
   (define already-visited? (hash-ref seen obj))
   (hash-set! seen obj #t)
   (define (all-packages-rec node)
-    (all-packages node pred #:seen seen))
+    (all-packages node #:seen seen))
   (if already-visited?
       (list)
       (match obj
-        ((? pred)
+        ((? package?)
          (list obj))
         ((? gexp?)
          (list))
