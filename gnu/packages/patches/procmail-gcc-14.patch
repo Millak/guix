@@ -253,16 +253,3 @@ index 10fe406..33e7bff 100644
 
  static const char
   maildirtmp[]=MAILDIRtmp,maildircur[]=MAILDIRcur;
-diff --git a/src/mailfold.c b/src/mailfold.c
-index 917b502..9e3d386 100644
---- a/src/mailfold.c
-+++ b/src/mailfold.c
-@@ -371,7 +371,7 @@ void concon(ch)const int ch;   /* flip between concatenated and split fields */
-    }
- }
-
--void readmail(rhead,tobesent)const long tobesent;
-+void readmail(rhead,tobesent)const long tobesent; int rhead;
- { char*chp,*pastend;static size_t contlengthoffset;
-   ;{ long dfilled;
-      if(rhead==2)		  /* already read, just examine what we have */

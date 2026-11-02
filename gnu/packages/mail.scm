@@ -2842,23 +2842,18 @@ separation to safely deliver mail in multi-user setups.")
 (define-public procmail
   (package
     (name "procmail")
-    (version "3.22")
+    (version "3.24")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "ftp://ftp.fu-berlin.de/pub/unix/mail/procmail/procmail-"
-             version
-             ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BuGlessRB/procmail")
+              (commit (string-append "v" version))))
        (sha256
         (base32
-         "05z1c803n5cppkcq99vkyd5myff904lf9sdgynfqngfk9nrpaz08"))
-       ;; The following patch fixes an ambiguous definition of
-       ;; getline() in formail.c.  The patch is provided by Debian as
-       ;; patch 24.
-       (patches (search-patches "procmail-ambiguous-getline-debian.patch"
-                                "procmail-CVE-2014-3618.patch"
-                                "procmail-CVE-2017-16844.patch"
+         "0dnyf78mnb1ph07w3im33f1aws5m442a9f7mpyq48xd5whhkwj6g"))
+       (file-name (git-file-name name version))
+       (patches (search-patches "procmail-CVE-2017-16844.patch"
                                 "procmail-gcc-14.patch"))))
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2878,7 +2873,7 @@ separation to safely deliver mail in multi-user setups.")
     ;; are performed before the actual build process.
     (build-system gnu-build-system)
     (inputs (list exim))
-    (home-page "https://www.procmail.org/")
+    (home-page "https://github.com/BuGlessRB/procmail")
     (synopsis "Versatile mail delivery agent (MDA)")
     (description "Procmail is a mail delivery agent (MDA) featuring support
 for a variety of mailbox formats such as mbox, mh and maildir.  Incoming mail
