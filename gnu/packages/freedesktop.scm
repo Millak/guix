@@ -797,7 +797,6 @@ the freedesktop.org XDG Base Directory specification.")
   (package
     (name "elogind")
     (version "257.14")
-    (replacement elogind/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -806,7 +805,8 @@ the freedesktop.org XDG Base Directory specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16cbkkia2wmcjwqxgzl714igi9sgpcl4sdvag388vlh941136bs9"))))
+                "16cbkkia2wmcjwqxgzl714igi9sgpcl4sdvag388vlh941136bs9"))
+              (patches (search-patches "elogind-fix-logind-dbus-install.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -983,17 +983,6 @@ extracted out as a separate project.  Elogind integrates with PAM to provide
 the org.freedesktop.login1 interface over the system bus, allowing other parts
 of a the system to know what users are logged in, and where.")
     (license license:lgpl2.1+)))
-
-(define elogind/fixed
-  (package
-    (inherit elogind)
-    (source
-     (let ((s (package-source elogind)))
-       (origin
-         (inherit s)
-         (patches
-          (append (search-patches "elogind-fix-logind-dbus-install.patch")
-                  (origin-patches s))))))))
 
 (define-public basu
   (package
