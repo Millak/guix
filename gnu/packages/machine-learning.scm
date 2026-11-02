@@ -1053,6 +1053,34 @@ independently to be able to run a LLaMA model.")
 generation, etc.")
     (license license:expat)))
 
+(define-public llama-cpp-for-whisper
+  (let ((ui-build "11429"))
+    (package
+      (inherit llama-cpp)
+      (name "llama-cpp-for-whisper")
+      (version "0.6.0")                  ;sync whisper.cpp
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ggml-org/llama.cpp")
+                (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pk435vmhls3nshfnhhyrig6swa43z7f8qdc1fakcma8i4j7macp"))))
+      (inputs
+       (list ggml openssl
+             (origin
+               (method url-fetch)
+               (uri
+                (format #f "~a/releases/download/b~a/llama-b~a-ui.tar.gz"
+                        "https://github.com/ggml-org/llama.cpp"
+                        ui-build ui-build))
+               (file-name "ui.tar.gz")
+               (sha256
+                (base32
+                 "0ng2rsjqdipk8vkpxas783c291cr9137jyz3cf90c7wlw2qkkq6c"))))))))
+
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
