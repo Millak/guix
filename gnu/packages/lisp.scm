@@ -462,7 +462,10 @@ integration with code written in C.")
            (search-path-specification
             (variable "XDG_CONFIG_DIRS")
             (files '("etc/xdg")))))
-    (supported-systems '("i686-linux" "x86_64-linux" "armhf-linux"))
+    (supported-systems '("i686-linux"
+                         "x86_64-linux"
+                         "aarch64-linux"
+                         "armhf-linux"))
     (home-page "https://ccl.clozure.com/")
     (synopsis "Common Lisp implementation")
     (description "Clozure CL (often called CCL for short) is a Common Lisp
