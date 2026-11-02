@@ -42,7 +42,7 @@
 ;;; Copyright © 2025 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2025, 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
-;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
+;;; Copyright © 2025-2026 Samuel Sehnert <mail@buffersquid.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
@@ -2572,6 +2572,62 @@ variables, units, and can handle fairly ambiguous syntax.")
 and advanced key behavior customization, such as tap-hold, macros and
 Unicode.")
     (license license:lgpl3)))
+
+(define-public kdlfmt
+  (package
+    (name "kdlfmt")
+    (version "0.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hougesen/kdlfmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16321b0ilzjr08a4a85r0bw3jmma1hanfff5ld7rn4rv0bidzp0n"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("cli")
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/kdlfmt")
+                              (in-vicinity #$output "bin/kdlfmt"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "completions" shell))))))
+               '(("bash"    . "share/bash-completion/completions/kdlfmt")
+                 ("elvish"  . "share/elvish/lib/kdlfmt")
+                 ("fish"    . "share/fish/vendor_completions.d/kdlfmt.fish")
+                 ("nushell" . "share/nushell/vendor/autoload/kdlfmt")
+                 ("zsh"     . "share/zsh/site-functions/_kdlfmt"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
+    (inputs (cargo-inputs 'kdlfmt))
+    (home-page "https://github.com/hougesen/kdlfmt")
+    (synopsis "KDL document formatter")
+    (description
+     "Kdlfmt is a command-line formatter for KDL documents.  It supports
+KDL version 1 and version 2, and provides commands to format documents,
+check formatting, initialize configuration, and generate shell
+completions.")
+    (license license:expat)))
 
 (define-public kibi
   (package
