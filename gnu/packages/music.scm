@@ -5595,7 +5595,7 @@ sample library.")
 (define-public muse-sequencer
   (package
     (name "muse-sequencer")
-    (version "4.2.1")
+    (version "4.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5604,7 +5604,7 @@ sample library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13b9xx8x8yr58r8765xn770kfn3k2whmvmpl2657nc19max9n61g"))))
+                "129zwvhb7a0aqgf8p7rz310xi1kcn1csmzdkb5c9j7w1q70a0527"))))
     (build-system qt-build-system)
     (arguments
      (list
