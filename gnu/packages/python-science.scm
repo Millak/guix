@@ -7298,7 +7298,7 @@ Python style, together with a fast and comfortable execution environment.")
 (define-public spyder
   (package
     (name "spyder")
-    (version "6.1.7")
+    (version "6.1.8")
     (source
      (origin
        (method git-fetch)
@@ -7313,7 +7313,7 @@ Python style, together with a fast and comfortable execution environment.")
             (delete-file-recursively "spyder/plugins/help/utils/js/mathjax")
             (delete-file-recursively "external-deps")))
        (sha256
-        (base32 "1bzr9n3x29xvhq3cqdpclnvqawqrpxnj49zbb344f7i3lx261k7j"))))
+        (base32 "05h6xaplrarnwndsxjdfpcl9y5qn1hkicfnbjbpsqqhznyfk6d7j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
