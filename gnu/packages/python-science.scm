@@ -6534,6 +6534,12 @@ tissue-specificity metrics for gene expression.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; Tests are time sensitive.
+      #~(map (lambda (test) (string-append "--deselect=test_perf/" test))
+             (list "test_value_performance.py::test_perf_divmod"
+                   "test_value_performance.py::test_perf_parse_atom"
+                   "test_value_performance.py::test_perf_scale"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-requirements
