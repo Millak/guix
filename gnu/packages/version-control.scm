@@ -2395,8 +2395,7 @@ either a pure Python implementation, or the faster, but more resource intensive
            gettext-minimal
            imagemagick))
     (inputs
-     (list exim
-           gnupg
+     (list gnupg
            httpd
            mariadb
            php))
