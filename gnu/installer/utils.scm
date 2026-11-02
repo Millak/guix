@@ -136,22 +136,19 @@ Returns the integer status value of the child process as returned by waitpid."
   (define-values (controller inferior)
     (openpty))
 
-  (match (primitive-fork)
-    (0
-     (catch #t
-       (lambda ()
-         (close-fdes controller)
-         (login-tty inferior)
-         (apply execlp (car command) command))
-       (lambda _
-         (primitive-exit 127))))
-    (pid
-     (close-fdes inferior)
-     (let* ((port (fdopen controller "r0"))
-            (result (false-if-exception
-                     (handler port))))
-       (close-port port)
-       (cdr (waitpid pid))))))
+  (fcntl controller F_SETFL
+         (logior O_CLOEXEC (fcntl controller F_GETFL)))
+
+  (let ((child (spawn (car command) command
+                      #:input inferior
+                      #:output inferior
+                      #:error inferior)))
+    (close-fdes inferior)
+    (let* ((port (fdopen controller "r0"))
+           (result (false-if-exception
+                    (handler port))))
+      (close-port port)
+      (cdr (waitpid child)))))
 
 (define* (run-external-command-with-line-hooks line-hooks command
                                                #:key (tty? #false))
