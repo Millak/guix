@@ -931,6 +931,54 @@ solvers.
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-qutip-qoc
+  (package
+    (name "python-qutip-qoc")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qutip/qutip-qoc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yqf9xm1x9fhxvy1iqgz02d6ycixxln2znbgl5r8sysrz9x422gs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Skip tests for optional jax feature.
+      #~(list "--ignore" "tests/test_jopt_open_system_bug.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Upstream forgot to update metadata
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                (("numpy>=1.16.6,<2.0")
+                 "numpy>=2.0.0")))))))
+    (propagated-inputs
+     (list python-numpy python-qutip-qtrl))
+    (native-inputs
+     (list python-cython
+           python-jupytext
+           python-nbconvert
+           python-ipykernel
+           python-nbclient
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/qutip/qutip-qoc")
+    (synopsis "Quantum Optimal Control package for QuTiP")
+    (description
+     "@acronym{QOC, Quantum Optimal Control} enhances @code{qutip} by providing two
+additional algorithms to optimize analytically defined control functions.  The first
+one is an extension of @acronym{GOAT, Gradient Optimization of Analytic conTrols}.
+The second one @acronym{JOPT, JAX Optimization Thechnique} leverages QuTiPs version 5
+new diffrax abilities to directly calculate gradients of JAX defined control functions
+using automatic differentiation.")
+    (license license:bsd-3)))
+
 (define-public python-qutip-qtrl
   (package
     (name "python-qutip-qtrl")
