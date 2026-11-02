@@ -210,7 +210,7 @@ contains the graphical user interface for synfig.")
 (define-public lightspark
   (package
     (name "lightspark")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -219,7 +219,7 @@ contains the graphical user interface for synfig.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j5rk7c9cg7bmnjmgsyn57h1gfdyjj76vjj6xl8j6y547p1adqnv"))))
+        (base32 "1kmwqjvmcvikhvf9sls5gk2571y8xf05wwwz79gxxyhz26pg73v5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;requires Adobe Flex SDK, see README.tests
