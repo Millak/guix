@@ -1566,13 +1566,16 @@ features:
 (define-public python-stdnum
   (package
     (name "python-stdnum")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_stdnum" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arthurdejong/python-stdnum")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yir8hka3vmpk0qhiaffagkdjg3mjgai808s0razsggbd5cn80bb"))))
+        (base32 "1k03pgnh3diai8bayszlhh3kk0mi3mibc63fy8wznfg0sq7ndxaz"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://arthurdejong.org/python-stdnum/")
