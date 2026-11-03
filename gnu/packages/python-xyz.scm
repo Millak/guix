@@ -43924,6 +43924,12 @@ path.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          ;; docutils defaults to utf-8, which breaks the staticsite tests.
+          ;; Reported upstream <https://github.com/spanezz/staticsite/pull/74>.
+          (add-after 'unpack 'set-locale
+            (lambda _
+              (substitute* "staticsite/global_settings.py"
+                (("\"C\"") "\"utf-8\""))))
           (add-after 'unpack 'use-themes-in-output
             (lambda _
               (substitute* "staticsite/global_settings.py"
@@ -43934,11 +43940,12 @@ path.")
                 (copy-recursively "themes" themedir)))))))
     (native-inputs
      (list python-hatchling
-           python-pytest))
+           python-pytest
+           tzdata-for-tests))
     (inputs
      (list perl-image-exiftool
            python-dateutil
-           python-docutils
+           python-docutils              ;actively used
            python-jinja2
            python-markdown
            python-pillow
@@ -43946,8 +43953,7 @@ path.")
            python-pyyaml
            python-ruamel.yaml
            python-slugify
-           python-toml
-           tzdata-for-tests))
+           python-toml))
     (home-page "https://github.com/spanezz/staticsite")
     (synopsis "Static site generator")
     (description
