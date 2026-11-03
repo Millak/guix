@@ -7753,27 +7753,27 @@ sending and receiving messages on a CAN bus.")
 (define-public python-canmatrix
   (package
     (name "python-canmatrix")
-    (version "1.2")
+    (version "1.3.3.1")
     (source
      (origin
-       (method git-fetch)   ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ebroecker/canmatrix")
-             (commit version)))
+              (url "https://github.com/ebroecker/canmatrix")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05l0hi279y1dc8ifm2223lpn7z9dx2h7kk599bkymvasb2qa1xrx"))))
+        (base32 "0b3fawkjzc9nirsdz54bdqa59mazkpzikn675n5y4p92rcfa6v6m"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-pytest-timeout
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-attrs
-           python-canopen
            python-click
-           ;; python-ldfparser
+           ;; [optional]
+           python-canopen
+           python-ldfparser
            python-lxml
            python-openpyxl
            python-pyyaml
