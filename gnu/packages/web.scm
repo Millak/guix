@@ -1619,7 +1619,8 @@ data.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "1pi69rbcxnda01clpbfa9vzsripw27ji5xrb0pcinc1fj14h5b9p"))))
+               "1pi69rbcxnda01clpbfa9vzsripw27ji5xrb0pcinc1fj14h5b9p"))
+             (patches (search-patches "json-c-free-objects-outside-assert.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; needed for unit test
