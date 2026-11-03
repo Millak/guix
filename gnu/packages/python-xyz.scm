@@ -30482,56 +30482,64 @@ register custom encoders and decoders.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "4.12.1")
+    (version "4.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
-        (base32
-         "00ypzqzllinhj2x3ai5x5bvkdb0109nw59rdjdfg1lw59hxcrks1"))
-       (patches
-        ;; Patch uses Python 3.11 except* syntax so can yet be upstreamed.
-        (search-patches "python-anyio-unuse-exceptiongroup-in-test.patch"))))
+        (base32 "1yrgn57rm29ppb6ssqr1xack5sdivn3k0z6j0cb3v60734jh7fsr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests:
-      ;;   - x86_64-linux:   1393 passed, 70 skipped, 2 deselected, 4 xfailed
-      ;;   - aarch64-linux:  1378 passed, 70 skipped, 17 deselected, 4 xfailed
+      ;;   - x86_64-linux:   3094 passed, 118 skipped, 2 deselected, 5 xfailed
+      ;;   - aarch64-linux:  3074 passed, 118 skipped, 22 deselected, 5 xfailed
       #:test-flags
       #~(list "-m" "not network"
               ;; Tests are shaky with a lot of DNS lookups.
               "--ignore=tests/test_sockets.py"
-              #$@(map (lambda (ls)
-                        (string-append "--deselect=" (string-join ls "::")))
-                      (append
-                       ;; _pytest.pytester.Pytester.TimeoutExpired: 3 second
-                       ;; timeout expired running: <...>
-                       '(("tests/test_pytest_plugin.py"
-                          "test_keyboardinterrupt_during_test"))
-                       (if (target-aarch64?)
-                           ;; Assertions are not equal on ARM.
-                           '(("tests/streams/test_tls.py"
-                              "TestTLSListener"
-                              "test_handshake_fail")
-                             ("tests/test_taskgroups.py"
-                              "test_shielded_cancel_sleep_time")
-                             ("tests/test_to_thread.py"
-                              "test_run_in_custom_limiter")
-                             ("tests/test_to_thread.py"
-                              "TestBlockingPortalProvider"
-                              "test_single_thread"))
-                           '()))))))
+              #$@(map
+                  (lambda (ls)
+                    (string-append "--deselect=tests/" (string-join ls "::")))
+                  (append
+                   ;; _pytest.pytester.Pytester.TimeoutExpired: 3 second
+                   ;; timeout expired running: <...>
+                   '(("tests/test_pytest_plugin.py"
+                      "test_keyboardinterrupt_during_test")
+                     ;; assert <ExitCode.OK: 0> == 2
+                     ("test_pytest_plugin.py"
+                      "test_keyboard_interrupt_does_not_resume_test"))
+                   (if (target-aarch64?)
+                       ;; Assertions are not equal on ARM.
+                       '(("streams/test_tls.py" "TestTLSListener"
+                          "test_handshake_fail")
+                         ("test_taskgroups.py"
+                          "test_shielded_cancel_sleep_time")
+                         ("test_to_thread.py"
+                          "test_run_in_custom_limiter")
+                         ("test_to_thread.py"
+                          "TestBlockingPortalProvider"
+                          "test_single_thread")
+                         ("test_functools.py"
+                          "TestAsyncLRUCache"
+                          "test_ttl_sequential[asyncio+uvloop-True]")
+                         ("test_pytest_plugin.py"
+                          "test_keyboardinterrupt_during_test[asyncio]")
+                         ("test_pytest_plugin.py"
+                          "test_dynamic_async_fixture_access_does_not_hang")
+                         ("test_pytest_plugin.py"
+                          "test_keyboardinterrupt_during_test[trio]"))
+                       '()))))))
     (propagated-inputs
      (list python-idna
-           python-sniffio
            python-typing-extensions))
     (native-inputs
      (list python-blockbuster
            python-psutil
            python-pytest
            python-pytest-mock
+           python-pytest-timeout
            python-setuptools
            python-setuptools-scm
            python-trio
