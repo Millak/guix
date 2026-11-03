@@ -2628,23 +2628,25 @@ of use.")
     (arguments
      (list
       #:tests? #f ;No test target
-      #:configure-flags #~(list "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON"
-                                (string-append "-DICONDIR="
-                                               #$output "/share/icons/hicolor/256x256/apps"))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'add-qtsvg
-                     (lambda _
-                       (substitute* "components/CMakeLists.txt"
-                         (("Qt::Core")
-                          "Qt::Core Qt::Svg"))))
-                   (add-after 'install 'remove-clip-control-extension
-                     ;; OpenMW crashes if GL_ARB_clip_control extension is supported,
-                     ;; so we have to disable it.
-                     ;; Reverse-z depth buffer functionality will be disabled, but
-                     ;; at least it will not crash.
-                     (lambda _
-                       (wrap-program (string-append #$output "/bin/openmw")
-                         '("MESA_EXTENSION_OVERRIDE" = ("-GL_ARB_clip_control"))))))))
+      #:configure-flags
+      #~(list "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON"
+              (string-append "-DICONDIR="
+                             #$output "/share/icons/hicolor/256x256/apps"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-qtsvg
+            (lambda _
+              (substitute* "components/CMakeLists.txt"
+                (("Qt::Core")
+                 "Qt::Core Qt::Svg"))))
+          (add-after 'install 'remove-clip-control-extension
+            ;; OpenMW crashes if GL_ARB_clip_control extension is supported,
+            ;; so we have to disable it.
+            ;; Reverse-z depth buffer functionality will be disabled, but
+            ;; at least it will not crash.
+            (lambda _
+              (wrap-program (string-append #$output "/bin/openmw")
+                '("MESA_EXTENSION_OVERRIDE" = ("-GL_ARB_clip_control"))))))))
     (native-inputs (list boost doxygen pkg-config))
     (inputs (list bullet
                   collada-dom
