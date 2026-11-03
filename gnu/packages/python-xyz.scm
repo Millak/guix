@@ -37602,13 +37602,16 @@ pure-Python.")
 (define-public python-soupsieve
   (package
     (name "python-soupsieve")
-    (version "2.7")
+    (version "4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "soupsieve" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/facelessuser/soupsieve")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0shjmvk8yz2ljc16pmizg16bqhk1i8n5al27mlp6sa16d6djya5d"))))
+        (base32 "1f9jlhvy5jq9smj2myrd1gp7p81vlgfkzh8sy2wqw70akzfrvbqj"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-beautifulsoup4-bootstrap
