@@ -2671,22 +2671,23 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
              #$(symbol->string (yggdrasil-configuration-log-level config))
              "-logto"
              #$(symbol->string (yggdrasil-configuration-log-to config)))))
+  (define extra-env
+    #~(let ((proxy #$(yggdrasil-configuration-http-proxy config)))
+        (if proxy
+            (list (string-append "http_proxy=" proxy)
+                  (string-append "https_proxy=" proxy))
+            '())))
   (list (shepherd-service
          (documentation "Connect to the Yggdrasil mesh network")
          (provision '(yggdrasil))
          (requirement '(networking))
-         (start (let ((proxy (yggdrasil-configuration-http-proxy config)))
-                  #~(make-forkexec-constructor
-                     #$yggdrasil-command
-                     #:log-file "/var/log/yggdrasil.log"
-                     #:group "yggdrasil"
-                     #:environment-variables
-                     (append
-                      #$(if proxy
-                            (list (string-append "http_proxy=" proxy)
-                                  (string-append "https_proxy=" proxy))
-                            '())
-                      (default-environment-variables)))))
+         (start #~(make-forkexec-constructor
+                   #$yggdrasil-command
+                   #:log-file "/var/log/yggdrasil.log"
+                   #:group "yggdrasil"
+                   #:environment-variables
+                   (append #$extra-env
+                           (default-environment-variables))))
          (stop #~(make-kill-destructor)))))
 
 (define %yggdrasil-accounts
