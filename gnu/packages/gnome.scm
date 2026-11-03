@@ -14250,7 +14250,7 @@ applications.")
 (define-public fractal
   (package
     (name "fractal")
-    (version "14.1")
+    (version "14.3")
     (source
      (origin
        (method git-fetch)
@@ -14259,7 +14259,7 @@ applications.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lpsjshlvkmd56ypcfm2a3ipbvrzwcj8q6wfbns4csy2abqgdc2p"))))
+        (base32 "0n6cwgzqc558k0ipc7qq9zhi9hh3cbgbg5zgv91fci3dg453ambn"))))
     (build-system meson-build-system)
     (arguments
      (list
