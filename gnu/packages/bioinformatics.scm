@@ -24209,7 +24209,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
 (define-public wfmash
   (package
     (name "wfmash")
-    (version "0.21.0")
+    (version "0.24.2")
     (source
      (origin
        (method url-fetch)
@@ -24217,13 +24217,14 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                            version "/wfmash-v" version ".tar.gz"))
        (sha256
         (base32
-         "0v9giqrqxl9kkcrs6zrfj1y07j6p9r8d82kkwigvndlg1708457w"))
+         "083nanyz0ywhh4klgymap0zjn1jyh0j7k7gxhsd03zrq4nlf91nv"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
             ;; Unbundle atomic-queue.
             (delete-file-recursively "src/common/atomic_queue")
-            (substitute* "src/align/include/computeAlignments.hpp"
+            (substitute* (list "src/align/include/computeAlignments.hpp"
+                               "src/map/include/winSketch.hpp")
               (("\"common/atomic_queue/atomic_queue.h\"")
                "<atomic_queue/atomic_queue.h>"))
             ;; Remove compiler optimizations.
@@ -24235,6 +24236,9 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
       ;; Tests time out on riscv64-linux.
       #:tests? (and (not (%current-target-system))
                     (not (target-riscv64?)))
+      ;; These tests requires wgatools and pafcheck respectively, both of
+      ;; which are not yet packaged.
+      #:test-exclude "wfmash-maf-validity|wfmash-pafcheck-yeast"
       #:configure-flags
       #~(list "-DWFA_PNG_AND_TSV=ON")
       #:phases
@@ -24248,9 +24252,8 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                 (("\\./build/bin/wfmash") "wfmash"))))
           (add-before 'check 'build-check-prerequisites
             (lambda _
-              (let ((wfa2-lib #$(string-append "../wfmash-v"
-                                               version
-                                               "/src/common/wflign/deps/WFA2-lib")))
+              (let ((wfa2-lib #$(string-append "../wfmash-v" version
+                                               "/deps/WFA2-lib")))
                 (substitute* (string-append wfa2-lib "/Makefile")
                   ;; Remove architecture-specific flags.
                   (("-march=x86-64-v3") ""))
@@ -24273,8 +24276,10 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
            libdeflate
            zlib))
     (native-inputs
-     (list pkg-config
-           samtools))
+     (list bedtools
+           pkg-config
+           samtools
+           util-linux))
     (synopsis "Base-accurate DNA sequence aligner")
     (description "@code{wfmash} is a DNA sequence read mapper based on mash
 distances and the wavefront alignment algorithm.  It is a fork of MashMap that
