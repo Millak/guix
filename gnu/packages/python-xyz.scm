@@ -2595,6 +2595,33 @@ hard-to-index data about languages, particularly what they are named in
 various languages.")
     (license license:expat)))
 
+(define-public python-ldfparser
+  (package
+    (name "python-ldfparser")
+    (version "0.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/c4deszes/ldfparser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pjwf1rnaxbww6hzmnhfyrjq3p3mch8xrgnnjqw5d4zn9wxpyna9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-jsonschema
+           python-pytest
+           python-pytest-benchmark
+           python-setuptools))
+    (propagated-inputs (list python-bitstruct python-jinja2 python-lark))
+    (home-page "https://c4deszes.github.io/ldfparser/")
+    (synopsis "LIN Description File parser")
+    (description
+     "The @code{ldfparser} library allows extracting information out of LIN
+descriptor files that are used to describe automotive networks.")
+    (license license:expat)))
+
 (define-public python-log-symbols
   (package
     (name "python-log-symbols")
