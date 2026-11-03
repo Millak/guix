@@ -7779,7 +7779,7 @@ such as gzip tarballs.")
 (define-public gnome-session-shepherd
   (package
     (name "gnome-session-shepherd")
-    (version "1.0")
+    (version "1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7788,7 +7788,7 @@ such as gzip tarballs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09kl7plq6qvy4pgr20sn670vk9abg3cmhvfbv4rbnibwkpsjasv7"))))
+                "19m6m0bzgbqyz51lj5klx44jnracs2vbjlsk2avsljbr9knivz5a"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7801,8 +7801,6 @@ such as gzip tarballs.")
            "-Dservices=enabled"
            "-Dstartup=enabled"
            "-Ddbus_service=enabled"
-           (string-append "-Dgsettings_path="
-                          (search-input-file %build-inputs "/bin/gsettings"))
            (string-append "-Dguile_load_path="
                           (string-join
                            (search-path-as-list
@@ -7814,10 +7812,7 @@ such as gzip tarballs.")
                            (search-path-as-list
                             '("/lib/guile/3.0/site-ccache")
                             inputs)
-                           ":"))
-           (string-append "-Dshepherd_path="
-                          #$(this-package-input "shepherd")
-                          "/bin/shepherd")))
+                           ":"))))
       #:phases
       #~(begin
           (use-modules (ice-9 ftw))
