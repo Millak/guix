@@ -11881,40 +11881,38 @@ asynchronously.")
 (define-public python-yarl
   (package
     (name "python-yarl")
-    (version "1.18.3")
+    (version "1.25.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "yarl" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/yarl/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qfj6kvdxr8bzka4lp0bh0xfgr5mzx7zzvj2jb4vcxxzbk20265c"))))
+        (base32 "1m97ma50il0yrw79qbvskarm68aqbgwn0knybf8acfppaf11a2vi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags '(list "--ignore-glob=tests/test_*_benchmarks.py")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'avoid-pytest-cov-preload
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (delete-file "pytest.ini")))
+         (add-before 'build 'patch-build-system
            (lambda _
-             (substitute* "pytest.ini"
-               (("-p pytest_cov") ""))))
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             ;; XXX: I don't know how to tell it to build the extensions in
-             ;; place.
+             ;; XXX: Project wraps modified `setuptools.build_meta`.
              (substitute* "packaging/pep517_backend/_backend.py"
-               (("build_inplace=False") "build_inplace=True")))))))
+               (("default=False") "default=True")))))))
     (native-inputs
      (list python-cython
            python-expandvars
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-tomli))
+           python-setuptools))
     (propagated-inputs
-     (list python-packaging python-idna python-multidict python-propcache))
-    (home-page "https://github.com/aio-libs/yarl/")
+     (list python-idna python-multidict python-propcache))
+    (home-page "https://yarl.aio-libs.org/")
     (synopsis "Yet another URL library")
     (description "@code{yarl} module provides handy @code{URL} class
 for URL parsing and changing.")
