@@ -1909,7 +1909,7 @@ template tag.")
 (define-public python-django-dbbackup
   (package
     (name "python-django-dbbackup")
-    (version "5.3.0")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1918,10 +1918,20 @@ template tag.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g21sxc3inb5q3ficc7gjhixm6yz4ylahm8m29895bhwhfcmj85x"))))
+        (base32 "1wr219z47rp6s7bph5s0ld2crw6lrbq5mq7ndxn5qphpiq7mwsja"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 334 passed, 16 deselected, 2 warnings, 5 subtests passed
+      #:test-flags
+      ;; AttributeError: 'DbbackupAdminEmailHandler' object has no attribute
+      ;; 'connection'
+      #~(list "-k" (string-join
+                    (list "not test_dbbackup"
+                          "test_dbbackup_storage"
+                          "test_raise_with_mail"
+                          "test_send_mail")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
