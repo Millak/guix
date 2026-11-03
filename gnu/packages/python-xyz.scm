@@ -9985,27 +9985,21 @@ and convert DDL to BigQuery JSON schema.")
 (define-public python-jsonschema-path
   (package
     (name "python-jsonschema-path")
-    (version "0.3.2")
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonschema_path" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/p1c2u/jsonschema-path")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "129rb8y2bj2wwps8vs3z1qav006k7wz2myx5j6dnxqs1yfmsn3ad"))))
+        (base32 "02vns1dfahlc92jjczc9z3rfap4iz52gpgqaaw7xbjkhi62g0c08"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false  ;there are none
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("referencing = \">=0.28.0,<0.32.0\"")
-                "referencing = \">=0.28.0\"")))))))
-    (propagated-inputs (list python-pathable python-pyyaml python-referencing
-                             python-requests))
-    (native-inputs (list python-poetry-core))
+    (propagated-inputs
+     (list python-pathable python-pyyaml python-referencing))
+    (native-inputs
+     (list python-poetry-core python-pytest python-responses))
     (home-page "https://github.com/p1c2u/jsonschema-path")
     (synopsis "JSONSchema Spec with object-oriented paths")
     (description "This package implements object-oriented JSONSchema.  It lets
