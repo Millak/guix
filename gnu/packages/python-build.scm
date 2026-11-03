@@ -542,17 +542,19 @@ build-system level.")
 (define-public python-trove-classifiers
   (package
     (name "python-trove-classifiers")
-    (version "2025.5.9.12")
+    (version "2026.9.21.13")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trove_classifiers" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypa/trove-classifiers")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dawkrcc353rz1h4mazw25vkbhics5lpqrwc8qad6b3flykwi9vw"))))
+        (base32 "1kv4gdwkyj21pyz32vw6fnxrxk8pkf4s0acy46rk1agndiwcmdy7"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:build-backend "setuptools.build_meta"
-           #:tests? #f))      ;keep dependencies to a minimum
+     (list #:tests? #f))      ;keep dependencies to a minimum
     (native-inputs (list python-setuptools-bootstrap))
     (home-page "https://github.com/pypa/trove-classifiers")
     (synopsis "Canonical source for classifiers on PyPI")
