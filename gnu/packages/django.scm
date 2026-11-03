@@ -424,13 +424,16 @@ commands, additional database fields and admin extensions.")
 (define-public python-django-localflavor
   (package
     (name "python-django-localflavor")
-    (version "3.1")
+    (version "5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django-localflavor" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/django/django-localflavor")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0i1s0ijfd9rv2cp5x174jcyjpwn7fyg7s1wpbvlwm96bpdvs6bxc"))))
+        (base32 "16g7iismbdjp4ihlbh15mkcb1gjgfxhqmqdpi6bzpmyba5jxgxx6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -443,7 +446,7 @@ commands, additional database fields and admin extensions.")
                   (apply invoke "python" "-m" "django" "test" test-flags)
                   (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-django python-stdnum))
     (home-page "https://django-localflavor.readthedocs.io/en/latest/")
