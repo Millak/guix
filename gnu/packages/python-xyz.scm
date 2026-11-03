@@ -39343,7 +39343,7 @@ tables.")
 (define-public python-textual
   (package
     (name "python-textual")
-    (version "7.4.0")
+    (version "7.5.0")
     (source
      (origin
        (method git-fetch)
@@ -39352,37 +39352,33 @@ tables.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xnfb8g0p66f6i4kzd6l2y2cp1pm33la1rj0hbdws72j5rcpq0nv"))))
+        (base32 "1gglw4f394yw96ndmyzww48hghb1mimwk0al465k409r3np5c2ym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2940 passed, 1 skipped, 4 xfailed
       #:test-flags
-      ;; Snapshot tests require python-pytest-textual-snapshot which
-      ;; in turn depends on python-textual.
-      '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
-             "-k" (string-append
-                   ;; Broken for unknown reason.
-                   "not test_textual_env_var"
-                   ;; Tests that require python-treesitter-languages.
-                   " and not test_widget_construct"
-                   " and not test_setting_builtin_language_via_constructor"
-                   " and not test_setting_builtin_language_via_attribute"
-                   " and not test_setting_language_to_none"
-                   " and not test_setting_unknown_language"
-                   " and not test_register_language"
-                   " and not test_update_highlight_query"
-                   " and not test_default_theme"
-                   " and not test_setting_builtin_themes"
-                   " and not test_setting_unknown_theme_raises_exception"
-                   " and not test_registering_and_setting_theme"
-                   " and not test_progress_bar_width_1fr"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("pygments =.*")
-                 "pygments = \"*\"\n")))))))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Snapshot tests require python-pytest-textual-snapshot which
+              ;; in turn depends on python-textual.
+              "--ignore=tests/snapshot_tests/test_snapshots.py"
+              "--deselect=tests/test_progress_bar.py::test_progress_bar_width_1fr"
+              ;; Tests that require python-tree-sitter-languages.
+              "-k" (string-join
+                      (list "not test_textual_env_var"
+                            "test_tracked_slugs"
+                            "test_widget_construct"
+                            "test_register_language"
+                            "test_setting_builtin_language_via_attribute"
+                            "test_setting_builtin_language_via_constructor"
+                            "test_setting_language_to_none"
+                            "test_setting_unknown_language"
+                            "test_update_highlight_query"
+                            "test_default_theme"
+                            "test_registering_and_setting_theme"
+                            "test_setting_builtin_themes"
+                            "test_setting_unknown_theme_raises_exception")
+                      " and not "))))
     (propagated-inputs
      (list python-markdown-it-py
            python-mdit-py-plugins
@@ -39395,6 +39391,7 @@ tables.")
      (list python-poetry-core
            python-pytest
            python-pytest-asyncio
+           ;; python-pytest-textual-snapshot     ;cycles
            python-pytest-xdist))
     (home-page "https://github.com/Textualize/textual")
     (synopsis "Build text user interfaces in Python")
