@@ -9507,23 +9507,24 @@ JSON Schema Specification Draft 2020-12.
 (define-public python-openapi-spec-validator
   (package
     (name "python-openapi-spec-validator")
-    (version "0.7.1")
+    (version "0.9.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/p1c2u/openapi-spec-validator")
-             (commit version)))
+              (url "https://github.com/p1c2u/openapi-spec-validator")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0s5yd4dbr6knwd2g1g4v2931k14n1lm80l11n2ija18yfis8yisz"))))
+        (base32 "1f96n1c12rdflp0wizl7b6id8g8r7ikylz3wlna1k1z5fm4jhiya"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; These tests attempt to fetch resources from the Internet
-      #:test-flags '(list "--ignore-glob=tests/integration/validation/**"
-                          "-k" "not example")))
+      ;; tests: 71 passed
+      #:test-flags
+      ;; Network access is required.
+      #~(list "--ignore=tests/integration/test_shortcuts.py"
+              "--ignore=tests/integration/validation/test_validators.py")))
     (native-inputs
      (list python-poetry-core
            python-pytest))
@@ -9532,9 +9533,9 @@ JSON Schema Specification Draft 2020-12.
            python-jsonschema-path
            python-lazy-object-proxy
            python-openapi-schema-validator
-           python-pyyaml
-           python-requests
-           python-setuptools))
+           python-pydantic
+           python-pydantic-settings
+           python-pyyaml))
     (home-page "https://github.com/p1c2u/openapi-spec-validator")
     (synopsis "OpenAPI spec validator")
     (description "OpenAPI Spec Validator is a Python library that validates an
