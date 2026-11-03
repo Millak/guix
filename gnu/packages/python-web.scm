@@ -749,7 +749,7 @@ DNS name.")
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    (version "3.13.5")
+    (version "3.14.5")
     (source
      (origin
        (method git-fetch)
@@ -758,42 +758,28 @@ DNS name.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l9jcmhqd2v97gy1bxvimwi3aajxhxqn6jkzzgg7cf42mpyza0vc"))
+        (base32 "1s5ph4wg7hs2g9lfh4dds8ki63y5jj2kvxf3n27rwq00pxlnlb41"))
        (snippet
         #~(begin
             (use-modules ((guix build utils)))
-            (delete-file-recursively "vendor")))))
+            (delete-file-recursively "vendor")))))   ;llhttp
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4003 passed, 80 skipped, 31 xfailed, 2 subtests passed
+      ;; tests: 4260 passed, 91 skipped, 28 xfailed, 2780 warnings, 4 subtests passed
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; This tests requires the 'proxy.py' module, not yet packaged.
+      #~(list "-m" "not dev_mode and not autobahn and not internal"
+              "--numprocesses" (number->string (parallel-job-count))
+              ;; This tests requires the 'proxy.py' module, which is not
+              ;; maintained.
               "--ignore=tests/test_proxy_functional.py"
               ;; No benchamrks.
               "--ignore-glob=tests/test_benchmarks_*"
-              "-k"
-              (string-join
-               ;; Combinatin of tests failing with similar errors:
-               ;; - Cannot connect to host example.com:443 ssl:default [Could
-               ;;   not contact DNS servers].
-               ;; - aiohttp.http_exceptions.ContentEncodingError: 400.
-               ;; - Can not decode content-encoding: br
-               (list "not test_add_static_path_resolution"
-                     "test_empty_header_name"
-                     "test_http_payload_brotli"
-                     "test_http_payload_zstandard"
-                     "test_invalid_header_spacing"
-                     "test_payload_decompress_size_limit_brotli"
-                     "test_reject_obsolete_line_folding"
-                     "test_response_with_precompressed_body_brotli"
-                     "test_static_file_custom_content_type_compress"
-                     "test_static_file_with_encoding_and_enable_compression"
-                     "test_tcp_connector_ssl_shutdown_timeout_nonzero_passed"
-                     "test_tcp_connector_ssl_shutdown_timeout_passed_to_"
-                     "test_tcp_connector_ssl_shutdown_timeout_zero_not_")
-               " and not "))
+              ;; Failed <class 'aiohttp.http_exceptions.BadHttpMessage'>
+              "--ignore=tests/test_http_parser.py"
+              ;; ValueError: '~/..' does not exist
+              (string-append "--deselect=tests/test_urldispatch.py"
+                             "::test_add_static_path_resolution"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-libllhtp-pkgconfig
@@ -809,11 +795,7 @@ DNS name.")
                            #$(this-package-input "llhttp") "/lib/pkgconfig")))))
           (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "setup.cfg"
-                (("--numprocesses=auto") "")
-                (("-p pytest_cov") "")
-                (("--cov=aiohttp") "")
-                (("--cov=tests/") ""))))
+              (delete-file "pytest.ini")))
           (add-after 'unpack 'fix-tests
             (lambda _
               ;; Make sure the timestamp of this file is > 1990, because a few
@@ -838,7 +820,6 @@ DNS name.")
            python-freezegun
            python-cython
            python-pkgconfig
-           ;; python-proxy-py   ;not packaged yet in Guix
            python-pytest
            python-pytest-mock
            python-pytest-xdist
