@@ -11868,7 +11868,11 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
      (list
       ;; tests: 5428 passed, 1091 skipped, 24 xfailed
       #:test-flags
-      #~(list "--parallel-threads" (number->string (parallel-job-count)))))
+      #~(list "--parallel-threads" (number->string (parallel-job-count))
+              ;; [XPASS(strict)] PEP 661 sentinels aren't picklable yet in the
+              ;; experimental typing-extensions implementation
+              (string-append "--deselect=tests/test_missing_sentinel.py"
+                             "::test_missing_sentinel_pickle"))))
     (native-inputs
      (list tzdata-for-tests
            python-dirty-equals-bootstrap
