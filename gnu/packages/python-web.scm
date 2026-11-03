@@ -9472,35 +9472,24 @@ OpenAI API.")
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
-    (version "0.6.2")
+    (version "0.9.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/p1c2u/openapi-schema-validator")
-             (commit version)))
+              (url "https://github.com/p1c2u/openapi-schema-validator")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pgsm1x7lhc5ryj4l45ik8m5x9gqyi50dkflaiqqr4fnl0bsbx09"))))
+        (base32 "10lbhnbyql9x4bmaszq8b9hm4fhqkry5j2rdzk3p7c2rv5and9by"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; This one returns 5 instead of 4 elements
-      '(list "-k" "not test_array_prefixitems_invalid")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; See https://github.com/python-openapi/openapi-schema-validator/issues/204
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("jsonschema-specifications.*")
-                 "jsonschema-specifications = \">=2023.5.2\"\n")))))))
     (native-inputs (list python-poetry-core python-pytest))
     (propagated-inputs
-     (list python-isodate
-           python-jsonschema
+     (list python-jsonschema
+           python-jsonschema-specifications
+           python-pydantic
+           python-pydantic-settings
+           python-referencing
            python-rfc3339-validator
            python-strict-rfc3339))
     (home-page "https://github.com/p1c2u/openapi-schema-validator")
