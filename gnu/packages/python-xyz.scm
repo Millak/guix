@@ -15913,16 +15913,18 @@ functions like pickle, json or PyYAML module.")
 (define-public python-pathable
   (package
     (name "python-pathable")
-    (version "0.4.3")
+    (version "0.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathable" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/p1c2u/pathable")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ayw9jzlw0qrz51rcfbba00xqq0c7vs3lgwrib67c1z5bcqrv1jw"))))
+        (base32 "1nmiprqfhn6ihlpk3zmjyprc6493y1irbl1c5cnixgyr2px2fchf"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;there are none
-    (native-inputs (list python-poetry-core))
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/p1c2u/pathable")
     (synopsis "Object-oriented paths")
     (description "With this package you can traverse resources like paths and
