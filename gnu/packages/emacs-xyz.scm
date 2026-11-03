@@ -8898,6 +8898,38 @@ written text.  Unlike dynamic abbreviation, the text is analysed
 during idle time, while Emacs is doing nothing else.")
     (license license:gpl3+)))
 
+(define-public emacs-emureader
+  (package
+    (name "emacs-emureader")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/monadicsheep/emureader")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ml0x27x12nlqlqlarfkn2ldql9g4gjq5fs6dvzln94bwp8izp9s"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-emacs-module
+            (lambda _
+              (invoke "make" "module" "USE_PKGCONFIG=NO")
+              (install-file "emureader-dyn.so"
+                            (elpa-directory #$output)))))))
+    (inputs (list mupdf))
+    (home-page "https://monadicsheep.org/projects/emureader")
+    (synopsis "All-in-one document reader for Emacs")
+    (description
+     "This package provides an all-in-one document reader for GNU Emacs,
+supporting all major document formats, backed by @command{mupdf}.")
+    (license license:gpl3+)))
+
 (define-public emacs-pdf-tools
   (package
     (name "emacs-pdf-tools")
