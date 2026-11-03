@@ -159,7 +159,7 @@
                       (substitute* "tests/t-syserror.c"
                         (("(^| )main *\\(.*" all)
                          (string-append all "{\n  exit (77);//")))))))
-              ((target-arm32?)
+              ((or (target-arm32?) (target-powerpc?))
                ;; Skip as per: https://dev.gnupg.org/T8309
                #~((add-after 'unpack 'skip-tests
                     (lambda _
