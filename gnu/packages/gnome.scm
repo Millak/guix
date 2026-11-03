@@ -87,6 +87,7 @@
 ;;; Copyright © 2025 Ben Hansen <git@beha.pw>
 ;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Alexey Ilin <avi@d314.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8603,6 +8604,59 @@ services.")
     (license (list license:gpl2+
                    license:lgpl2.1+))
     (properties '((upstream-name . "NetworkManager")))))
+
+(define-public network-manager-amneziawg
+  (package
+    (name "network-manager-amneziawg")
+    (version "0.9.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vovochka404/network-manager-amneziawg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g637fx4bphxgzxhy15p3276hmzh3vk9jqrpi8dr7506385apckc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Test failure: test_external_awg31_requires_new_tools
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_PREFIX="
+                             #$output)
+              "-DCMAKE_INSTALL_LIBDIR=lib"
+              "-DCMAKE_INSTALL_LIBEXECDIR=libexec"
+              "-DCMAKE_INSTALL_DATADIR=share"
+              "-DWITH_GTK3=ON"
+              "-DWITH_GTK4=OFF" ;Editor doesn't work in current version with gtk4
+              (string-append "-DNM_PLUGIN_DIR="
+                             #$output "/lib/NetworkManager")
+              (string-append "-DNM_VPN_SERVICE_DIR="
+                             #$output "/lib/NetworkManager/VPN"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-absolute-paths
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((glib-tool (search-input-file (or native-inputs inputs)
+                                                  "/bin/glib-compile-resources")))
+                (substitute* "CMakeLists.txt"
+                  (("/usr/bin/glib-compile-resources")
+                   glib-tool))
+                (substitute* "CMakeLists.txt"
+                  (("set\\(CMAKE_INSTALL_PREFIX \"/usr\"")
+                   (string-append "set(CMAKE_INSTALL_PREFIX \""
+                                  #$output "\"")))))))))
+    (native-inputs (list `(,glib "bin") intltool pkg-config))
+    (inputs (list amneziawg-tools gtk+ libnma libsecret network-manager))
+    (home-page "https://github.com/vovochka404/network-manager-amneziawg")
+    (synopsis "NetworkManager plugin for AmneziaWG")
+    (description
+     "NetworkManager-amneziawg is a VPN plugin for NetworkManager that handles
+client-side AmneziaWG connections which supports both IPv4 and IPv6
+connections and provides a GUI editor for configuring VPN
+connections.")
+    (license license:gpl2)))
 
 (define-public network-manager-openvpn
   (package
