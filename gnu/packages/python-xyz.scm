@@ -11320,18 +11320,19 @@ to deprecate classes, functions or methods.")
     (license license:expat)))
 
 (define-public python-pygithub
+  ;; TODO: Move to (gnu packages python-web).
   (package
     (name "python-pygithub")
-    (version "2.8.1")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/PyGithub/PyGithub")
-             (commit (string-append "v" version))))
+              (url "https://github.com/PyGithub/PyGithub")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c5qp69qfkfcp8lfmfh0a2rcb1azsrlrc525qd8blnkrmz2mmayz"))))
+        (base32 "1kdv8jh0f7rn9y4vnm2n025dwslzg53xmhdi6330hmp41higczxa"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-pyjwt
