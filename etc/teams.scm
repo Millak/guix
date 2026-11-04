@@ -1492,7 +1492,7 @@ the \"texlive\" importer."
   audio community documentation electronics embedded)
 
 (define-member (person "Divya Ranjan Pattanaik"
-                       "divya@subvertising.org"
+                       "divya@dialetheia.xyz"
                        "divyaranjan")
   emacs rust haskell)
 
