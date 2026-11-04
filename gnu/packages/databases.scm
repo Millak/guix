@@ -4832,31 +4832,37 @@ extension.")
 (define-public python-sqlite-utils
   (package
     (name "python-sqlite-utils")
-    (version "3.38")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/simonw/sqlite-utils")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1rai8rbw5drxppypyl3r8j9gr12278h3snkj7l280zkskbxxh7hf"))))
+    (version "4.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/simonw/sqlite-utils")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aryypm0nh5p9zw3frgv3dx8yjqmc1hb8y3bvnnx9xrxv7ai1q1y"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            (substitute* "setup.py"
-                              ;; This is a variant designed to have a binary
-                              ;; wheel made available on PyPI, which is not a
-                              ;; concern to Guix.
-                              (("click-default-group-wheel")
-                               "click-default-group")))))))
-    (propagated-inputs (list python-click python-click-default-group
-                             python-dateutil python-sqlite-fts4
-                             python-tabulate))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-sqlparse
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; TODO: Project wants to install packages from PyPI into the
+                ;; same environment as sqlite-utils; try to patch that.
+                (("\"pip\",") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-click
+           python-click-default-group
+           python-dateutil
+           python-pluggy
+           python-sqlite-fts4
+           python-tabulate))
     (home-page "https://github.com/simonw/sqlite-utils")
     (synopsis
      "CLI tool and Python utility functions for manipulating SQLite databases")
