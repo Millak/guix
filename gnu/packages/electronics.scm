@@ -718,7 +718,7 @@ ensuring that a design refactor preserves correctness in all conditions.")
               (lambda _
                 (install-file "sw/fftgen"
                               (string-append #$output "/bin")))))))
-      (native-inputs (list bc fftw python-minimal verilator which))
+      (native-inputs (list bc fftw python-minimal verilator-5.052 which))
       (synopsis "Generic pipelined FFT core generator")
       (description "fftgen produces @acronym{FFT, fast-Fourier transforms}
 hardware designs in Verilog.")
