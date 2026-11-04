@@ -13096,8 +13096,8 @@ score.  When evaluated, the musical score is rendered to an image.")
   (sbcl-package->ecl-package sbcl-cmn))
 
 (define-public sbcl-coalton
-  (let ((commit "14ed6dc733f8c23c1a345ceb11d3f75ee47f7525")
-        (revision "6"))
+  (let ((commit "0b5c10fa14058a9460ee38e69634afa5c5bd10db")
+        (revision "7"))
     (package
       (name "sbcl-coalton")
       (version (git-version "0.0.1" revision commit))
@@ -13109,8 +13109,15 @@ score.  When evaluated, the musical score is rendered to an image.")
                (commit commit)))
          (file-name (git-file-name "cl-coalton" version))
          (sha256
-          (base32 "024n72lxi8nycy012lqy6zx19lv7jh2ngs1mf559rw8kgwh3k54c"))))
+          (base32 "1zasyxz74n32iildpccg11b6xzn9py212v82185vihwv7kg2cl76"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           ;; Don't include the (alpha quality) mine editor.
+           (add-after 'unpack 'delete-mine
+             (lambda _
+               (delete-file-recursively "./mine"))))))
       (native-inputs
        (list sbcl-fiasco
              sbcl-html-entities
@@ -13120,11 +13127,11 @@ score.  When evaluated, the musical score is rendered to an image.")
        (list sbcl-alexandria
              sbcl-computable-reals
              sbcl-concrete-syntax-tree
-             sbcl-eclector
+             sbcl-eclector        ; This includes eclector-concerete-syntax-tree.
              sbcl-float-features
-             sbcl-fset
              sbcl-named-readtables
-             sbcl-trivial-garbage))
+             sbcl-trivial-garbage
+             sbcl-trivial-gray-streams))
       (home-page "https://coalton-lang.github.io")
       (synopsis "Dialect of ML in Common Lisp")
       (description
