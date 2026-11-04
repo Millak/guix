@@ -4702,13 +4702,9 @@ tablets.
 
 (define* (node-types type #:key
                      ;; Note: Keep the default version/commit in sync with
-                     ;; that of our `node' package.  There are no versions nor
-                     ;; tags, so I'm not exactly sure how it works.  Perhaps
-                     ;; the latest commit can be used, else grep for
-                     ;; e.g. "v24" and pick the last commit touching the
-                     ;; version we target?
-                     (version "24.22.1")
-                     (commit "4a2ff650dafb24115a02d2b8af37a6ed11ac49e5")
+                     ;; that of our `node' package.
+                     (version "22.14.0")
+                     (commit "1f6ca6ff73af20b951f5ea6ecbea6668eff1750f")
                      (inputs (delay '())))
   (package
     (name (string-append "node-types-" type))
@@ -4722,7 +4718,7 @@ tablets.
        ;; Keep same name to avoid multiplying checkouts in store.
        (file-name (git-file-name "node-definitelytyped" version))
        (sha256
-        (base32 "0g88cq5npxfadg1q7f3x5k4xp4a7q72bx2092ah3hcfxjbr20grg"))))
+        (base32 "05q0cj2b35z27fv1b00kr8ja5hj2dzl4shx1mwk0jg44z1cwkp0j"))))
     (build-system node-build-system)
     (inputs (force inputs))
     (arguments
