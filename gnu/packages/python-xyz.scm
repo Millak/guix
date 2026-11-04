@@ -24660,7 +24660,7 @@ completes.")
 (define-public python-asyncinject
   (package
     (name "python-asyncinject")
-    (version "0.6.1")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -24669,7 +24669,7 @@ completes.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "127ahb32x2qqjk17a667adrvrl63ima8khifq6dfm0q3vlfslxnn"))))
+        (base32 "0nz6yx6xybxvazc4xb29frrvmyv2klyzz4034cd4vg34jqr7v1vd"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
