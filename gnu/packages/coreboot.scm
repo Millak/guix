@@ -41,7 +41,7 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-26))
 
-(define %coreboot-version "26.06")
+(define %coreboot-version "26.09")
 
 (define %coreboot-origin
   (origin
@@ -52,7 +52,7 @@
     (file-name (git-file-name "coreboot" %coreboot-version))
     (sha256
      (base32
-      "0niqq358n0fp44ay73g8hpavz0nbx1kn8x1iplhr42srym9vcwwn"))))
+      "1sfmfj7dj21q3p82sz2q7zjjq3c93rgiq8z8w7wx3nvc5nmdnn76"))))
 
 (define-public bincfg
   (package
