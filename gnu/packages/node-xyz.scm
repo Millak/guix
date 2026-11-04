@@ -1985,6 +1985,43 @@ Node's @code{inherits} constructor that can be used in browsers, while
 defaulting to Node's implementation otherwise.")
     (license license:isc)))
 
+(define-public node-html-parser
+  (package
+    (name "node-html-parser")
+    (version "9.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/taoqf/node-fast-html-parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x352jnkxn5s5g070cb658x7fn8cs6jd286d7jiyc92m96dg6q0v"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires mocha
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (add-after 'unpack 'patch-package.json
+            (lambda _
+              (substitute* "package.json"
+                ;; Avoid bun package manager.
+                (("bun ") "npm ")
+                ;; Avoid tsdown bundler.
+                (("tsdown && ") "")))))))
+    (native-inputs (list node-typescript))
+    (inputs (list node-css-select-5 node-entities))
+    (home-page "https://github.com/taoqf/node-html-parser")
+    (synopsis "Fast HTML parser")
+    (description "This package provides a fast HTML parser, generating a
+simplified DOM, with basic element query support.")
+    (license license:expat)))
+
 (define-public node-https-proxy-agent
   (package
     (name "node-https-proxy-agent")
