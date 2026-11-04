@@ -4246,7 +4246,7 @@ Automation}.")
 (define-public python-hdlmake
   (package
     (name "python-hdlmake")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
        (method git-fetch)
@@ -4255,7 +4255,7 @@ Automation}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bwp7n6rk4c33vxjpdak81nqjjk7iz3lvkjbinjggpx87qmbaxd7"))))
+        (base32 "07xly4w5lz6zajji5rb2idswgc6pxh56nwwfjb6c76qrfdnny9n8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
