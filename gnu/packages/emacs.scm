@@ -55,6 +55,7 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
@@ -946,3 +947,47 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
                 (lambda _
                   (call-with-output-file "lisp/finder-inf.el"
                     (lambda (port) (display port))))))))))))
+
+(define-public emacs-tree-sitter-grammars
+  (package
+    (name "emacs-tree-sitter-grammars")
+    (version (package-version tree-sitter))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build union))
+      #:builder
+      #~(begin
+          (use-modules (guix build union))
+          (union-build #$output
+                       (map cdr %build-inputs)))))
+    (inputs
+     (list tree-sitter-bash
+           tree-sitter-c
+           tree-sitter-cpp
+           tree-sitter-c-sharp
+           tree-sitter-css
+           tree-sitter-cmake
+           tree-sitter-dockerfile
+           tree-sitter-elixir
+           tree-sitter-go
+           tree-sitter-gomod
+           tree-sitter-heex
+           tree-sitter-html
+           tree-sitter-java
+           tree-sitter-javascript
+           tree-sitter-json
+           tree-sitter-lua
+           tree-sitter-markdown
+           tree-sitter-php
+           tree-sitter-python
+           tree-sitter-ruby
+           tree-sitter-rust
+           tree-sitter-toml
+           tree-sitter-typescript
+           tree-sitter-yaml))
+    (home-page "https://tree-sitter.github.io/")
+    (synopsis "Tree-sitter grammars for Emacs")
+    (description "This package provides a union of Guix tree-sitter grammars for Emacs.")
+    (license license:expat)))
