@@ -1068,6 +1068,45 @@ pages into a @acronym{DOM, Domain Object Model}.")
 Object Model} nodes to a string.")
     (license license:expat)))
 
+(define-public node-domutils
+  (package
+    (name "node-domutils")
+    (version "4.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/domutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bkrjrwx70lgdaag4zx18nznf3qkdrhjnhjmqrr48h5g0rnq3jaz"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires vitest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies/except
+                            '("typescript" "@types/node")))))
+          (add-after 'unpack 'remove-jsonc-comments
+            (lambda _
+              (substitute* "tsconfig.json"
+                (("^[[:blank:]]*/\\*.*") ""))))
+          (add-after 'remove-jsonc-comments 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src")))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (inputs (list node-domelementtype node-dom-serializer node-domhandler))
+    (home-page "https://github.com/fb55/domutils")
+    (synopsis "Utilities for working with htmlparser2's DOM")
+    (description "This package provides utilities for working with the
+@acronym{DOM, Domain Object Model} of htmlparser2.")
+    (license license:bsd-2)))
+
 (define-public node-dprint-formatter
   (package
     (name "node-dprint-formatter")
