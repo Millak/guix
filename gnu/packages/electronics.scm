@@ -3912,7 +3912,7 @@ standard.")
 (define-public python-pyvcd
   (package
     (name "python-pyvcd")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -3921,14 +3921,14 @@ standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c0i3dvbza481ykp8vvghb1yl23rab9250z0n7b3zf897125chsi"))))
+        (base32 "1c6q2i7gvg8pzvmn4na7r8a6bh6b7wncz7w4b67y4pxls33bbh43"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:build-backend "setuptools.build_meta"))  ;requires uv_build
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
-    (home-page "http://pyvcd.readthedocs.io/")
+    (home-page "https://pyvcd.readthedocs.io/")
     (synopsis "Library to manipulate digital wave files")
     (description
      "The code{PyVcd} Python library writes @acronym{VCD, Value Change Dump}
