@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -389,9 +389,10 @@ return #f and #f."
        (loop rest system mtime (append specs '("nested guix"))))
       ((('load . ('package candidate)) . rest)
        ;; This is 'guix shell -D -f guix.scm'.
-       (loop rest system
-             (max mtime (stat:mtime (stat candidate)))
-             (cons `(file ,candidate) specs)))
+       (let ((stat (stat candidate)))
+         (loop rest system
+               (max mtime (stat:mtime stat))
+               (cons `(file ,(stat:ino stat) ,(stat:dev stat)) specs))))
       ((('load . ('ad-hoc-package candidate)) . rest)
        ;; When running 'guix shell -f guix.scm', one typically expects
        ;; 'guix.scm' to be evaluated every time because it may contain
@@ -399,9 +400,10 @@ return #f and #f."
        ;; caching.
        (values #f #f))
       ((('manifest . candidate) . rest)
-       (loop rest system
-             (max mtime (stat:mtime (stat candidate)))
-             (cons `(manifest ,candidate) specs)))
+       (let ((stat (stat candidate)))
+         (loop rest system
+               (max mtime (stat:mtime stat))
+               (cons `(manifest ,(stat:ino stat) ,(stat:dev stat)) specs))))
       ((('expression . exp) . rest)
        ;; Assume that EXP is deterministic and that the result can be cached.
        ;; In practice EXP typically refers to a package variable in a module.
