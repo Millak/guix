@@ -2762,6 +2762,46 @@ Can also condense repeated slashes to a single slash and remove trailing
 slashes, unless disabled.")
     (license license:expat)))
 
+(define-public node-nth-check
+  (package
+    (name "node-nth-check")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/nth-check")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14y11b9rz7vyzahb9lb4jhd9psla9xdfsk9flsj7d7i5rvwnrw0q"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires vitest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src"))))))
+          (add-after 'unpack 'neuter-prepare-script
+            (lambda _
+              (modify-json "package.json"
+                (delete-fields '("scripts.prepare")))))
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json "package.json"
+                (delete-dev-dependencies/except
+                 '("@types/node"))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (inputs (list node-boolbase))
+    (home-page "https://github.com/fb55/nth-check")
+    (synopsis "Parse and compile CSS nth-checks to highly optimized functions")
+    (description "This Node.js module parses and compiles CSS nth-checks to
+highly optimized functions.")
+    (license license:bsd-2)))
+
 (define-public node-once
   (package
     (name "node-once")
