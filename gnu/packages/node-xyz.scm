@@ -5105,6 +5105,20 @@ function with browser support.")
    "This package provides a JSON @acronym{RPC, remote procedure call}
 implementation over streams."))
 
+(define-public node-vscode-languageserver-protocol
+  (vscode-languageserver-package
+   "node-vscode-languageserver-protocol"
+   "protocol"
+   "3.18.5"
+   "0vclmlh5jhns1i346bmkaq61shfqmcccsw28vg5jzph13l9zslyq"
+   "VSCode Language Server Protocol implementation"
+   "This package implements @acronym{LSP, Language Server Protocol} for
+VSCode."
+   #:native-inputs (delay (list node-typescript
+                                node-types-node
+                                node-vscode-languageserver-types))
+   #:inputs (delay (list node-vscode-jsonrpc))))
+
 (define-public node-vscode-languageserver-textdocument
   (vscode-languageserver-package
    "node-vscode-languageserver-textdocument"
