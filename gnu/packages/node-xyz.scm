@@ -5233,6 +5233,41 @@ Code."))
 localizing sub-processes spawned by VS Code extensions.")
     (license license:expat)))
 
+(define-public node-vscode-markdown-languageservice
+  (package
+    (name "node-vscode-markdown-languageservice")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url
+               "https://github.com/microsoft/vscode-markdown-languageservice")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bx3p7qwm1n017ym7d02fbi18nymsgygxiic62rl01ipnhfmmx6j"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires mocha
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies)))))))
+    (native-inputs (list node-typescript))
+    (inputs (list node-vscode-uri
+                  node-vscode-languageserver-textdocument
+                  node-vscode-languageserver-protocol
+                  node-picomatch
+                  node-html-parser
+                  node-vscode-l10n))
+    (home-page "https://github.com/microsoft/vscode-markdown-languageservice")
+    (synopsis "Markdown language service")
+    (description "This package provides a Markdown language service.")
+    (license license:expat)))
+
 (define-public node-vscode-uri
   (package
     (name "node-vscode-uri")
