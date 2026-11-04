@@ -1107,6 +1107,47 @@ Object Model} nodes to a string.")
 @acronym{DOM, Domain Object Model} of htmlparser2.")
     (license license:bsd-2)))
 
+(define-public node-domutils-3
+  (package
+    (inherit node-domutils)
+    (name "node-domutils")
+    (version "3.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/domutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l91xd36bm189ng3gb3yaryirfgyxashhjzjx3fzzk04q83kqv0i"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'neuter-prepare-script
+              (lambda _
+                (modify-json "package.json"
+                  (delete-json-fields '("scripts.prepare")))))
+            (add-after 'remove-jsonc-comments 'fix-build:cjs-command
+              (lambda _
+                (modify-json "package.json"
+                  (replace-json-fields '(("scripts.build:cjs" . "tsc"))))))
+            (add-after 'remove-jsonc-comments 'more-ts6-adjustments
+              (lambda _
+                (substitute* "package.json"
+                  ;; Remove command-line overrides.
+                  (("--module esnext --target es2019 ") ""))
+                (modify-json "tsconfig.json"
+                  ;; We also need to manually register the node types.
+                  (add-json-fields
+                   '(("compilerOptions.types" . #("node"))))
+                  (replace-json-fields
+                   ;; Modernize some deprecated targets/features.
+                   '(("compilerOptions.target" . "ES2022")
+                     ("compilerOptions.module" . "NodeNext")
+                     ("compilerOptions.moduleResolution" . "NodeNext"))))))))))))
+
 (define-public node-dprint-formatter
   (package
     (name "node-dprint-formatter")
