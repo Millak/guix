@@ -5010,6 +5010,101 @@ use with WebSocket implementations.")
 function with browser support.")
     (license license:expat)))
 
+(define* (vscode-languageserver-package name directory version hash
+                                        synopsis description
+                                        #:key
+                                        (native-inputs
+                                         (delay (list node-typescript
+                                                      node-types-node)))
+                                        (inputs (delay '())))
+  "Return a languageserver package template."
+  (package
+    (name name)
+    (version version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Microsoft/vscode-languageserver-node")
+              (commit (string-append "release/" directory "/" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 hash))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:modules '((guix build node-build-system)
+                  (guix build json-utils)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (srfi srfi-34))
+      #:tests? #f                       ;requires mocha
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir #$directory)))
+          (add-after 'chdir 'patch-tsconfigs
+            ;; Filter out entries that reference test tsconfig.json files, as
+            ;; they pull extraneous types.
+            (lambda _
+              (define filter-tsconfig-references
+                (modify-json-fields
+                 '("references")
+                 (lambda (field-path data key)
+                   (let ((refs (vector->list (assoc-ref data key))))
+                     (assoc-set!
+                      data key
+                      (list->vector
+                       (remove (compose
+                                (lambda (x)
+                                  (or (string-contains x "/test/")
+                                      ;; Also remove references to other
+                                      ;; languageserver components, which are
+                                      ;; built separately.
+                                      (string-prefix? "./../" x)
+                                      (string-prefix? "../" x)))
+                                (cut assoc-ref <> "path"))
+                               refs)))))))
+              (modify-json "tsconfig.json" filter-tsconfig-references)))
+          (add-after 'chdir 'add-node-types-dependency
+            ;; This is needed at least for
+            ;; node-vscode-languageserver-protocol.
+            (lambda _
+              ;; The @types/node dependency is only declared at the root of
+              ;; the monorepo; since we build each languageserver package in
+              ;; isolation it's not declared/visible for it.
+              (guard (c ((modify-json-preexisting-key-error? c) #t))
+                (modify-json "package.json"
+                  (add-fields '(("devDependencies.@types/node" .
+                                 ">=24.0.0")))))))
+          (add-after 'patch-dependencies 'adjust-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies/except
+                            '("typescript" "@types/node")))))
+          (replace 'build
+            (lambda _
+              (invoke "npm" "run" "compile"))))))
+    (native-inputs (force native-inputs))
+    (inputs (force inputs))
+    (home-page "https://github.com/Microsoft/vscode-languageserver-node")
+    (synopsis synopsis)
+    (description description)
+    (license license:expat)
+    (properties `((release-tag-prefix
+                   . ,(string-append "^release/" directory "/"))))))
+
+(define-public node-vscode-jsonrpc
+  (vscode-languageserver-package
+   "node-vscode-jsonrpc"
+   "jsonrpc"
+   "10.0.0"
+   "0vclmlh5jhns1i346bmkaq61shfqmcccsw28vg5jzph13l9zslyq"
+   "JSON RPC implementation over streams"
+   "This package provides a JSON @acronym{RPC, remote procedure call}
+implementation over streams."))
+
 (define-public node-vscode-l10n
   (package
     (name "node-vscode-l10n")
