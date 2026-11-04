@@ -4702,9 +4702,15 @@ tablets.
 
 (define* (node-types type #:key
                      ;; Note: Keep the default version/commit in sync with
-                     ;; that of our `node' package.
-                     (version "22.14.0")
-                     (commit "1f6ca6ff73af20b951f5ea6ecbea6668eff1750f")
+                     ;; that of our `node' package.  To find the latest
+                     ;; version and commit object ID, run from a checkout of
+                     ;; the DefinitelyTypes (adjusting for the current major
+                     ;; node-lts version) :
+                     ;;
+                     ;; git log --grep=v24 -G'version' -n5 -- types/node/package.json
+                     ;;
+                     (version "24.10.0")
+                     (commit "d9e0e0e43ae92930cde83618e760be26236f50fa")
                      (inputs (delay '())))
   (package
     (name (string-append "node-types-" type))
@@ -4718,7 +4724,7 @@ tablets.
        ;; Keep same name to avoid multiplying checkouts in store.
        (file-name (git-file-name "node-definitelytyped" version))
        (sha256
-        (base32 "05q0cj2b35z27fv1b00kr8ja5hj2dzl4shx1mwk0jg44z1cwkp0j"))))
+        (base32 "07xyfq6p39kcdf7qvzzdijv78483pi5fims91nnq591h6sxnx263"))))
     (build-system node-build-system)
     (inputs (force inputs))
     (arguments
