@@ -5105,6 +5105,16 @@ function with browser support.")
    "This package provides a JSON @acronym{RPC, remote procedure call}
 implementation over streams."))
 
+(define-public node-vscode-languageserver-textdocument
+  (vscode-languageserver-package
+   "node-vscode-languageserver-textdocument"
+   "textDocument"
+   "1.0.16"
+   "0vclmlh5jhns1i346bmkaq61shfqmcccsw28vg5jzph13l9zslyq"
+   "Simple text document implementation for Node LSP servers"
+   "This package provides a simple text document implementation
+for Node @acronym{LSP, Language Server Protocol} servers."))
+
 (define-public node-vscode-languageserver-types
   (vscode-languageserver-package
    "node-vscode-languageserver-types"
