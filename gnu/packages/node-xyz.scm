@@ -5105,6 +5105,16 @@ function with browser support.")
    "This package provides a JSON @acronym{RPC, remote procedure call}
 implementation over streams."))
 
+(define-public node-vscode-languageserver-types
+  (vscode-languageserver-package
+   "node-vscode-languageserver-types"
+   "types"
+   "3.18.5"
+   "0vclmlh5jhns1i346bmkaq61shfqmcccsw28vg5jzph13l9zslyq"
+   "Types for the VS Code language server"
+   "This package provides the types used by Node.js language server of VS
+Code."))
+
 (define-public node-vscode-l10n
   (package
     (name "node-vscode-l10n")
