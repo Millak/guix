@@ -367,14 +367,14 @@ browser without requiring a page refresh.")
 (define-public gunicorn
   (package
     (name "gunicorn")
-    (version "25.3.0")
+    (version "26.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gunicorn" version))
        (sha256
         (base32
-         "12g85w735s4dszjfidi4vh786rfxsa5rd60il0fcvxknkwpinkpp"))))
+         "0iw4crlhfvcikh686h35b4hk3j8ix17s0yw6z6rg1gwybn4n9f32"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
@@ -414,14 +414,11 @@ browser without requiring a page refresh.")
            python-gevent
            python-h2
            python-httpx
+           python-packaging
            python-pytest
            python-pytest-asyncio
            python-setuptools
            python-uvloop))
-    (propagated-inputs
-     (list python-packaging
-           python-setuptools
-           python-wheel))
     (home-page "https://gunicorn.org/")
     (synopsis "Python WSGI HTTP Server for UNIX")
     (description
@@ -440,7 +437,7 @@ and fairly speedy.")
     (name "gunicorn")
     (arguments `(#:tests? #f))
     (properties '((hidden? . #t)))
-    (native-inputs `())))
+    (native-inputs (list python-setuptools))))
 
 (define-public oauth2ms
   (let ((commit "a1ef0cabfdea57e9309095954b90134604e21c08")
