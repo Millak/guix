@@ -791,6 +791,35 @@ interfaces in Node.js.")
 64.0.3242 and above and all other browsers supporting the file format and API.")
     (license license:bsd-3)))
 
+(define-public node-css-what
+  (package
+    (name "node-css-what")
+    (version "8.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/css-what")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13bqng7964i9x5cyb6ilpkrkn9bpy5lb0z9s13znhvzfjzcz0qzi"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies/except
+                            '("@types/node" "typescript"))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (home-page "https://github.com/fb55/css-what")
+    (synopsis "CSS selector parser")
+    (description "This package provides a CSS selector parser.")
+    (license license:bsd-2)))
+
 (define-public node-debug
   (package
     (name "node-debug")
