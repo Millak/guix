@@ -3288,7 +3288,7 @@ wayland compositors, allowing you to play videos as your wallpaper using mpv.")
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.16.0")
+    (version "1.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3297,9 +3297,8 @@ wayland compositors, allowing you to play videos as your wallpaper using mpv.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0llik9k5rs9ychw9fnknwrz8662dm370yf76r6d6n07727faylyg"))
-              (patches (search-patches "libvpx-CVE-2016-2818.patch"
-                                       "libvpx-CVE-2026-2447.patch"))))
+                "1ihf7lp86dff31bzvkw7nica46jqjmz2y0zj9xkzw1d00hfmxw6l"))
+              (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-shared"
