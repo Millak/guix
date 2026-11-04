@@ -5248,6 +5248,42 @@ Code."))
 localizing sub-processes spawned by VS Code extensions.")
     (license license:expat)))
 
+(define-public node-vscode-markdown-languageserver
+  (package
+    (name "node-vscode-markdown-languageserver")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url
+               "https://github.com/microsoft/vscode-markdown-languageserver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wx360njlcb9ivc7l9pi9mm014kbigqq58w562s0ixrg7hiafj13"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;missing script: "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-vscode-uri
+                  node-vscode-markdown-languageservice
+                  node-vscode-languageserver-types
+                  node-vscode-languageserver-textdocument
+                  node-vscode-languageserver
+                  node-vscode-l10n))
+    (home-page
+     "https://www.npmjs.com/package/node-vscode-markdown-languageserver")
+    (synopsis "Markdown language server")
+    (description "This package provides the Markdown language server used by
+VS Code.")
+    (license license:expat)))
+
 (define-public node-vscode-markdown-languageservice
   (package
     (name "node-vscode-markdown-languageservice")
