@@ -239,7 +239,7 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "3.14.49")
+    (version "3.14.52")
     (source
      (origin
        (method git-fetch)
@@ -248,7 +248,7 @@ it.")
           (url "https://github.com/trealla-prolog/trealla")
           (commit (string-append "v" version))))
        (sha256
-        (base32 "0rj3ljky87nhqmabjzfk87k61520ksd8f6x2sq67mw4lmpi822fx"))
+        (base32 "0p5l493j1lib7skq3a6qs3shhmqdgk5i79jb977919yw89rlwvd5"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -291,7 +291,13 @@ it.")
                  (search-input-file inputs "lib/libraylib.so")))
               (substitute* "library/sqlite3.pl"
                 (("libsqlite3\\.so")
-                 (search-input-file inputs "lib/libsqlite3.so"))))))))
+                 (search-input-file inputs "lib/libsqlite3.so")))))
+          (add-after 'fix-paths 'relax-gsl-test
+            (lambda _
+              ;; GSL 2.8 produces slightly different floating-point results.
+              (substitute* "tests/sundry/gsl_bindings.expected"
+                (("real_eigenvalues: \\[-0.772001-0\\.0,7\\.772002-0\\.0\\]")
+                 "real_eigenvalues: [-0.772002-0.0,7.772002-0.0]")))))))
     (home-page "https://trealla-prolog.org/")
     (synopsis "Compact and efficient Prolog interpreter")
     (description "This package provides a compact and efficient Prolog
