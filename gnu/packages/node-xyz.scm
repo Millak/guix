@@ -1000,6 +1000,40 @@ text differences, similar to Unix diff.")
 Object Type (DOM) of htmlparser2.")
     (license license:bsd-2)))
 
+(define-public node-domhandler
+  (package
+    (name "node-domhandler")
+    (version "6.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/domhandler")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r3v0jlq45gz0dr1jiihywhkl2fz5sywcdw2xny4rlpdbzk3xv60"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires vitest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies/except
+                            '("@types/node" "typescript")))))
+          (add-after 'unpack 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src")))))))))
+    (native-inputs (list node-domelementtype node-typescript node-types-node))
+    (home-page "https://github.com/fb55/domhandler")
+    (synopsis "Handler for htmlparser2 that turns pages into a DOM")
+    (description "This package provides a handler for htmlparser2 that turns
+pages into a @acronym{DOM, Domain Object Model}.")
+    (license license:bsd-2)))
+
 (define-public node-dprint-formatter
   (package
     (name "node-dprint-formatter")
