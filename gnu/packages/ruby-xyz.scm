@@ -7963,21 +7963,40 @@ easily generate fake data: names, addresses, phone numbers, etc.")
           (lambda _
             (substitute* "spec/spec_helper.rb"
               (("require 'bundler/setup'") ""))))
+        (add-after 'unpack 'explicitly-require-forwardable
+          (lambda _
+            (substitute* "lib/ruby_terraform.rb"
+              (("require 'ruby_terraform/models'" req)
+               (string-append "require 'forwardable'; " req)))))
         (add-before 'check 'disable-falinig-tests
           (lambda _
             (substitute* "spec/ruby_terraform/commands/plan_spec.rb"
               (("it 'logs an error raised when running the command'")
                "xit 'logs an error raised when running the command'")
               (("it 'raises execution error when an error occurs running the command'")
-               "xit 'raises execution error when an error occurs running the command'"))))
+               "xit 'raises execution error when an error occurs running the command'"))
+            (substitute* "spec/ruby_terraform/models/map_spec.rb"
+              ;; Incompatible Hash object serializations:
+              ;;   expected: "{:key=>1 (known, non-sensitive)} (non-sensitive)"
+              ;;        got: "{key: 1 (known, non-sensitive)} (non-sensitive)"
+              (("it 'returns the underlying value with non-sensitive by default'")
+               "xit 'returns the underlying value with non-sensitive by default'")
+              (("it 'returns the underlying value with non-sensitive when not sensitive'")
+               "xit 'returns the underlying value with non-sensitive when not sensitive'")
+              (("it 'returns the underlying value with sensitive when sensitive'")
+               "xit 'returns the underlying value with sensitive when sensitive'"))))
+        (add-before 'check 'remove-simplecov-setup
+          (lambda _
+            (substitute* "spec/spec_helper.rb"
+              (("require 'simplecov'") "")
+              (("SimpleCov\\.start do") "<<~end"))))
         (replace 'check
           (lambda* (#:key tests? #:allow-other-keys)
             (when tests?
               (invoke "rspec")))))))
   (native-inputs
    (list ruby-rspec
-         ruby-faker
-         ruby-simplecov))
+         ruby-faker))
   (propagated-inputs
    (list ruby-lino ruby-immutable-struct))
   (synopsis "Ruby wrapper around the Terraform command line interface")
