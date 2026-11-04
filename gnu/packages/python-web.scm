@@ -15105,34 +15105,39 @@ seamlessly integrates with @code{urllib3} and @code{requests}.")
 (define-public python-starlette
   (package
     (name "python-starlette")
-    (version "0.49.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/encode/starlette")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0w9cyaxpc2p99hqrfw164iypacx3i1gsmn2z0xywgd21alva82ji"))))
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/encode/starlette")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18zx3zns22ciynlk2lal3fq1raz96kn72p05sq39fzfds29bcf7m"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-anyio
-                             python-typing-extensions
-                             ;; [all] extra dependencies:
-                             python-itsdangerous
-                             python-jinja2
-                             python-multipart
-                             python-pyyaml
-                             python-requests))
-    (native-inputs (list python-hatchling
-                         python-httpx
-                         python-pytest
-                         python-typing-extensions))
+    (arguments
+     (list
+      ;; Drop dependency on httpx which is unmaintained.
+      #:test-flags #~(list "--ignore=tests/middleware/test_opentelemetry.py")))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-anyio
+           python-typing-extensions
+           ;; [optinoal]
+           python-itsdangerous
+           python-jinja2
+           python-opentelemetry-api
+           python-multipart
+           python-pyyaml
+           python-httpx2))
     (home-page "https://github.com/encode/starlette")
     (synopsis "Little ASGI library")
     (description
-     "Starlette is a lightweight ASGI (Asynchronous Server Gateway
-Interface) framework/toolkit for building async web services in Python.")
+     "Starlette is a lightweight ASGI (Asynchronous Server Gateway Interface)
+framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
 
 ;; A bare minimal package, mainly to use in tests and reduce closure size.
