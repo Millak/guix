@@ -12135,7 +12135,7 @@ and also provides the base for the FlightGear Flight Simulator.")
     (native-inputs
      `(("cppunit" ,cppunit)
        ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools-5)
+       ("qttools" ,qttools)
        ("flightgear-data"
         ,(origin
            (method url-fetch)
