@@ -12459,7 +12459,11 @@ part of the Prawn PDF generator.")
                 ;; module fail with "Expected false to be truthy.".
                 ;; tests try changing different module versions, but guix
                 ;; doesn't expose alternate module versions to be tested with
-                (delete-file "test/test_worker_gem_independence.rb"))))
+                (delete-file "test/test_worker_gem_independence.rb")
+                ;; Test cases in this file are for ensuring that the certs in
+                ;; the examples directory are valid.  Thus, it becomes
+                ;; unstable 1 month before the certs expire.
+                (delete-file "test/test_example_cert_expiration.rb"))))
           (add-before 'check 'set-home
             (lambda _
               ;; Some tests fail if the cannot write to HOME.
