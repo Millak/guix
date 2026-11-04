@@ -97,6 +97,7 @@
 ;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
 ;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2026 Stampede <stampede@tutamail.com>
+;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,6 +201,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shellutils)
@@ -224,6 +226,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system haskell)
@@ -3073,6 +3076,86 @@ functions expected of a Wayland compositor.")
 customizable status bars for their desktop environment.  It has built-in
 functionality to display information about the most commonly used services.")
     (license license:expat)))
+
+(define-public reka
+  (let ((commit "07de418fedd226b3a807c9ed0fb06eda9f697e0c")
+        (revision "0"))
+    (package
+      (name "reka")
+      (version (git-version "0" revision commit)) ;no release yet
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/tazjin/reka")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xar106yh5ckb4459swbai9nq82vqxqs88q58mli67c781m21n4d"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:imported-modules (append %cargo-build-system-modules
+                                   %emacs-build-system-modules)
+        #:modules '(((guix build cargo-build-system)
+                     #:prefix cargo:)
+                    (guix build emacs-build-system)
+                    (guix build utils))
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'prepare-cargo-build-system
+              (lambda args
+                (for-each (lambda (phase)
+                            (format #t "Running cargo phase: ~a~%" phase)
+                            (apply (assoc-ref cargo:%standard-phases phase)
+                                   #:vendor-dir "vendor"
+                                   #:cargo-target #$(cargo-triplet)
+                                   args))
+                          '(unpack-rust-crates
+                            configure
+                            check-for-pregenerated-files
+                            patch-cargo-checksums
+                            build))
+                (setenv "RUSTFLAGS"
+                        (string-append (or (getenv "RUSTFLAGS") "")
+                                       " -C link-arg=-Wl,-rpath,"
+                                       #$output "/lib"))))
+            (add-after 'prepare-cargo-build-system 'substitute-module
+              (lambda _
+                (chdir "lisp")  ;; Elisp directory is not in root of the source.
+                (make-file-writable "reka.el")
+                (substitute* "reka.el"
+                  (("\\(require 'libreka\\)")
+                   (string-append "(module-load \""
+                                  (string-append #$output "/lib/libreka.so")
+                                  "\")")))))
+            (add-after 'install 'install-module
+              (lambda _
+                (install-file "../target/release/libreka.so"
+                              (string-append #$output "/lib")))))))
+      (native-inputs (append (list rust
+                                   `(,rust "cargo")
+                                   coreutils-minimal
+                                   pkg-config)
+                             ;; For cross-compilation.
+                             (or (and=> (%current-target-system)
+                                        (compose list make-rust-sysroot))
+                                 '())))
+      (inputs (cons* wayland
+                     libxkbcommon
+                     (cargo-inputs 'reka)))
+      (home-page "https://codeberg.org/tazjin/reka")
+      (synopsis "Emacs-based window manager for River")
+      (description
+       "Reka is an Emacs-based window manager for
+@url{https://codeberg.org/river/river, River}
+@url{https://wayland.freedesktop.org/, Wayland} compositor.  It does not expose
+any input or output management to Emacs.  You can use external tools like
+@url{https://codeberg.org/Sivecano/channel, channel} for input management, and
+@url{https://gitlab.freedesktop.org/emersion/kanshi, kanshi} for output
+management.")
+      (license license:gpl3+))))
 
 (define-public polycat
   (package

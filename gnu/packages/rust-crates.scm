@@ -9511,6 +9511,10 @@ fn main() {
   (crate-source "emacs" "0.19.0"
                 "133ip19m1nq8krf04klh1jpm833wpw6kdy2jksgylbw4xcp3yxws"))
 
+(define rust-emacs-0.21.0
+  (crate-source "emacs" "0.21.0"
+                "1qdqn0bk76fq24zqlmapj2ancm0m1hwalacsxmk146gmv1mny23w"))
+
 (define rust-emacs-macros-0.11.0
   (crate-source "emacs-macros" "0.11.0"
                 "0390y8vafxdi334hhgrzvcqjq3n5ckcmvilqcfp8vajjq8irrly6"))
@@ -9526,6 +9530,10 @@ fn main() {
 (define rust-emacs-module-0.18.0
   (crate-source "emacs_module" "0.18.0"
                 "1ypjyyv2ca3vza4sia91ckxamgfk63yd8frkvg3d4ph4fk4pn1mk"))
+
+(define rust-emacs-module-0.21.0
+  (crate-source "emacs_module" "0.21.0"
+                "0ykpk4fxpz193fykchb6xs8l5lbghzl6panwy79yh74hvgxj1018"))
 
 (define rust-email-address-0.2.9
   (crate-source "email_address" "0.2.9"
@@ -18196,6 +18204,10 @@ fn main() {
   (crate-source "jiff" "0.2.41"
                 "0fk2f7bx4qmckg1jarhyqhglh42nslkk8bl50628zb2rmkpxrvzw"))
 
+(define rust-jiff-0.2.42
+  (crate-source "jiff" "0.2.42"
+                "1ak2wjzdv8wp74m3vwny9v5fv83d41l5wy85m43xgbpfjdha1z7y"))
+
 (define rust-jiff-0.2.6
   (crate-source "jiff" "0.2.6"
                 "1274a8wj5czbysk1nzgrk18prsq6c5cvviv28cb3ga5ybid18cqz"))
@@ -18263,6 +18275,10 @@ fn main() {
 (define rust-jiff-static-0.2.41
   (crate-source "jiff-static" "0.2.41"
                 "1p9l684906xb1py56jabk7m6i5y8x8iwibglzg43w2741jdxygi0"))
+
+(define rust-jiff-static-0.2.42
+  (crate-source "jiff-static" "0.2.42"
+                "1w4qqf794m3a6mqsn4bnxfmznpdyz5d6r3m1l7p649kl94sj3ls1"))
 
 (define rust-jiff-static-0.2.6
   (crate-source "jiff-static" "0.2.6"
@@ -90720,6 +90736,78 @@ fn main() {
             rust-zerovec-0.11.5
             rust-zerovec-derive-0.11.2
             rust-zmij-1.0.21))
+ (reka =>
+       (list rust-aho-corasick-1.1.5
+             rust-anstream-1.0.0
+             rust-anstyle-1.0.14
+             rust-anstyle-parse-1.0.0
+             rust-anstyle-query-1.1.5
+             rust-anstyle-wincon-3.0.11
+             rust-anyhow-1.0.104
+             rust-bitflags-2.13.2
+             rust-cc-1.11.1
+             rust-cfg-if-1.0.5
+             rust-cfg-aliases-0.2.2
+             rust-colorchoice-1.0.5
+             rust-ctor-0.1.26
+             rust-darling-0.10.2
+             rust-darling-core-0.10.2
+             rust-darling-macro-0.10.2
+             rust-downcast-rs-1.2.1
+             rust-emacs-0.21.0
+             rust-emacs-macros-0.17.0
+             rust-emacs-module-0.21.0
+             rust-env-filter-2.0.0
+             rust-env-logger-0.11.11
+             rust-errno-0.3.14
+             rust-find-msvc-tools-0.1.15
+             rust-fnv-1.0.7
+             rust-ident-case-1.0.1
+             rust-is-terminal-polyfill-1.70.2
+             rust-jiff-0.2.42
+             rust-jiff-core-0.1.4
+             rust-jiff-static-0.2.42
+             rust-libc-0.2.191
+             rust-linux-raw-sys-0.12.1
+             rust-log-0.4.35
+             rust-memchr-2.8.3
+             rust-memmap2-0.9.12
+             rust-nix-0.31.3
+             rust-once-cell-1.21.4
+             rust-once-cell-polyfill-1.70.2
+             rust-pkg-config-0.3.34
+             rust-portable-atomic-1.15.0
+             rust-portable-atomic-util-0.2.8
+             rust-proc-macro2-1.0.107
+             rust-quick-xml-0.41.0
+             rust-quote-1.0.47
+             rust-regex-1.13.1
+             rust-regex-automata-0.4.18
+             rust-regex-syntax-0.8.11
+             rust-rustc-version-0.2.3
+             rust-rustix-1.1.6
+             rust-semver-0.9.0
+             rust-semver-parser-0.7.0
+             rust-serde-core-1.0.229
+             rust-serde-derive-1.0.229
+             rust-shlex-2.0.1
+             rust-smallvec-1.16.5
+             rust-strsim-0.9.3
+             rust-syn-1.0.109
+             rust-syn-2.0.119
+             rust-syn-3.0.10
+             rust-thiserror-1.0.69
+             rust-thiserror-impl-1.0.69
+             rust-unicode-ident-1.0.27
+             rust-utf8parse-0.2.2
+             rust-wayland-backend-0.3.17
+             rust-wayland-client-0.31.15
+             rust-wayland-scanner-0.31.11
+             rust-wayland-sys-0.31.11
+             rust-windows-link-0.2.1
+             rust-windows-sys-0.61.2
+             rust-xkbcommon-0.9.0
+             rust-xkeysym-0.2.1))
  (resources =>
             (list rust-aho-corasick-1.1.4
                   rust-anstream-0.6.21
