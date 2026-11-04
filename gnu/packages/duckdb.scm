@@ -52,7 +52,7 @@
   #:use-module (gnu packages time))
 
 
-(define %duckdb-version "1.5.3")
+(define %duckdb-version "1.5.6")
 
 (define-public duckdb
   (package
@@ -66,7 +66,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0020lv9dxcrng34f0c6ibp20pxll7pyjg0p3080qgw6jf5hsvfck"))))
+        (base32 "0fpvq3hx0cyvnwxp937kv50blr6cs086ga47yv1p9niyj1q2wxy4"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -101,7 +101,7 @@ single-file databases with support for secondary indexes.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d0zbg86kfpknx50zjmz9j6hcycfy8pwb2h2w5rxw741iihdyj5g"))))
+        (base32 "0v99gw1x5iiqa7036aw1klzs3k8izhvk6hikvpc2yvgvv9rjjjyi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -155,13 +155,13 @@ system.")
 (define-public r-duckdb
   (package
     (name "r-duckdb")
-    (version "1.5.2")
+    (version %duckdb-version)
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "duckdb" version))
        (sha256
-        (base32 "1dldlfwvc33czvlxfmwaj4p9y6sjjj5iqy98yda47a8kclrqmyam"))
+        (base32 "1jdhlp64nfvyknvijxqp8498ysc5l31yqwq17y6qsmll55dv9acj"))
        ;; This package bundles the duckdb sources and builds a custom variant
        ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
        ;; but it does not seem possible to do that.
