@@ -32,14 +32,14 @@
 (define-public unrtf
   (package
     (name "unrtf")
-    (version "0.21.10")
+    (version "0.21.14")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/unrtf/unrtf-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1bil6z4niydz9gqm2j861dkxmqnpc8m7hvidsjbzz7x63whj17xl"))))
+               "11wm3gl8268apnvic5y10qbqh77nin8h1f3lr7dm1gcmy63jxxxi"))))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/unrtf/")
     (synopsis "Convert Rich Text Format documents to other formats")
