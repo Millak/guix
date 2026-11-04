@@ -23206,6 +23206,13 @@ format.")
           (add-before 'check 'configure-tests
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
+                ;; Make sure that tests/ is treated as a regular package, not
+                ;; a "namespace package" as other packages in GUIX_PYTHONPATH
+                ;; may provide tests/ as well.
+                ;;
+                ;; See https://docs.python.org/3/reference/import.html#regular-packages
+                (call-with-output-file "tests/__init__.py" (const #t))
+
                 (setenv "PYTHONPATH" (getcwd))))))))
     (native-inputs (list python-pytest
                          python-gevent
