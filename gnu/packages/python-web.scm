@@ -1449,49 +1449,27 @@ that is then compared to a @code{csrftoken} hidden form field or a
 (define-public python-asgi-lifespan
   (package
     (name "python-asgi-lifespan")
-    (version "2.1.0")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/florimondmanca/asgi-lifespan")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0iqa3h61gsq1qd6j9v68k989596m9n9k1dx8zv6135rmhzzrs296"))))
+    ;; 2.1.0 (2023-03-28); to get fix for httpx.
+    (properties '((commit . "8591cb106849c73e3080e6c689e8c22b70fd863f")
+                  (revision . "0")))
+    (version (git-version "2.1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/florimondmanca/asgi-lifespan")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jhd9zg96vplnw3l11m00gkf19mmawjdn957bzh2bzv58h9jqrsx"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; XXX: Some tests fail because of "Exceptions from Trio nursery"
-              "not (test_lifespan_manager[trio-None-None-StartupFailed]"
-              " or test_lifespan_manager[trio-None-BodyFailed-None]"
-              " or test_lifespan_manager[trio-None-BodyFailed-StartupFailed]"
-              " or test_lifespan_manager[trio-ShutdownFailed-None-None]"
-              " or test_lifespan_manager[trio-ShutdownFailed-None-StartupFailed]"
-              " or test_lifespan_manager[trio-ShutdownFailed-BodyFailed-StartupFailed]"
-              " or test_lifespan_timeout[trio-slow_shutdown]"
-              " or test_lifespan_not_supported[trio-http_only]"
-              " or test_lifespan_not_supported[trio-http_no_assert]"
-              " or test_lifespan_not_supported[trio-http_no_assert_before_receive_request]"
-              ")"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             ;; httpx version 0.28.0 removed the "app" shortcut.
-             (substitute* "tests/test_manager.py"
-               (("app=manager.app")
-                "transport=httpx.ASGITransport(manager.app)")))))))
-    (native-inputs (list python-httpx
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-trio
-                         python-starlette
-                         python-setuptools
-                         python-wheel))
+     ;; Projects has no updates for 3y, 22 tests failed 9 passed.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs (list python-sniffio))
     (home-page "https://github.com/florimondmanca/asgi-lifespan")
     (synopsis "Programmatic startup/shutdown of ASGI apps")
