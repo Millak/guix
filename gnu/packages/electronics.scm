@@ -5473,6 +5473,21 @@ and coverage-analysis points.  It outputs single or multi-threaded
 @file{.cpp} and @file{.h} files.")
     (license license:lgpl3)))
 
+(define verilator-5.052
+  (package
+    (inherit verilator)
+    (name "verilator")
+    (version "5.052")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/verilator/verilator/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zcjzxgcm38sc70ciyh2zkpvyiw5dmczfx60nlmzg5qsp5sah5yz"))))))
+
 (define-public xoscope
   (let ((revision "0.0.0")
         (commit "d97b9b186a4137582ae27fce1da73f51c06f852e"))
