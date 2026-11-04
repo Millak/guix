@@ -981,23 +981,31 @@ lets developers use the functionality of Proj in their own software.")
     (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "obspy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/obspy/obspy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0m4c5qkkrl4fr1p0061qap605qvwybqyjvnbj5ml6v9b0l5hm6cm"))))
+        (base32 "0bnsjndnccsickc7iclzrx2hbsqmds1z1hp4kjwl9sjzi397w7bd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--pyargs" "obspy"
+              ;;  AttributeError: 'TestResourceIdentifier' object has no
+              ;;  attribute 'skipTest'
+              "-k" "not test_issue_2278")
       #:phases
       #~(modify-phases %standard-phases
-          ;; Rebuild shared libraries to run tests
-          (add-before 'check 'build-extensions
+          (add-before 'check 'remove-local-source
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (delete-all-but "obspy" "LICENSE.txt"))))))
     (native-inputs
      (list python-packaging
            python-pyproj
-           python-pytest))
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-decorator
            python-lxml
@@ -1005,8 +1013,7 @@ lets developers use the functionality of Proj in their own software.")
            python-numpy
            python-requests
            python-scipy
-           python-setuptools
-           python-sqlalchemy))
+           python-sqlalchemy-2))
     (home-page "https://www.obspy.org")
     (synopsis "Python framework for seismological observatories")
     (description
