@@ -7419,12 +7419,9 @@ define executable specifications of your code.")
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (invoke "bake" "test")))))))
+                     (invoke "sus")))))))
     (native-inputs
-     (list ruby-covered
-           ruby-bake-test
-           ruby-bake-test-external
-           ruby-sus))
+     (list ruby-sus))
     (synopsis "Collection of Ruby timer classes")
     (description "Timers offers a collections of one-shot and periodic timers,
 intended for use with event loops such as async.")
