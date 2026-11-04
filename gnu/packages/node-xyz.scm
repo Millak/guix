@@ -9,6 +9,7 @@
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2024-2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -825,6 +826,62 @@ interfaces in Node.js.")
     (synopsis "CSS selector compiler/engine")
     (description "This package provides a CSS selector compiler/engine.")
     (license license:bsd-2)))
+
+(define-public node-css-select-5
+  (package
+    (inherit node-css-select)
+    (name "node-css-select")
+    (version "5.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/css-select")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sbpwjgwni6fa2kss7ld1lrn14mvl5d897p3bm67hj7pna6c7z7m"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'neuter-prepare-script
+              (lambda _
+                (modify-json "package.json"
+                  (delete-fields '("scripts.prepare")))))
+            (add-after 'unpack 'remove-jsonc-comments
+              (lambda _
+                (substitute* "tsconfig.json"
+                  (("^[[:blank:]]*/\\*.*") ""))))
+            (add-after 'remove-jsonc-comments 'more-ts6-adjustments
+              (lambda _
+                (substitute* "package.json"
+                  ;; Remove command-line overrides.
+                  (("--module esnext --target es2019 ") ""))
+                (modify-json "tsconfig.json"
+                  ;; We also need to manually register the node types.
+                  (add-json-fields
+                   '(("compilerOptions.types" . #("node"))))
+                  (delete-json-fields
+                   '("compilerOptions.importsNotUsedAsValues"))
+                  (replace-json-fields
+                   ;; Modernize some deprecated targets/features.
+                   '(("compilerOptions.target" . "ES2022")
+                     ("compilerOptions.module" . "NodeNext")
+                     ("compilerOptions.moduleResolution" . "NodeNext"))))))
+            (add-after 'unpack 'patch-build-target
+              (lambda _
+                (modify-json "package.json"
+                  (replace-fields
+                   '(("scripts.build:cjs" . "tsc"))))))
+            (replace 'delete-dev-dependencies
+              (lambda _
+                (modify-json "package.json"
+                  (delete-dev-dependencies/except
+                   '("@types/node" "@types/boolbase")))))))))
+    (native-inputs (list node-types-boolbase node-types-node node-typescript))
+    (inputs (list node-boolbase-1 node-css-what node-domhandler
+                  node-domutils-3 node-nth-check))))
 
 (define-public node-css-what
   (package
