@@ -2328,7 +2328,7 @@ which allows one to install the M8 firmware on any Teensy.")
 (define-public magic
   (package
     (name "magic")
-    (version "8.3.684")
+    (version "8.3.693")
     (source
      (origin
        (method git-fetch)
@@ -2337,7 +2337,7 @@ which allows one to install the M8 firmware on any Teensy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zgmxl0xqq31q0cd9x3rip0vk7lllwbnnrvgkwmb1ni219cccily"))))
+        (base32 "19y3h99vyzw0phqf1wskj803pk6aah5hjqw8pwy7qjwfq5dx1q3w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2355,7 +2355,7 @@ which allows one to install the M8 firmware on any Teensy.")
                   readline
                   tcl
                   tk))
-    (home-page "http://opencircuitdesign.com/magic/index.html")
+    (home-page "https://opencircuitdesign.com/magic/")
     (synopsis "@acronym{VLSI, Very-large-scale integration} layout tool")
     (description
      "Magic is an interactive @acronym{EDA, Electronic Design Automation} layout
