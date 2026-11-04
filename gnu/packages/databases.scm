@@ -6618,7 +6618,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "1.0a26")
+    (version "1.0a41")
     (source
      (origin
        (method git-fetch)
@@ -6627,15 +6627,22 @@ mechanism of @code{dogpile}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ra0yfrz9w3jx7ix3dmcsg0g8hjxkz37586g7ijmqshxpzczxfm7"))))
+        (base32 "096100c5pi48n5np2d7cw6zyi2w1sbic93m5h9b0g652j34gjhlj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1720 passed, 9 skipped, 8 xfailed, 13 xpassed, 3 warnings, 120
-      ;; subtests passed
+      ;; tests: 2703 passed, 107 skipped, 6 xfailed, 15 xpassed, 143 subtests
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "--ignore=tests/test_black.py")
+              "--ignore=tests/test_black.py"
+              ;; Timeout (>1.0s) from pytest-timeout.
+              (string-append "--deselect=tests/test_internals_database.py"
+                             "::test_execute_write_fn_connection_exception")
+              ;; Value for 'trace' required if not called in except: block
+              (string-append "--deselect=tests/test_queries.py"
+                             "::test_create_query_ui_and_arbitrary_sql_save_link")
+              (string-append "--deselect=tests/test_queries.py"
+                             "::test_create_query_analyze_endpoint_uses_sql_only"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -6644,18 +6651,18 @@ mechanism of @code{dogpile}.")
                 (("\"pip\",") "")))))))
     (propagated-inputs
      (list python-aiofiles
-           python-asgi-csrf
            python-asgiref
            python-asyncinject
            python-click
            python-click-default-group
-           python-httpx
+           python-httpx2
            python-hupper
            python-itsdangerous
-           python-janus
            python-jinja2
            python-mergedeep
+           python-opentelemetry-api
            python-pluggy
+           python-pydantic
            python-pyyaml
            python-sqlite-utils
            python-uvicorn))
