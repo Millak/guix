@@ -791,6 +791,41 @@ interfaces in Node.js.")
 64.0.3242 and above and all other browsers supporting the file format and API.")
     (license license:bsd-3)))
 
+(define-public node-css-select
+  (package
+    (name "node-css-select")
+    (version "7.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fb55/css-select")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jjgfh8scqvziifqpsp7317h3wb17qj50vyxfazxayw4m5mihjil"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires vitest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json "package.json"
+                (delete-dev-dependencies))))
+          (add-after 'unpack 'adjust-for-typescript-6
+            (lambda _
+              (modify-json "tsconfig.json"
+                (add-json-fields '(("compilerOptions.rootDir" . "src")))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (inputs (list node-boolbase node-css-what node-domhandler node-domutils
+                  node-nth-check))
+    (home-page "https://github.com/fb55/css-select")
+    (synopsis "CSS selector compiler/engine")
+    (description "This package provides a CSS selector compiler/engine.")
+    (license license:bsd-2)))
+
 (define-public node-css-what
   (package
     (name "node-css-what")
