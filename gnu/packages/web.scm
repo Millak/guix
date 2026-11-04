@@ -9476,7 +9476,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
     (native-inputs
      (list pkg-config
            ;; Required by tests.
-           cunit python tzdata-for-tests))
+           cunit python-minimal tzdata-for-tests))
     (inputs
      ;; Required to build the tools (i.e. without ‘--enable-lib-only’).
      (append
