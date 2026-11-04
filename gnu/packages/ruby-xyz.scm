@@ -12363,7 +12363,13 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0f94jb50a8j9gvn0l59s8dahhry2alwk825ybsxh2y4n1ckyp3n7"))))
+         "0f94jb50a8j9gvn0l59s8dahhry2alwk825ybsxh2y4n1ckyp3n7"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete generated files.
+           (delete-file "ext/puma_http11/http11_parser.c")
+           (delete-file "ext/puma_http11/org/jruby/puma/Http11Parser.java")))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -12397,6 +12403,9 @@ part of the Prawn PDF generator.")
               (substitute* "puma.gemspec"
                 (("`git ls-files -- bin docs ext lib tools`")
                  "`find bin docs ext lib tools -type f |sort`"))))
+          (add-after 'fix-gemspec 'generate-http-parser
+            (lambda _
+              (invoke "rake" "ragel")))
           (delete 'check)               ;moved after install
           (add-after 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -12479,6 +12488,7 @@ part of the Prawn PDF generator.")
     (native-inputs
      (list bundler
            curl
+           ragel
            ruby-json
            ruby-localhost
            ruby-m
