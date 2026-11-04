@@ -143,7 +143,7 @@ previously known as journalism.")
            python-setuptools))
     (propagated-inputs
      (list python-agate
-           python-sqlalchemy))
+           python-sqlalchemy-2))
     (home-page "https://agate-sql.rtfd.org")
     (synopsis "SQL read/write support to agate")
     (description
