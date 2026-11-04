@@ -5065,6 +5065,48 @@ function with browser support.")
 localizing sub-processes spawned by VS Code extensions.")
     (license license:expat)))
 
+(define-public node-vscode-uri
+  (package
+    (name "node-vscode-uri")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/microsoft/vscode-uri")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d8x86a6hdz0ygc29fn6i9ls34ydyg822kz4y9risnv6lsrl6x50"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires jest, mocha
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'exclude-test-dir
+            (lambda _
+              ;; Otherwise, we'd need mocha and jest typescript types.
+              (modify-json "src/tsconfig.json"
+                (add-fields '(("exclude" . #("test"))
+                              ;; We also need to manually register the node
+                              ;; types, for some reason.
+                              ("compilerOptions.types" . #("node")))))))
+          (add-after 'build 'really-build
+            (lambda _
+              (invoke "npm" "run" "compile")))
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json "package.json"
+                (delete-dev-dependencies/except
+                 '("@types/node" "typescript"))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (home-page "https://github.com/microsoft/vscode-uri")
+    (synopsis "URI implementation in JavaScript")
+    (description "This package provides the URI implementation used by VS Code
+and its extensions.")
+    (license license:expat)))
+
 (define-public node-which
   (package
     (name "node-which")
