@@ -948,6 +948,7 @@ Simulator Trace} files.")
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list googletest
+           perl
            pkg-config
            pybind11
            python-wrapper
