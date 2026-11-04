@@ -1034,6 +1034,40 @@ Object Type (DOM) of htmlparser2.")
 pages into a @acronym{DOM, Domain Object Model}.")
     (license license:bsd-2)))
 
+(define-public node-dom-serializer
+  (package
+    (name "node-dom-serializer")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cheeriojs/dom-serializer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d6m9p8abvji0jz22vp9fqhiirf0vjai4im3vvg13carpbbv7wmy"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;requires vitest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'neuter-prepare-script
+            (lambda _
+              (modify-json (delete-fields '("scripts.prepare")))))
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies/except
+                            '("typescript" "@types/node"))))))))
+    (native-inputs (list node-typescript node-types-node))
+    (inputs (list node-domelementtype node-domhandler node-entities))
+    (home-page "https://github.com/cheeriojs/dom-serializer")
+    (synopsis "Render domhandler DOM nodes to a string")
+    (description "This Node.js module renders domhandler @acronym{DOM, Domain
+Object Model} nodes to a string.")
+    (license license:expat)))
+
 (define-public node-dprint-formatter
   (package
     (name "node-dprint-formatter")
