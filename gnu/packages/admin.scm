@@ -3145,13 +3145,13 @@ specified directories.")
 (define-public ansible-core
   (package
     (name "ansible-core")
-    (version "2.21.2")
+    (version "2.21.6")    ;newer versions require Python 3.13
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible_core" version))
        (sha256
-        (base32 "0w6wv6k39d5xn60l5m4cbzwwgpsyz8mg2ab0y5dgn6ys5rk9w4y6"))))
+        (base32 "0vf3rzb3przwhlnxlfqw5hy6jgm2spnyipa9kfhjz7zn395mp81z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
