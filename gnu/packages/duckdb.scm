@@ -124,9 +124,10 @@ single-file databases with support for secondary indexes.")
                        "external/duckdb")))
           (add-before 'build 'pre-build
             (lambda _
-              (setenv "DUCKDB_BUILD_UNITY" "1")
+              (setenv "CMAKE_DEFINE_DUCKDB_EXTENSION_AUTOINSTALL_DEFAULT" "0")
               (setenv "CMAKE_DEFINE_DUCKDB_EXTENSION_AUTOLOAD_DEFAULT" "0")
-              (setenv "CMAKE_DEFINE_DUCKDB_EXTENSION_AUTOINSTALL_DEFAULT" "0")))
+              (setenv "DUCKDB_BUILD_UNITY" "1")
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
