@@ -222,7 +222,7 @@ processor microarchitecture.")
         #~(list "-DRIPES_BUILD_VERILATOR_PROCESSORS=ON"
                 "-DRIPES_BUILD_TESTS=ON")))
       (native-inputs
-       (list python-minimal-wrapper verilator))
+       (list perl python-minimal-wrapper verilator))
       (inputs
        (list qtsvg qtcharts))
       (home-page "https://github.com/mortbopet/Ripes/")
