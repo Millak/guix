@@ -2889,7 +2889,7 @@ user which package sets would they like to install from it.")
 (define-public guile-wisp
   (package
     (name "guile-wisp")
-    (version "1.0.13")
+    (version "1.0.14")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -2898,7 +2898,7 @@ user which package sets would they like to install from it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fb4l0ww4rnkrsh4x46301j5xrqniny9b7yh7i6lp4wprwx0a7fs"))))
+                "037abiacr4lb0d8zqh1v418mwl6jsszxfv3nvmgyrj4gdivxyfny"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
