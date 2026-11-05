@@ -1182,7 +1182,8 @@ networks) based on simulation of (stochastic) flow in graphs.")
              (substitute* "setup.ml"
                (("LDFLAGS=-fPIC")
                 (string-append "LDFLAGS=-fPIC\"; \"SHELL=" (which "sh")))
-               (("-std=c89") "-std=gnu99 -fcommon")
+               (("-std=c89") "-std=gnu99 -fcommon -Wno-error=implicit-function-declaration")
+
 
                ;; This is a mutable string, which is no longer supported.  Use
                ;; a byte buffer instead.
