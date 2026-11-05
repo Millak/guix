@@ -461,7 +461,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                (lambda (port)
                  (display (string-append "
 [llvm]
-download-ci-llvm = false
 [build]
 optimized-compiler-builtins = false
 cargo = \"" (search-input-file inputs "bin/cargo") "\"
