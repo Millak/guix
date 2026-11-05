@@ -1135,14 +1135,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                  (substitute* "src/tools/cargo/tests/testsuite/death.rs"
                    ,@(make-ignore-test-list
                       '("fn ctrl_c_kills_everyone")))))
-             (add-after 'unpack 'patch-cargo-test-compat-curl-8.18
-               (lambda _
-                 ;; Fix compatibility with curl 8.18 and above:
-                 ;; https://github.com/rust-lang/cargo/pull/16698
-                 ;; TODO: remove on Rust 1.96.
-                 (substitute* '("src/tools/cargo/tests/testsuite/artifact_dep.rs"
-                                "src/tools/cargo/tests/testsuite/vendor.rs")
-                   (("Couldn't") "Could[..]t"))))
              (add-after 'unpack 'adjust-rpath-values
                ;; This adds %output:out to rpath, allowing us to install utilities in
                ;; different outputs while reusing the shared libraries.
