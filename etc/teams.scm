@@ -1802,6 +1802,11 @@ the \"texlive\" importer."
                        "mfg")
   chicken)
 
+(define-member (person "Daniel Ziltener"
+                       "dziltener@lyrion.ch"
+                       "zilti")
+  chicken)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
