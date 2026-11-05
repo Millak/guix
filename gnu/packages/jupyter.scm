@@ -48,6 +48,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
@@ -1000,13 +1001,18 @@ the JupyterLab CSS variables.")
 (define-public python-jupyterlab-server
   (package
     (name "python-jupyterlab-server")
-    (version "2.27.1")
+    (version "2.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_server" version))
        (sha256
-        (base32 "07b3m34akrf79xpaim9cymhsac0ry5ry7if998lcfxmn173mlyq9"))))
+        (base32 "0cfv1mb8zj9kak1fayvqwas8d0xs9kz3vrhn14lcw88hslc28g0c"))
+        ;; See: <https://github.com/python-openapi/openapi-core/issues/1225>,
+        ;; <https://github.com/jupyterlab/jupyterlab_server/pull/477>.
+       (patches
+        (search-patches
+         "python-jupyterlab-server-support-python-openapi-core-0.23.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
