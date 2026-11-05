@@ -715,6 +715,22 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-wlroots")
     (license license:expat)))
 
+;; It is used by river-classic, remove when no longer needed.
+(define-public zig-wlroots-0.20.1
+  (package
+    (inherit zig-wlroots)
+    (name "zig-wlroots")
+    (version "0.20.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/ifreund/zig-wlroots")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16cy0a65jddfhsvgvcmbj5ln7wx37nia6j6rr062k272dhkwgz3i"))))))
+
 (define-public zig-xkbcommon
   (package
     (name "zig-xkbcommon")
