@@ -940,6 +940,31 @@ to the absence of the @samp{motor} and @samp{aioboto3} package dependencies.")
 support for aiohttp asyncio-powered asynchronous HTTP server.")
     (license license:asl2.0)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-aiohttp-minimal
+  (package/inherit python-aiohttp
+    (name "python-aiohttp-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-cython
+           python-pkgconfig
+           python-setuptools
+           python-zlib-ng))
+    (inputs
+     (list llhttp))
+    (propagated-inputs
+     (list python-aiohappyeyeballs
+           python-aiosignal
+           python-attrs
+           python-frozenlist
+           python-multidict
+           python-propcache
+           python-yarl))))
+
 (define-public python-aiohttp-oauthlib
   (package
     (name "python-aiohttp-oauthlib")
