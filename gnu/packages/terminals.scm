@@ -73,6 +73,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system waf)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -2004,3 +2005,75 @@ color schemes.
 @item Hyperlinks.
 @end itemize")
       (license license:expat))))
+
+(define-public zutty
+  (package
+    (name "zutty")
+    (version "0.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.hq.sig7.se/zutty.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1mk2ww1mfzr2s9bqn0ilcs6zzaaaby1pgpsrkism6xfr707x22w2"))))
+    (build-system waf-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      `(,@%copy-build-system-modules
+        ,@%waf-build-system-modules)
+      #:modules
+      `(((guix build copy-build-system) #:prefix copy:)
+        (guix build waf-build-system)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)  ; No tests.
+          ;; Install and expose Zutty's default font.
+          (add-after 'unpack 'patch-default-font-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/options.h"
+                (("\"/usr/share/fonts\"")
+                 (string-append "\""
+                                (search-input-directory
+                                 inputs "share/fonts/X11/misc")
+                                "\"")))))
+          (add-after 'install 'extra-file-install
+            (let ((zutty-install-plan
+                   (append
+                    '(("icons/zutty.desktop" "share/applications/")
+                      ("icons/zutty.svg"
+                       "share/icons/hicolor/scalable/apps/"))
+                    (map (lambda (file)
+                           (list (string-append "doc/" file)
+                                 (string-append
+                                  "share/doc/zutty-" #$version "/")))
+                         '("USAGE.org" "KEYS.org" "HACKING.org" "VTTEST.org"))
+                    (map (lambda (size)
+                           (list (format #f "icons/zutty_~ax~a.png" size size)
+                                 (format #f "share/icons/hicolor/~ax~a/apps/"
+                                         size size)))
+                         '(16 32 48 64 96 128)))))
+              (lambda args
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan zutty-install-plan
+                       args)))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list freetype
+           font-misc-misc ; For default 9x18 font etc.
+           libx11
+           libxmu
+           libxt
+           mesa))
+    (home-page "https://tomscii.sig7.se/zutty/")
+    (synopsis "High-end GPU accelerated terminal for low-end systems")
+    (description
+     "Zutty is a terminal emulator for the X Window System featuring
+GPU-accelerated rendering through OpenGL ES 3.1 compute shaders, implemented
+in a minimal, maintainable C++ codebase.  It aims for both high-throughput,
+low-latency rendering and conformance to published and de facto VT standards.")
+    (license license:gpl3+)))
