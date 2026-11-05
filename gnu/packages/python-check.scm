@@ -5522,41 +5522,30 @@ files using JSON Schema.")
 (define-public python-vcrpy
   (package
     (name "python-vcrpy")
-    (version "7.0.0")
+    (version "9.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vcrpy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kevin1024/vcrpy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0l1sdfc51024jclqv9104nagpirxx8w0gcn5h0bdxv950jnr2qqp"))))
+        (base32 "1pk78mcgnhcgzvxwccpw4avds9l8sanwnpnlqbxqg36z3i9n3bv1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--ignore=tests/integration"
-              "-k" (string-join
-                    ;; These tests require network access.
-                    (list "not testing_connect"
-                          "test_get_vcr_with_matcher"
-                          "test_testcase_playback")
-                    " and not "))))
+              ;; These tests require network access.
+              "-k" "not testing_connect")))
     (native-inputs
-     (list python-aiohttp
-           python-boto3
-           python-httplib2
-           python-httpx
-           python-pytest
-           python-pytest-aiohttp
-           python-pytest-asyncio
+     (list python-pytest
            python-pytest-httpbin
-           python-requests
            python-setuptools
-           python-tornado
-           python-urllib3
-           python-werkzeug
-           python-wheel))
+           python-urllib3))
     (propagated-inputs
-     (list python-pyyaml python-wrapt python-yarl))
+     (list python-pyyaml python-wrapt))
     (home-page "https://github.com/kevin1024/vcrpy")
     (synopsis "Automatically mock your HTTP interactions")
     (description
