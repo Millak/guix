@@ -156,16 +156,24 @@ directly from a tty using KMS/DRM.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l3zyjfkjqhdfr29wzdnqwrbr2miczzij30ryg0j38md0zfalrzq"))))
+        (base32 "0l3zyjfkjqhdfr29wzdnqwrbr2miczzij30ryg0j38md0zfalrzq"))
+       (snippet
+        (rename-zig-dependencies
+         '(("wlroots" . "zig-wlroots")
+           ("translate_c" . "zig-translate-c")
+           ("pixman" . "zig-pixman")
+           ("xkbcommon" . "zig-xkbcommon")
+           ("wayland" . "zig-wayland"))))))
     (inputs
      (modify-inputs inputs
-       (replace "zig-xkbcommon" zig-xkbcommon-0.3)))
+       (replace "zig-xkbcommon" zig-xkbcommon-0.3)
+       (replace "zig-wlroots" zig-wlroots-0.20.1)))
     (home-page "https://codeberg.org/river/river-classic")
     (synopsis "Dynamic tiling Wayland compositor")
     (description
      "River is a dynamic tiling Wayland compositor with flexible
 runtime configuration.  It can run nested in an X11/Wayland session or also
-directly from a tty using KMS/DRM. This package provides the classic version,
+directly from a tty using KMS/DRM.  This package provides the classic version,
 which continues the work on River 0.3.")
     (license license:gpl3)))
 
