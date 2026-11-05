@@ -14842,6 +14842,20 @@ seamlessly integrates with @code{urllib3} and @code{requests}.")
 Interface) framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-starlette-minimal
+  (package/inherit python-starlette
+    (name "python-starlette-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-anyio python-typing-extensions))))
+
 (define-public python-starsessions
   (package
     (name "python-starsessions")
