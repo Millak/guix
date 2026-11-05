@@ -7896,13 +7896,19 @@ other HTTP libraries.")
     (arguments
      (list
       #:test-flags
-      ;; Disable tests requiring network access.
-      #~(list "-k" (string-join
-                    (list "not test_ftp"
-                          "test_ftp_http"
-                          "test_ftp_pasv_command"
-                          "test_problematic_http_urls")
-                    " and not "))))
+      ;; Compatibility issue with aiohttp, see:
+      ;; <https://github.com/Cadair/parfive/pull/197>.
+      #~(map (lambda (test) (string-append "--deselect=parfive/tests/" test))
+             (list"test_downloader.py::test_retrieve_some_content"
+                  "test_downloader.py::test_retry"
+                  "test_downloader.py::test_explicit_checksum"
+                  "test_downloader_multipart.py::test_multipart_with_error"
+                  "test_main.py::test_run_cli_success"
+                  ;; Network access is required.
+                  "test_downloader.py::test_ftp"
+                  "test_downloader.py::test_ftp_http"
+                  "test_downloader.py::test_ftp_callback_success"
+                  "test_downloader.py::test_problematic_http_urls"))))
     (native-inputs
      (list python-aiofiles
            python-pytest
