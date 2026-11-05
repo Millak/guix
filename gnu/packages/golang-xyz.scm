@@ -953,11 +953,14 @@ applications.")
     (arguments
      (list
       #:import-path "codeberg.org/git-pages/go-redirects"))
-    (propagated-inputs (list go-github-com-pkg-errors go-github-com-tj-assert))
+    (propagated-inputs (list go-github-com-pkg-errors))
+    (native-inputs (list go-github-com-tj-assert))
     (home-page "https://codeberg.org/git-pages/go-redirects")
-    (synopsis "Redirect")
+    (synopsis "Netlify's _redirects file format parser")
     (description
-     "Package redirects provides Netlify style _redirects file format parsing.")
+     "This package provides a Go redirect format parser to match Netlify's
+@url{https://www.netlify.com/docs/redirects/}, format.
+(compatible fork of @url{https://github.com/tj/go-redirects}).")
     (license license:expat)))
 
 (define-public go-codeberg-org-git-pages-go-slog-syslog
