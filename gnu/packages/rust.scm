@@ -497,8 +497,8 @@ ar = \"" (search-input-file inputs "bin/ar") "\"
            (lambda* (#:key parallel-build? #:allow-other-keys)
              (let ((job-spec (string-append
                                "-j" (if parallel-build?
-                                      (number->string (parallel-job-count))
-                                      "1"))))
+                                        (number->string (parallel-job-count))
+                                        "1"))))
                (invoke "./x.py" job-spec "build" "--stage=2"
                        "library/std"
                        "src/tools/cargo"))))
@@ -554,6 +554,7 @@ ar = \"" (search-input-file inputs "bin/ar") "\"
     (inputs
      (list bash-minimal
            curl
+           libffi
            llvm-21
            openssl))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
