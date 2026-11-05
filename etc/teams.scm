@@ -1689,7 +1689,7 @@ the \"texlive\" importer."
 (define-member (person "Untrusem"
                        "mysticmoksh@riseup.net"
                        "untrusem")
-  community mozilla)
+  community mozilla php)
 
 (define-member (person "David Thompson"
                        "dthompson2@worcester.edu"
