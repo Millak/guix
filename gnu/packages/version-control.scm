@@ -1141,7 +1141,7 @@ single-user deployments.")
 (define-public git-pages-cli
   (package
     (name "git-pages-cli")
-    (version "1.12.1")
+    (version "1.13.1")
     (source
      (origin
        (method git-fetch)
@@ -1150,7 +1150,7 @@ single-user deployments.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "181yj746npjkh5hawlklya179hp77mkabl0cx2crp6lriajhfw7b"))))
+        (base32 "13mxvflrrq7dbzgs2bskz0salr0sbr93s92l5r6lrdbq7ch0cfk7"))))
     (build-system go-build-system)
     (arguments
      (list
