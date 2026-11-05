@@ -13930,42 +13930,29 @@ applications.")
               ;; Most tests hang or fail
               "--ignore=tests/test_cli.py"
               "--ignore=tests/worker/test_worker_serve.py"
-              "-k"
-              (string-append
-               ;; PyPi sources lack examples module.
-               "not test_gunicorn_"
-               ;; Does not expect brotli and reordered headers.
-               " and not test_raw_headers"
-               ;; These look like buggy testcases.
-               " and not test_zero_downtime"
-               " and not test_non_default_uvloop_config_raises_warning"
-               " and not test_listeners_triggered"
-               " and not test_keep_alive_connection_context"
-               " and not test_keep_alive_client_timeout"
-               " and not test_conflicting_body_methods_overload"
-               " and not test_unix_connection"
-               ;; Unclear why they fail since core-updates merge.
-               " and not test_missing_sni"
-               " and not test_no_matching_cert"
-               " and not test_wildcards"
-               ;; These tests fail because subprotocols appear to be
-               ;; parameterized as None
-               " and not test_websocket_route_with_subprotocols"
-               ;; AF_UNIX path too long
-               " and not test_setup_and_teardown_unix"
-               " and not test_configure_socket"
-               ;; Freezes
-               " and not test_server_run_with_repl"
-               " and not test_server_run"
-               " and not test_no_workers"
-               ;; Raises DaemonError: Group 'root' does not exist
-               " and not test_validate_user_sets_uid_and_gid"
-               " and not test_validate_group_sets_gid"
-               ;; Raises AssertionError:
-               ;;   assert 'text/xml; charset=utf-8' == 'application/xml'
-               " and not test_guess_content_type"
-               ;; Don't know.
-               " and not test_chained_exception_handler"))))
+              #$@(map (lambda (test) (string-append "--deselect=tests/" test))
+                      (list
+                       ;; [Errno 104] Connection reset by peer
+                       "test_http.py::test_chunked_trailer_smuggle_fragmented"
+                       ;; Request and response object expected.
+                       "test_tls.py::test_cert_sni_list"
+                       ;; User 'root' does not exist
+                       "test_daemon.py::test_validate_user_sets_uid_and_gid"
+                       ;; Group 'root' does not exist
+                       "test_daemon.py::test_validate_group_sets_gid"
+                       ;; assert False
+                       "test_exceptions_handler.py::test_chained_exception_handler"
+                       ;; Assert 'text/xml; charset=utf-8' == 'application/xml'
+                       "test_response_file.py::test_guess_content_type"
+                       ;; ValueError: Exception during request:
+                       ;; [InvalidStatusCode(400, Headers([('content-length',
+                       ;; '149'), ('connection', 'close'), ('content-type',
+                       ;; 'text/plain; charset=utf-8')]))]
+                       "test_routes.py::test_websocket_route_with_subprotocols"
+                       ;; No such file or directory
+                       "test_unix_socket.py::test_unix_connection"
+                       ;; OSError: AF_UNIX path too long
+                       "worker/test_socket.py::test_configure_socket")))))
     (propagated-inputs
      (list python-aiofiles
            python-aioquic
