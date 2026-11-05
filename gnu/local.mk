@@ -2195,7 +2195,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-bed-reader-use-store-samples.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
   %D%/packages/patches/python-clarabel-blas.patch		\
-  %D%/packages/patches/python-cypari2-pc.patch                  \
   %D%/packages/patches/python-daemon-relax-lockfile.patch	\
   %D%/packages/patches/python-docrepr-fix-tests.patch		\
   %D%/packages/patches/python-hdmedians-replace-nose.patch	\

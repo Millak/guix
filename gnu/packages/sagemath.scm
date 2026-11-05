@@ -191,23 +191,23 @@ represented as strings.")
 (define-public python-cypari2
   (package
     (name "python-cypari2")
-    (version "2.2.4")
+    (version "2.2.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cypari2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sagemath/cypari2/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "04znjynfbbgx5q45hnq5gs25hc9hkhfiwh90jdhn9c50m6afkw7r"))
-       (patches
-        (search-patches "python-cypari2-pc.patch"))))
+         "06xb8vfs73ii1qi4ikllza945gfyhgwawzhbqap43niqvihz4h73"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython
            python-meson
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-cysignals))
     (inputs
