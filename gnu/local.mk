@@ -2505,7 +2505,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-latex-decode-fix-test.patch		\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-x25519-automatic-fallback-non-x86_64.patch \
-  %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-1.94-clippy-fix-proc-macros-aux-race.patch	\
   %D%/packages/patches/rust-candle-0.9.1-add-candle-onnx-to-workspace.patch	\
   %D%/packages/patches/rust-codex-0.117.0-core-remove-self-dep.patch	\
