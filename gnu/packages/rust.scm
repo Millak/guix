@@ -1842,106 +1842,225 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
          (replace "llvm" llvm-21))))))
 
 (define-public rust-1.91
-  (let ((base-rust
-         (rust-bootstrapped-package
-          rust-1.90 "1.91.1"
-          "08sp8idsymyrqj70sxhfjz5zx7nfl4vl4i7hc495fqczsc2y5p1q")))
-    (package
-      (inherit base-rust)
-      (source
-       (origin
-         (inherit (package-source base-rust))
-         (snippet
-          '(begin
-             (for-each delete-file-recursively
-                       '("src/llvm-project"
-                         "vendor/curl-sys-0.4.79+curl-8.12.0/curl"
-                         "vendor/curl-sys-0.4.83+curl-8.15.0/curl"
-                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
-                         "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
-                         "vendor/libffi-sys-3.3.2/libffi"
-                         "vendor/libz-sys-1.1.21/src/zlib"
-                         "vendor/libz-sys-1.1.22/src/zlib"
-                         "vendor/libmimalloc-sys-0.1.42/c_src/mimalloc"
-                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
-                         "vendor/openssl-src-300.5.0+3.5.0/openssl"
-                         "vendor/openssl-src-300.5.2+3.5.2/openssl"
-                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
-                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-\
+  (package
+    (name "rust")
+    (version "1.91.1")
+    (outputs '("out" "cargo"))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rust-uri version))
+       (sha256
+        (base32 "08sp8idsymyrqj70sxhfjz5zx7nfl4vl4i7hc495fqczsc2y5p1q"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (for-each delete-file-recursively
+                     '("src/llvm-project"
+                       "vendor/curl-sys-0.4.79+curl-8.12.0/curl"
+                       "vendor/curl-sys-0.4.83+curl-8.15.0/curl"
+                       "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                       "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                       "vendor/libffi-sys-3.3.2/libffi"
+                       "vendor/libz-sys-1.1.21/src/zlib"
+                       "vendor/libz-sys-1.1.22/src/zlib"
+                       "vendor/libmimalloc-sys-0.1.42/c_src/mimalloc"
+                       "vendor/openssl-src-111.28.2+1.1.1w/openssl"
+                       "vendor/openssl-src-300.5.0+3.5.0/openssl"
+                       "vendor/openssl-src-300.5.2+3.5.2/openssl"
+                       "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                       "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-\
 ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
-             ;; Remove vendored dynamically linked libraries.
-             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
-             ;; Also remove the bundled (mostly Windows) libraries.
-             (for-each delete-file
-                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
-             ;; Use the packaged nghttp2.
-             (for-each
-              (lambda (ver)
-                (let ((vendored-dir
-                       (format #f "vendor/libnghttp2-sys-~a/nghttp2" ver))
-                      (build-rs
-                       (format #f "vendor/libnghttp2-sys-~a/build.rs" ver)))
-                  (delete-file-recursively vendored-dir)
-                  (delete-file build-rs)
-                  (call-with-output-file build-rs
-                    (lambda (port)
-                      (format port "fn main() {~@
-                         println!(\"cargo:rustc-link-lib=nghttp2\");~@
-                         }~%")))))
-              '("0.1.11+1.64.0"))
-             ;; Adjust vendored dependency to explicitly use rustix with libc
-             ;; backend.
-             (substitute* '("vendor/tempfile-3.14.0/Cargo.toml"
-                            "vendor/tempfile-3.16.0/Cargo.toml"
-                            "vendor/tempfile-3.19.1/Cargo.toml"
-                            "vendor/tempfile-3.20.0/Cargo.toml"
-                            "vendor/tempfile-3.21.0/Cargo.toml")
-               (("features = \\[\"fs\"" all)
-                (string-append all ", \"use-libc\"")))))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ,@(if (supported-package? rust-bootstrap-1.90)
-                   `((add-after 'unpack 'add-cc-shim-to-path
-                       (lambda _
-                         (mkdir-p "/tmp/bin")
-                         (symlink (which "gcc") "/tmp/bin/cc")
-                         (setenv "PATH"
-                                 (string-append "/tmp/bin:" (getenv "PATH"))))))
-                   '())
-             (replace 'install
-               ;; Rust 1.91+ outputs to stage2 instead of stage1.
-               ;; Cannot use './x.py install' as it runs generate-copyright
-               ;; which fails due to patched cargo checksums.
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (cargo-out (assoc-ref outputs "cargo"))
-                        (build (string-append "build/"
-                                 ,(platform-rust-target
-                                    (lookup-platform-by-target-or-system
-                                     (or (%current-target-system)
-                                         (%current-system)))))))
-                   (with-directory-excursion build
-                     (install-file "stage2/bin/rustc"
-                                   (string-append out "/bin"))
-                     (install-file "stage2-tools-bin/cargo"
-                                   (string-append cargo-out "/bin"))
-                     (for-each delete-file
-                               (find-files "stage2/lib" "\\.rmeta$"))
-                     (for-each delete-file
-                               (find-files "stage2/lib/rustlib"
-                                           "^librustc_driver.*\\.so$"))
-                     (copy-recursively "stage2/lib"
-                                       (string-append out "/lib"))))))))))
-      (native-inputs
-       (if (supported-package? rust-bootstrap-1.90)
-           (list pkg-config
-                 python-minimal-wrapper
-                 python-setuptools-bootstrap
-                 rust-bootstrap-1.90
-                 (list rust-bootstrap-1.90 "cargo"))
-           (package-native-inputs base-rust))))))
+           ;; Remove vendored dynamically linked libraries.
+           ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+           ;; Also remove the bundled (mostly Windows) libraries.
+           (for-each delete-file
+                     (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+           ;; Use the packaged nghttp2.
+           ;; Curl links to nghttp2 so that's the version we link to.
+           (for-each
+            (lambda (ver)
+              (let ((vendored-dir
+                     (format #f "vendor/libnghttp2-sys-~a/nghttp2" ver))
+                    (build-rs
+                     (format #f "vendor/libnghttp2-sys-~a/build.rs" ver)))
+                (delete-file-recursively vendored-dir)
+                (delete-file build-rs)
+                (call-with-output-file build-rs
+                  (lambda (port)
+                    (format port "fn main() {~@
+                       println!(\"cargo:rustc-link-lib=nghttp2\");~@
+                       }~%")))))
+            '("0.1.11+1.64.0"))
+           ;; Adjust vendored dependency to explicitly use rustix with libc
+           ;; backend.
+           (substitute* '("vendor/tempfile-3.14.0/Cargo.toml"
+                          "vendor/tempfile-3.16.0/Cargo.toml"
+                          "vendor/tempfile-3.19.1/Cargo.toml"
+                          "vendor/tempfile-3.20.0/Cargo.toml"
+                          "vendor/tempfile-3.21.0/Cargo.toml")
+             (("features = \\[\"fs\"" all)
+              (string-append all ", \"use-libc\"")))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
+       #:modules ((guix build cargo-utils)
+                  (guix build utils)
+                  (guix build gnu-build-system)
+                  (ice-9 match)
+                  (srfi srfi-1))
+       ;; Only the final Rust is tested, not the intermediate bootstrap ones,
+       ;; for performance and simplicity.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'add-cc-shim-to-path
+           (lambda _
+             (mkdir-p "/tmp/bin")
+             (symlink (which "gcc") "/tmp/bin/cc")
+             (setenv "PATH" (string-append "/tmp/bin:" (getenv "PATH")))))
+         (add-after 'unpack 'set-env
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "SHELL" (which "sh"))
+             (setenv "CONFIG_SHELL" (which "sh"))
+             (setenv "CC" (search-input-file inputs "/bin/gcc"))
+             ;; The Guix LLVM package installs only shared libraries.
+             (setenv "LLVM_LINK_SHARED" "1")))
+         (add-after 'unpack 'set-linker-locale-to-utf8
+           (lambda _
+             (substitute* (find-files "." "^linker.rs$")
+               (("linker.env\\(\"LC_ALL\", \"C\"\\);")
+                "linker.env(\"LC_ALL\", \"C.UTF-8\");"))))
+         (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
+           (lambda _
+             (substitute* (cons* "Cargo.lock"
+                                 "src/bootstrap/Cargo.lock"
+                                 "library/Cargo.lock"
+                                 (filter
+                                  ;; Don't mess with the lock files in the
+                                  ;; Cargo testsuite; it messes up the tests.
+                                  (lambda (path)
+                                    (not (string-contains
+                                           path "cargo/tests/testsuite")))
+                                  (find-files "src/tools" "Cargo.lock")))
+               (("(checksum = )\".*\"" all name)
+                (string-append name "\"" ,%cargo-reference-hash "\"")))
+             (generate-all-checksums "vendor")))
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (call-with-output-file "config.toml"
+               (lambda (port)
+                 (display (string-append "
+[llvm]
+[build]
+optimized-compiler-builtins = false
+cargo = \"" (search-input-file inputs "bin/cargo") "\"
+rustc = \"" (search-input-file inputs "bin/rustc") "\"
+docs = false
+python = \"" (search-input-file inputs "bin/python") "\"
+vendor = true
+submodules = false
+[install]
+prefix = \"" (assoc-ref outputs "out") "\"
+sysconfdir = \"etc\"
+[rust]
+lld = false
+debug=false
+jemalloc=false
+default-linker = \"" (search-input-file inputs "bin/gcc") "\"
+channel = \"stable\"
+rpath = true
+[target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
+llvm-config = \"" (search-input-file inputs "bin/llvm-config") "\"
+cc = \"" (search-input-file inputs "bin/gcc") "\"
+cxx = \"" (search-input-file inputs "bin/g++") "\"
+ar = \"" (search-input-file inputs "bin/ar") "\"
+[dist]
+") port)))))
+         (replace 'build
+           ;; Just building stage 1 no longer builds cargo.
+
+           ;; TODO: Try reverting to use "./x.py install rustc std cargo"
+           ;; when Rust 1.91 comes out, which should no longer rebuild
+           ;; things unnecessarily. If this works, the 'post-install'
+           ;; phase carried from earlier should no longer be necessary.
+           (lambda* (#:key parallel-build? #:allow-other-keys)
+             (let ((job-spec (string-append
+                               "-j" (if parallel-build?
+                                        (number->string (parallel-job-count))
+                                        "1"))))
+               (invoke "./x.py" job-spec "build" "--stage=2"
+                       "library/std"
+                       "src/tools/cargo"))))
+         (replace 'install
+           ;; Rust 1.91+ outputs to stage2 instead of stage1.
+           ;; Cannot use './x.py install' as it runs generate-copyright
+           ;; which fails due to patched cargo checksums.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (cargo-out (assoc-ref outputs "cargo"))
+                    (build (string-append "build/"
+                             ,(platform-rust-target
+                                (lookup-platform-by-target-or-system
+                                 (or (%current-target-system)
+                                     (%current-system)))))))
+               (with-directory-excursion build
+                 (install-file "stage2/bin/rustc"
+                               (string-append out "/bin"))
+                 (install-file "stage2-tools-bin/cargo"
+                               (string-append cargo-out "/bin"))
+                 (for-each delete-file
+                           (find-files "stage2/lib" "\\.rmeta$"))
+                 (for-each delete-file
+                           (find-files "stage2/lib/rustlib"
+                                       "^librustc_driver.*\\.so$"))
+                 (copy-recursively "stage2/lib"
+                                   (string-append out "/lib"))))))
+         (add-after 'install 'delete-install-logs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each (lambda (f)
+                         (false-if-exception (delete-file f)))
+                       (append-map (lambda (output)
+                                     (find-files (string-append
+                                                  output "/lib/rustlib")
+                                                 "(^install.log$|^manifest-)"))
+                                   (map cdr outputs)))))
+         (add-after 'install 'wrap-rustc
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (libc (assoc-ref inputs "libc"))
+                   (ld-wrapper (assoc-ref inputs "ld-wrapper")))
+               ;; Let gcc find ld and libc startup files.
+               (wrap-program (string-append out "/bin/rustc")
+                 `("PATH" ":" prefix (,(string-append ld-wrapper "/bin")))
+                 `("LIBRARY_PATH" ":"
+                   suffix (,(string-append libc "/lib"))))))))))
+    (native-inputs
+     (list pkg-config
+           python-minimal-wrapper
+           python-setuptools-bootstrap
+           rust-bootstrap-1.90
+           (list rust-bootstrap-1.90 "cargo")))
+    (inputs
+     (list bash-minimal
+           curl
+           libffi
+           llvm-21
+           openssl))
+    ;; rustc invokes gcc, so we need to set its search paths accordingly.
+    (native-search-paths
+     %gcc-search-paths)
+    ;; Limit this to systems where the final rust compiler builds successfully.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
+    (synopsis "Compiler for the Rust programming language")
+    (description "Rust is a systems programming language that provides memory
+safety and thread safety guarantees.")
+    (home-page "https://www.rust-lang.org")
+    (properties '((hidden? . #t)
+                (timeout . 72000)           ;20 hours
+                (max-silent-time . 18000))) ;5 hours (for riscv64)
+    ;; Dual licensed.
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-1.92
   (let ((base-rust
