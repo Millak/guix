@@ -4818,7 +4818,7 @@ different backends")
 (define-public usearch
   (package
     (name "usearch")
-    (version "2.26.2")
+    (version "2.26.6")
     (source
      (origin
        (method git-fetch)
@@ -4828,7 +4828,7 @@ different backends")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j8nmqh9q7n15xwlpcs6zd8wr93yl4hn0kbf4v2fcwkkbj6khhzk"))))
+         "1skca6hw0xglziw8q0z3714xrpxs05gdvvdyscpf270030ggxscz"))))
     (build-system cmake-build-system)
     (arguments
      (list
