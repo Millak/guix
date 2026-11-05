@@ -4689,6 +4689,26 @@ an integrated command line client, has support for both HTTP/1.1 and HTTP/2,
 and provides both sync and async APIs.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-httpx2-minimal
+  (package/inherit python-httpx2
+    (name "python-httpx2-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling))
+    (propagated-inputs
+     (list python-anyio
+           python-httpcore2
+           python-idna
+           python-truststore
+           python-typing-extensions))))    ;Python version < 3.13
+
 (define-public python-igwn-auth-utils
   (package
     (name "python-igwn-auth-utils")
