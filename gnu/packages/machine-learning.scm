@@ -162,7 +162,7 @@
 (define-public dlpack
   (package
     (name "dlpack")
-    (version "1.2")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -171,7 +171,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zm28s4das0isa5rrh5a1c6iv1k1mcjqgnihbva74s78d52a7hpn"))))
+        (base32 "15qkhqyz7in4cc3fp6wgzk6smfpdx3mq1kcfcsrxn3gfjjc54888"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;No tests.
     (home-page "https://dmlc.github.io/dlpack/latest/")
