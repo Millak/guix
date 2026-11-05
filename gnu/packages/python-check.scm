@@ -3491,7 +3491,7 @@ requests to be replied to with user provided responses.")
 (define-public python-pytest-httpx2
   (package
     (name "python-pytest-httpx2")
-    (version "1.0.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3500,14 +3500,14 @@ requests to be replied to with user provided responses.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d7hvixh2dq3pzs24bh2wk94wgf02r9nk9dnhrbps6gq0w94vxy2"))))
+        (base32 "0p23p4axb614flqcs6n4lzww6sbrcgi020zig30m8lddnn124shi"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-asyncio
            python-pytest-bootstrap
            python-setuptools))
     (propagated-inputs
-     (list python-httpx2))
+     (list python-httpx2-minimal))
     (home-page "https://github.com/angryfoxx/httpx2-pytest")
     (synopsis "Pytest plugin for mocking out httpx2 using respx")
     (description
