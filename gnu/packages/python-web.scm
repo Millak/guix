@@ -9522,42 +9522,51 @@ compliance with the specification.")
 (define-public python-openapi-core
   (package
     (name "python-openapi-core")
-    (version "0.19.4")
+    (version "0.23.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/p1c2u/openapi-core")
-             (commit version)))
+              (url "https://github.com/p1c2u/openapi-core")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "092sj2933jmvq5r76khr0vphih490vls1ga3s43gz8i47aqaxx96"))))
+        (base32 "18qqv3zk0jqzlkk1hhljmpmn51qzfl40w0i8xzncpah4wb3r2rn0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1429 passed, 20 xfailed
       #:test-flags
-      '(list "tests/unit"
-             "-k" "not test_chars_valid")))
-    (native-inputs (list python-django
-                         python-falcon
-                         python-flask
-                         python-mock
-                         python-poetry-core
-                         python-pytest
-                         python-pytest-asyncio
-                         python-responses))
+      #~(list "--ignore=tests/integration/contrib/aiohttp/"
+              "--ignore=tests/integration/contrib/flask/"
+              "--ignore=tests/unit/contrib/aiohttp/"
+              "--ignore=tests/unit/contrib/flask/"
+              ;; Requires rest_framework.
+              "--ignore=tests/integration/contrib/django/test_django_project.py"
+              ;; Struggles to compare JSON diffs.
+              "--ignore=tests/unit/templating/test_paths_finders.py")))
+    (native-inputs
+     (list python-aioitertools
+           python-mock
+           python-multidict
+           python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-responses
+           ;; Test with minimal variants of Web frameworks.
+           python-django-minimal
+           python-falcon-minimal
+           python-fastapi-minimal
+           python-httpx2-minimal
+           python-starlette-minimal))
     (propagated-inputs
-     (list python-attrs
-           python-aiohttp
-           python-isodate
+     (list python-isodate
            python-jsonschema
-           python-lazy-object-proxy
+           python-jsonschema-path
            python-more-itertools
            python-openapi-schema-validator
            python-openapi-spec-validator
-           python-parse
-           python-six
+           python-typing-extensions
            python-werkzeug))
     (home-page "https://github.com/p1c2u/openapi-core")
     (synopsis "OpenAPI core library")
