@@ -475,7 +475,6 @@ prefix = \"" (assoc-ref outputs "out") "\"
 sysconfdir = \"etc\"
 [rust]
 lld = false
-download-rustc = false
 debug=false
 jemalloc=false
 default-linker = \"" (search-input-file inputs "bin/gcc") "\"
