@@ -1683,7 +1683,7 @@ support for automatic differentiation.")
 (define-public python-ripser
   (package
     (name "python-ripser")
-    (version "0.6.14")
+    (version "0.6.15")
     (source
      (origin
        (method git-fetch)
@@ -1693,7 +1693,7 @@ support for automatic differentiation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00na7dpvpc5vwjwgh9ndqrqlswgrzgqf1s7rxfv1vy5wn63fz3m7"))))
+         "0l749vrp7972p4ckvxvcvpi4c4ybwr69w9yxgizwjbv8b16v4fng"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-persim python-scikit-learn
                              python-scipy))
@@ -1711,8 +1711,7 @@ provides an interface for
 @item visualizing persistence diagrams
 @item computing lowerstar filtrations on images
 @item computing representative cochains
-@end itemize
-")
+@end itemize")
     (license license:expat))) ; MIT License
 
 (define-public python-sacrebleu
