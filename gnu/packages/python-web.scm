@@ -6295,6 +6295,21 @@ incoming requests, enabling the ability to serve resources over a different
 origin than that of the web application.")
     (license license:asl2.0)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-falcon-minimal
+  (package/inherit python-falcon
+    (name "python-falcon-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-cython
+           python-setuptools))
+    (propagated-inputs
+     (list python-mimeparse))))
+
 (define-public python-furl
   (package
     (name "python-furl")
