@@ -4032,7 +4032,7 @@ SNMP v3 using both IPv4 and IPv6.")
 (define-public ubridge
   (package
     (name "ubridge")
-    (version "0.9.19")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -4041,7 +4041,7 @@ SNMP v3 using both IPv4 and IPv6.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hjn1zxjif6kp251gxlf4a5s2lnjgx78ls74ck6cqmkly4ndgp5s"))))
+        (base32 "02vkg8g7wbrbixycbkxzixsk7clz90dxidi69jf55qvmj1277n18"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4056,7 +4056,8 @@ SNMP v3 using both IPv4 and IPv6.")
                 (mkdir-p bin)
                 (substitute* "Makefile"
                   (("\\$\\(BINDIR\\)") bin)
-                  (("\tsetcap cap_net.*$") ""))))))))
+                  (("\tsetcap cap_bpf.*$") "")
+                  (("\t    setcap cap_net.*$") ""))))))))
     (inputs
      (list libpcap))
     (home-page "https://github.com/GNS3/ubridge/")
