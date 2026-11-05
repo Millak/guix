@@ -13514,12 +13514,13 @@ forked version whose pypi name is @code{marshmallow_jsonapi_minfork}.")
      (list
       #:test-flags '(list "--pyargs" "pecan")))
     (native-inputs
-     (list gunicorn
+     (list gunicorn-bootstrap
            python-genshi
            python-jinja2
            python-pytest
            python-sqlalchemy-2
-           python-webtest))
+           python-webtest
+           python-setuptools))
     (propagated-inputs
      (list python-mako
            python-webob))
