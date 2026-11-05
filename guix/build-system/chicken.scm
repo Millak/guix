@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2026 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -98,25 +99,36 @@ EXTENSION is the file name extension, such as '.tar.gz'."
     (with-imported-modules imported-modules
       #~(begin
           (use-modules #$@(sexp->gexp modules))
-          (chicken-build #:name #$name
-                         #:source #+source
-                         #:system #$system
-                         #:phases #$phases
+          (chicken-build #:name #$(environment-variable "#:name" name)
+                         #:source #+(environment-variable "#:source" source)
+                         #:system #$(environment-variable "#:system" system)
+                         #:phases (primitive-eval
+                                   #$(environment-variable "#:phases" phases))
                          #:outputs #$(outputs->gexp outputs)
-                         #:search-paths '#$(sexp->gexp
-                                            (map search-path-specification->sexp
-                                                 search-paths))
-                         #:egg-name #$egg-name
-                         #:unpack-path #$unpack-path
-                         #:build-flags #$build-flags
-                         #:tests? #$tests?
-                         #:inputs #$(input-tuples->gexp inputs)))))
+                         #:search-paths
+                         #$(environment-variable
+                            "#:search-paths"
+                            (map search-path-specification->sexp
+                                 search-paths))
+                         #:egg-name #$(environment-variable
+                                       "#:egg-name" egg-name)
+                         #:unpack-path #$(environment-variable
+                                          "#:unpack-path" unpack-path)
+                         #:build-flags (primitive-eval
+                                        #$(environment-variable
+                                           "#:build-flags" build-flags))
+                         #:tests? #$(environment-variable "#:tests?" tests?)
+                         #:inputs
+                         (primitive-eval
+                          #$(environment-variable
+                             "#:inputs" (input-tuples->gexp inputs)))))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
-                      #:guile-for-build guile)))
+                      #:guile-for-build guile
+                      #:script-name "chicken-builder")))
 
 (define chicken-build-system
   (build-system
