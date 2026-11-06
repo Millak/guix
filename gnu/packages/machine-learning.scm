@@ -1579,11 +1579,11 @@ It currently houses implementations of
            python-setuptools))
     (propagated-inputs
      (list python-apricot-select
-	   python-networkx
-	   python-numpy
-	   python-scikit-learn
-	   python-scipy
-	   python-pytorch))
+           python-networkx
+           python-numpy
+           python-scikit-learn
+           python-scipy
+           python-pytorch))
     (home-page "https://pypi.python.org/pypi/pomegranate/")
     (synopsis "Graphical models library for Python")
     (description
@@ -1944,7 +1944,7 @@ natural language processing framework.")
 (define-public python-spacy
   (package
     (name "python-spacy")
-    (version "3.8.14")
+    (version "3.8.19")
     (source
      (origin
        (method git-fetch)
@@ -1953,7 +1953,7 @@ natural language processing framework.")
               (commit (string-append "release-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0inb1x7gmf1j7kcr35v472hia4lkn1qr234snqkz27rqglzhvmy3"))))
+        (base32 "1dwa9jjkgg6w06c48z6fqmjzrzgq2q6hfmh5x2bzs6v6pd1bm59n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2014,7 +2014,7 @@ natural language processing framework.")
     (description
      "SpaCy is a library for advanced Natural Language Processing in Python
 and Cython.  It comes with pretrained pipelines and currently supports
-tokenization and training for 70+ languages. It features state-of-the-art
+tokenization and training for 70+ languages.  It features state-of-the-art
 speed and neural network models for tagging, parsing, named entity
 recognition, text classification and more, multi-task learning with pretrained
 transformers like BERT, as well as a production-ready training system and easy
