@@ -2927,13 +2927,13 @@ visualizing high-dimensional data sets.")
 (define-public python-scikit-rebate
   (package
     (name "python-scikit-rebate")
-    (version "0.62")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "skrebate" version))
        (sha256
-        (base32 "0n55ghvnv7rxqa5agq6a4892ad0ghha165b0g4ghwr9gqm6ss3dj"))))
+        (base32 "1411566ighhzzd0z4skz5x331lwjhpx477jh2hla8vd8i77f2syf"))))
     (build-system pyproject-build-system)
     ;; There are no tests on PyPI, tests in git repo require an old release of
     ;; python-scikit-learn
