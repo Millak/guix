@@ -8301,7 +8301,7 @@ you about the changes.")
 (define-public ruby-loofah
   (package
     (name "ruby-loofah")
-    (version "2.24.1")
+    (version "2.25.3")
     (source
      (origin
        ;; Build from git because the gem lacks tests.
@@ -8310,11 +8310,10 @@ you about the changes.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07ngn69i86afqcpwv3yc977krbgq8b201gxz0pg3kp8wrliig44f"))))
+        (base32 "0rfya72rc6jw65qhxh1sibwabd69455v2vh843hly3kcvbivw98z"))))
     (build-system ruby-build-system)
     (arguments
      (list
-      ;; tests: 1093 runs, 3586 assertions, 0 failures, 0 errors, 0 skips
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-failing-tests
