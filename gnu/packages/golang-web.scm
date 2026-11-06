@@ -25622,6 +25622,55 @@ API calls to the @code{OpenTelemetry} SDK.")
      "Package jaeger contains an OpenTelemetry tracing exporter for Jaeger.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-otlp-otlplog-otlploghttp
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-otlp-otlplog-otlploghttp")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "exporters/otlp/otlplog/otlploghttp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mxj3gv04lh0lss2fk4c5n23m55qm4zy1caa3fqxmnjhy0yjm6rf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-all-but "exporters/otlp/otlplog" "otlploghttp")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cenkalti-backoff-v5
+           go-github-com-go-logr-logr
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-log
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-metric-x
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-log
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/open-telemetry/opentelemetry-go")
+    (synopsis "OTLP Log HTTP Exporter")
+    (description
+     "Package otlploghttp provides an OTLP log exporter.  The exporter uses
+HTTP to transport OTLP protobuf payloads.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc
   (package
     (name "go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc")
