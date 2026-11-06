@@ -5158,6 +5158,38 @@ Soundex, Metaphone, Double Metaphone, Porter Stemming.")
     (home-page "https://github.com/ruby/gdbm")
     (license license:bsd-2)))
 
+(define-public ruby-getoptlong
+  (package
+    (name "ruby-getoptlong")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/getoptlong")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hkg2wb0634ha1fkvh2ajnv24y526mmih4bqndsvm67f6yq3ps06"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              ;; Without this, no libs are installed.
+              (substitute* "getoptlong.gemspec"
+                (("spec\\.files .*")
+                 "spec.files = Dir['lib/**/*.rb'];proc do")))))))
+    (native-inputs (list ruby-test-unit))
+    (synopsis "Command line options parser for Ruby")
+    (description "The @samp{getoptlong} gem is purely written in Ruby
+and allows you to parse command line options similarly to the
+GNU @code{getopt_long()} C library call.")
+    (home-page "https://github.com/ruby/getoptlong")
+    (license (list license:ruby license:bsd-2))))
+
 (define-public ruby-gettext
   (package
     (name "ruby-gettext")
