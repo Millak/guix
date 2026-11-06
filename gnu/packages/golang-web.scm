@@ -25936,7 +25936,7 @@ entirely.")
 (define-public go-go-opentelemetry-io-otel-sdk-log
   (package
     (name "go-go-opentelemetry-io-otel-sdk-log")
-    (version "0.9.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
@@ -25946,7 +25946,7 @@ entirely.")
                                            #:subdir "sdk/log"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+        (base32 "142af75bbcivn6sbh089nh1a55rkmq72ibksdqzgy4vd5v829spi"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -25958,13 +25958,17 @@ entirely.")
       #:import-path "go.opentelemetry.io/otel/sdk/log"
       #:unpack-path "go.opentelemetry.io/otel"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-go-logr-logr
            go-github-com-go-logr-stdr
-           go-github-com-google-go-cmp
+           go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-log
-           go-go-opentelemetry-io-otel-sdk))
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace))
     (home-page "https://go.opentelemetry.io/otel")
     (synopsis "OpenTelemetry Log SDK library")
     (description "Package log provides the @code{OpenTelemetry} Logs SDK.")
