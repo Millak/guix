@@ -360,6 +360,127 @@ possible to ensure that everyone can afford to protect the communities closest
 to them.")
     (license license:expat)))
 
+(define-public caddy
+  (package
+    (name "caddy")
+    (version "2.11.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/caddyserver/caddy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f3mj6cy1w9xy0fdkym1nj5fjjbzadx3b05jf4dxzxylwf6spf1b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/caddyserver/caddy/v2/..."
+      #:unpack-path "github.com/caddyserver/caddy/v2"
+      #:build-flags
+      #~(list (string-append "-ldflags=-X"
+                             " github.com/caddyserver/caddy/v2.CustomVersion="
+                             #$version))
+      #:embed-files
+      #~(list "aws_certificates.pem" "bundle.der" ".*\\.tmpl" ".*\\xml")
+      #:test-flags
+      #~(list "-short"
+              ;; server_test.go:1807: second response status = 400, want 204
+              ;; or a closed connection
+              "-skip" "TestServer_ClosedRequestBodyDoesNotDesyncHTTP1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-shell-completions
+            (lambda _
+              (for-each
+               (lambda (shell path)
+                 (let ((completion (string-append #$output "/" path)))
+                   (mkdir-p (dirname completion))
+                   (with-output-to-file completion
+                     (lambda _
+                       (invoke (string-append #$output "/bin/caddy")
+                               "completion" shell)))))
+               '("bash" "zsh" "fish")
+               '("share/bash-completion/completions/caddy"
+                 "share/zsh/site-functions/_caddy"
+                 "share/fish/vendor_completions.d/caddy.fish"))))
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (let ((caddy (string-append #$output "/bin/caddy"))
+                    (man1 (string-append #$output "/share/man/man1/")))
+                (invoke caddy "manpage" "--directory" man1))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "GODEBUG" "http2xconnect=1")
+                (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (list go-cel-dev-cel-go
+           go-github-com-alecthomas-chroma-v2
+           go-github-com-aryann-difflib
+           go-github-com-burntsushi-toml
+           go-github-com-caddyserver-certmagic
+           go-github-com-caddyserver-zerossl
+           go-github-com-cespare-xxhash-v2
+           go-github-com-cloudflare-circl
+           go-github-com-deruina-timberjack
+           go-github-com-dunglas-go-urlpattern
+           go-github-com-dunglas-httpsfv
+           go-github-com-dustin-go-humanize
+           go-github-com-go-chi-chi-v5
+           go-github-com-google-uuid
+           go-github-com-kimmachinegun-automemlimit
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-cpuid-v2
+           go-github-com-libdns-libdns
+           go-github-com-masterminds-sprig-v3
+           go-github-com-mholt-acmez-v3
+           go-github-com-pires-go-proxyproto
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-quic-go-quic-go
+           go-github-com-smallstep-certificates
+           go-github-com-smallstep-nosql
+           go-github-com-smallstep-truststore
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-tailscale-tscert
+           go-github-com-yuin-goldmark
+           go-github-com-yuin-goldmark-highlighting-v2
+           go-go-etcd-io-bbolt
+           go-go-opentelemetry-io-contrib-bridges-prometheus
+           go-go-opentelemetry-io-contrib-exporters-autoexport
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-contrib-propagators-autoprop
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-go-step-sm-crypto
+           go-go-uber-org-automaxprocs
+           go-go-uber-org-zap
+           go-go-uber-org-zap-exp
+           go-golang-org-x-crypto
+           go-golang-org-x-crypto-x509roots-fallback
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-time
+           go-golang-org-x-tools
+           go-gopkg-in-yaml-v3))
+    (home-page "https://caddyserver.com/")
+    (synopsis "HTTP/1-2-3 web server with automatic HTTPS")
+    (description
+     "Caddy is an extensible server platform that uses TLS by default powered
+by @url{https://zerossl.com/, ZeroSSL} and @url{https://letsencrypt.org/,
+Let's Encrypt} for public names or @url{https://smallstep.com/docs/step-ca/,
+Step CA} for private.")
+    (license license:asl2.0)))
+
 (define-public qhttp
   (package
     (name "qhttp")
