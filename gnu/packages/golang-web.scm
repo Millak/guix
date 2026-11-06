@@ -25812,7 +25812,7 @@ telemetry to be written to an output destination as JSON.")
 (define-public go-go-opentelemetry-io-otel-log
   (package
     (name "go-go-opentelemetry-io-otel-log")
-    (version "0.9.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
@@ -25822,9 +25822,12 @@ telemetry to be written to an output destination as JSON.")
                                            #:subdir "log"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+        (base32 "142af75bbcivn6sbh089nh1a55rkmq72ibksdqzgy4vd5v829spi"))
        (modules '((guix build utils)))
-       (snippet #~(delete-all-but "." "log"))))
+       (snippet
+        #~(begin
+            (delete-all-but "." "log")
+            (delete-file-recursively "log/logtest")))))
     (build-system go-build-system)
     (arguments
      (list
