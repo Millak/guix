@@ -25888,6 +25888,46 @@ metrics into the Prometheus exposition format and implements
 prometheus.Collector to provide a handler for these metrics.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-stdout-stdoutlog
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-stdout-stdoutlog")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "exporters/stdout/stdoutlog"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mxj3gv04lh0lss2fk4c5n23m55qm4zy1caa3fqxmnjhy0yjm6rf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-all-but "exporters/stdout" "stdoutlog")
+            (delete-all-but "exporters" "stdout")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-log
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-log
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://github.com/open-telemetry/opentelemetry-go")
+    (synopsis "OTLP STDOUT Log Exporter")
+    (description
+     "Package stdoutlog provides an exporter for @code{OpenTelemetry} logs.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
   (package
     (name "go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric")
