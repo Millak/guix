@@ -20046,7 +20046,7 @@ manipulate processes in a safe way.")
 (define-public go-github-com-kimmachinegun-automemlimit
   (package
     (name "go-github-com-kimmachinegun-automemlimit")
-    (version "0.7.1")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -20055,16 +20055,11 @@ manipulate processes in a safe way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sgm46dhd5yp2fjsmjszbv8fhvw1kip2c6p4qf4856ma0znr49p6"))))
+        (base32 "04fksi8danz3l7fzqrb1jfgwf39xgwh791m3jw14a04v1ll6qffq"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/KimMachineGun/automemlimit"
-      #:test-flags
-      ;; memlimit_linux_test.go:82: SetGoMemLimit() error = failed to set
-      ;; GOMEMLIMIT: process is not in cgroup, wantErr cgroups is not
-      ;; supported on this system
-      #~(list "-skip" "TestSetGoMemLimit/Unavailable")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -20076,10 +20071,10 @@ manipulate processes in a safe way.")
     (home-page "https://github.com/KimMachineGun/automemlimit")
     (synopsis "Automatically set GOMEMLIMIT to match cgroups(7) memory limit")
     (description
-     "Automatically set
-@url{https://tip.golang.org/doc/gc-guide#Memory_limit,GOMEMLIMIT} to match
-Linux @url{https://man7.org/linux/man-pages/man7/cgroups.7.html,cgroups(7)}
-memory limit.")
+     "Automatically set @url{https://tip.golang.org/doc/gc-guide#Memory_limit,
+GOMEMLIMIT} to match Linux
+@url{https://man7.org/linux/man-pages/man7/cgroups.7.html, cgroups(7)} memory
+limit.")
     (license license:expat)))
 
 ;; XXX: Breaking changes, remove when no longer required.
