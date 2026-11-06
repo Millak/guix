@@ -54,16 +54,18 @@
 
 (define %cgit-configuration-nginx
   (nginx-server-configuration
-   (root cgit)
+   (root (file-append cgit "/share/cgit"))
    (locations
     (list
      (nginx-location-configuration
       (uri "@cgit")
-      (body '("fastcgi_param SCRIPT_FILENAME $document_root/lib/cgit/cgit.cgi;"
-              "fastcgi_param PATH_INFO $uri;"
-              "fastcgi_param QUERY_STRING $args;"
-              "fastcgi_param HTTP_HOST $server_name;"
-              "fastcgi_pass 127.0.0.1:9000;")))))
+      (body (list #~(string-append "fastcgi_param SCRIPT_FILENAME "
+                                   #$(file-append cgit "/lib/cgit/cgit.cgi")
+                                   ";")
+                  "fastcgi_param PATH_INFO $uri;"
+                  "fastcgi_param QUERY_STRING $args;"
+                  "fastcgi_param HTTP_HOST $server_name;"
+                  "fastcgi_pass 127.0.0.1:9000;")))))
    (try-files (list "$uri" "@cgit"))
    (listen '("80"))
    (ssl-certificate #f)
@@ -394,7 +396,7 @@ generates valid clone URLs for the repository.")
 commit log, and when set to @samp{topo} enables strict topological
 ordering.")
   (css
-   (file-object "/share/cgit/cgit.css")
+   (file-object "/cgit.css")
    "URL which specifies the css document to include in all cgit pages.")
   (email-filter
    (file-object "")
@@ -493,7 +495,7 @@ verbatim below the heading on the repository index page.")
    "Flag which, if set to @samp{#t}, makes cgit print commit and tag times
 in the servers timezone.")
   (logo
-   (file-object "/share/cgit/cgit.png")
+   (file-object "/cgit.png")
    "URL which specifies the source of an image which will be used as a logo
 on all cgit pages.")
   (logo-link

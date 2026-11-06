@@ -44993,7 +44993,7 @@ Defaults to @samp{"git log"}.
 @deftypevr {@code{cgit-configuration} parameter} file-object css
 URL which specifies the css document to include in all cgit pages.
 
-Defaults to @samp{"/share/cgit/cgit.css"}.
+Defaults to @samp{"/cgit.css"}.
 
 @end deftypevr
 
@@ -45189,7 +45189,7 @@ Defaults to @samp{#f}.
 URL which specifies the source of an image which will be used as a logo
 on all cgit pages.
 
-Defaults to @samp{"/share/cgit/cgit.png"}.
+Defaults to @samp{"/cgit.png"}.
 
 @end deftypevr
 
