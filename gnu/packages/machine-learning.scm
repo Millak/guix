@@ -2936,11 +2936,8 @@ visualizing high-dimensional data sets.")
        (sha256
         (base32 "07hmydpyinr45q67yigqsn7dwmvfd8q37pac42bghmffpdsxwbss"))))
     (build-system pyproject-build-system)
-    ;; There are no tests on PyPI, tests in git repo require an old release of
-    ;; python-scikit-learn
-    (arguments '(#:tests? #f))
     (native-inputs
-     (list python-setuptools))
+     (list python-pandas python-pytest python-setuptools))
     (propagated-inputs
      (list python-numpy python-scipy python-scikit-learn python-joblib))
     (home-page "https://epistasislab.github.io/scikit-rebate/")
