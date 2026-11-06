@@ -6787,13 +6787,13 @@ between agentic clients and the Albert API (Etalab).")
 (define-public python-lap
   (package
     (name "python-lap")
-    (version "0.5.12")
+    (version "0.5.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lap" version))
               (sha256
                (base32
-                "1za4mf5nd7vzwd24sy2mfxrk8mnwq7d8rv6h96yh8v5flx7422sp"))))
+                "0jd5l9ww8cc1yr2pc1b17q6cg38cj88vv2qxvj8s4jb64pmqnj06"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6813,7 +6813,7 @@ between agentic clients and the Albert API (Etalab).")
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-cython python-pytest python-setuptools python-wheel))
+     (list python-cython python-numpy python-pytest python-setuptools))
     (home-page "https://github.com/gatagat/lap")
     (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD)")
     (description "Lap is a linear assignment problem solver using Jonker-Volgenant
