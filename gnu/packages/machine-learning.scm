@@ -2849,13 +2849,13 @@ to return meaningful clusters (if there are any).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "1x94mjdf62f2yqql50qn0qjh4bkhwdvx7xx9aph421s0bgxy1zbz"))))
+        (base32 "073dgwcj3bsa9fp3qpibgaiq7qi781fgbg714mr93nxz0fh9gw2l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
