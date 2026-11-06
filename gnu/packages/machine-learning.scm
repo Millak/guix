@@ -6440,7 +6440,6 @@ models on CPU and GPU.")
               (chdir "python"))))))
     (native-inputs (list ctranslate2
                          python-setuptools
-                         python-wheel
                          pybind11
                          python-pyyaml
                          python-numpy))))
