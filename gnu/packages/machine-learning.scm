@@ -6376,7 +6376,7 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
 (define-public ctranslate2
   (package
     (name "ctranslate2")
-    (version "4.8.0")
+    (version "4.8.5")
     (source
      (origin
        (method git-fetch)
@@ -6384,7 +6384,7 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
               (url "https://github.com/OpenNMT/CTranslate2")
               (commit (string-append "v" version))))
        (file-name (git-file-name "CTranslate2" version))
-       (sha256 (base32 "0lpykbp9jvkds2dy3lfyn699d0kvz9kzqzfzg4vh5cgn99d7k4g2"))
+       (sha256 (base32 "0c2l7i51v8dp3x0r3yi73yg9z47fph1alfdqwvbyr6aqbfafixnc"))
        (patches (search-patches "ctranslate2-local-build.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -6407,7 +6407,7 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
             (lambda* (#:rest args)
               (apply (assoc-ref gnu:%standard-phases 'check)
                      #:test-target "ctranslate2_test" args))))))
-    (native-inputs (list libomp-13
+    (native-inputs (list libomp
                          cxxopts
                          spdlog
                          googletest
