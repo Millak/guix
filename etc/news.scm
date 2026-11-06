@@ -46,6 +46,34 @@
 (channel-news
  (version 0)
 
+ (entry (commit "50976635a2cd3224975c27fe65ba57cf916f1312")
+        (title
+         (en "Linux-libre 7.2 is deprecated")
+         (de "Linux-libre 7.2 ist veraltet")
+         (pt "Linux-libre 7.2 está depreciado"))
+        (body
+         (en "The linux-libre 7.2 kernel series is no longer
+supported upstream and will be removed from GNU Guix soon:
+
+https://www.kernel.org/category/releases.html
+
+The last supported version is 7.2.15. Please consider switching to Linux-libre
+7.3, or a long term support release series such as 6.18.")
+         (de "Die Versionsreihe 7.2 des Linux-libre-Kernels wird von dessen
+Anbieter nicht mehr unterstützt und wird bald aus GNU Guix entfernt werden:
+
+https://www.kernel.org/category/releases.html
+
+Die neueste Version, die unterstützt wird, ist 7.2.15.  Wechseln Sie auf
+Linux-libre 7.3 oder eine Versionsreihe mit Langzeitunterstützung wie 6.18.")
+         (pt "A série 7.2 do kernel linux-libre 7.2 não é mais suportada pelo
+fornecedor e em breve será removida do GNU Guix:
+
+https://www.kernel.org/category/releases.html
+
+A última versão suportada é a 7.2.15.  Por favor cogite mudar para a versão
+7.3 do Linux-libre, ou para um lançamento de suporte estandido como o 6.18.")))
+
  (entry (commit "e4d01554e863d3cb88f654f160ccb05e28222b67")
         (title
          (en "PHP critical security updates")
@@ -350,7 +378,7 @@ desencorajado pelo fornecedor}, porém, ela ainda pode ser usada em
          (en "Linux-libre 7.1 is deprecated")
          (pt "Linux-libre 7.1 está depreciado"))
         (body
-         (en "The linux-libre 7.1 kernel series ia no longer
+         (en "The linux-libre 7.1 kernel series is no longer
 supported upstream and will be removed from GNU Guix soon:
 
 https://www.kernel.org/category/releases.html
