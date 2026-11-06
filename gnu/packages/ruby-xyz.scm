@@ -6761,7 +6761,7 @@ that provides the ability to deal with POSIX tar archive files.")
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.18.10")
+    (version "1.19.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6770,7 +6770,14 @@ that provides the ability to deal with POSIX tar archive files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lrng9xbhyw4mkm50wyzab7dyxdwav4q4zyzx9bgilcnaqwc6rbq"))))
+                "0k9wcsc3r4iynwk5p06ws010spy4bxx5r59vvhlyzfqv6xb25313"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove pregenerated files.
+                  ;; See also rakelib/css-generate.rake file.
+                  (delete-file "lib/nokogiri/css/parser.rb")
+                  (delete-file "lib/nokogiri/css/tokenizer.rb")))))
     (build-system ruby-build-system)
     (arguments
      (list #:gem-flags #~(list "--" "--use-system-libraries"
@@ -6778,6 +6785,14 @@ that provides the ability to deal with POSIX tar archive files.")
                                               #$(this-package-input "libxml2")
                                               "/include/libxml2"))
            #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'css-generate
+                          (lambda _
+                            (substitute* "Rakefile"
+                              ;; Prevent Bundler wakeup.
+                              (("require \"bundler\"") "")
+                              (("Bundler\\.load_gemspec")
+                               "Gem::Specification.load"))
+                            (invoke "rake" "css:generate")))
                         (add-after 'install 'delete-mkmf.log
                           (lambda _
                             ;; Rubygems installs build log files that embed volatile file
@@ -6795,9 +6810,10 @@ that provides the ability to deal with POSIX tar archive files.")
                               (for-each (lambda (file)
                                           (invoke "ruby" "-Itest" file))
                                         (find-files "test" "^test_.*\\.rb"))))))))
-    (native-inputs (list ruby-hoe ruby-rubyzip))
+    (native-inputs (list ruby-rake-compiler ruby-rake-compiler-dock
+                         ruby-rexical ruby-rubyzip))
     (inputs (list zlib libxml2 libxslt))
-    (propagated-inputs (list ruby-mini-portile-2 ruby-pkg-config))
+    (propagated-inputs (list ruby-mini-portile-2 ruby-racc))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
