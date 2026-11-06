@@ -1116,7 +1116,7 @@ desired format.")
            go-github-com-go-git-go-git-v6
            go-github-com-jpillora-backoff
            go-github-com-kankanreno-go-snowflake
-           go-github-com-kimmachinegun-automemlimit
+           go-github-com-kimmachinegun-automemlimit-0.7.5
            go-github-com-klauspost-compress
            go-github-com-maypok86-otter-v2
            go-github-com-minio-minio-go-v7
