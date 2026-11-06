@@ -16710,6 +16710,36 @@ and delete rules; create, clear and delete tables and chains.")
 New Relic} API, an observability application.")
     (license license:asl2.0)))
 
+(define-public go-github-com-nlnwa-whatwg-url
+  (package
+    (name "go-github-com-nlnwa-whatwg-url")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nlnwa/whatwg-url")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13m5sl5rx7xgr7xwqjkxzy42a42m4c4f98q14hs698h1i7yiagjn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/nlnwa/whatwg-url"))
+    (propagated-inputs
+     (list go-github-com-bits-and-blooms-bitset
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://github.com/nlnwa/whatwg-url")
+    (synopsis "WHATWG conformant url parser")
+    (description
+     "Whatwg-url is a spec-compliant URL parser written in Go.  See
+@url{https://url.spec.whatwg.org/#url-parsing, WHATWG} website for the
+specification.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nrdcg-goinwx
   (package
     (name "go-github-com-nrdcg-goinwx")
