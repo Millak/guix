@@ -432,6 +432,56 @@ set on UnmarshalOptions), line number, column number, and snippet of the YAML
 that caused the error.")
     (license license:asl2.0)))
 
+(define-public go-cel-dev-cel-go
+  (package
+    (name "go-cel-dev-cel-go")
+    (version "0.33.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cel-expr/cel-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pn6kj7pimffawjyznhgbyh99wm4zlcya1kg4gy0qfhr7q85fghm"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Submodules with their own go.mod files and packaged separately
+        #~(for-each delete-file-recursively
+                    (list "codelab" "conformance" "policy" "repl" "tools"
+                          "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cel.dev/cel-go"
+      #:test-flags
+      #~(list "-short"
+              "-skip"
+              (string-join
+               (list "TestStringFormat/scientific_notation_formatting_clause"
+                     "TestStringFormat/default_precision_for_scientific_notation"
+                     "TestStringFormat/unicode_output_for_scientific_notation"
+                     "TestStringFormat/dyntype_support_for_scientific_notation")
+               "|"))))
+    (propagated-inputs
+     (list go-cel-dev-expr
+           go-github-com-antlr4-go-antlr-v4
+           go-github-com-google-go-cmp
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-text
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-protobuf))
+    (home-page "https://cel.dev")
+    (synopsis "Common Expression Language")
+    (description
+     "The Common Expression Language (CEL) is a non-Turing complete language
+designed for simplicity, speed, safety, and portability.  CEL's C-like
+@url{https://github.com/cel-expr/cel-spec, syntax} looks nearly identical to
+equivalent expressions in C++, Go, Java, and @code{TypeScript}.")
+    (license license:asl2.0)))
+
 (define-public go-charm-land-bubbles-v2
   (package
     (name "go-charm-land-bubbles-v2")
