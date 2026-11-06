@@ -370,7 +370,7 @@ Additionally, various channel-specific options can be negotiated.")
   (package
     (inherit openssh)
     (name "hpn-ssh")
-    (version "18.12.0")
+    (version "18.12.1")
     (source
      (origin
        (inherit (package-source openssh))
@@ -380,7 +380,7 @@ Additionally, various channel-specific options can be negotiated.")
           (url "https://github.com/rapier1/hpn-ssh")
           (commit (string-append "hpn-" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1bipc4dhspr8nn0pbfldxg409ad7xykqxmlrmp1kl51cywgslb30"))))
+       (sha256 (base32 "13xmfm5dd0jcg27lzwgibfxfg6pi67bwbqsiv186x53rb9xh5ynv"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
