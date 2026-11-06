@@ -9203,6 +9203,45 @@ by RuboCop to deal with Ruby's Abstract Syntax Tree (AST), in particular:
     (home-page "https://rubocop.org/")
     (license license:expat)))
 
+(define-public ruby-rexical
+  (package
+    (name "ruby-rexical")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch) ;for gemspec
+       (uri (git-reference
+             (url "https://github.com/sparklemotion/rexical")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b6vvzfkcjm6r9jhmfb2z92rkrm58jjlscr9y25lc0sa51x1b6w2"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Requiring RuboCop causes a dependency cycle.
+          (add-before 'check 'drop-rubocop-tests
+            (lambda _
+              (substitute* "test/test_generator.rb"
+                (("def test_rubocop_security" def)
+                 (string-append def ";skip 'requires RuboCop'")))))
+          (add-after 'wrap 'check-cli
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/bin/rex")
+                        "--version")))))))
+    (native-inputs (list ruby-minitest))
+    (propagated-inputs (list ruby-getoptlong))
+    (synopsis "Lexical scanner generator to produce Ruby programs")
+    (description
+     "Rexical is a lexical scanner generator that is used with the Racc
+standard library to generate Ruby programs.  Rexical is written in
+Ruby.")
+    (home-page "https://github.com/sparklemotion/rexical")
+    (license license:lgpl2.1)))
+
 (define-public ruby-rexml
   (package
     (name "ruby-rexml")
