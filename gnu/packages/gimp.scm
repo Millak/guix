@@ -271,7 +271,7 @@ buffers.")
 (define-public gimp
   (package
     (name "gimp")
-    (version "3.2.6")
+    (version "3.2.8")
     (source
      (origin
        (method url-fetch)
@@ -279,7 +279,7 @@ buffers.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "1n4cl9h4i04jnk2klh9p9z1aazw4m5z4cg6sfqdn630cmn85xca0"))))
+        (base32 "0iy88rkg51fvfiqba7r1p2r4qr9g0rg8kjvwz4p3mq69mmn6k8hn"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
