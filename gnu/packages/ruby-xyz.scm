@@ -8387,7 +8387,7 @@ It helps you keep your functionality clean and isolated where possible.")
 (define-public ruby-sanitize
   (package
     (name "ruby-sanitize")
-    (version "7.0.0")
+    (version "7.0.2")
     (source (origin
               (method git-fetch)
               ;; The gem does not include the Rakefile, so we download the
@@ -8398,7 +8398,7 @@ It helps you keep your functionality clean and isolated where possible.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14598z31g319q7vmn23jriwkm26705ciwy73a8dlsxqhp1wrcv69"))))
+                "1j9315lcsxgz733m8gkq9drzpnhwv05nxgxx6szzclyymc7s1f6z"))))
     (build-system ruby-build-system)
     (arguments
      (list
