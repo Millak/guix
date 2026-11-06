@@ -20705,7 +20705,7 @@ allows one to make simple text-mode user interfaces on Unix-like systems")
 (define-public python-confection
   (package
     (name "python-confection")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method git-fetch)
@@ -20714,7 +20714,7 @@ allows one to make simple text-mode user interfaces on Unix-like systems")
               (commit (string-append "release-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "065a3044x26sh8wz9xw4yh1kdzn397j0mzznwvksx5qimp23117b"))))
+        (base32 "0a3xg503clb984f49x70y7qg5s047xnp2lg39kb1r62v1pfbg961"))))
     (build-system pyproject-build-system)
     (arguments
      (list
