@@ -3027,39 +3027,39 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
 (define-public freepats-gm
   (package
     (name "freepats-gm")
-    (version "20210329")
+    (version "20221026")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://freepats.zenvoid.org/SoundSets/"
-                                  "FreePats-GeneralMIDI/FreePatsGM-SF2-"  version ".7z"))
+                                  "FreePats-GeneralMIDI/"
+                                  "FreePatsGM-SF2-"  version ".7z"))
               (sha256
                (base32
-                "19a1mp9yi33j2zff4mjvhrjz97dwwgjwzfdlf84j9xyydhx0crhc"))))
+                "0pa1npwa7rhf07m3f77828jh45drlqdgk6qip9ndhfhyhmvwgxf2"))))
     (build-system trivial-build-system)
-    (native-inputs
-     `(("p7zip" ,p7zip)))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (let ((dir (string-append "FreePatsGM-SF2-" ,version))
-             (file (string-append "FreePatsGM-" ,version ".sf2"))
-             (out (string-append %output "/share/soundfonts"))
-             (doc (string-append %output "/share/doc/freepats-gm-" ,version)))
-         (use-modules (guix build utils))
-         (invoke (string-append (assoc-ref %build-inputs "p7zip") "/bin/7z")
-                 "e" (assoc-ref %build-inputs "source")
-                 (string-append dir "/" file)
-                 (string-append dir "/gpl.txt")
-                 (string-append dir "/cc0.txt")
-                 (string-append dir "/readme.txt"))
-         (mkdir-p out)
-         (copy-file file (string-append out "/FreePatsGM.sf2"))
-         (mkdir-p doc)
-         (for-each
-          (lambda (file)
-            (copy-file file (string-append doc "/" file)))
-          (find-files "." "\\.txt$"))
-         #t)))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(let ((dir (string-append "FreePatsGM-SF2-" #$version))
+              (file (string-append "FreePatsGM-" #$version ".sf2"))
+              (out (string-append %output "/share/soundfonts"))
+              (doc (string-append %output "/share/doc/freepats-gm-" #$version)))
+          (use-modules (guix build utils))
+          (invoke (search-input-file %build-inputs "/bin/7z")
+                  "e" (assoc-ref %build-inputs "source")
+                  (string-append dir "/" file)
+                  (string-append dir "/gpl.txt")
+                  (string-append dir "/cc0.txt")
+                  (string-append dir "/readme.txt"))
+          (mkdir-p out)
+          (copy-file file (string-append out "/FreePatsGM.sf2"))
+          (mkdir-p doc)
+          (for-each
+           (lambda (file)
+             (copy-file file (string-append doc "/" file)))
+           (find-files "." "\\.txt$")))))
+    (native-inputs (list 7zip))
     (home-page "https://freepats.zenvoid.org/SoundSets/general-midi.html")
     (synopsis "General MIDI sound set")
     (description "FreePats is a project to create a free (as in free software)
