@@ -8334,7 +8334,7 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
 (define-public ruby-crass
   (package
     (name "ruby-crass")
-    (version "1.0.6")
+    (version "1.0.8")
     (home-page "https://github.com/rgrove/crass")
     (source (origin
               ;; The gem does not contain tests, so pull from git.
@@ -8345,7 +8345,7 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gbsb81psgb6xhnwpx4s409jc0mk0gijh039sy5xyi8jpaaadp40"))))
+                "06kckjx4hxqy4hpgighw95sdswnhdlqrs2f9hnrdrps3paqjkwg7"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases
