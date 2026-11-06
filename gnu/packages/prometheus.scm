@@ -267,7 +267,7 @@ registry.")
            go-github-com-kylelemons-godebug
            go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-kimmachinegun-automemlimit
+     (list go-github-com-kimmachinegun-automemlimit-0.7.5
            go-github-com-alecthomas-kingpin-v2
            go-github-com-alecthomas-units
            go-github-com-aws-aws-sdk-go-v2
