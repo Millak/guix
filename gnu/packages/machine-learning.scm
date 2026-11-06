@@ -6788,12 +6788,15 @@ between agentic clients and the Albert API (Etalab).")
   (package
     (name "python-lap")
     (version "0.5.14")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lap" version))
-              (sha256
-               (base32
-                "0jd5l9ww8cc1yr2pc1b17q6cg38cj88vv2qxvj8s4jb64pmqnj06"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gatagat/lap")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k8q1iga0x41c8grs66bfhlljwkh80g3mv0avlhmadn3c5g3p61w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
