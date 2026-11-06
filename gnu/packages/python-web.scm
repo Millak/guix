@@ -7969,7 +7969,7 @@ with very acceptable performance.")
 (define-public python-weasel
   (package
     (name "python-weasel")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -7978,21 +7978,19 @@ with very acceptable performance.")
              (commit (string-append "release-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sxcxri9hl9rs1kvdrv81g6mlg7lifhq9xacskracz63v4nyh8na"))))
+        (base32 "14y79y87i811bj750zyydji2r95mg5zqqzciwdf7gy7sxxi8yca0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; This test raises an error, but not the one expected by pytest.
-      #~(list (string-append "--deselect=weasel/tests/test_validation.py::"
-                             "test_project_config_interpolation[10_0]")
-              ;; Network access is required.
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "weasel/tests/cli/"
-                                                    test))
-                      (list "test_cli.py::test_project_git_dir_asset"
-                            "test_cli.py::test_project_git_file_asset"
-                            "test_cli_app.py::test_project_assets")))))
+      #~(list
+         ;; Network access is required.
+         #$@(map (lambda (test) (string-append "--deselect="
+                                          "weasel/tests/cli/"
+                                          test))
+                 (list "test_cli.py::test_project_git_dir_asset"
+                       "test_cli.py::test_project_git_file_asset"
+                       "test_cli_app.py::test_project_assets")))))
     (native-inputs
      (list python-pytest
            python-setuptools))
