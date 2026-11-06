@@ -1777,6 +1777,39 @@ DFSDG}.")
                         ("CONFIG_VHOST_VDPA" . m))
                       (default-extra-linux-options linux-libre-lts-version))))
 
+(define-public mnt-reform-patches-for-7.3
+  (package
+    (name "mnt-reform-patches")
+    (version "7.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/vagrantc/mnt-reform-patches.git")
+             (commit "3466c0985df26aa5904fc69f888b50ce2ba52708")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10hsv0035n2ng9yyqn51sax0s030n62vibs3dgmwv32mslj040cn"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("patches" ""))))
+    (home-page "https://codeberg.org/vagrantc/mnt-reform-patches")
+    (synopsis
+     "Linux kernel patches and device-trees used for MNT Reform systems")
+    (description
+     "Linux kernel patches and device-trees used for the MNT Reform systems")
+    (license (list
+              (license:fsf-free "file://filter-output"
+                                "https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html")
+              license:bsd-2
+              license:expat
+              license:gpl2
+              license:gpl2+
+              license:gpl3
+              license:x11))))
+
 (define-public reform-debian-packages-for-7.1
   (package
     (name "reform-debian-packages")
