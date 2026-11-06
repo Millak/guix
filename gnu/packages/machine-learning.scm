@@ -1924,17 +1924,17 @@ compatibility.")
 (define-public python-spacy-loggers
   (package
     (name "python-spacy-loggers")
-    (version "1.0.4")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "spacy-loggers" version))
               (sha256
                (base32
-                "0a5zjfxd0mci7pwda24ihg55whalpmjby4bvpgar2013f6zq7yg6"))))
+                "092zzv35hm2d3b8m5d31qk7z0iprxyx57rn2di8hx9hmz7dhn2yn"))))
     (build-system pyproject-build-system)
     ;; This package depends on spacy, which depends on this package.
     (arguments (list #:tests? #false))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/explosion/spacy-loggers")
     (synopsis "Logging utilities for SpaCy")
     (description "This package provides logging utilities for the SpaCy
