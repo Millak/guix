@@ -4130,6 +4130,362 @@ metadata from HTML markup.  Currently, extruct supports:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-falcon
+  (package
+    (name "python-falcon")
+    (version "4.0.2")
+    (source
+     (origin
+       ;; Use git, as there are some test files missing from the PyPI release,
+       ;; such as 'examples' directory.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/falconry/falcon")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1zhyvfbz4c1bxd4vbsgk19dzih6kkzgin10lmsr32x3b4qgnwqxs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" "not slow"
+             "--ignore-glob=examples/*" "--ignore-glob=bench/*" "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "FALCON_ASGI_WRAP_NON_COROUTINES" "Y")
+             (setenv "FALCON_TESTING_SESSION" "Y")
+             (setenv "PYTHONASYNCIODEBUG" "1")
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-mimeparse))
+    (native-inputs
+     (list python-aiofiles
+           python-cbor2
+           python-cython                ;for faster binaries
+           python-fakeredis
+           python-httpx
+           python-mujson
+           python-msgpack
+           python-orjson
+           python-pecan
+           python-pillow
+           python-pytest
+           python-pytest-asyncio
+           python-pyyaml
+           python-rapidjson
+           python-requests
+           python-setuptools
+           python-testtools
+           python-ujson
+           python-websockets
+           python-wheel))
+    (home-page "https://falconframework.org")
+    (synopsis "Web framework for building APIs and application backends")
+    (description "Falcon is a web API framework for building microservices,
+application backends and higher-level frameworks.  Among its features are:
+@itemize
+@item Optimized and extensible code base
+@item Routing via URI templates and REST-inspired resource
+classes
+@item Access to headers and bodies through request and response
+classes
+@item Request processing via middleware components and hooks
+@item Idiomatic HTTP error responses
+@item Straightforward exception handling
+@item Unit testing support through WSGI helpers and mocks
+@item Compatible with both CPython and PyPy
+@item Cython support for better performance when used with CPython
+@end itemize")
+    (license license:asl2.0)))
+
+(define-public python-falcon-cors
+  (package
+    (name "python-falcon-cors")
+    (properties '((commit . "41e9f075e193c1f76b26c0a8c67ad6e87462dfa6")
+                  (revision . "0")))
+    (version (git-version "1.1.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lwcolton/falcon-cors")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iqz1i1p5xr32n34j77p2a86jmrkg1w90d2wcmmy1mhi5mgdm5gx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: The last commit's tests are incompatible with the more recent
+      ;; version of python-falcon.
+      #:tests? #f))
+    (native-inputs
+     (list python-falcon python-mock python-pynose python-setuptools))
+    (home-page "https://github.com/lwcolton/falcon-cors")
+    (synopsis "Falcon @dfn{cross-origin resource sharing} (CORS) library")
+    (description
+     "This middleware provides @dfn{cross-origin resource sharing} (CORS)
+support for Falcon.  It allows applying a specially crafted CORS object to the
+incoming requests, enabling the ability to serve resources over a different
+origin than that of the web application.")
+    (license license:asl2.0)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-falcon-minimal
+  (package/inherit python-falcon
+    (name "python-falcon-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-cython
+           python-setuptools))
+    (propagated-inputs
+     (list python-mimeparse))))
+
+(define-public python-fastapi
+  (package
+    (name "python-fastapi")
+    (version "0.142.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastapi" version))
+       (sha256
+        (base32 "1lcjaw6qrnwrwbf7sivq7i0rq49kq85xwk105w3c5b5cz1wa972i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 3322 passed, 6 skipped, 5 xfailed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=scripts"               ;not a part of FastAPI package
+              ;; ImportError: cannot import name 'InMemoryLogRecordExporter'
+              ;; from 'opentelemetry.sdk._logs.export'
+              "--ignore=tests/test_telemetry"
+              "--ignore=tests/test_tutorial/test_opentelemetry"
+              ;; Failed: some snapshots in this test have incorrect values.
+              (string-append "--ignore=tests/test_tutorial/"
+                             "test_header_param_models/test_tutorial001.py")
+              (string-append "--ignore=tests/test_tutorial/"
+                             "test_header_param_models/test_tutorial003.py")
+              ;; Test needs Git.
+              (string-append "--deselect=tests/test_translate.py"
+                             "::test_commit_translation_changes")
+              ;; AssertionError: 'Path does not exist non_existent_file.py'
+              "--deselect=tests/test_fastapi_cli.py::test_fastapi_cli")))
+    (native-inputs
+     (list python-anyio
+           python-dirty-equals
+           python-flask
+           python-inline-snapshot
+           python-pdm-backend
+           python-pwdlib
+           python-pyjwt
+           python-pytest
+           python-pytest-timeout
+           python-pytest-xdist
+           python-sqlalchemy-2
+           python-sqlmodel-minimal
+           python-strawberry-graphql-minimal
+           python-types-orjson
+           python-types-ujson))
+    (propagated-inputs
+     (list python-annotated-doc
+           python-opentelemetry-api
+           python-pydantic
+           python-starlette
+           python-typing-extensions
+           python-typing-inspection
+           ;; [optional]
+           python-email-validator
+           python-fastapi-cli
+           ;; python-fastar
+           python-httpx
+           python-itsdangerous
+           python-jinja2
+           python-multipart
+           python-opentelemetry-sdk
+           ;; python-opentelemetry-exporter-otlp-proto-http
+           python-orjson
+           python-pydantic
+           python-pydantic-extra-types
+           python-pydantic-settings
+           python-pyyaml
+           python-ujson
+           python-uvicorn))
+    (home-page "https://github.com/fastapi/fastapi")
+    (synopsis "Web framework based on type hints")
+    (description "FastAPI provides a web API framework based on pydantic and
+starlette.")
+    (license license:expat)))
+
+(define-public python-fastapi-cli
+  (package
+    (name "python-fastapi-cli")
+    (version "0.0.32")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fastapi/fastapi-cli")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q8z9qdqja812s845lscws744jf7smldlbpi7jlmbld1js744y28"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_cli.py::test_script"   ;coverage test
+              ;; Neds optional python-fastapi-cloud-cli.
+              "--deselect=tests/test_cli.py::test_version")))
+    (native-inputs
+     (list python-fastapi-minimal
+           python-httpx
+           python-inline-snapshot
+           python-pdm-backend
+           python-pytest))
+    (propagated-inputs
+     (list python-rich-toolkit
+           python-typer
+           python-uvicorn
+           ;; [optinal]
+           ;; python-fastapi-cloud-cli              ;not packaged yet in Guix
+           #;python-fastapi-new))                   ;not packaged yet in Guix
+    (home-page "https://github.com/fastapi/fastapi-cli")
+    (synopsis
+     "Run and manage FastAPI apps from the command line with FastAPI CLI")
+    (description
+     "FastAPI CLI is a command line program fastapi that you can use to serve
+your FastAPI app, manage your FastAPI project, and more.")
+    (license license:expat)))
+
+(define-public python-fastapi-csrf-protect
+  (package
+    (name "python-fastapi-csrf-protect")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aekasitt/fastapi-csrf-protect")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "181yawlbpd4709mamsradr9zj0jrbp4qvwfvmggs80pd36iiwyy8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-fastapi python-itsdangerous
+           python-pydantic))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/aekasitt/fastapi-csrf-protect")
+    (synopsis "Cross-Site Request Forgery (XSRF) protection")
+    (description
+     "This package provides a stateless implementation of @dfn{Cross-Site
+Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
+pattern.")
+    (license license:expat)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-fastapi-minimal
+  (package/inherit python-fastapi
+    (name "python-fastapi-minimal")
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:tests? #t #t) #f)))
+    (native-inputs
+     (list python-pdm-backend))
+    (propagated-inputs
+     (list python-annotated-doc
+           python-opentelemetry-api
+           python-pydantic
+           python-starlette
+           python-typing-extensions
+           python-typing-inspection))))
+
+(define-public python-fastapi-pagination
+  (package
+    (name "python-fastapi-pagination")
+    (version "0.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uriyyo/fastapi-pagination")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01ipwc7nlx9ryk1c9n3c7gjqx33m4vzhwmqx9b8ghqy5dv6p6vy5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/ext")   ;run unit tests only
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; We don't have a package for python-cassandra or motor, but we
+              ;; also don't need them as we only run the unit tests anyway.
+              (substitute* "tests/conftest.py"
+                (("from cassandra.*") "")
+                (("from motor.*") "")))))))
+    (native-inputs
+     (list python-asgi-lifespan
+           ;; python-cassandra                      ;not packaged yet in Guix
+           python-dirty-equals
+           python-faker
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-fastapi
+           python-pydantic
+           python-typing-extensions
+           ;; [optional]
+           python-aiosqlite
+           python-asyncpg
+           ;; python-beanie                         ;not packaged yet in Guix
+           python-django
+           python-elasticsearch
+           ;; python-google-cloud-firestore         ;not packaged yet in Guix
+           python-greenlet
+           ;; python-mongoengine                    ;not packaged yet in Guix
+           ;; python-ormar                          ;not packaged yet in Guix
+           python-peewee
+           python-piccolo
+           python-psycopg
+           ;; python-scylla-driver                  ;not packaged yet in Guix
+           ;; python-sqlakeyset                     ;not packaged yet in Guix
+           python-sqlalchemy-2
+           python-sqlmodel
+           python-tortoise-orm))
+    (home-page "https://uriyyo-fastapi-pagination.netlify.app/")
+    (synopsis "FastAPI pagination library")
+    (description
+     "@code{fastapi-pagination} is a Python library designed to simplify
+pagination in FastAPI applications.  It provides a set of utility functions
+and data models to help you paginate your database queries and return
+paginated responses to your clients.")
+    (license license:expat)))
+
+;;; Deprecated on <2026-10-15>.
+(define-deprecated-package python-fastapi-pagination-minimal
+  python-fastapi-pagination)
+
 (define-public python-feedgen
   (package
     (name "python-feedgen")
@@ -4160,6 +4516,106 @@ format.  It also extensible and comes with an extension to produce podcasts.")
     ;; permits the user to choose whichever is more convenient to them.
     (license (list license:bsd-2
                    license:lgpl3+))))
+
+(define-public python-flask
+  (package
+    (name "python-flask")
+    (version "3.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/flask")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "006s5rm4syg48ymmwlnrkx8f8j758waksvhdsfiqx51zv52c0p8l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; assert 404 == 400
+      ;; This test is removed on master branch.
+      #~(list (string-append "--deselect=tests/test_reqctx.py"
+                             "::test_bad_environ_raises_bad_request"))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-blinker
+           python-click
+           python-itsdangerous
+           python-jinja2
+           python-markupsafe
+           python-werkzeug
+           ;; [optional]
+           python-asgiref
+           python-dotenv))
+    (home-page "https://palletsprojects.com/p/flask/")
+    (synopsis "Microframework based on Werkzeug, Jinja2 and good intentions")
+    (description "Flask is a micro web framework based on the Werkzeug toolkit
+and Jinja2 template engine.  It is called a micro framework because it does not
+presume or force a developer to use a particular tool or library.")
+    (license license:bsd-3)))
+
+(define-public python-flask-assets
+  ;; The latest release still depends on the abandoned flask-script, whereas
+  ;; at this later commit (already 2 years old at the time of this writing)
+  ;; the dependency has been lifted.
+  (let ((commit "62efd23fe95ee6a86fc1cfaa98fc1e2152093557")
+        (revision "1"))
+    (package
+      (name "python-flask-assets")
+      (version (git-version "2.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/miracle2k/flask-assets/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11q8vm2ipj4xrvawy9vl1l4k8kb4r72ghy1n8xrzci52v6lx8960"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs
+       (list python-flask python-webassets))
+      (native-inputs
+       (list nss-certs-for-test python-pytest python-setuptools python-wheel))
+      (home-page "https://github.com/miracle2k/flask-assets")
+      (synopsis "Asset management for Flask")
+      (description "This package integrates @code{webassets} with Flask, adding
+support for merging, minifying and compiling CSS and Javascript files.")
+      (license license:bsd-2))))
+
+(define-public python-flask-babel
+  (package
+    (name "python-flask-babel")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch) ;no tests in pypi release
+       (uri (git-reference
+             (url "https://github.com/python-babel/flask-babel")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "19yq3f5rixbwhv7wxdarvi9hdj98a9dq8y76in9c1q3jxaigw104"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-babel
+           python-flask
+           python-jinja2
+           python-pytz))
+    (home-page "https://github.com/python-babel/flask-babel")
+    (synopsis "Add i18n/l10n support to Flask applications")
+    (description "This package implements internationalization and localization
+support for Flask.  This is based on the Python babel module as well as pytz -
+both of which are installed automatically if you install this library.")
+    (license license:bsd-3)))
 
 (define-public python-flask-caching
   (package
@@ -4197,34 +4653,195 @@ format.  It also extensible and comes with an extension to produce podcasts.")
 fort ok https://github.com/thadeusb/flask-cache.")
     (license license:bsd-3)))
 
-(define-public python-flask-paginate
+(define-public python-flask-combo-jsonapi
+  (let ((commit "3cfff98ecdbadc45d25a3fd443ad67d3743be6f5")
+        (revision "0"))
+    (package
+      (name "python-flask-combo-jsonapi")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/AdCombo/flask-combo-jsonapi")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lp81v96qh9hdj3c95kvfaq0vy5vd8cm55j03aszc93bs8z5jg7h"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           "-k"
+           (string-join
+            (list
+             ;; XXX: This tests a feature that doesn't make sense when dropping
+             ;; marshmallow < 3 support.
+             "not test_compute_schema_propagate_context"
+             ;; The following tests fail for unknown reasons (see:
+             ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
+             "test_get_list_with_simple_filter_relationship_custom_qs_api"
+             "test_get_list_with_simple_filter_relationship_error")
+            " and not "))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'loosen-requirements
+              (lambda _
+                ;; Don't pin specific versions of dependencies.
+                (substitute* "requirements.txt"
+                  (("^(sqlalchemy|marshmallow|Flask)[=<>].*" _ dep)
+                   (string-append dep "\n"))
+                  (("^marshmallow_jsonapi[=<>].*")
+                   "marshmallow_jsonapi_minfork\n"))
+                ;; Drop support for marshmallow < 3.
+                (substitute* (list "flask_combo_jsonapi/data_layers/alchemy.py"
+                                   "flask_combo_jsonapi/schema.py")
+                  (("from marshmallow\\.base import SchemaABC")
+                   "from marshmallow import Schema")
+                  (("if isinstance\\(related_schema_cls, SchemaABC\\):")
+                   "if isinstance(related_schema_cls, Schema):"))
+                (substitute* "tests/test_sqlalchemy_data_layer.py"
+                  (("default=None")
+                   "dump_default=None")
+                  (("missing=")
+                   "load_default=")))))))
+      (propagated-inputs
+       (list python-flask
+             python-marshmallow
+             python-marshmallow-jsonapi
+             python-simplejson
+             python-sqlalchemy
+             python-apispec
+             python-simplejson
+             python-six))
+      (native-inputs
+       (list python-pytest python-setuptools))
+      (home-page "https://github.com/AdCombo/flask-combo-jsonapi")
+      (synopsis "Flask extension to quickly create JSON:API 1.0 REST Web APIs")
+      (description
+       "Flask-COMBO-JSONAPI is a Python Flask extension for building REST Web
+APIs compliant with the @uref{https://jsonapi.org, JSON:API 1.0}
+specification.
+
+It tries to combine the power of Flask-Restless with the flexibility of
+Flask-RESTful to quickly build APIs that fit the complexity of existing
+real-life projects with legacy data and diverse storage providers.")
+      (license license:expat))))
+
+(define-public python-flask-compress
   (package
-    (name "python-flask-paginate")
-    (version "2024.4.12")
+    (name "python-flask-compress")
+    (version "1.24")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/lixxu/flask-paginate")
+              (url "https://github.com/colour-science/flask-compress")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q4ajwk0pzc6934g07gdryjcwi6rd9iqcwv5g5s718dfx2bj1831"))))
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "tests/tests.py")))
+        (base32 "0mid5c34r75vax1r7l2l5sjjhs6bl8rbsdmhc7kz39snq6xw3cr5"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flask-caching
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-backports-zstd
+           python-brotli
+           python-flask))
+    (home-page "https://github.com/colour-science/flask-compress")
+    (synopsis "Compress responses in a Flask app")
+    (description
+     "This package lets you compress Flask application responses and static
+files with gzip, deflate or brotli.  Flask-Compress both adds the various
+headers required for a compressed response and compresses the response data.")
+    (license license:expat)))
+
+(define-public python-flask-cors
+  (package
+    (name "python-flask-cors")
+    (version "6.0.2")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/CoryDolphin/flask-cors")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02y740h951dscgkm7ghsss1bc0m8ymsfdpsimm1j0nkl0zjl6sgm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              ;; Otherwise sanity-check of dependents will fail.
+              (substitute* "pyproject.toml"
+                (("version = \"0\\.0\\.1\"" all)
+                 (string-append "version = \"" #$version "\""))))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-flask))
-    (home-page "https://github.com/lixxu/flask-paginate")
-    (synopsis "Simple paginate support for Flask")
+     (list python-flask
+           python-werkzeug))
+    (home-page "https://flask-cors.readthedocs.io/en/latest/")
+    (synopsis "Handle Cross-Origin Resource Sharing with Flask")
     (description
-     "Flask-paginate is a simple pagination extension for Flask which is
-inspired by Ruby's will_paginate library.  It supports several CSS frameworks.")
+     "This package provides a Flask extension for handling @acronym{CORS,Cross
+Origin Resource Sharing}, making cross-origin AJAX possible.")
+    (license license:expat)))
+
+(define-public python-flask-htmlmin
+  (package
+    (name "python-flask-htmlmin")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hamidfzm/Flask-HTMLmin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ybqssnqwa9zgv61azp5r1grgnq28ypfhr80p9rp61x2z0y0zl32"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-cssmin python-flask python-htmlmin2))
+    (home-page "https://github.com/hamidfzm/Flask-HTMLmin")
+    (synopsis "HTML response minifier for Flask")
+    (description
+     "Minify @code{text/html} MIME type responses when using @code{Flask}.")
     (license license:bsd-3)))
+
+(define-public python-flask-httpauth
+  (package
+    (name "python-flask-httpauth")
+    (version "4.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Flask-HTTPAuth" version))
+       (sha256
+        (base32
+         "0yh9fn6pak64has89pcy03f1cn198vkil872y5jjr53kph2qlmk6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-flask))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/miguelgrinberg/flask-httpauth/")
+    (synopsis "Basic and Digest HTTP authentication for Flask routes")
+    (description "@code{flask_httpauth} provides Basic and Digest HTTP
+authentication for Flask routes.")
+    (license license:expat)))
 
 (define-public python-flask-limiter
   (package
@@ -4289,6 +4906,473 @@ Rate limits can be configured at different levels such as:
 @item By individual routes
 @end itemize")
     (license license:expat)))
+
+(define-public python-flask-login
+  (let ((commit "c8bba84b9ba6768e878317fc46c54bd13fa1ac07")
+        (revision "0"))
+    (package
+      (name "python-flask-login")
+      (version (git-version "0.6.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/maxcountryman/flask-login")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q0ga1zwm06kvpnsf50ckmsc77959i1spx7z2y3jkbwaa4klsyli"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs
+       (list python-flask))
+      (native-inputs
+       ;; For tests.
+       (list python-blinker
+             python-flit-core
+             python-mock
+             python-pytest
+             python-semantic-version
+             python-werkzeug))
+      (home-page "https://github.com/maxcountryman/flask-login")
+      (synopsis "User session management for Flask")
+      (description
+       "@code{Flask-Login} provides user session management for Flask.  It
+handles the common tasks of logging in, logging out, and remembering your
+users' sessions over extended periods of time.")
+      (license license:expat))))
+
+(define-public python-flask-markdown
+  (package
+    (name "python-flask-markdown")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dcolish/flask-markdown")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rqqmvjc4rjal6l4y3caxw9b3157pl923h4i1ihbm0gziqv3g2hl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;Tests seem to be incompatible with latest python
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "setup.py"
+                (("dev")
+                 #$version)))))))
+    (propagated-inputs (list python-markdown python-flask))
+    (native-inputs (list python-pynose python-setuptools))
+    (home-page "https://github.com/dcolish/flask-markdown")
+    (synopsis "Small extension to help with using Markdown in Flask")
+    (description
+     "Flask-Markdown supports several extensions for Markdown and integrates
+into Jinja2 by default.")
+    (license license:bsd-3)))
+
+(define-public python-flask-migrate
+  (package
+    (name "python-flask-migrate")
+    (version "4.1.0")
+    (home-page "https://github.com/miguelgrinberg/flask-migrate/")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09qw1hhyssa5gahm199x67d55c55m3k9m23xp2bdacwsiv8jw57g"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-flask python-alembic python-flask-sqlalchemy))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (synopsis "SQLAlchemy database migrations for Flask programs using
+Alembic")
+    (description "This package contains SQLAlchemy database migration tools
+for Flask programs that are using @code{python-alembic}.")
+    (license license:expat)))
+
+(define-public python-flask-multistatic
+  (package
+    (name "python-flask-multistatic")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flask-multistatic" version))
+       (sha256
+        (base32
+         "0p4v50rwv64wcd0zlq7rzl4waprwr4hj19s3cgf1isywa7jcisgm"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests upstream.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-flask))
+    (home-page "https://pagure.io/flask-multistatic")
+    (synopsis "Flask plugin to allow overriding static files")
+    (description "@code{flask-multistatic} is a flask plugin that adds support
+for overriding static files.")
+    (license license:gpl3+)))
+
+(define-public python-flask-paginate
+  (package
+    (name "python-flask-paginate")
+    (version "2024.4.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lixxu/flask-paginate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q4ajwk0pzc6934g07gdryjcwi6rd9iqcwv5g5s718dfx2bj1831"))))
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/tests.py")))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-flask))
+    (home-page "https://github.com/lixxu/flask-paginate")
+    (synopsis "Simple paginate support for Flask")
+    (description
+     "Flask-paginate is a simple pagination extension for Flask which is
+inspired by Ruby's will_paginate library.  It supports several CSS frameworks.")
+    (license license:bsd-3)))
+
+(define-public python-flask-principal
+  (package
+    (name "python-flask-principal")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pallets-eco/flask-principal")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hcqcj768inmyfsw1y2vk6pa9p22dh138ll809rhpz9vjz6spnqk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-blinker))
+    (native-inputs (list python-flask python-pynose python-setuptools))
+    (home-page "https://github.com/pallets-eco/flask-principal")
+    (synopsis "Identity management for Flask")
+    (description
+     "@code{flask_principal} is a identity management library for Flask.  It
+supports managing both authentication and authorization data in a thread-local
+variable.")
+    (license license:expat)))
+
+(define-public python-flask-restful
+  (package
+    (name "python-flask-restful")
+    (version "0.3.10")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Flask-RESTful" version))
+        (sha256
+         (base32
+          "0dzckjjz3aw8nmisr5g9mnv02s2nqlhblykr9ydqzpr703pz4jpy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; See <https://github.com/flask-restful/flask-restful/issues/980>.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list python-aniso8601 python-flask python-pytz))
+    (native-inputs
+     (list python-blinker
+           python-mock
+           python-pytest
+           python-setuptools
+           python-six))
+    (home-page "https://github.com/flask-restful/flask-restful/")
+    (synopsis "Flask module for creating REST APIs")
+    (description
+     "This package contains a Flask module for creating REST APIs.")
+    (license license:bsd-3)))
+
+(define-public python-flask-restful-swagger
+  (package
+    (name "python-flask-restful-swagger")
+    (version "0.20.1")
+    ;; XXX: Unbundle minified javascript.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rantav/flask-restful-swagger")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ppdwn25ijf8b3zchxkvwj4ipc68v3p522i8mm51jm0w6mg5bvsh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-flask-restful python-six))
+    (home-page "https://github.com/rantav/flask-restful-swagger")
+    (synopsis "Extract Swagger specs from Flask-Restful projects")
+    (description "This package lets you extract Swagger API documentation
+specs from your Flask-Restful projects.")
+    (license license:expat)))
+
+(define-public python-flask-restx
+  (package
+    (name "python-flask-restx")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/python-restx/flask-restx")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qmm3i1cdv0bvzsc1gn4ql2dsf1fbx85fk69vcmzpsdxzczmw508"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 1214 passed, 6 skipped, 16 deselected, 3 warnings
+      #:test-flags
+      #~(list "--benchmark-skip"
+              ;; ValueError: http://www.google.com is not a valid URL. Domain
+              ;; does not exists.
+              "--deselect=tests/test_inputs.py::URLTest::test_check"
+              "-k" (string-join
+                    ;; See: <https://github.com/python-restx/flask-restx/issues/620>.
+                    (list "not test_rfc822_value"
+                          "test_iso8601_value"
+                          ;; assert 404 == 2000
+                          "test_specs_endpoint_host_and_subdomain"
+                          ;; ValueError: test@gmail.com is not a valid email
+                          "test_valid_value_check")
+                    " and not "))))
+    (native-inputs
+     (list python-blinker
+           python-faker
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-flask
+           python-pytest-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-aniso8601
+           python-flask
+           python-importlib-resources
+           python-jsonschema
+           python-pytz
+           python-werkzeug))
+    (home-page "https://github.com/python-restx/flask-restx")
+    (synopsis
+     "Framework for fast, easy and documented API development with Flask")
+    (description
+     "Flask-RESTX is an extension for Flask that adds support for quickly building
+REST APIs.  Flask-RESTX encourages best practices with minimal setup.  If you are familiar
+ with Flask, Flask-RESTX should be easy to pick up.  It provides a coherent collection of
+decorators and tools to describe your API and expose its documentation properly using
+Swagger.")
+    (license license:bsd-3)))
+
+(define-public python-flask-seasurf
+  (package
+    (name "python-flask-seasurf")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-SeaSurf" version))
+              (sha256
+               (base32
+                "0g5dsm2ikv8q4qcrb2446pbs972l5wkxyfmxsriqdsl02nz06h4f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-flask))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/maxcountryman/flask-seasurf/")
+    (synopsis "CSRF extension for Flask")
+    (description "SeaSurf is a Flask extension for preventing cross-site
+request forgery (CSRF).  CSRF attacks are problematic because the mechanism
+they use is relatively easy to exploit.  This extension attempts to aid you in
+securing your application from such attacks.  This extension is based on the
+Django middleware.")
+    (license license:bsd-3)))
+
+(define-public python-flask-session
+  (package
+    (name "python-flask-session")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flask_session" version))
+       (sha256
+        (base32
+         "1zs20zpq6gxz9gsccbd2jrrbbcfvh0x9z9741gkr8dhh07mlbq10"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:tests? #f)) ; Tests require the various storage backends to be present
+    (native-inputs (list python-flit-core))
+    (propagated-inputs
+     (list python-cachelib python-flask python-msgspec))
+    (home-page "https://github.com/pallets-eco/flask-session")
+    (synopsis "Adds server-side session support to your Flask application")
+    (description
+     "Flask-Session is an extension for Flask that adds support for
+Server-side sessions, with a variety of different backends for session
+storage.")
+    (license license:bsd-3)))
+
+(define-public python-flask-socketio
+  (package
+    (name "python-flask-socketio")
+    (version "5.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miguelgrinberg/Flask-SocketIO/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bs594bxggwn78yhf86whv6bcs8gb7mhrm5dnk5x4c3jb20nhfmm"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-redis
+           python-setuptools))
+    (propagated-inputs
+     (list python-flask
+           python-socketio))
+    (home-page "https://github.com/miguelgrinberg/Flask-SocketIO/")
+    (synopsis "Socket.IO integration for Flask applications")
+    (description "Socket.IO integration for Flask applications")
+    (license license:expat)))
+
+(define-public python-flask-sqlalchemy
+  (package
+    (name "python-flask-sqlalchemy")
+    ;; Released version fails tests in Python 3.12.
+    (properties '((commit . "168cb4b7b50fe5176307a10d873781bfafc6eeda")
+                  (revision . "0")))
+    (version (git-version "3.1.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets-eco/flask-sqlalchemy")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xw8v1540m21x9crpgb0i3rxyhh1d24ldg354vndw9cif74ls5p6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append "not test_explicit_table[db2]"
+                                  " and not test_explicit_table[db4]")
+              "-W" "ignore::DeprecationWarning")))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-flask
+           python-sqlalchemy-2))
+    (home-page "https://github.com/mitsuhiko/flask-sqlalchemy")
+    (synopsis "Module adding SQLAlchemy support to your Flask application")
+    (description
+     "This package adds SQLAlchemy support to your Flask application.")
+    (license license:bsd-3)))
+
+(define-public python-flask-wtf
+  (package
+    (name "python-flask-wtf")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Flask-WTF" version))
+       (sha256
+        (base32
+         "0sv6hjva1fdizb7sr46230pplx8qz8rnb4bxrfy71xbc8cgfxlkr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-flask python-flask python-itsdangerous python-wtforms))
+    (native-inputs
+     (list python-hatchling python-pytest))
+    (home-page "https://github.com/lepture/flask-wtf")
+    (synopsis "Simple integration of Flask and WTForms")
+    (description "Flask-WTF integrates Flask and WTForms, including CSRF, file
+upload, and reCAPTCHA.")
+    (license license:bsd-3)))
+
+(define-public python-frozenlist
+  (package
+    (name "python-frozenlist")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/frozenlist")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r1kxf5b562zrn04nl912i6a8y1fyc891l1284v0zj9llb97limy"))))
+    ;; XXX: Without "wheel", the 'install phase can't find the wheel.
+    (outputs (list "out" "wheel"))
+    (build-system pyproject-build-system)
+    ;; The configuration contains explicit early calls to pytest_cov.
+    (arguments (list #:test-flags #~(list  "-o" "addopts=''")))
+    (native-inputs
+     (list python-cython
+           python-expandvars
+           python-pytest
+           python-setuptools
+           python-tomli))
+    (home-page "https://github.com/aio-libs/frozenlist")
+    (synopsis "List-like data structure for Python")
+    (description "@code{frozenlist.FrozenList} is a list-like structure which
+implements @code{collections.abc.MutableSequence}.  It can be made immutable
+by calling @code{FrozenList.freeze}.")
+    (license license:asl2.0)))
+
+(define-public python-furl
+  (package
+    (name "python-furl")
+    (version "2.1.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "furl" version))
+        (sha256
+          (base32 "05b058xisv8kghvcpaxvssml2jjkh1cmzyrrjwk2kjb62985fxl7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "-k" (string-append "not test_hosts"
+                                       " and not test_netloc"
+                                       " and not test_odd_urls"))))
+    (propagated-inputs
+     (list python-orderedmultidict python-six))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/gruns/furl")
+    (synopsis "URL manipulation in Python")
+    (description "Furl provides an easy-to-use alternative to the
+@code{urllib} and @code{urlparse} modules for manipulating URLs.")
+    (license license:unlicense)))
 
 (define-public python-gdown
   (package
@@ -5743,37 +6827,6 @@ API rules.")
     (home-page "https://praw.readthedocs.io/en/latest/")
     (license license:bsd-2)))
 
-(define-public python-frozenlist
-  (package
-    (name "python-frozenlist")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aio-libs/frozenlist")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0r1kxf5b562zrn04nl912i6a8y1fyc891l1284v0zj9llb97limy"))))
-    ;; XXX: Without "wheel", the 'install phase can't find the wheel.
-    (outputs (list "out" "wheel"))
-    (build-system pyproject-build-system)
-    ;; The configuration contains explicit early calls to pytest_cov.
-    (arguments (list #:test-flags #~(list  "-o" "addopts=''")))
-    (native-inputs
-     (list python-cython
-           python-expandvars
-           python-pytest
-           python-setuptools
-           python-tomli))
-    (home-page "https://github.com/aio-libs/frozenlist")
-    (synopsis "List-like data structure for Python")
-    (description "@code{frozenlist.FrozenList} is a list-like structure which
-implements @code{collections.abc.MutableSequence}.  It can be made immutable
-by calling @code{FrozenList.freeze}.")
-    (license license:asl2.0)))
-
 (define-public python-httpauth
   (package
     (name "python-httpauth")
@@ -6240,153 +7293,6 @@ HTTP via a UNIX domain socket.")
      "S3Path provide a Python convenient File-System/Path like interface for
 AWS S3 Service using boto3 S3 resource as a driver.")
     (license license:asl2.0)))
-
-(define-public python-falcon
-  (package
-    (name "python-falcon")
-    (version "4.0.2")
-    (source
-     (origin
-       ;; Use git, as there are some test files missing from the PyPI release,
-       ;; such as 'examples' directory.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/falconry/falcon")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1zhyvfbz4c1bxd4vbsgk19dzih6kkzgin10lmsr32x3b4qgnwqxs"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" "not slow"
-             "--ignore-glob=examples/*" "--ignore-glob=bench/*" "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "FALCON_ASGI_WRAP_NON_COROUTINES" "Y")
-             (setenv "FALCON_TESTING_SESSION" "Y")
-             (setenv "PYTHONASYNCIODEBUG" "1")
-             (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-mimeparse))
-    (native-inputs
-     (list python-aiofiles
-           python-cbor2
-           python-cython                ;for faster binaries
-           python-fakeredis
-           python-httpx
-           python-mujson
-           python-msgpack
-           python-orjson
-           python-pecan
-           python-pillow
-           python-pytest
-           python-pytest-asyncio
-           python-pyyaml
-           python-rapidjson
-           python-requests
-           python-setuptools
-           python-testtools
-           python-ujson
-           python-websockets
-           python-wheel))
-    (home-page "https://falconframework.org")
-    (synopsis "Web framework for building APIs and application backends")
-    (description "Falcon is a web API framework for building microservices,
-application backends and higher-level frameworks.  Among its features are:
-@itemize
-@item Optimized and extensible code base
-@item Routing via URI templates and REST-inspired resource
-classes
-@item Access to headers and bodies through request and response
-classes
-@item Request processing via middleware components and hooks
-@item Idiomatic HTTP error responses
-@item Straightforward exception handling
-@item Unit testing support through WSGI helpers and mocks
-@item Compatible with both CPython and PyPy
-@item Cython support for better performance when used with CPython
-@end itemize")
-    (license license:asl2.0)))
-
-(define-public python-falcon-cors
-  (package
-    (name "python-falcon-cors")
-    (properties '((commit . "41e9f075e193c1f76b26c0a8c67ad6e87462dfa6")
-                  (revision . "0")))
-    (version (git-version "1.1.7"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lwcolton/falcon-cors")
-             (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0iqz1i1p5xr32n34j77p2a86jmrkg1w90d2wcmmy1mhi5mgdm5gx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: The last commit's tests are incompatible with the more recent
-      ;; version of python-falcon.
-      #:tests? #f))
-    (native-inputs
-     (list python-falcon python-mock python-pynose python-setuptools))
-    (home-page "https://github.com/lwcolton/falcon-cors")
-    (synopsis "Falcon @dfn{cross-origin resource sharing} (CORS) library")
-    (description
-     "This middleware provides @dfn{cross-origin resource sharing} (CORS)
-support for Falcon.  It allows applying a specially crafted CORS object to the
-incoming requests, enabling the ability to serve resources over a different
-origin than that of the web application.")
-    (license license:asl2.0)))
-
-;; A bare minimal package, mainly to use in tests and reduce closure size.
-;; Tests are left out in the main package to slim down native-inputs and
-;; propagated-inputs.
-(define-public python-falcon-minimal
-  (package/inherit python-falcon
-    (name "python-falcon-minimal")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:tests? _ #t) #f)))
-    (native-inputs
-     (list python-cython
-           python-setuptools))
-    (propagated-inputs
-     (list python-mimeparse))))
-
-(define-public python-furl
-  (package
-    (name "python-furl")
-    (version "2.1.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "furl" version))
-        (sha256
-          (base32 "05b058xisv8kghvcpaxvssml2jjkh1cmzyrrjwk2kjb62985fxl7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           #~(list "-k" (string-append "not test_hosts"
-                                       " and not test_netloc"
-                                       " and not test_odd_urls"))))
-    (propagated-inputs
-     (list python-orderedmultidict python-six))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/gruns/furl")
-    (synopsis "URL manipulation in Python")
-    (description "Furl provides an easy-to-use alternative to the
-@code{urllib} and @code{urlparse} modules for manipulating URLs.")
-    (license license:unlicense)))
 
 (define-public python-httplib2
   (package
@@ -7008,160 +7914,6 @@ library, through the Tornado framework.
 SockJS provides a low-latency, full-duplex, cross-domain communication channel
 between a web browser and web server.")
     (license license:expat)))
-
-(define-public python-flask-assets
-  ;; The latest release still depends on the abandoned flask-script, whereas
-  ;; at this later commit (already 2 years old at the time of this writing)
-  ;; the dependency has been lifted.
-  (let ((commit "62efd23fe95ee6a86fc1cfaa98fc1e2152093557")
-        (revision "1"))
-    (package
-      (name "python-flask-assets")
-      (version (git-version "2.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/miracle2k/flask-assets/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "11q8vm2ipj4xrvawy9vl1l4k8kb4r72ghy1n8xrzci52v6lx8960"))))
-      (build-system pyproject-build-system)
-      (propagated-inputs
-       (list python-flask python-webassets))
-      (native-inputs
-       (list nss-certs-for-test python-pytest python-setuptools python-wheel))
-      (home-page "https://github.com/miracle2k/flask-assets")
-      (synopsis "Asset management for Flask")
-      (description "This package integrates @code{webassets} with Flask, adding
-support for merging, minifying and compiling CSS and Javascript files.")
-      (license license:bsd-2))))
-
-(define-public python-flask-babel
-  (package
-    (name "python-flask-babel")
-    (version "4.0.0")
-    (source
-     (origin
-       (method git-fetch) ;no tests in pypi release
-       (uri (git-reference
-             (url "https://github.com/python-babel/flask-babel")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32
-         "19yq3f5rixbwhv7wxdarvi9hdj98a9dq8y76in9c1q3jxaigw104"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-mock))
-    (propagated-inputs
-     (list python-babel
-           python-flask
-           python-jinja2
-           python-pytz))
-    (home-page "https://github.com/python-babel/flask-babel")
-    (synopsis "Add i18n/l10n support to Flask applications")
-    (description "This package implements internationalization and localization
-support for Flask.  This is based on the Python babel module as well as pytz -
-both of which are installed automatically if you install this library.")
-    (license license:bsd-3)))
-
-(define-public python-flask-cors
-  (package
-    (name "python-flask-cors")
-    (version "6.0.2")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/CoryDolphin/flask-cors")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02y740h951dscgkm7ghsss1bc0m8ymsfdpsimm1j0nkl0zjl6sgm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
-            (lambda _
-              ;; Otherwise sanity-check of dependents will fail.
-              (substitute* "pyproject.toml"
-                (("version = \"0\\.0\\.1\"" all)
-                 (string-append "version = \"" #$version "\""))))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-flask
-           python-werkzeug))
-    (home-page "https://flask-cors.readthedocs.io/en/latest/")
-    (synopsis "Handle Cross-Origin Resource Sharing with Flask")
-    (description
-     "This package provides a Flask extension for handling @acronym{CORS,Cross
-Origin Resource Sharing}, making cross-origin AJAX possible.")
-    (license license:expat)))
-
-(define-public python-flask-markdown
-  (package
-    (name "python-flask-markdown")
-    (version "0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dcolish/flask-markdown")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1rqqmvjc4rjal6l4y3caxw9b3157pl923h4i1ihbm0gziqv3g2hl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f  ;Tests seem to be incompatible with latest python
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (substitute* "setup.py"
-                (("dev")
-                 #$version)))))))
-    (propagated-inputs (list python-markdown python-flask))
-    (native-inputs (list python-pynose python-setuptools))
-    (home-page "https://github.com/dcolish/flask-markdown")
-    (synopsis "Small extension to help with using Markdown in Flask")
-    (description
-     "Flask-Markdown supports several extensions for Markdown and integrates
-into Jinja2 by default.")
-    (license license:bsd-3)))
-
-(define-public python-flask-session
-  (package
-    (name "python-flask-session")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flask_session" version))
-       (sha256
-        (base32
-         "1zs20zpq6gxz9gsccbd2jrrbbcfvh0x9z9741gkr8dhh07mlbq10"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:tests? #f)) ; Tests require the various storage backends to be present
-    (native-inputs (list python-flit-core))
-    (propagated-inputs
-     (list python-cachelib python-flask python-msgspec))
-    (home-page "https://github.com/pallets-eco/flask-session")
-    (synopsis "Adds server-side session support to your Flask application")
-    (description
-     "Flask-Session is an extension for Flask that adds support for
-Server-side sessions, with a variety of different backends for session
-storage.")
-    (license license:bsd-3)))
 
 (define-public python-html5lib
   (package
@@ -10085,145 +10837,6 @@ starting an HTTP server.  It supports anything that supports the minimum of
 WSGI.")
     (license license:expat)))
 
-(define-public python-flask
-  (package
-    (name "python-flask")
-    (version "3.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/pallets/flask")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "006s5rm4syg48ymmwlnrkx8f8j758waksvhdsfiqx51zv52c0p8l"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; assert 404 == 400
-      ;; This test is removed on master branch.
-      #~(list (string-append "--deselect=tests/test_reqctx.py"
-                             "::test_bad_environ_raises_bad_request"))))
-    (native-inputs
-     (list python-flit-core
-           python-pytest))
-    (propagated-inputs
-     (list python-blinker
-           python-click
-           python-itsdangerous
-           python-jinja2
-           python-markupsafe
-           python-werkzeug
-           ;; [optional]
-           python-asgiref
-           python-dotenv))
-    (home-page "https://palletsprojects.com/p/flask/")
-    (synopsis "Microframework based on Werkzeug, Jinja2 and good intentions")
-    (description "Flask is a micro web framework based on the Werkzeug toolkit
-and Jinja2 template engine.  It is called a micro framework because it does not
-presume or force a developer to use a particular tool or library.")
-    (license license:bsd-3)))
-
-(define-public python-flask-compress
-  (package
-    (name "python-flask-compress")
-    (version "1.24")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/colour-science/flask-compress")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0mid5c34r75vax1r7l2l5sjjhs6bl8rbsdmhc7kz39snq6xw3cr5"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-flask-caching
-           python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-backports-zstd
-           python-brotli
-           python-flask))
-    (home-page "https://github.com/colour-science/flask-compress")
-    (synopsis "Compress responses in a Flask app")
-    (description
-     "This package lets you compress Flask application responses and static
-files with gzip, deflate or brotli.  Flask-Compress both adds the various
-headers required for a compressed response and compresses the response data.")
-    (license license:expat)))
-
-(define-public python-flask-seasurf
-  (package
-    (name "python-flask-seasurf")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Flask-SeaSurf" version))
-              (sha256
-               (base32
-                "0g5dsm2ikv8q4qcrb2446pbs972l5wkxyfmxsriqdsl02nz06h4f"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #false)) ;there are none
-    (propagated-inputs (list python-flask))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/maxcountryman/flask-seasurf/")
-    (synopsis "CSRF extension for Flask")
-    (description "SeaSurf is a Flask extension for preventing cross-site
-request forgery (CSRF).  CSRF attacks are problematic because the mechanism
-they use is relatively easy to exploit.  This extension attempts to aid you in
-securing your application from such attacks.  This extension is based on the
-Django middleware.")
-    (license license:bsd-3)))
-
-(define-public python-flask-wtf
-  (package
-    (name "python-flask-wtf")
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Flask-WTF" version))
-       (sha256
-        (base32
-         "0sv6hjva1fdizb7sr46230pplx8qz8rnb4bxrfy71xbc8cgfxlkr"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-flask python-flask python-itsdangerous python-wtforms))
-    (native-inputs
-     (list python-hatchling python-pytest))
-    (home-page "https://github.com/lepture/flask-wtf")
-    (synopsis "Simple integration of Flask and WTForms")
-    (description "Flask-WTF integrates Flask and WTForms, including CSRF, file
-upload, and reCAPTCHA.")
-    (license license:bsd-3)))
-
-(define-public python-flask-multistatic
-  (package
-    (name "python-flask-multistatic")
-    (version "1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flask-multistatic" version))
-       (sha256
-        (base32
-         "0p4v50rwv64wcd0zlq7rzl4waprwr4hj19s3cgf1isywa7jcisgm"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))  ; No tests upstream.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-flask))
-    (home-page "https://pagure.io/flask-multistatic")
-    (synopsis "Flask plugin to allow overriding static files")
-    (description "@code{flask-multistatic} is a flask plugin that adds support
-for overriding static files.")
-    (license license:gpl3+)))
-
 (define-public python-responses
   (package
     (name "python-responses")
@@ -10474,97 +11087,6 @@ S3.")
      "S3transfer is a Python library for managing Amazon S3 transfers.")
     (license license:asl2.0)))
 
-(define-public python-flask-restful
-  (package
-    (name "python-flask-restful")
-    (version "0.3.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Flask-RESTful" version))
-        (sha256
-         (base32
-          "0dzckjjz3aw8nmisr5g9mnv02s2nqlhblykr9ydqzpr703pz4jpy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; See <https://github.com/flask-restful/flask-restful/issues/980>.
-     (list #:tests? #f))
-    (propagated-inputs
-     (list python-aniso8601 python-flask python-pytz))
-    (native-inputs
-     (list python-blinker
-           python-mock
-           python-pytest
-           python-setuptools
-           python-six))
-    (home-page "https://github.com/flask-restful/flask-restful/")
-    (synopsis "Flask module for creating REST APIs")
-    (description
-     "This package contains a Flask module for creating REST APIs.")
-    (license license:bsd-3)))
-
-(define-public python-flask-sqlalchemy
-  (package
-    (name "python-flask-sqlalchemy")
-    ;; Released version fails tests in Python 3.12.
-    (properties '((commit . "168cb4b7b50fe5176307a10d873781bfafc6eeda")
-                  (revision . "0")))
-    (version (git-version "3.1.1"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/pallets-eco/flask-sqlalchemy")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0xw8v1540m21x9crpgb0i3rxyhh1d24ldg354vndw9cif74ls5p6"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-append "not test_explicit_table[db2]"
-                                  " and not test_explicit_table[db4]")
-              "-W" "ignore::DeprecationWarning")))
-    (native-inputs
-     (list python-flit-core
-           python-pytest))
-    (propagated-inputs
-     (list python-flask
-           python-sqlalchemy-2))
-    (home-page "https://github.com/mitsuhiko/flask-sqlalchemy")
-    (synopsis "Module adding SQLAlchemy support to your Flask application")
-    (description
-     "This package adds SQLAlchemy support to your Flask application.")
-    (license license:bsd-3)))
-
-(define-public python-flask-restful-swagger
-  (package
-    (name "python-flask-restful-swagger")
-    (version "0.20.1")
-    ;; XXX: Unbundle minified javascript.
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rantav/flask-restful-swagger")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ppdwn25ijf8b3zchxkvwj4ipc68v3p522i8mm51jm0w6mg5bvsh"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-flask-restful python-six))
-    (home-page "https://github.com/rantav/flask-restful-swagger")
-    (synopsis "Extract Swagger specs from Flask-Restful projects")
-    (description "This package lets you extract Swagger API documentation
-specs from your Flask-Restful projects.")
-    (license license:expat)))
-
 (define-public python-htmlmin
   (package
     (name "python-htmlmin")
@@ -10610,28 +11132,6 @@ defaults and easily configurable options.  This variant is an updated fork of
 the original @code{python-htmlmin}.")
     (license license:bsd-3)))
 
-(define-public python-flask-htmlmin
-  (package
-    (name "python-flask-htmlmin")
-    (version "3.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hamidfzm/Flask-HTMLmin")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ybqssnqwa9zgv61azp5r1grgnq28ypfhr80p9rp61x2z0y0zl32"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-cssmin python-flask python-htmlmin2))
-    (home-page "https://github.com/hamidfzm/Flask-HTMLmin")
-    (synopsis "HTML response minifier for Flask")
-    (description
-     "Minify @code{text/html} MIME type responses when using @code{Flask}.")
-    (license license:bsd-3)))
-
 (define-public python-jsmin
   (package
     (name "python-jsmin")
@@ -10653,40 +11153,6 @@ the original @code{python-htmlmin}.")
      "@code{jsmin} is a JavaScript minifier, usable from both Python code and
 on the command line.")
     (license license:expat)))
-
-(define-public python-flask-login
-  (let ((commit "c8bba84b9ba6768e878317fc46c54bd13fa1ac07")
-        (revision "0"))
-    (package
-      (name "python-flask-login")
-      (version (git-version "0.6.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/maxcountryman/flask-login")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0q0ga1zwm06kvpnsf50ckmsc77959i1spx7z2y3jkbwaa4klsyli"))))
-      (build-system pyproject-build-system)
-      (propagated-inputs
-       (list python-flask))
-      (native-inputs
-       ;; For tests.
-       (list python-blinker
-             python-flit-core
-             python-mock
-             python-pytest
-             python-semantic-version
-             python-werkzeug))
-      (home-page "https://github.com/maxcountryman/flask-login")
-      (synopsis "User session management for Flask")
-      (description
-       "@code{Flask-Login} provides user session management for Flask.  It
-handles the common tasks of logging in, logging out, and remembering your
-users' sessions over extended periods of time.")
-      (license license:expat))))
 
 (define-public python-oauth2client
   (package
@@ -10743,30 +11209,6 @@ and CSS files,supporting a variety of different filters, including YUI, jsmin,
 jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (license license:bsd-2)))
 
-(define-public python-flask-migrate
-  (package
-    (name "python-flask-migrate")
-    (version "4.1.0")
-    (home-page "https://github.com/miguelgrinberg/flask-migrate/")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09qw1hhyssa5gahm199x67d55c55m3k9m23xp2bdacwsiv8jw57g"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-flask python-alembic python-flask-sqlalchemy))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (synopsis "SQLAlchemy database migrations for Flask programs using
-Alembic")
-    (description "This package contains SQLAlchemy database migration tools
-for Flask programs that are using @code{python-alembic}.")
-    (license license:expat)))
-
 (define-public python-genshi
   (package
     (name "python-genshi")
@@ -10790,54 +11232,6 @@ for Flask programs that are using @code{python-alembic}.")
 of components for parsing, generating, and processing HTML, XML or other
 textual content for output generation on the web.")
     (license license:bsd-3)))
-
-(define-public python-flask-principal
-  (package
-    (name "python-flask-principal")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pallets-eco/flask-principal")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0hcqcj768inmyfsw1y2vk6pa9p22dh138ll809rhpz9vjz6spnqk"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-blinker))
-    (native-inputs (list python-flask python-pynose python-setuptools))
-    (home-page "https://github.com/pallets-eco/flask-principal")
-    (synopsis "Identity management for Flask")
-    (description
-     "@code{flask_principal} is a identity management library for Flask.  It
-supports managing both authentication and authorization data in a thread-local
-variable.")
-    (license license:expat)))
-
-(define-public python-flask-httpauth
-  (package
-    (name "python-flask-httpauth")
-    (version "4.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Flask-HTTPAuth" version))
-       (sha256
-        (base32
-         "0yh9fn6pak64has89pcy03f1cn198vkil872y5jjr53kph2qlmk6"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-flask))
-    (native-inputs
-     (list nss-certs-for-test
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/miguelgrinberg/flask-httpauth/")
-    (synopsis "Basic and Digest HTTP authentication for Flask routes")
-    (description "@code{flask_httpauth} provides Basic and Digest HTTP
-authentication for Flask routes.")
-    (license license:expat)))
 
 (define-public python-uritemplate
   (package
@@ -12817,89 +13211,6 @@ based on filters.")
 requests.")
     (license license:asl2.0)))
 
-(define-public python-flask-restx
-  (package
-    (name "python-flask-restx")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)       ;no tests in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/python-restx/flask-restx")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qmm3i1cdv0bvzsc1gn4ql2dsf1fbx85fk69vcmzpsdxzczmw508"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; 1214 passed, 6 skipped, 16 deselected, 3 warnings
-      #:test-flags
-      #~(list "--benchmark-skip"
-              ;; ValueError: http://www.google.com is not a valid URL. Domain
-              ;; does not exists.
-              "--deselect=tests/test_inputs.py::URLTest::test_check"
-              "-k" (string-join
-                    ;; See: <https://github.com/python-restx/flask-restx/issues/620>.
-                    (list "not test_rfc822_value"
-                          "test_iso8601_value"
-                          ;; assert 404 == 2000
-                          "test_specs_endpoint_host_and_subdomain"
-                          ;; ValueError: test@gmail.com is not a valid email
-                          "test_valid_value_check")
-                    " and not "))))
-    (native-inputs
-     (list python-blinker
-           python-faker
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-flask
-           python-pytest-mock
-           python-setuptools))
-    (propagated-inputs
-     (list python-aniso8601
-           python-flask
-           python-importlib-resources
-           python-jsonschema
-           python-pytz
-           python-werkzeug))
-    (home-page "https://github.com/python-restx/flask-restx")
-    (synopsis
-     "Framework for fast, easy and documented API development with Flask")
-    (description
-     "Flask-RESTX is an extension for Flask that adds support for quickly building
-REST APIs.  Flask-RESTX encourages best practices with minimal setup.  If you are familiar
- with Flask, Flask-RESTX should be easy to pick up.  It provides a coherent collection of
-decorators and tools to describe your API and expose its documentation properly using
-Swagger.")
-    (license license:bsd-3)))
-
-(define-public python-flask-socketio
-  (package
-    (name "python-flask-socketio")
-    (version "5.6.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/miguelgrinberg/Flask-SocketIO/")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bs594bxggwn78yhf86whv6bcs8gb7mhrm5dnk5x4c3jb20nhfmm"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-redis
-           python-setuptools))
-    (propagated-inputs
-     (list python-flask
-           python-socketio))
-    (home-page "https://github.com/miguelgrinberg/Flask-SocketIO/")
-    (synopsis "Socket.IO integration for Flask applications")
-    (description "Socket.IO integration for Flask applications")
-    (license license:expat)))
-
 (define-public python-manuel
   (package
     (name "python-manuel")
@@ -14122,82 +14433,6 @@ websites, without requiring the user to open them in a browser.  It also
 provides well-defined APIs to talk to websites lacking one.")
     (license license:lgpl3+)))
 
-(define-public python-flask-combo-jsonapi
-  (let ((commit "3cfff98ecdbadc45d25a3fd443ad67d3743be6f5")
-        (revision "0"))
-    (package
-      (name "python-flask-combo-jsonapi")
-      (version (git-version "1.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/AdCombo/flask-combo-jsonapi")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1lp81v96qh9hdj3c95kvfaq0vy5vd8cm55j03aszc93bs8z5jg7h"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:test-flags
-        #~(list
-           "-k"
-           (string-join
-            (list
-             ;; XXX: This tests a feature that doesn't make sense when dropping
-             ;; marshmallow < 3 support.
-             "not test_compute_schema_propagate_context"
-             ;; The following tests fail for unknown reasons (see:
-             ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
-             "test_get_list_with_simple_filter_relationship_custom_qs_api"
-             "test_get_list_with_simple_filter_relationship_error")
-            " and not "))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'loosen-requirements
-              (lambda _
-                ;; Don't pin specific versions of dependencies.
-                (substitute* "requirements.txt"
-                  (("^(sqlalchemy|marshmallow|Flask)[=<>].*" _ dep)
-                   (string-append dep "\n"))
-                  (("^marshmallow_jsonapi[=<>].*")
-                   "marshmallow_jsonapi_minfork\n"))
-                ;; Drop support for marshmallow < 3.
-                (substitute* (list "flask_combo_jsonapi/data_layers/alchemy.py"
-                                   "flask_combo_jsonapi/schema.py")
-                  (("from marshmallow\\.base import SchemaABC")
-                   "from marshmallow import Schema")
-                  (("if isinstance\\(related_schema_cls, SchemaABC\\):")
-                   "if isinstance(related_schema_cls, Schema):"))
-                (substitute* "tests/test_sqlalchemy_data_layer.py"
-                  (("default=None")
-                   "dump_default=None")
-                  (("missing=")
-                   "load_default=")))))))
-      (propagated-inputs
-       (list python-flask
-             python-marshmallow
-             python-marshmallow-jsonapi
-             python-simplejson
-             python-sqlalchemy
-             python-apispec
-             python-simplejson
-             python-six))
-      (native-inputs
-       (list python-pytest python-setuptools))
-      (home-page "https://github.com/AdCombo/flask-combo-jsonapi")
-      (synopsis "Flask extension to quickly create JSON:API 1.0 REST Web APIs")
-      (description
-       "Flask-COMBO-JSONAPI is a Python Flask extension for building REST Web
-APIs compliant with the @uref{https://jsonapi.org, JSON:API 1.0}
-specification.
-
-It tries to combine the power of Flask-Restless with the flexibility of
-Flask-RESTful to quickly build APIs that fit the complexity of existing
-real-life projects with legacy data and diverse storage providers.")
-      (license license:expat))))
-
 (define-public python-mwparserfromhell
   (package
     (name "python-mwparserfromhell")
@@ -15060,241 +15295,6 @@ Amazon S3 or any other external service.")
     (description
      "Suds is a lightweight SOAP-based web service client for Python.")
     (license license:lgpl3+)))
-
-(define-public python-fastapi
-  (package
-    (name "python-fastapi")
-    (version "0.142.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastapi" version))
-       (sha256
-        (base32 "1lcjaw6qrnwrwbf7sivq7i0rq49kq85xwk105w3c5b5cz1wa972i"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 3322 passed, 6 skipped, 5 xfailed
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "--ignore=scripts"               ;not a part of FastAPI package
-              ;; ImportError: cannot import name 'InMemoryLogRecordExporter'
-              ;; from 'opentelemetry.sdk._logs.export'
-              "--ignore=tests/test_telemetry"
-              "--ignore=tests/test_tutorial/test_opentelemetry"
-              ;; Failed: some snapshots in this test have incorrect values.
-              (string-append "--ignore=tests/test_tutorial/"
-                             "test_header_param_models/test_tutorial001.py")
-              (string-append "--ignore=tests/test_tutorial/"
-                             "test_header_param_models/test_tutorial003.py")
-              ;; Test needs Git.
-              (string-append "--deselect=tests/test_translate.py"
-                             "::test_commit_translation_changes")
-              ;; AssertionError: 'Path does not exist non_existent_file.py'
-              "--deselect=tests/test_fastapi_cli.py::test_fastapi_cli")))
-    (native-inputs
-     (list python-anyio
-           python-dirty-equals
-           python-flask
-           python-inline-snapshot
-           python-pdm-backend
-           python-pwdlib
-           python-pyjwt
-           python-pytest
-           python-pytest-timeout
-           python-pytest-xdist
-           python-sqlalchemy-2
-           python-sqlmodel-minimal
-           python-strawberry-graphql-minimal
-           python-types-orjson
-           python-types-ujson))
-    (propagated-inputs
-     (list python-annotated-doc
-           python-opentelemetry-api
-           python-pydantic
-           python-starlette
-           python-typing-extensions
-           python-typing-inspection
-           ;; [optional]
-           python-email-validator
-           python-fastapi-cli
-           ;; python-fastar
-           python-httpx
-           python-itsdangerous
-           python-jinja2
-           python-multipart
-           python-opentelemetry-sdk
-           ;; python-opentelemetry-exporter-otlp-proto-http
-           python-orjson
-           python-pydantic
-           python-pydantic-extra-types
-           python-pydantic-settings
-           python-pyyaml
-           python-ujson
-           python-uvicorn))
-    (home-page "https://github.com/fastapi/fastapi")
-    (synopsis "Web framework based on type hints")
-    (description "FastAPI provides a web API framework based on pydantic and
-starlette.")
-    (license license:expat)))
-
-;; A bare minimal package, mainly to use in tests and reduce closure size.
-;; Tests are left out in the main package to slim down native-inputs and
-;; propagated-inputs.
-(define-public python-fastapi-minimal
-  (package/inherit python-fastapi
-    (name "python-fastapi-minimal")
-     (arguments
-      (substitute-keyword-arguments arguments
-        ((#:tests? #t #t) #f)))
-    (native-inputs
-     (list python-pdm-backend))
-    (propagated-inputs
-     (list python-annotated-doc
-           python-opentelemetry-api
-           python-pydantic
-           python-starlette
-           python-typing-extensions
-           python-typing-inspection))))
-
-(define-public python-fastapi-csrf-protect
-  (package
-    (name "python-fastapi-csrf-protect")
-    (version "0.3.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/aekasitt/fastapi-csrf-protect")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "181yawlbpd4709mamsradr9zj0jrbp4qvwfvmggs80pd36iiwyy8"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-fastapi python-itsdangerous
-           python-pydantic))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest))
-    (home-page "https://github.com/aekasitt/fastapi-csrf-protect")
-    (synopsis "Cross-Site Request Forgery (XSRF) protection")
-    (description
-     "This package provides a stateless implementation of @dfn{Cross-Site
-Request Forgery} (XSRF) Protection by using the Double Submit Cookie mitigation
-pattern.")
-    (license license:expat)))
-
-(define-public python-fastapi-pagination
-  (package
-    (name "python-fastapi-pagination")
-    (version "0.16.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/uriyyo/fastapi-pagination")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "01ipwc7nlx9ryk1c9n3c7gjqx33m4vzhwmqx9b8ghqy5dv6p6vy5"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=tests/ext")   ;run unit tests only
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; We don't have a package for python-cassandra or motor, but we
-              ;; also don't need them as we only run the unit tests anyway.
-              (substitute* "tests/conftest.py"
-                (("from cassandra.*") "")
-                (("from motor.*") "")))))))
-    (native-inputs
-     (list python-asgi-lifespan
-           ;; python-cassandra                      ;not packaged yet in Guix
-           python-dirty-equals
-           python-faker
-           python-hatchling
-           python-pytest
-           python-pytest-asyncio))
-    (propagated-inputs
-     (list python-fastapi
-           python-pydantic
-           python-typing-extensions
-           ;; [optional]
-           python-aiosqlite
-           python-asyncpg
-           ;; python-beanie                         ;not packaged yet in Guix
-           python-django
-           python-elasticsearch
-           ;; python-google-cloud-firestore         ;not packaged yet in Guix
-           python-greenlet
-           ;; python-mongoengine                    ;not packaged yet in Guix
-           ;; python-ormar                          ;not packaged yet in Guix
-           python-peewee
-           python-piccolo
-           python-psycopg
-           ;; python-scylla-driver                  ;not packaged yet in Guix
-           ;; python-sqlakeyset                     ;not packaged yet in Guix
-           python-sqlalchemy-2
-           python-sqlmodel
-           python-tortoise-orm))
-    (home-page "https://uriyyo-fastapi-pagination.netlify.app/")
-    (synopsis "FastAPI pagination library")
-    (description
-     "@code{fastapi-pagination} is a Python library designed to simplify
-pagination in FastAPI applications.  It provides a set of utility functions
-and data models to help you paginate your database queries and return
-paginated responses to your clients.")
-    (license license:expat)))
-
-;;; Deprecated on <2026-10-15>.
-(define-deprecated-package python-fastapi-pagination-minimal
-  python-fastapi-pagination)
-
-(define-public python-fastapi-cli
-  (package
-    (name "python-fastapi-cli")
-    (version "0.0.32")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/fastapi/fastapi-cli")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0q8z9qdqja812s845lscws744jf7smldlbpi7jlmbld1js744y28"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--deselect=tests/test_cli.py::test_script"   ;coverage test
-              ;; Neds optional python-fastapi-cloud-cli.
-              "--deselect=tests/test_cli.py::test_version")))
-    (native-inputs
-     (list python-fastapi-minimal
-           python-httpx
-           python-inline-snapshot
-           python-pdm-backend
-           python-pytest))
-    (propagated-inputs
-     (list python-rich-toolkit
-           python-typer
-           python-uvicorn
-           ;; [optinal]
-           ;; python-fastapi-cloud-cli              ;not packaged yet in Guix
-           #;python-fastapi-new))                   ;not packaged yet in Guix
-    (home-page "https://github.com/fastapi/fastapi-cli")
-    (synopsis
-     "Run and manage FastAPI apps from the command line with FastAPI CLI")
-    (description
-     "FastAPI CLI is a command line program fastapi that you can use to serve
-your FastAPI app, manage your FastAPI project, and more.")
-    (license license:expat)))
 
 (define-public python-pyactiveresource
   (package
