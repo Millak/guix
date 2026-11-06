@@ -4988,6 +4988,29 @@ for \"realtime\" in the index of the Guix manual to learn how to achieve this
 using Guix System.")
     (license license:gpl2+)))
 
+(define-public timgm6mb
+  (package
+    (name "timgm6mb")
+    (version "20100822")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/arbruijn/TimGM6mb")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07wj6gxi0d04jhp2dyqqb0iwhpjf72f1r0dddmn7iixns4fq1q5i"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("TimGM6mb.sf2" "share/soundfonts/"))))
+    (home-page "https://github.com/arbruijn/TimGM6mb")
+    (synopsis "Small, but complete GM SoundFont")
+    (description "TimGM6MB is a small (6 MB size) SoundFont covering all
+basic @acronym{GM, General MIDI} instruments.")
+    (license license:gpl2)))
+
 (define-public libshout-idjc
   (package
     (name "libshout-idjc")
