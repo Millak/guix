@@ -4225,7 +4225,6 @@ host.")
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-smallstep-assert
-           go-github-com-smallstep-cli-utils
            go-github-com-stretchr-testify
            go-github-com-urfave-cli
            go-go-uber-org-mock
@@ -4257,6 +4256,7 @@ host.")
            go-github-com-rs-xid
            go-github-com-sirupsen-logrus
            go-github-com-slackhq-nebula
+           go-github-com-smallstep-cli-utils
            go-github-com-smallstep-go-attestation
            go-github-com-smallstep-linkedca
            go-github-com-smallstep-nosql
