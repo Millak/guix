@@ -6829,10 +6829,13 @@ algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
     (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "visdom" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fossasia/visdom")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18yc9x2s5r44qadfvdh79sm8mnd68qxj09wb07gxixsvf1a9xky3"))))
+        (base32 "1j4mx9kwaisa90qd71knz7b253faakpqkdn1fp5x0hl6d5i39hb3"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;tests require launching the server
     (native-inputs
