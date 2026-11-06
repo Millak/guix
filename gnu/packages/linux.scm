@@ -2131,6 +2131,148 @@ DFSDG}.")
             ("CONFIG_MNTRE_SC" . m))
           '())))
 
+(define-public linux-libre-arm64-mnt-reform-7.3
+  ;; Kernel for use on the MNT/Reform systems
+  ;; https://mntre.com/reform.html
+  (let ((base (make-linux-libre* linux-libre-7.3-version
+                                 linux-libre-7.3-gnu-revision
+                                 linux-libre-7.3-source
+                                 '("aarch64-linux")
+                                 #:extra-version "arm64-mnt-reform"
+                                 #:extra-options
+                                 ;; https://source.mnt.re/reform/reform-debian-packages/-/blob/main/linux/config
+                                 (append (mnt-reform-kernel-options
+                                          linux-libre-7.3-version)
+                                         (default-extra-linux-options
+                                          linux-libre-7.3-version)))))
+    (package
+      (inherit base)
+      (inputs (list mnt-reform-patches-for-7.3))
+      (synopsis (string-append (package-synopsis base)
+                               " for MNT/Reform systems"))
+      (description (string-append (package-description base)
+                    "  Configuration options and patches have been applied for use with MNT/Reform systems."))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'apply-reform-patches
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (for-each (lambda (patch)
+                              (invoke "patch" "-p1" "-i"
+                                      (search-input-file inputs
+                                                         (string-append
+                                                          "patches/" patch))))
+                            (list
+                             "0001-imx8mp-2ghz-clk.patch"
+                             "0002-imx8mp-2ghz-opp.patch"
+                             "0003-sdhci-add-no-sd-uhs-sdr104-devicetree-property.patch"
+                             "0004-During-the-card-init-the-host-side-sometimes-may-nee.patch"
+                             "0005-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
+                             "0006-add-multi-display-panel-driver-v6.patch"
+                             "0007-ti-sn65dsi86-use-HS-clock-of-samsung-dsim-host-direc.patch"
+                             "0008-lcdif-don-t-exceed-desired-pixel-clock.patch"
+                             "0009-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
+                             "0010-nwl-dsi-fixup-mode-only-for-LCDIF-input-not-DCSS.patch"
+                             "0011-Revert-drm-bridge-nwl-dsi-Use-vsync-hsync-polarity-f.patch"
+                             "0012-lcdif-fix-pcie-interference.patch"
+                             "0013-mnt4002-imx-gpcv2-wake-smccc.patch.patch"
+                             "0014-pci-imx6-add-support-for-internal-refclk-on-imx8mq.patch"
+                             "0015-imx8mq-import-HDMI-driver-and-make-DCSS-compatible-w.patch"
+                             "0016-dtsi-add-hdptx.patch"
+                             "0017-a311d-viu-fifo-lines-config.patch"
+                             "0018-a311d-viu-fifo-lines-config-header.patch"
+                             "0019-tlv320aic31xx-add-12.288MHz-mclk-support-and-fix-for.patch"
+                             "0020-Revert-drm-bridge-synopsys-dw-mipi-dsi-enable-EoTp-b.patch"
+                             "0021-meson-g12b-bananapi-cm4-mnt-reform2.dts-fix-audio-an.patch"
+                             "0022-dw-mipi-dsi-phy-stop-wait-time.patch"
+                             "0023-innolux-n125hce-gn1-timing-tweaks.patch"
+                             "0024-meson-viu-hold-fifo-lines.patch"
+                             "0025-meson-venc-sync.patch.patch"
+                             "0026-meson-dw-mipi-dsi-sync-invert.patch"
+                             "0027-sn65dsi86-burst-mode-support.patch"
+                             "0028-sn65dsi86-never-turn-off.patch"
+                             "0029-LOCAL-ALSA-Assign-internal-PCM-chmap-ELD-IEC958-kctl.patch"
+                             "0030-HACK-of-partial-revert-of-fdt.c-changes.patch"
+                             "0031-add-bt-and-eth-resets.patch"
+                             "0032-sdio-improve-wifi-speed.patch"
+                             "0033-sdio-improve-wifi-speed.patch"
+                             "0034-WORKAROUND-meson_plane-disable-AFBC-32x8-support.patch"
+                             "0035-3001-casey-aux-bridge-defer.patch.patch"
+                             "0036-3003-casey-lpass-sc7280-audio-hacks.patch.patch"
+                             "0037-tlv320aic31xx-default-to-12.288MHz-sysclk-if-not-set.patch"
+                             "0038-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
+                             "0039-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
+                             "0040-clk-composite-replace-open-coded-abs_diff.patch"
+                             "0041-PCI-dw-rockchip-Restore-vpcie3v3-regulator-handle.patch"
+                             "0042-mfd-rk8xx-Fix-shutdown-handler.patch"
+                             "0043-dt-bindings-display-vop2-Add-VP-clock-resets.patch"
+                             "0044-drm-rockchip-vop2-Add-clock-resets-support.patch"
+                             "0045-arm64-dts-rockchip-Add-VOP-clock-resets-for-rk3588s.patch"
+                             "0046-drm-rockchip-vop2-Add-core-reset-support.patch"
+                             "0047-PCI-dw-rockchip-Move-devm_phy_get-out-of-phy_init.patch"
+                             "0048-PCI-dw-rockchip-Add-helper-function-for-enhanced-LTS.patch"
+                             "0049-PCI-dw-rockchip-Add-helper-function-for-controller-m.patch"
+                             "0050-PCI-dw-rockchip-Add-helper-function-for-DDL-indicato.patch"
+                             "0051-PCI-dw-rockchip-Add-pme_turn_off-support.patch"
+                             "0052-PCI-dw-rockchip-Add-system-PM-support.patch"
+                             "0053-PCI-dw-rockchip-Fix-LTSSM-set-functions.patch"
+                             "0054-PCI-dw-rockchip-Clear-debug-buffer-before-entering-L.patch"
+                             "0055-DEBUG-phy-rockchip-samsung-hdptx-Add-verbose-logging.patch"
+                             "0056-drm-rockchip-dw_hdmi_qp-Restrict-HPD-event-to-the-af.patch"
+                             "0057-drm-bridge-connector-Use-cached-connector-status-in-.patch"
+                             "0058-drm-bridge-Add-detect_ctx-hook-and-drm_bridge_detect.patch"
+                             "0059-drm-bridge-connector-Switch-to-.detect_ctx-for-conne.patch"
+                             "0060-drm-bridge-dw-hdmi-qp-Add-HDMI-2.0-SCDC-scrambling-a.patch"
+                             "0061-dt-bindings-phy-rockchip-usbdp-add-improved-ports-sc.patch"
+                             "0062-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
+                             "0063-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
+                             "0064-drm-rockchip-Set-dma-mask-to-64-bit.patch"
+                             "0065-classic-reform-panel-edp-timing-loosen-up-the-htotal.patch"
+                             "0066-rk3588-analogix-edp-ignore-panel-bridge-lookup-error.patch"
+                             "0067-rk3588-vop2-work-around-cluster-esmart-config-bugs-w.patch"
+                             "0068-drivers-firmware-mnt-sc-add-to-kernel-tree.patch"
+                             "0069-mnt-sc-strip-vendor-prefix-in-spi_device_id-table.patch"
+                             "0070-mnt-sc-fix-inverted-err-response-check.patch"
+                             "0071-mnt-sc-fix-store_uart-stack-buffer-overflow.patch"
+                             "0072-mnt-sc-fix-show_firmware-writing-every-reply-into-st.patch"
+                             "0073-fsl-ls1028a-mnt-reform2.dts.patch"
+                             "0074-imx8mq-mnt-reform2-hdmi.dts.patch"
+                             "0075-imx8mp-mnt-.dts.patch"
+                             "0076-meson-g12b-bananapi-cm4-mnt-pocket-reform.dts.patch"
+                             "0077-rk3588-mnt-.dts.patch"
+                             "0078-rk3588-mnt-reform-next.dts.patch"
+                             "0079-qcs6490-.dts.patch"
+                             "0080-qcs8550-mnt-.dts.patch"
+                             "0081-rk3588-analogix_dp-changes-to-make-usb-c-dp-alt-mode.patch"
+                             "0082-rk3588-analogix_dp-fixups.patch"
+                             "0083-rk3588-analogix_dp-messing-with-a-connector-is-no-lo.patch"
+                             "0084-dts-update-rk3588-mnt-reform-next.dts-to-fix-interna.patch"
+                             "0085-qcs8550-mnt-reform-next.dts-audio-and-mntsc-fixes.patch"
+                             "0086-dts-rk3588-mnt-reform-next-change-vp0-vp1-vp2-assign.patch"
+                             "0087-dts-rk3588-mnt-pocket-reform-clean-up-commented-out-.patch"
+                             "0088-qcs8550-qcs6490-and-cq8750s-device-tree-updates-for-.patch"
+                             "0089-dts-qcs8550-mnt-reform-next-disable-cpu0-idle-fix-gp.patch"
+                             "0090-dts-qcs8550-mnt-pocket-reform-sort-nodes.patch"
+                             "0091-dts-add-chassis-type-laptop-to-qcs8550-mnt-reform-ne.patch"
+                             "0092-drm-msm-a8xx-Add-support-for-Adreno-830-GPU.patch"
+                             "0093-dt-bindings-display-msm-Document-Adreno-830-GPU-GMU.patch"
+                             "0094-arm64-dts-qcom-sm8750-Add-GPU-and-GMU-nodes.patch"
+                             "0095-arm64-dts-qcom-sm8750-Add-GPU-cooling.patch"
+                             "0096-arm64-dts-qcom-sm8750-mtp-Enable-Adreno-830-GPU.patch"
+                             "0097-arm64-dts-qcom-sm8750-qrd-Enable-Adreno-830-GPU.patch"
+                             "0098-drm-msm-dpu-add-the-missing-GC-block-to-the-SM8750-D.patch"
+                             "0099-arm64-dts-qcom-sm8750-Add-GPU-clock-IOMMU-nodes.patch"
+                             "0100-misc-fastrpc-fix-NULL-rpdev-dereference-when-session.patch"
+                             "0101-dts-cq8750s-mnt-quasar.dtsi-fix-memory-regions-i2c-g.patch"
+                             "0102-ufs-qcom-add-qcom-sm8750-ufshc-compat.patch"
+                             "0103-drm-msm-a6xx-Fix-RPMH-dependency-votes.patch"
+                             "0104-drm-msm-a6xx-Fix-secondary-rail-vote-in-ARC-votes.patch"
+                             "0105-drm-msm-a6xx-Honor-perfmode_bw-threshold-on-A8x.patch"
+                             "0106-dts-mnt-quasar-update-clean-all-qcs6490-and-cq8750s-.patch"
+                             "0107-dts-sm8750.dtsi-remove-duplicate-opp-607000000.patch"
+                             "0108-dts-qcs6490-mnt-quasar.dtsi-fixup-remove-mntsc-inclu.patch")))))))))))
+
 (define-public linux-libre-arm64-mnt-reform-7.1
   ;; Kernel for use on the MNT/Reform systems
   ;; https://mntre.com/reform.html
