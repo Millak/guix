@@ -20082,6 +20082,30 @@ Linux @url{https://man7.org/linux/man-pages/man7/cgroups.7.html,cgroups(7)}
 memory limit.")
     (license license:expat)))
 
+;; XXX: Breaking changes, remove when no longer required.
+(define-public go-github-com-kimmachinegun-automemlimit-0.7.5
+  (hidden-package
+   (package
+     (inherit go-github-com-kimmachinegun-automemlimit)
+     (name "go-github-com-kimmachinegun-automemlimit")
+     (version "0.7.5")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/KimMachineGun/automemlimit")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1sym7nkxxamm9iz03b416fxh0pfacxk2j3qwr81l4n1sl707y30a"))))
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:test-flags test-flags #~(list))
+         ;; memlimit_linux_test.go:82: SetGoMemLimit() error = failed to set
+         ;; GOMEMLIMIT: process is not in cgroup, wantErr cgroups is not
+         ;; supported on this system
+         #~(list "-skip" "TestSetGoMemLimit/Unavailable")))))))
+
 (define-public go-github-com-kisielk-sqlstruct
   (package
     (name "go-github-com-kisielk-sqlstruct")
