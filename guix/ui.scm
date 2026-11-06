@@ -1941,19 +1941,15 @@ available."
       ""))
 
 (define* (call-with-paginated-output-port proc
-                                          #:key (less-options "FrX"))
+                                          #:key (less-options "FRX"))
   (let ((pager-command-line (find-available-pager)))
     ;; Setting PAGER to the empty string conventionally disables paging.
     (if (and (not (string-null? pager-command-line))
              (isatty?* (current-output-port)))
         ;; Set 'LESS' so that 'less' exits if everything fits on the screen
-        ;; (F), lets ANSI escapes through (r), does not send the termcap
+        ;; (F), lets ANSI escapes through (R), does not send the termcap
         ;; initialization string (X).  Set it unconditionally because some
         ;; distros set it to something that doesn't work here.
-        ;;
-        ;; For things that produce long lines, such as 'guix processes', use
-        ;; 'R' instead of 'r': this strips hyperlinks but allows 'less' to
-        ;; make a good estimate of the line length.
         (let* ((pager (with-environment-variables `(("LESS" ,less-options))
                         (apply open-pipe* OPEN_WRITE
                                ;; Split into arguments.  Treat runs of multiple
