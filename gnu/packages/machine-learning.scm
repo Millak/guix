@@ -2727,7 +2727,7 @@ and are compatible with its API.")
 (define-public python-thinc
   (package
     (name "python-thinc")
-    (version "8.3.13")
+    (version "10.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2737,7 +2737,7 @@ and are compatible with its API.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04h9lbcaf4xizmcyq10lgr1gsxlgb8w4zcbf9vnzp37bn344cvig"))))
+        (base32 "0jxpkibsdfqij3618c41fkxw9lk5wa4k5285lal3m7q62gipkfb8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
