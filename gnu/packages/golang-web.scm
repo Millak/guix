@@ -25141,6 +25141,61 @@ Container Service, ECS} instances.")
      "Package gcp provides a resource detector for GCP Cloud Function.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-exporters-autoexport
+  (package
+    (name "go-go-opentelemetry-io-contrib-exporters-autoexport")
+    (version "0.67.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir "exporters/autoexport"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18k9pqwzlcjkiz8cy2hgl5jwal10ypj171hra4zsqizbqjivd4lc"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-all-but "exporters" "autoexport")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/contrib/exporters/autoexport"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-prometheus-client-golang
+           go-go-opentelemetry-io-contrib-bridges-prometheus
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlplog-otlploggrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlplog-otlploghttp
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetrichttp
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-exporters-prometheus
+           go-go-opentelemetry-io-otel-exporters-stdout-stdoutlog
+           go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
+           go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-log
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/open-telemetry/opentelemetry-go-contrib")
+    (synopsis "OpenTelemetry exporter factory functions")
+    (description
+     "Package autoexport provides @code{OpenTelemetry} exporter factory
+functions with defaults and environment variable support as defined by the
+@code{OpenTelemetry} specification.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
   (package
     (name
