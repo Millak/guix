@@ -7081,6 +7081,33 @@ authentication through Negotiate mechanism (see
 Dropbox API.")
     (license license:expat)))
 
+(define-public go-github-com-dunglas-go-urlpattern
+  (package
+    (name "go-github-com-dunglas-go-urlpattern")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dunglas/go-urlpattern")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11vi8q32vfiqfs1sjzyrp8lddhr2z35g71sxba3inwsvxjnxrk34"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dunglas/go-urlpattern"))
+    (propagated-inputs
+     (list go-github-com-nlnwa-whatwg-url
+           go-golang-org-x-exp))
+    (home-page "https://dunglas.dev/")
+    (synopsis "Implementation of the WHATWG URL Pattern Living Standard ")
+    (description
+     "Package urlpattern implements the
+@url{https://urlpattern.spec.whatwg.org/, URLPattern web API}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dunglas-httpsfv
   (package
     (name "go-github-com-dunglas-httpsfv")
