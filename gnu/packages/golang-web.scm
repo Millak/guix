@@ -323,38 +323,50 @@ information and allow for dynamic registration/inventory.")
 (define-public go-0xacab-org-leap-obfsvpn
   (package
     (name "go-0xacab-org-leap-obfsvpn")
-    (version "1.3.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://0xacab.org/leap/obfsvpn.git")
-             (commit (string-append "v" version))))
+              (url "https://0xacab.org/leap/obfsvpn.git")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iq3m2j6m9n1h9rkysaj97nnqx65fn7vz9jskl4qa4rwh002pv3d"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; It's the same project.
-            (substitute* (find-files "." "\\.go$")
-              (("git.torproject.org/pluggable-transports/goptlib.git")
-               (string-append "gitlab.torproject.org/tpo/anti-censorship"
-                              "/pluggable-transports/goptlib")))))))
+        (base32 "0lk8mbq891wda59dq5x8jmky0vkv7yp5zq5ldma822ym0jrkym28"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "0xacab.org/leap/obfsvpn"))
+      #:import-path "0xacab.org/leap/obfsvpn"
+      #:embed-files #~(list ".*\\.json")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-symnlink-to-0xacab-org
+            ;; XXX: There is an issue with go-build-system to link inputs
+            ;; starting from digits, see:
+            ;; <https://codeberg.org/guix/guix/issues/6320>.
+            (lambda _
+              (symlink
+               (string-append
+                #$(this-package-input "go-0xacab-org-leap-menshen")
+                "/src/0xacab.org/leap/menshen")
+               "src/0xacab.org/leap/menshen")
+              (symlink
+               (string-append
+                #$(this-package-input "go-0xacab-org-leap-menshen-agent")
+                "/src/0xacab.org/leap/menshen-agent")
+               "src/0xacab.org/leap/menshen-agent"))))))
     (native-inputs
      (list go-github-com-spf13-pflag
-           go-github-com-spf13-viper))
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-labstack-echo-v4
-           go-github-com-quic-go-quic-go-0.52
-           go-github-com-sirupsen-logrus
+     (list go-0xacab-org-leap-menshen
+           go-0xacab-org-leap-menshen-agent
+           go-github-com-prometheus-client-golang
+           go-github-com-quic-go-quic-go
            go-github-com-xtaci-kcp-go-v5
-           go-gitlab-com-yawning-obfs4-git
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
            go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib))
     (home-page "https://0xacab.org/leap/obfsvpn")
     (synopsis "OBFS4 client and server proxies")
