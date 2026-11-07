@@ -727,7 +727,7 @@ classification.")
 (define-public python-gpy
   (package
     (name "python-gpy")
-    (version "1.14.2")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -736,7 +736,7 @@ classification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l0yxidhsf9s87fcc7v1l38dywq9ps6nr1d84r1nmblp9dgmibr2"))))
+        (base32 "02msnm5awkcm4h1lxhyprwvdys2wn63j21n16ci44hzj44f7yhda"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -744,11 +744,16 @@ classification.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'compatibility
             (lambda _
+              ;; Compatibility.
+              (delete-file-recursively "GPy/old_tests")
+              ;; SyntaxError: invalid syntax
+              (delete-file "GPy/kern/src/todo/eq_ode1.py")
               ;; This file uses Python 2 statements
               (delete-file "GPy/testing/mpi_test__.py"))))))
     (native-inputs
      (list python-cython
            python-pods
+           python-poetry-core
            python-pytest
            python-setuptools))
     (propagated-inputs
