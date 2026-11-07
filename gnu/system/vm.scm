@@ -297,15 +297,19 @@ useful when FULL-BOOT?  is true."
               #:volatile? volatile?
               #:system system
               #:target target))
-         (base-image (system-image
-                      (image
-                        (inherit
-                         (raw-with-offset-disk-image))
-                        (operating-system os)
-                        (size disk-image-size)
-                        (shared-store?
-                         (and (not full-boot?) volatile?))
-                        (volatile-root? volatile?)))))
+         (raw-image (image
+                      (inherit (raw-with-offset-disk-image))
+                      (operating-system os)
+                      (size disk-image-size)
+                      (shared-store?
+                       (and (not full-boot?) volatile?))
+                      (volatile-root? volatile?)))
+         (base-image (system-image raw-image))
+
+         ;; Make sure the code below refers to the operating system as it
+         ;; exists in the image, following transformations such as UUID
+         ;; assignment for its root device.
+         (os (operating-system-for-image raw-image)))
     (define kernel-arguments
       #~(list #$@(if graphic? #~() #~("console=ttyS0"))
               #$@(operating-system-kernel-arguments os "/dev/vda1")))
