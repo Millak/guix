@@ -6194,7 +6194,7 @@ alias cysdig=sudo csysdig --modern-bpf
 (define-public systemd-documentation
   (package
     (name "systemd-documentation")
-    (version "261.2")
+    (version "262.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6203,7 +6203,7 @@ alias cysdig=sudo csysdig --modern-bpf
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "014mjygixfh9j1p1f09xgy114v5lfah6hwh8xcscy1nqxk3p2hf3"))))
+                "1a5n1h3pkha5id2mdpl8b07dggrga4zvm6w4yw30xdv63mmgplh4"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dman=true")
