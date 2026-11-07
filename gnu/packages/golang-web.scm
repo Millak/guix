@@ -16894,7 +16894,7 @@ DB files retrieved from CURL.")
 (define-public go-github-com-ooni-probe-engine
   (package
     (name "go-github-com-ooni-probe-engine")
-    (version "0.36.0")
+    (version "0.37.0")
     (source
      (origin
        (method git-fetch)
@@ -16903,26 +16903,40 @@ DB files retrieved from CURL.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03n75jwvayxk0c70828g2pfbbn80v6shf9g81pf3x59qg3p1904v"))))
+        (base32 "0i3167x3mn31h0yhad90igchr79zv5i029yp0fac61vkg2l9a5z2"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/ooni/probe-engine"
-      #:embed-files #~(list "geoinfo.mmdb" "children")
+      #:embed-files #~(list "children" "geoinfo.mmdb" "nodes" "text")
       #:test-subdirs
       ;; XXX: Remove when all inputs are packaged.
-      #~(list "pkg/urlx" "pkg/flagx" "pkg/idnax" "pkg/randx" "pkg/hujsonx"
-              "pkg/humanize" "pkg/optional" "pkg/platform" "pkg/runtimex"
-              "pkg/scrubber" "pkg/strcasex" "pkg/stuninput" "pkg/memoryless"
-              "pkg/experimentname" "pkg/experimentconfig"
-              "pkg/legacy/assetsdir" "pkg/legacy/multierror"
-              "pkg/legacy/kvstore2dir" "pkg/legacy/legacymodel"
-              "pkg/shellx/shellxtesting"
-              "pkg/cmd/gardener/internal/sync"
+      #~(list "pkg/fsx" "pkg/logx" "pkg/urlx" "pkg/flagx" "pkg/idnax"
+              "pkg/mocks" "pkg/randx" "pkg/geoipx" "pkg/netemx" "pkg/shellx"
+              "pkg/x/dslx" "pkg/hujsonx" "pkg/kvstore" "pkg/torlogs"
+              "pkg/humanize" "pkg/optional" "pkg/platform" "pkg/progress"
+              "pkg/reflectx" "pkg/runtimex" "pkg/scrubber" "pkg/strcasex"
+              "pkg/oohelperd" "pkg/stuninput" "pkg/enginenetx"
+              "pkg/memoryless" "pkg/throttling" "pkg/bytecounter"
+              "pkg/httpclientx" "pkg/inputparser" "pkg/checkincache"
+              "pkg/minipipeline" "pkg/cmd/tinyjafar" "pkg/legacy/tracex"
+              "pkg/targetloading" "pkg/experimentname" "pkg/experiment/dash"
+              "pkg/experiment/hirl" "pkg/legacy/measurex"
+              "pkg/cmd/minipipeline" "pkg/cmd/ooporthelper"
+              "pkg/experimentconfig" "pkg/legacy/assetsdir"
+              "pkg/legacy/multierror" "pkg/experiment/dnsping"
+              "pkg/experiment/example" "pkg/experiment/openvpn"
+              "pkg/experiment/tcpping" "pkg/experiment/tlsping"
+              "pkg/experiment/tlstool" "pkg/legacy/kvstore2dir"
+              "pkg/legacy/legacymodel" "pkg/webconnectivityalgo"
+              "pkg/shellx/shellxtesting" "pkg/experiment/portfiltering"
+              "pkg/experiment/simplequicping" "pkg/cmd/gardener/internal/sync"
               "pkg/cmd/gardener/internal/dnsfix"
+              "pkg/cmd/gardener/internal/dnsreport"
               "pkg/cmd/gardener/internal/testlists"
-              "pkg/experiment/webconnectivity/internal")))
+              "pkg/experiment/webconnectivity/internal"
+              "pkg/cmd/gardener/internal/aggregationapi")))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-apex-log
@@ -16932,7 +16946,8 @@ DB files retrieved from CURL.")
            go-github-com-pborman-getopt-v2
            go-github-com-prometheus-client-golang
            go-github-com-schollz-progressbar-v3
-           go-github-com-spf13-cobra))
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-filippo-io-age
            go-github-com-armon-go-socks5
