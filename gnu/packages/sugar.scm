@@ -1015,8 +1015,9 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
       (license license:gpl3+))))
 
 (define-public sugar-portfolio-activity
-  (let ((commit "331c3e2542b4885112fd32b3c32ed4f5916d204c")
-        (revision "1"))
+  ;; New commits includes translation updates
+  (let ((commit "e25eb768e194de4a3197a434d88d31d59f897a3d")
+        (revision "2"))
     (package
       (name "sugar-portfolio-activity")
       (version (git-version "52" revision commit))
@@ -1028,7 +1029,7 @@ life with forces (think gravity, Newton!), friction (scrrrrape), and inertia
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1zaab7ara40imkd85hilslc4rqyjsgkzrcngsrw99dryl9n4mx1p"))))
+          (base32 "0s3kpl9923g3365p2fqq7m3738rmbzx2n11xs08lnzd3j04qhihh"))))
       (build-system pyproject-build-system)
       (arguments
        (list
