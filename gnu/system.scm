@@ -906,6 +906,7 @@ bookkeeping."
                               (list `("hosts" ,hosts-file)))
               (service hosts-service-type
                        (local-host-entries host-name)))
+          (service host-name-service-type host-name)
           (service profile-service-type (operating-system-packages os))
           (swap-services os))))
 
@@ -1188,7 +1189,11 @@ fi
        ;; NetworkManager from changing the system's hostname when connecting
        ;; to certain networks.  Some discussion at
        ;; https://lists.gnu.org/archive/html/help-guix/2017-09/msg00037.html
-       ("hostname" ,(plain-file "hostname" (operating-system-host-name os)))
+       ;; On the Hurd /etc/hostname is the location where hostname information
+       ;; is stored, so it cannot be a store symlink.
+       ,@(if hurd
+             '()
+             `(("hostname" ,(plain-file "hostname" (operating-system-host-name os)))))
        ;; Some programs (e.g., GLib) look at /etc/timezone to find the
        ;; name of the current timezone.  For details, see
        ;; https://lists.gnu.org/archive/html/guix-devel/2019-07/msg00166.html
