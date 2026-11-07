@@ -2273,6 +2273,8 @@ DFSDG}.")
                              "0107-dts-sm8750.dtsi-remove-duplicate-opp-607000000.patch"
                              "0108-dts-qcs6490-mnt-quasar.dtsi-fixup-remove-mntsc-inclu.patch")))))))))))
 
+(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-7.3)
+
 (define-public linux-libre-arm64-mnt-reform-7.1
   ;; Kernel for use on the MNT/Reform systems
   ;; https://mntre.com/reform.html
@@ -2440,8 +2442,6 @@ dtb-$(CONFIG_ARCH_QCOM) += qcs6490-mnt-reform-next.dtb")
 dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform2.dtb
 dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-pocket-reform.dtb
 dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform-next.dtb")))))))))))
-
-(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-7.1)
 
 (define-public linux-libre-arm64-mnt-reform-6.18
   ;; Kernel for use on the MNT/Reform systems
