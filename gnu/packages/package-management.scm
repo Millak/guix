@@ -770,6 +770,50 @@ desktop environments.  The backgrounds are available in different aspect ratios
 which are indicated in the file name.")
     (license (list license:public-domain license:cc-by-sa4.0))))
 
+(define-public guix-contain
+  (package
+    (name "guix-contain")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/guix-extensions/contain")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mc21i77in8bmc2nc8nj5snl9ds5f8wcz9ff79skl918mf5n4jjm"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:scheme-file-regexp
+      #~(lambda (file stat)
+          (and ((file-name-predicate #$default-scheme-file-regexp)
+                file stat)
+               (not ((file-name-predicate "^(guix|channels|manifest)\\.scm$")
+                     file stat))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'move-to-extension-directory
+            (lambda _
+              (with-directory-excursion #$output
+                (mkdir-p "share/guix/extensions/1.5/guix/extensions")
+                (rename-file (string-append "share/guile/site/"
+                                            (target-guile-effective-version)
+                                            "/guix/extensions/contain.scm")
+                             "share/guix/extensions/1.5/guix/extensions/contain.scm")))))))
+    (native-inputs (list guix))
+    (inputs (list (lookup-package-input guix "guile")))
+    (home-page "https://codeberg.org/guix-extensions/contain")
+    (synopsis "Restrain commands into Guix containers")
+    (description
+     "This extension provides the @command{guix contain} command,
+which allows you restrain a command inside a Guix container that includes all
+the packages available in your user and home profiles.  The container will have
+the necessary permissions and resources so GUI applications can display and
+access the network.")
+    (license license:gpl3+)))
+
 (define-public guix-diff-channels
   (let ((commit "849c88bc08c2d225ce1ef0540b4096827ece31a1")
         (revision "0"))
