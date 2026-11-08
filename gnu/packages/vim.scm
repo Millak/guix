@@ -1228,11 +1228,11 @@ specification.")
       (license license:gpl3))))
 
 (define-public vim-eunuch
-  (let ((commit "33e875b31c8b811a0a47908884a5e2339106bbe8")
-        (revision "1"))
+  (let ((commit "929490937745cd96130d3e7948f762f0aa403314")
+        (revision "2"))
     (package
       (name "vim-eunuch")
-      (version (git-version "1.2" revision commit))
+      (version (git-version "1.3" revision commit))
       (source
         (origin
           (method git-fetch)
@@ -1242,7 +1242,7 @@ specification.")
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1xadb22kd40swmww0qxmmkcpcq6viy8l167pjck5q32hfngll5d3"))))
+            "06kmk0j3njghhacb9p3f9ysj00dd92dnajwjybarpp8kn82c1ks6"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "eunuch"))
