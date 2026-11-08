@@ -269,8 +269,10 @@ directory = '" vendor-dir "'\n") port)
   ;; into stricter lints (e.g. #![deny(warnings)]) during their own builds
   ;; but we don't want any build failures that could be caused later by
   ;; upgrading the compiler for example.
-  (setenv "RUSTFLAGS" (string-append (or (getenv "RUSTFLAGS") "")
-                                     " --cap-lints allow"))
+  ;; TODO: Is this the correct behavior for wasm targets?
+  (unless (string-contains target "wasm")
+    (setenv "RUSTFLAGS" (string-append (or (getenv "RUSTFLAGS") "")
+                                       " --cap-lints allow")))
 
   (if (assoc-ref inputs "cross-gcc")
     (begin
