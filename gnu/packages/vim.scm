@@ -476,8 +476,8 @@ a universal set of defaults that (hopefully) everyone can agree on.")
 
 ;; There are no tarball releases.
 (define-public vim-context-filetype
-  (let ((commit "5e85f8cae26806f391aefe2661791a6de53bcea2")
-        (revision "1"))
+  (let ((commit "ffb1ec4b2b3b34d77dd1a1b3610f2533eb69506c")
+        (revision "2"))
     (package
       (name "vim-context-filetype")
       (version (string-append "0.0.0-" revision "." (string-take commit 7)))
@@ -490,7 +490,7 @@ a universal set of defaults that (hopefully) everyone can agree on.")
          (file-name (string-append name "-" version "-checkout"))
          (sha256
           (base32
-           "0alvrfhmd91zkd9h83s8wvgyq4iakcf6rybsyjd369qbgpcqky89"))))
+           "02z341iwj3gih3k3qyi014j5y7jddp4zl2np0671gmw43861bxcd"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "context_filetype"))
