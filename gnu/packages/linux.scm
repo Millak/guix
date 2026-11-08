@@ -1409,7 +1409,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 
 (define default-linux-debian-initrd-modules
   ;; Default set of modules that need to be available in the initrd when
-  ;; booting Linux-debian.
+  ;; booting Linux-debian.  A description of these modules can be found using:
+  ;; '$ modinfo MODULE'.
   (let* ((generic `("ahci"                                     ;for SATA controllers
                     "nvme"                                     ;for NVMe controllers
                     "ext4" "crc32c_generic"                    ;compiled as a module by 'CONFIG_EXT4_FS=m'.
@@ -1418,15 +1419,18 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                     "mmc_block"                                ;for MMC block device driver
                     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
                     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
+                    "sd_mod"                                   ;SCSI disk (sd) driver
+                    "sr_mod"                                   ;SCSI cdrom (sr) driver
                     ,@virtio-modules))
-         (_86 (cons*
-               "hid-apple"
-               "pata_atiixp" ;for ATA controllers
-               "isci"
-               generic))
          (others (cons*
-                  "hid-apple"
-                  generic)))
+                  "hid-apple" ;Apple USB HID quirks support for Linux
+                  generic))
+         (_86 (cons*
+               "ata_piix"    ;SCSI low-level driver for Intel PIIX/ICH ATA controllers
+               "ata_generic" ;low-level driver for generic ATA
+               "pata_atiixp" ;low-level driver for ATI IXP200/300/400
+               "isci"        ;Intel(R) C600 Series Chipset SAS Controller driver
+               others)))
     `(("x86_64-linux"      . ,_86)
       ("i686-linux"        . ,_86)
       ("armhf-linux"       . ,others)
