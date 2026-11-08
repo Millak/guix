@@ -1612,6 +1612,34 @@ operations and styles which are invoked via key mappings and a menu.  These
 operations are available for most filetypes.")
     (license license:cc0)))
 
+(define-public vim-obsession
+  (let ((commit "dad3b5a1f9b661e27cb77fc69308287349d3cf30")
+        (revision "0"))
+    (package
+      (name "vim-obsession")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpope/vim-obsession")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0j20hfb6q4pss2y8s7h84dzyvw7r4imsv85rnsq6ii96yy8jpjdq"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "obsession"))
+      (home-page "https://github.com/tpope/vim-obsession")
+      (synopsis "Continuously updated session files")
+      (description
+       "Use @code{:Obsess} (with optional file/directory name) to
+start recording to a session file and @code{:Obsess!} to stop and throw it
+way.  That's it.   Load a session in the usual manner: @code{vim -S}, or
+@code{:source} it.")
+      (license license:vim))))
+
 (define-public vim-vader
   (let ((revision "1")
         (commit "429b669e6158be3a9fc110799607c232e6ed8e29"))
