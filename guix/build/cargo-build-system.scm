@@ -243,22 +243,21 @@ libraries or executables."
   (mkdir-p ".cargo")
   ;; Not .cargo/config.toml, rustc/cargo will generate .cargo/config otherwise.
   (let ((port (open-file ".cargo/config" "w" #:encoding "utf-8")))
-    ;; Placed here so it doesn't cause random rebuilds.  Neither of these work.
-    ;; sysroot = '" (assoc-ref inputs "rust-sysroot") "'
-    ;; rustflags = ['--sysroot', '" (assoc-ref inputs "rust-sysroot") "']
+    ;; Setting the sysroot via rustflags works, but gets overridden by RUSTFLAGS
+    ;; rustflags = ['--sysroot', '" (assoc-ref inputs (string-append "rust-sysroot-for-" target)) "']
     (when target
-      (display (string-append "
+      (display (string-append "\
 [target." (getenv "CARGO_BUILD_TARGET") "]
 linker = '" target "-gcc'
 
 [build]
-target = ['" (getenv "CARGO_BUILD_TARGET") "']") port))
+target = ['" (getenv "CARGO_BUILD_TARGET") "']\n") port))
     (display (string-append "
 [source.crates-io]
 replace-with = 'vendored-sources'
 
 [source.vendored-sources]
-directory = '" vendor-dir "'") port)
+directory = '" vendor-dir "'\n") port)
     (close-port port))
 
   ;; Lift restriction on any lints: a crate author may have decided to opt
