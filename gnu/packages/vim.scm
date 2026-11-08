@@ -1255,8 +1255,8 @@ help working on Vim buffers and the files they reference with one command.")
 
 (define-public vim-slime
   ;; No tagged releases.
-  (let ((commit "a522fed677e50175f52efc5848cc35209af33216")
-        (revision "1"))
+  (let ((commit "305b4d81ff4630af5137fdeffb54aa0fef14761b")
+        (revision "2"))
     (package
       (name "vim-slime")
       (version (git-version "0.0.0" revision commit))
@@ -1268,7 +1268,7 @@ help working on Vim buffers and the files they reference with one command.")
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-           (base32 "0k4b629jn6xlxyjxdl3cgm06v9dmx967rqnslv5m82c9kscwpyh4"))))
+           (base32 "1sq083lfl0zz221j1rdyggsf4v8kjh8k20bkqardlji1zj95w9yg"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "vim-slime"))
