@@ -5267,25 +5267,27 @@ possible configuration issues.")
 (define-public ngrep
   (package
     (name "ngrep")
-    (version "1.47")
+    (version "1.49.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/jpr5/ngrep/")
-             (commit (string-append "V" (string-replace-substring version "." "_")))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1x2fyd7wdqlj1r76ilal06cl2wmbz0ws6i3ys204sbjh1cj6dcl7"))))
+         "0yxc379kjd28v5dplaw891g88zxh51a9ay068w0v16r2ifsg2p5a"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
     (arguments
-     `(#:tests? #f ;; No tests.
-       #:configure-flags (list (string-append "--with-pcap-includes="
+     (list
+       #:tests? #f ;; No tests.
+       #:configure-flags
+       #~(list (string-append "--with-pcap-includes="
                                               (assoc-ref %build-inputs "libpcap")
-                                              "/include/pcap"))))
+                                              "/include/"))))
     (home-page "https://github.com/jpr5/ngrep/")
     (synopsis "Grep-like utility to search for network packets on an interface")
     (description "@command{ngrep} is like GNU grep applied to the network
