@@ -1719,7 +1719,7 @@ automate testing and is compatible with Vim and Neovim.")
 (define-public vim-srcery-vim
   (package
     (name "vim-srcery-vim")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1728,7 +1728,7 @@ automate testing and is compatible with Vim and Neovim.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nwk81y9j5ljjm3k19kf1zmscdxiis4mwan026wv7cqp7f9qhxlr"))))
+        (base32 "1d1pfzcnnx1a2kvl8a15s0y4dl15fjc90vgp8jjrgsz4zw2zwjw6"))))
     (build-system vim-build-system)
     (arguments
      (list #:plugin-name "srcery"
