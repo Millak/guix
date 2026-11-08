@@ -13261,6 +13261,36 @@ also favors portability, and includes support for all POSIX systems.")
      (modify-inputs (package-inputs go-github-com-gdamore-tcell)
        (prepend go-github-com-rivo-uniseg go-golang-org-x-term)))))
 
+(define-public go-github-com-gdamore-tcell-v3
+  (package
+    (inherit go-github-com-gdamore-tcell)
+    (name "go-github-com-gdamore-tcell-v3")
+    (version "3.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gdamore/tcell")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kdh0z7s6d5kq82kwk2lg8v2hkl8wwq1x5x9mm32yfrv4qdcva77"))))
+    (arguments
+     (list
+      #:import-path "github.com/gdamore/tcell/v3"
+      ;; gpm_linux_test.go:84: Listen failed: listen unix
+      ;; /<...>/TestNewGPMConsoleMouseWithMockServer33674683/001/gpmctl:
+      ;; bind: invalid argument
+      #:test-flags #~(list "-skip" "TestNewGPMConsoleMouseWithMockServer")))
+    (propagated-inputs
+     (list go-github-com-clipperhouse-displaywidth
+           go-github-com-clipperhouse-uax29-v2
+           go-github-com-gdamore-encoding
+           go-github-com-lucasb-eyer-go-colorful
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text))))
+
 (define-public go-github-com-gdey-errors
   (package
     (name "go-github-com-gdey-errors")
