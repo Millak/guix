@@ -1531,7 +1531,7 @@ additions:
 (define-public vim-tagbar
   (package
     (name "vim-tagbar")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1540,7 +1540,7 @@ additions:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fqfs8msmr6d4kpvxqp14sdjvp5fj52q5w5kz71myzcd4kqzmirp"))))
+        (base32 "1pdclh5j7z00y8sjqw6zk02z7c3nx9pcpiih98qpaifvlya6ygv0"))))
     (build-system vim-build-system)
     (arguments
      '(#:plugin-name "tagbar"
