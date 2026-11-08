@@ -2002,7 +2002,7 @@ fault tolerant Erlang runtime, with a familiar and modern syntax.")
 (define-public helvum
   (package
     (name "helvum")
-    (version "0.5.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
@@ -2011,7 +2011,7 @@ fault tolerant Erlang runtime, with a familiar and modern syntax.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q8gkx7djrfdl8fykppsqkxiadsq47v0xhj612nxlrvjz8n77ygn"))))
+        (base32 "0kik5h6maa49894bzqpilj7gxkg2wsrsf0lp5rfnwzkna9h1afvw"))))
     (build-system meson-build-system)
     (arguments
      (list
