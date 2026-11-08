@@ -1117,6 +1117,30 @@ quickfix window in realtime.")
     (inherit vim-asyncrun)
     (name "neovim-asyncrun")))
 
+(define-public vim-dadbod
+  (let ((commit "6d1d41da4873a445c5605f2005ad2c68c99d8770")
+        (revision "0"))
+    (package
+      (name "vim-dadbod")
+      (version (git-version "1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpope/vim-dadbod")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "100pxa9z2wca0lnms236bb48dvfrqrc7529x1b4yn9c6lnspdg5y"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "dadbod"))
+      (home-page "https://github.com/tpope/vim-dadbod")
+      (synopsis "Modern database interface for Vim")
+      (description "Dadbod is a Vim plugin for interacting with databases.")
+      (license license:vim))))
+
 (define-public vim-dispatch
   ;; Last release was in June 2019.
   (let ((commit "4c695bc052cad2ae6b980aebbe48d046466e27ae")
