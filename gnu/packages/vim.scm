@@ -1849,8 +1849,8 @@ programming language")
       (license license:gpl2))))
 
 (define-public vim-zig
-  (let ((commit "54c216e5306a5c3878a60596aacb94dca8652ab9")
-        (revision "1"))
+  (let ((commit "73c2ffe85081993017efcee4d22d623eb0a6bc32")
+        (revision "2"))
     (package
       (name "vim-zig")
       (version (git-version "0.0.0" revision commit))
@@ -1858,11 +1858,11 @@ programming language")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/ziglang/zig.vim")
+               (url "https://codeberg.org/ziglang/zig.vim")
                (commit commit)))
          (file-name (string-append name "-" version "-checkout"))
          (sha256
-          (base32 "1nxwjyn3ps3c2abffai5cql3czl4kah4cin0g30damy1k99ypncb"))))
+          (base32 "04ragq4n3zxjbh6wz944lc7iyrmhqbxp4q8anrrs245r7mnbj1qb"))))
       (build-system vim-build-system)
       (arguments
        (list
@@ -1871,7 +1871,7 @@ programming language")
       (description
        "File detection and syntax highlighting for the zig programming
 language.")
-      (home-page "https://github.com/ziglang/zig.vim")
+      (home-page "https://codeberg.org/ziglang/zig.vim")
       (license license:expat))))
 
 (define-public vim-plantuml-syntax
