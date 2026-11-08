@@ -501,11 +501,11 @@ a universal set of defaults that (hopefully) everyone can agree on.")
       (license license:expat)))) ; ??? check again
 
 (define-public vim-coqtail
-  (let ((commit "d77080e17787afe9ad0366d86327658da36febbb")
-        (revision "1"))
+  (let ((commit "806008396394664c341fe79ac96ef775942cfbe3")
+        (revision "2"))
     (package
       (name "vim-coqtail")
-      (version (git-version "1.7.1" revision commit))
+      (version (git-version "1.11.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -514,7 +514,7 @@ a universal set of defaults that (hopefully) everyone can agree on.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "03qq50mas5dk3aj1rbv1f0x68rfa9b07cacj12sxp76sda9c0prz"))))
+                  "0wc45r8fjbivswdfhqci9v6vbxpxysqi6v34jzrhbq3zbr11ddr3"))))
       (build-system vim-build-system)
       (arguments
        `(#:plugin-name "coqtail"
