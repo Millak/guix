@@ -12788,8 +12788,8 @@ errors.")
      (list emacs-dash emacs-flycheck))
     (native-inputs
      (list emacs-buttercup
-           rust-bootstrap-1.54
-           `(,rust-bootstrap-1.54 "cargo")))
+           rust-bootstrap-1.90
+           `(,rust-bootstrap-1.90 "cargo")))
     (build-system emacs-build-system)
     (home-page "https://github.com/flycheck/flycheck-rust")
     (synopsis "Rust/Cargo support for Flycheck")
