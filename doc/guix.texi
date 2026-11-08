@@ -24452,6 +24452,86 @@ to use with the options @option{iburst} and @option{prefer}, as well as
 @end table
 @end deftp
 
+@cindex chronyd
+@defvar chronyd-service-type
+Run the @command{chronyd}, @acronym{Network Time Protocol, NTP} daemon.
+Contrary to other implementations, it is designed to perform well in a wide
+range of unstable conditions (e.g., intermittent network connections).
+
+The following example enables @command{chronyd}, forcing it to step the system
+clock if the adjustment is larger than @code{0.1} seconds, but only in the
+first three clock updates:
+
+@lisp
+(service chronyd-service-type
+ (chronyd-configuration
+  (makestep '(0.1 3))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} chronyd-configuration
+Available @code{chronyd-configuration} fields are:
+
+@table @asis
+@item @code{chrony} (default: @code{chrony}) (type: file-like)
+Chrony package.
+
+@item @code{command-port} (default: @code{0}) (type: maybe-integer)
+Port that is used for run-time monitoring.
+
+@item @code{drift-file} (default: @code{"/var/lib/chronyd/drift"}) (type: maybe-)
+File where @command{chronyd} stores rate information.
+
+@item @code{makestep} (type: maybe-list-of-numbers)
+Forces chrony to step the system clock if the adjustment is larger than
+a threshold value.
+
+@item @code{synchronize-rtc?} (type: maybe-boolean)
+System time is periodically copied to the @acronym{RTC,Real Time Clock}.
+
+@item @code{server} (default: @code{()}) (type: list-of-chronyd-server)
+NTP servers which should be used as a time source.
+
+@deftp {Data Type} chronyd-server
+Available @code{chronyd-server} fields are:
+
+@table @asis
+@item @code{host-name} (type: string)
+Hostname of the NTP server.
+
+@item @code{network-time-security?} (type: maybe-boolean)
+Whether to enable authentication using the Network Time Security (NTS)
+mechanism.
+
+@item @code{iburst?} (type: maybe-boolean)
+Whether to start with a burst of 4-8 requests in order to make the first
+update of the clock sooner.
+
+@item @code{burst?} (type: maybe-boolean)
+Whether to send a burst of up to 4 requests when chrony cannot get a
+good measurement from the server.
+
+@item @code{minimum-poll-interval} (type: maybe-integer)
+Minimum interval between requests.
+
+@item @code{maximum-poll-interval} (type: maybe-integer)
+Maximum interval between requests.
+
+@item @code{extra-content} (type: maybe-string)
+Raw content to add to the server directive
+
+@end table
+@end deftp
+
+@item @code{pool} (type: list-of-chronyd-server)
+Pool of NTP servers to connect to.
+
+@item @code{extra-content} (type: maybe-string)
+Raw content to add to the configuration file.
+
+@end table
+@end deftp
+
 @cindex OpenNTPD
 @defvar openntpd-service-type
 Run the @command{ntpd}, the Network Time Protocol (NTP) daemon, as implemented

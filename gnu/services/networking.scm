@@ -133,6 +133,13 @@
 
             ntp-service-type
 
+            chronyd-configuration
+            chronyd-configuration?
+            chronyd-server
+            chronyd-server?
+            chronyd-service-type
+            generate-chronyd-documentation
+
             %openntpd-servers
             openntpd-configuration
             openntpd-configuration?
@@ -648,6 +655,209 @@ restrict source notrap nomodify noquery\n"))
 daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon
 will keep the system clock synchronized with that of the given servers.")
                 (default-value (ntp-configuration))))
+
+
+;;;
+;;; chrony.
+;;;
+
+(define (chronyd-serialize-field-name field-name)
+  (case field-name
+    ((command-port) 'cmdport)
+    ((drift-file) 'driftfile)
+    ((synchronize-rtc?) 'rtcsync)
+    ((network-time-security?) 'nts)
+    ((host-name) 'hostname)
+    ((iburst?) 'iburst)
+    ((burst?) 'burst)
+    ((minimum-poll-interval) 'minpoll)
+    ((maximum-poll-interval) 'maxpoll)
+    (else field-name)))
+
+(define (chronyd-serialize-field field-name value)
+  (let ((field (object->string (chronyd-serialize-field-name field-name))))
+    (if (boolean? value)
+        (if value
+            #~(format #f "~a~%"
+                      #$field)
+            #~"")
+        (if (string=? field "extra-content")
+            #~(string-append #$value "\n")
+            #~(format #f "~a ~a~%"
+                      #$field
+                      #$value)))))
+
+(define chronyd-serialize-string chronyd-serialize-field)
+(define chronyd-serialize-boolean chronyd-serialize-field)
+(define chronyd-serialize-integer chronyd-serialize-field)
+
+(define list-of-numbers? (list-of number?))
+(define-maybe list-of-numbers (prefix chronyd-))
+
+(define (chronyd-serialize-list-of-numbers field-name value)
+  (let ((field (object->string field-name)))
+    #~(string-append
+        #$field
+        " "
+        (string-join (list #$@(map object->string value)))
+        "\n")))
+
+(define-maybe string (prefix chronyd-))
+(define-maybe boolean (prefix chronyd-))
+(define-maybe integer (prefix chronyd-))
+
+(define-configuration chronyd-server
+  (host-name
+    string
+    "Hostname of the NTP server.")
+
+  (network-time-security?
+    maybe-boolean
+    "Whether to enable authentication using the Network Time Security (NTS) mechanism.")
+
+  (iburst?
+    maybe-boolean
+    "Whether to start with a burst of 4-8 requests in order to make the first update of the clock sooner.")
+
+  (burst?
+    maybe-boolean
+    "Whether to send a burst of up to 4 requests when chrony cannot get a good measurement from the server.")
+
+  (minimum-poll-interval
+    maybe-integer
+    "Minimum interval between requests.")
+
+  (maximum-poll-interval
+    maybe-integer
+    "Maximum interval between requests.")
+
+  (extra-content
+    maybe-string
+    "Raw content to add to the server directive")
+
+  (prefix chronyd-))
+
+(define (chronyd-serialize-chronyd-server field-name value)
+  #~(string-append
+      #$(object->string field-name)
+      " "
+      #$(chronyd-server-host-name value)
+      " "
+      (string-map ;TODO: Use string-replace-substring here
+        (lambda (c)
+          (if (char=? c #\newline) #\space c))
+        #$(serialize-configuration value
+                                   (cdr
+                                     chronyd-server-fields)))
+      "\n"))
+
+(define (chronyd-serialize-list-of-chronyd-server field-name value)
+  #~(string-append #$@(map (cut chronyd-serialize-chronyd-server field-name <>)
+                           value)))
+
+(define list-of-chronyd-server?
+  (list-of chronyd-server?))
+
+(define-configuration chronyd-configuration
+  (chrony
+    (file-like chrony)
+    "Chrony package."
+    empty-serializer)
+
+  (command-port
+    (maybe-integer 0)
+    "Port that is used for run-time monitoring.")
+
+  (drift-file
+    (maybe-string "/var/lib/chronyd/drift")
+    "File where @command{chronyd} stores rate information.")
+
+  (makestep
+    maybe-list-of-numbers
+    "Forces chrony to step the system clock if the adjustment is larger than a threshold value.")
+
+  (synchronize-rtc?
+    maybe-boolean
+    "System time is periodically copied to the @acronym{RTC, Real Time Clock}.")
+
+  (server
+    (list-of-chronyd-server '())
+    "NTP servers which should be used as a time source.")
+
+  (pool
+    (list-of-chronyd-server
+      (list
+        (chronyd-server
+          (host-name "2.guix.pool.ntp.org")
+          (iburst? #t))))
+    "Pool of NTP servers to connect to.")
+
+  (extra-content
+    maybe-string
+    "Raw content to add to the configuration file.")
+
+  (prefix chronyd-))
+
+(define (chronyd-config-file config)
+  (mixed-text-file "chrony.conf"
+    (serialize-configuration
+      config
+      chronyd-configuration-fields)))
+
+(define (chronyd-shepherd-service config)
+  (let ((config-file (chronyd-config-file config))
+        (chrony (chronyd-configuration-chrony config)))
+    (list (shepherd-service
+           (documentation "chrony daemon.")
+           (provision '(chronyd))
+           ;; chrony may be bound to a particular IP address, hence
+           ;; only start it after the networking service has started.
+           (requirement '(user-processes networking))
+           (actions (list (shepherd-configuration-action config-file)))
+           (start #~(make-forkexec-constructor
+                      (list (string-append #$chrony "/sbin/chronyd")
+                            "-F" "1" ;enable a strict system call filter.
+                            "-u" "chronyd" "-d" "-f" #$config-file)))
+           (stop #~(make-kill-destructor))))))
+
+(define chronyd-account-service
+  (list (user-group (name "chronyd") (system? #t))
+        (user-account
+         (name "chronyd")
+         (group "chronyd")
+         (system? #t)
+         (comment "chronyd daemon user")
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin")))))
+
+(define (chronyd-service-activation config)
+  "Return the activation gexp for CONFIG."
+  (with-imported-modules (source-module-closure '((gnu build activation)))
+    #~(begin
+        (use-modules (gnu build activation))
+        (mkdir-p/perms "/var/lib/chronyd"
+                       (getpw "chronyd") 488))))
+
+(define chronyd-service-type
+  (service-type (name 'chronyd)
+                (description "Run the Chrony @acronym{NTP, Network Time Protocol} client.")
+                (extensions
+                  (list (service-extension account-service-type
+                                           (const chronyd-account-service))
+                        (service-extension shepherd-root-service-type
+                                           chronyd-shepherd-service)
+                        (service-extension activation-service-type
+                                           chronyd-service-activation)))
+                (compose concatenate)
+                (default-value (chronyd-configuration))))
+
+(define (generate-chronyd-documentation)
+  (generate-documentation
+   `((chronyd-configuration
+      ,chronyd-configuration-fields
+      (server chronyd-server))
+     (chronyd-server ,chronyd-server-fields))
+   'chronyd-configuration))
 
 
 ;;;

@@ -41,6 +41,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ntp)
   #:use-module (gnu packages guile)
   #:use-module (gnu services shepherd)
   #:use-module (ice-9 match)
@@ -52,6 +53,7 @@
             %test-inetd
             %test-openvswitch
             %test-dhcpd
+            %test-chronyd
             %test-dhcpcd
             %test-dnsmasq
             %test-tor
@@ -835,6 +837,77 @@ port 7, and a dict service on port 2628."
    (description "Test a running dnsmasq daemon configuration.")
    (value (run-dnsmasq-test))))
 
+
+;;;
+;;; chronyd.
+;;;
+
+(define %chronyd-os
+  (let ((base-os
+          (simple-operating-system
+            (service dhcpcd-service-type)
+            (service chronyd-service-type
+                     (chronyd-configuration
+                       (command-port 2342)
+                       (pool
+                         (list
+                           (chronyd-server
+                             (host-name "pool.ntp.org")
+                             (iburst? #t)))))))))
+    (operating-system
+      (inherit base-os)
+      (packages
+        (append (list chrony)
+                (operating-system-packages base-os))))))
+
+(define (run-chronyd-test)
+  "Run tests in %chronyd-os with a running chronyd daemon."
+  (define os
+    (marionette-operating-system
+     %chronyd-os
+     #:imported-modules '((gnu services herd))))
+
+  (define vm
+    (virtual-machine os))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "chronyd")
+
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+
+                ;; Make sure the 'chronyc' command is found.
+                (setenv "PATH" "/run/current-system/profile/bin")
+
+                (start-service 'chronyd))
+             marionette))
+
+          (test-equal "chronyd remote control works"
+            0
+            (marionette-eval
+              '(status:exit-val
+                 (system* "chronyc" "tracking"))
+              marionette))
+
+          (test-end))))
+
+  (gexp->derivation "chronyd-test" test))
+
+(define %test-chronyd
+  (system-test
+   (name "chronyd")
+   (description "Test that the chronyd works.")
+   (value (run-chronyd-test))))
 
 
 ;;;
