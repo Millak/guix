@@ -1470,8 +1470,8 @@ result is returned.")
     (license license:expat)))
 
 (define-public vim-gitgutter
-  (let ((commit "256702dd1432894b3607d3de6cd660863b331818")
-        (revision "1"))
+  (let ((commit "90b75207bd9b55d8ac4af15f72b4e935462014d0")
+        (revision "2"))
     (package
       (name "vim-gitgutter")
       (version (git-version "0.0.0" revision commit))
@@ -1483,7 +1483,7 @@ result is returned.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zpa7cs59a8sq0k3frlf9flpf30jcn239yrpmv40r7nqvxzglbpl"))))
+          (base32 "1km7xksia94a0w9394287dlmk5q7xi23h8w0rfsrf8k1m3r5z0nc"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "gitgutter"))
