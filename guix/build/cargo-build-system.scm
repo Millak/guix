@@ -248,8 +248,13 @@ libraries or executables."
     (when target
       (display (string-append "\
 [target." (getenv "CARGO_BUILD_TARGET") "]
-linker = '" target "-gcc'
-
+"
+(if (or (string-contains target "linux")    ; (target-linux?)
+        (string-suffix? "-gnu" target)      ; (target-hurd?)
+        (string-suffix? "-mingw32" target)) ; (target-mingw?)
+    (string-append "linker = '" target "-gcc'")
+    "linker = 'lld'")
+"\n
 [build]
 target = ['" (getenv "CARGO_BUILD_TARGET") "']\n") port))
     (display (string-append "
