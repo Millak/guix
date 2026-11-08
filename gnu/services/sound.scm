@@ -356,7 +356,9 @@ computed-file object~%") file))))
 }")
          #~(string-append "ctl_type.pulse {
   lib \"" #$alsa-lib "/libasound_module_ctl_pulse.so\"
-}")))))))
+}")
+         "pcm.pulse {type pulse}"
+         "ctl.pulse {type pulse}"))))))
 
 (define pulseaudio-service-type
   (service-type
