@@ -800,7 +800,7 @@ handling the installation and removal of Debian software packages.")
 (define-public pbuilder
   (package
     (name "pbuilder")
-    (version "0.231")
+    (version "0.231.3")
     (source
       (origin
         (method git-fetch)
@@ -809,7 +809,7 @@ handling the installation and removal of Debian software packages.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0z6f1fgcrkfql9ayc3d0nxra2y6cn91xd5lvr0hd8gdlp9xdvxbc"))))
+         (base32 "0pq8aphjds7b0pma2xg5ysd4pfrif4rj0zkskkzysy3xghbm090g"))))
     (build-system gnu-build-system)
     (arguments
      (list
