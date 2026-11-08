@@ -1875,8 +1875,8 @@ language.")
       (license license:expat))))
 
 (define-public vim-plantuml-syntax
-  (let ((commit "845abb56dcd3f12afa6eb47684ef5ba3055802b8")
-        (revision "1"))
+  (let ((commit "c14231d4f86645d9e8b291eae18bee5a7bc4a0fa")
+        (revision "2"))
     (package
       (name "vim-plantuml-syntax")
       (version (git-version "0.0.0" revision commit))
@@ -1888,7 +1888,7 @@ language.")
                (commit commit)))
          (file-name (string-append name "-" version "-checkout"))
          (sha256
-          (base32 "0d2frv6knkj4bjavq2c2kx8qdnmcq0d8l04a5z7bpqwkmrrhd31f"))))
+          (base32 "13jgikmkacnjw5p4m0img47i759ygh40v813gxprdd728w7nlq64"))))
       (build-system vim-build-system)
       (arguments
        (list
