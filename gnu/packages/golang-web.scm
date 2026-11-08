@@ -4058,6 +4058,54 @@ clients supporting token authentication.")
     (description "This package contains content for Azure SDK developers.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-storage-armstorage
+  (package
+    (name
+     "go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-storage-armstorage")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-sdk-for-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk/resourcemanager/storage/armstorage"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h3a8ajk0pn438f6322jvqaxm3qi1q07m94k09v2qbkf8dx5rlb8"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-all-but "sdk/resourcemanager/storage" "armstorage")
+                 (delete-all-but "sdk/resourcemanager" "storage")
+                 (delete-all-but "sdk" "resourcemanager")
+                 (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path
+      "github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-internal
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-internal-v3
+           #;go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-resources-armresources))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure Storage Module for Go")
+    (description
+     "The @code{armstorage} module provides operations for working with Azure
+Storage.")
+    (license license:expat)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys")
