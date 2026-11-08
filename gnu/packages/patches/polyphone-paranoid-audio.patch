@@ -1,0 +1,20 @@
+Upstream-Status: not submitted
+
+diff --git a/sources/context/audiodevice.cpp b/sources/context/audiodevice.cpp
+index e92bc535..f8114f12 100644
+--- a/sources/context/audiodevice.cpp
++++ b/sources/context/audiodevice.cpp
+@@ -261,6 +261,13 @@ void AudioDevice::initAudio()
+         error.printMessage();
+         return;
+     }
++
++    if (_rtAudio->getCurrentApi() != _currentApi) {
++        qWarning() << "Failed to instantiate correct audio API, closing...\n";
++        closeConnections();
++        return;
++    }
++
+     #ifdef RT_AUDIO_5_2
+     _rtAudio->showWarnings(false);
+     #endif

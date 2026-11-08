@@ -3721,6 +3721,72 @@ with applications that support them (e.g. PulseAudio).")
 implementation of the Open Sound Control (@dfn{OSC}) protocol.")
     (license license:lgpl2.1+)))
 
+(define-public polyphone
+  (package
+    (name "polyphone")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/davy7125/polyphone")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0xjck99wsk96ic0af895j9fv19bxgrzv2b1p6j28bvcnnpa9rr14"))
+              (modules '((guix build utils)))
+              (patches (search-patches "polyphone-paranoid-audio.patch"))
+              (snippet
+               #~(with-directory-excursion "sources/lib"
+                   (for-each delete-file-recursively
+                             (list "_option_rtaudio"
+                                   "_option_rtmidi"
+                                   "_option_sfarklib"
+                                   "_option_stk"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-qmake
+            (lambda _
+              (substitute* "sources/polyphone.pro"
+                (("^DEFINES \\+= USE_LOCAL_RTAUDIO" all)
+                 (string-append "#" all))
+                ;; XXX: Remove when bumping rtaudio to 6.0
+                (("#(DEFINES \\+= RT_AUDIO_5_2)" all def)
+                 def))))
+          (replace 'configure
+            (lambda* (#:key configure-flags inputs native-inputs
+                 #:allow-other-keys)
+              (apply invoke "qmake"
+                     (append configure-flags
+                              (list "sources/polyphone.pro")))
+              (substitute* "Makefile"
+                (("[[:graph:]]+/bin/lrelease")
+                 (search-input-file (or native-inputs inputs)
+                                    "/bin/lrelease"))))))))
+    (inputs (list alsa-lib
+                  jack-1
+                  libsndfile
+                  libvorbis
+                  openssl
+                  pulseaudio            ; for rtaudio
+                  qtbase
+                  qtsvg
+                  rtaudio
+                  rtmidi
+                  sfarklib
+                  stk))
+    (native-inputs (list pkg-config qttools))
+    (home-page "https://www.polyphone.io/")
+    (synopsis "Create and refine soundfonts")
+    (description
+     "Polyphone lets you create soundfonts from your own recordings,
+refine existing ones, convert them to other formats and play them with its
+built-in synthesizer.")
+    (license license:gpl3+)))
+
 (define-public rtaudio
   (package
     (name "rtaudio")
