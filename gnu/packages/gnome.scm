@@ -1525,8 +1525,8 @@ tour of all gnome components and allows the user to set them up.")
            gobject-introspection
            `(,gtk "bin")
            pkg-config
-           rust-1.80
-           `(,rust-1.80 "cargo")
+           rust
+           `(,rust "cargo")
            yelp-tools))
     (inputs (cargo-inputs 'gnome-user-share))
     (synopsis "File sharing for GNOME desktop")
