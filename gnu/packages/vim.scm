@@ -630,8 +630,8 @@ and powerline symbols, etc.")
 
 ;; There are no tarball releases.
 (define-public vim-airline-themes
-  (let ((commit "e6f233231b232b6027cde6aebeeb18d9138e5324")
-        (revision "2"))
+  (let ((commit "77aab8c6cf7179ddb8a05741da7e358a86b2c3ab")
+        (revision "3"))
     (package
       (name "vim-airline-themes")
       (version (git-version "0.0.0" revision commit))
@@ -644,7 +644,7 @@ and powerline symbols, etc.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1sb7nb7j7bz0pv1c9bgdy0smhr0jk2b1vbdv9yzghg5lrknpsbr6"))))
+           "01pyki2mlqw638w6yjsgylly2ssrp0kqqc9prszwjbz4gysj4f65"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "airline-themes"))
