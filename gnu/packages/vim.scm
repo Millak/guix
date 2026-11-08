@@ -423,6 +423,32 @@ trouble using them, because you do not have to remember each snippet name.")
       (home-page "https://foldling.org/git/vim-scheme.git/")
       (license license:unlicense))))
 
+(define-public vim-sensible
+  (let ((commit "0ce2d843d6f588bb0c8c7eec6449171615dc56d9")
+        (revision "0"))
+    (package
+      (name "vim-sensible")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpope/vim-sensible")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a1hyrak7klwsdfpajqw6vm0qi9bkh0q51mzc8k20h876dijdsnm"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "sensible"))
+      (synopsis "Defaults from Vim and Neovim that everyone can agree on")
+      (description
+       "Think of sensible.vim as one step above @code{nocompatible} mode:
+a universal set of defaults that (hopefully) everyone can agree on.")
+      (home-page "https://github.com/tpope/vim-sensible")
+      (license license:vim))))
+
 (define-public vim-luna
   (let ((commit "633619953dcf8577168e255230f96b05f28d6371")
         (revision "1"))
