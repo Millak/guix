@@ -88,7 +88,7 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
 (define-public rpcbind
   (package
     (name "rpcbind")
-    (version "1.2.9")
+    (version "1.3.1")
     (source
      (origin
       (method url-fetch)
@@ -97,7 +97,7 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
                           name "-" version ".tar.bz2"))
       (patches (search-patches "rpcbind-hurd.patch"))
       (sha256
-       (base32 "06wrmavbc8rl33safiis87n3zhhxbjkm13x2jwl0pvv6qn3ilpyf"))))
+       (base32 "19cj5ylix841qxvwgs3wnm0xg8mj5wsayic847pzhwjibx21nmcf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
