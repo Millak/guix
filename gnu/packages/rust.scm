@@ -1185,7 +1185,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 [llvm]
 [build]
 profiler = true
-optimized-compiler-builtins = false
+optimized-compiler-builtins = true
 cargo = \"" (search-input-file inputs "bin/cargo") "\"
 rustc = \"" (search-input-file inputs "bin/rustc") "\"
 docs = false
@@ -1527,6 +1527,7 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
                       (display (string-append "
 [llvm]
 [build]
+optimized-compiler-builtins = false
 cargo = \"" (search-input-file inputs "/bin/cargo") "\"
 rustc = \"" (search-input-file inputs "/bin/rustc") "\"
 docs = false
