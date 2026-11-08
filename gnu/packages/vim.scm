@@ -1568,7 +1568,7 @@ the class they are defined in.")
 (define-public vim-nerdtree
   (package
     (name "vim-nerdtree")
-    (version "6.10.16")
+    (version "7.1.3")
     (source
      (origin
        (method git-fetch)
@@ -1577,7 +1577,7 @@ the class they are defined in.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1si8qla86ng8cffbmfrk9gss0i3912yw0f1ph4bsiq0kk837lccp"))))
+        (base32 "1j9b7f1b1pdb2v7z0b4mnfvcir4z1ycs3l2xh4rvrl7gzhlc56y5"))))
     (build-system vim-build-system)
     (arguments
      (list #:plugin-name "nerdtree"))
