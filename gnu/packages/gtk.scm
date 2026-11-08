@@ -3042,7 +3042,14 @@ Unix desktop environment under X11 as well as Wayland.")
      (list
       #:configure-flags
       #~(list (string-append "-Dgdk_pixbuf_moduledir="
-                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))))
+                             #$output "/lib/gdk-pixbuf-2.0/2.10.0/loaders"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-thumbnailer-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "webp-pixbuf.thumbnailer.in"
+                (("@bindir@/gdk-pixbuf-thumbnailer")
+                 (search-input-file inputs "bin/gdk-pixbuf-thumbnailer"))))))))
     (inputs (list gdk-pixbuf glib gtk+ libwebp))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/aruiz/webp-pixbuf-loader")
