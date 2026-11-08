@@ -32,6 +32,7 @@
 ;;; Copyright © 2026 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;; Copyright © 2026 Nemin <nemin@protonmail.com>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2026 Ceriseris <ceriseris@ceriseris.nl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1798,6 +1799,49 @@ like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
     (home-page "https://github.com/horst3180/arc-theme")
     ;; No "or later" language found.
     (license license:gpl3+)))
+
+(define-public fluent-gtk-theme
+  (let ((commit "7a49a464b0188c340101c52965c18190b1c694cf")
+        (revision "0"))
+    (package
+      (name "fluent-gtk-theme")
+      (version (git-version "2025-04-17" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+                (url "https://github.com/vinceliuice/Fluent-gtk-theme")
+                (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0m2dvkvq3vphwxdba90drdv3n6d0dczpclk1llz8rmly7076cnrv"))
+         (file-name (git-file-name name version))))
+      (build-system trivial-build-system)
+      (arguments
+       '(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils))
+           (let* ((out (assoc-ref %outputs "out"))
+                  (source (assoc-ref %build-inputs "source"))
+                  (bash (search-input-file %build-inputs "bin/bash"))
+                  (coreutils
+                   (dirname (search-input-file %build-inputs "bin/env")))
+                  (themesdir (string-append out "/share/themes")))
+             (setenv "PATH"
+                     (string-append coreutils "/bin:" bash))
+             (copy-recursively source (getcwd))
+             (mkdir-p themesdir)
+             (invoke bash "install.sh" "-d" themesdir)))))
+      (inputs
+       (list gtk-engines))
+      (native-inputs
+       (list bash-minimal coreutils-minimal))
+      (synopsis "Fluent design GTK theme for linux desktops")
+      (description "Fluent GTK theme is a Fluent design theme for GNOME/GTK
+	based desktop environments.")
+      (home-page "https://github.com/vinceliuice/Fluent-gtk-theme")
+      ;; Explicit 3.0 version
+      (license license:gpl3))))
 
 (define-public greybird-gtk-theme
   (package
