@@ -35517,7 +35517,7 @@ compression/decompression using bindings to the libzstd C library.")
 (define-public sbcl-cl-transducers
   (package
     (name "sbcl-cl-transducers")
-    (version "1.5.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -35526,7 +35526,7 @@ compression/decompression using bindings to the libzstd C library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12zbzcmly6gb9xbhidymp966hw26a2h6wfdmi83ynwldc8wfnlwm"))))
+        (base32 "1m5cq0zpbqr5mbqx5spdpmy0dmbw3pdjm9skna15c3mq00m67by2"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("transducers" "transducers/jzon" "transducers/fset")))
