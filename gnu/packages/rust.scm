@@ -1177,11 +1177,38 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor")))
-             (add-after 'configure 'enable-profiling
-               (lambda _
-                 (substitute* "config.toml"
-                   (("^profiler =.*$") "")
-                   (("\\[build\\]") "\n[build]\nprofiler = true\n"))))
+             (replace 'configure
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (call-with-output-file "config.toml"
+                   (lambda (port)
+                     (display (string-append "
+[llvm]
+[build]
+profiler = true
+optimized-compiler-builtins = false
+cargo = \"" (search-input-file inputs "bin/cargo") "\"
+rustc = \"" (search-input-file inputs "bin/rustc") "\"
+docs = false
+python = \"" (search-input-file inputs "bin/python") "\"
+vendor = true
+submodules = false
+[install]
+prefix = \"" (assoc-ref outputs "out") "\"
+sysconfdir = \"etc\"
+[rust]
+lld = false
+debug=false
+jemalloc=false
+default-linker = \"" (search-input-file inputs "bin/gcc") "\"
+channel = \"stable\"
+rpath = true
+[target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
+llvm-config = \"" (search-input-file inputs "bin/llvm-config") "\"
+cc = \"" (search-input-file inputs "bin/gcc") "\"
+cxx = \"" (search-input-file inputs "bin/g++") "\"
+ar = \"" (search-input-file inputs "bin/ar") "\"
+[dist]
+") port)))))
              (add-after 'configure 'add-gdb-to-config
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((gdb (assoc-ref inputs "gdb")))
@@ -1406,6 +1433,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                         (display (string-append "
 [llvm]
 [build]
+optimized-compiler-builtins = false
 cargo = \"" (search-input-file inputs "/bin/cargo") "\"
 rustc = \"" (search-input-file inputs "/bin/rustc") "\"
 docs = false
@@ -1449,7 +1477,6 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
               (replace 'install
                 (lambda _
                   (invoke "./x.py" "install" "library/std")))
-              (delete 'enable-profiling)
               (delete 'install-rust-src)
               (delete 'dont-reference-previous-cargo-version)
               (delete 'wrap-rust-analyzer)
