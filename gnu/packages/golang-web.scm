@@ -4264,6 +4264,38 @@ Servers with Azure File Sync for fast access near where the data is being
 used.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-internal
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-internal")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-sdk-for-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk/storage/internal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "159qn9plrvca6494nn3l46kdb4pq1makljrvx2sggpwa27hwcbrk"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-all-but "sdk/storage" "internal")
+                 (delete-all-but "sdk" "storage")
+                 (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/storage/internal"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Storage Internal Module for Go")
+    (description
+     "Package internal contains shared internal code for Azure Storage
+packages.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-storage-blob-go
   (package
     (name "go-github-com-azure-azure-storage-blob-go")
