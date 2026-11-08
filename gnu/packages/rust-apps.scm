@@ -5265,14 +5265,14 @@ It supports taxonomies, shortcodes, and live reloading.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.9.9")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11yjqhjqmsmww9cdxwibwm0clzdz6lzrmvnk1w0lyv4vn3jpw62m"))))
+        (base32 "0305zkp62wdnz6ssydq6rr95rh3h39y3b1gp2pws7rl1j37jqnc8"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
