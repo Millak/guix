@@ -399,8 +399,8 @@ trouble using them, because you do not have to remember each snippet name.")
     (license license:expat))))
 
 (define-public vim-scheme
-  (let ((commit "e22fc8e199ef52f2efacd08e71c3add90d83b375")
-        (revision "3"))
+  (let ((commit "8a5f608c7c27d35fb8b87bb0c9f15adec3acafc5")
+        (revision "4"))
     (package
       (name "vim-scheme")
       (version (git-version "0.0.0" revision commit))
@@ -413,7 +413,7 @@ trouble using them, because you do not have to remember each snippet name.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "04h946vr4f8wxap3wzqs69y2v8n50g2zbk22jsg2kxr4c01z5cbw"))))
+           "10ba3h7mvmj029ipkd50l4aph243fymsl19cpg286i6n540m876a"))))
       (build-system vim-build-system)
       (arguments
        (list #:plugin-name "vim-scheme"))
