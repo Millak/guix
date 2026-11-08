@@ -30550,6 +30550,28 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
 pattern}.")
     (license license:expat)))
 
+(define-public go-github-com-sony-gobreaker-v2
+  (package
+    (inherit go-github-com-sony-gobreaker)
+    (name "go-github-com-sony-gobreaker-v2")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sony/gobreaker")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zzfslnwm8c5sv3wgcjjk42dzfk74r8zdq5v820c1cwc55ag74c0"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "v2/redis")
+                 (delete-file-recursively "v2/example")))))
+    (arguments
+     (list #:import-path "github.com/sony/gobreaker/v2"
+           #:unpack-path "github.com/sony/gobreaker"))))
+
 (define-public go-github-com-sosodev-duration
   (package
     (name "go-github-com-sosodev-duration")
