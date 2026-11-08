@@ -4228,34 +4228,36 @@ challenge authentication policy.")
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob")
-    (version "1.8.0")
+    (version "1.8.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Azure/azure-sdk-for-go")
-             (commit (go-version->git-ref version
-                                          #:subdir "sdk/storage/azblob"))))
+              (url "https://github.com/Azure/azure-sdk-for-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk/storage/azblob"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vw95158c12lspya4rlglqybiv4c6c6zdn6zasa4q3s857pb06bq"))
-       (modules '((guix build utils)))
-       (snippet #~(begin
-                    (delete-all-but "sdk/storage" "azblob")
-                    (delete-all-but "sdk" "storage")
-                    (delete-all-but "." "sdk")))))
+        (base32 "1j2wl21mjqlzr9c1rjdqyflpcn6fxkfrv7jy5l76cnyaffdvc4vz"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-all-but "sdk/storage" "azblob")
+                 (delete-all-but "sdk" "storage")
+                 (delete-all-but "." "sdk")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;TODO: Tests require additional dependencies
       #:import-path "github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
-      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"
+      ;; Unable to find git root for path
+      #:test-flags #~(list "-skip" "^Test$")))
     (propagated-inputs
-     (list go-github-com-stretchr-testify
-           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-storage-armstorage
-           go-github-com-azure-azure-sdk-for-go-sdk-internal
+     (list go-github-com-apache-arrow-go-v18
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
            go-github-com-azure-azure-sdk-for-go-sdk-azidentity
-           go-github-com-azure-azure-sdk-for-go-sdk-azcore))
+           go-github-com-azure-azure-sdk-for-go-sdk-internal
+           go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-storage-armstorage
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-internal))
     (home-page "https://github.com/Azure/azure-sdk-for-go")
     (synopsis "Azure Blob Storage module for Go")
     (description
