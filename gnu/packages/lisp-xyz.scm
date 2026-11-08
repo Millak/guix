@@ -9826,7 +9826,7 @@ Raylib game development library.")
 (define-public sbcl-cl-rdkafka
   (package
     (name "sbcl-cl-rdkafka")
-    (version "1.1.0")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -9836,7 +9836,7 @@ Raylib game development library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z2g0k0xy8k1p9g93h8dy9wbygaq7ziwagm4yz93zk67mhc0b84v"))))
+         "1pjpbpl0biyiv63zxm4x3zb3wc7gzag4axnv5rwgg5pa8vqhkdhl"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      `(#:tests? #f ; Attempts to connect to locally running Kafka
@@ -9852,6 +9852,7 @@ Raylib game development library.")
      (list sbcl-bordeaux-threads
            sbcl-cffi
            librdkafka
+           sbcl-log4cl
            sbcl-lparallel
            sbcl-trivial-garbage))
     (home-page "https://github.com/SahilKang/cl-rdkafka")
