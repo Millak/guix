@@ -1228,21 +1228,7 @@ Quizzes: arithmetic and quiz.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mk03l120scas4dcn6xccnhslnwmcx2blshbf925z06yk7rkzias"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   ;; erasechar and killchar functions are now in libtinfo
-                   (substitute* "configure"
-                     (("-lncurses" all) (string-append all " -ltinfo")))
-                   ;; Do not access fields of the opaque type WINDOW
-                   (substitute* "main.c"
-                     (("curscr->_cury = oy;" _) "")
-                     (("curscr->_curx = ox;" _) "move(oy, ox);"))
-                   ;; Choose branch with no accesses to the fields
-                   ;; of the opaque type TERMINAL
-                   (substitute* "mdport.c"
-                     (("^#ifdef NCURSES_VERSION" _) "#if 0"))))))
+                "0mk03l120scas4dcn6xccnhslnwmcx2blshbf925z06yk7rkzias"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f
@@ -1250,6 +1236,7 @@ Quizzes: arithmetic and quiz.")
            (if (target-hurd?)
                #~(list "CPPFLAGS=-DPATH_MAX=4096")
                #~(list))
+           #:make-flags #~(list "CFLAGS=-DNCURSES_INTERNALS")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'install 'fix-man-page
