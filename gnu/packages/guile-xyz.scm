@@ -1497,7 +1497,7 @@ for calling methods on remote servers by exchanging JSON objects.")
 (define-public guile-lsp-server
   (package
     (name "guile-lsp-server")
-    (version "0.4.8")
+    (version "0.4.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1506,7 +1506,7 @@ for calling methods on remote servers by exchanging JSON objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v4za2phmrka2d467591pyl2vjisgj1ifzksd1kfbmacc8vnlh67"))))
+                "164b8v8hxw49jq27019i5577gnza8j075853cm1dxq4qhgvfa5qq"))))
     (build-system gnu-build-system)
      (arguments
       (list
