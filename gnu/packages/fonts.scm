@@ -4820,20 +4820,16 @@ resolution of contemporary screens and print media to the fullest.")
 (define-public font-bravura
   (package
     (name "font-bravura")
-    (version "1.393")
+    (version "1.482")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/steinbergmedia/bravura")
-             ;; Should be:
-             ;;   (string-append "bravura-" version)
-             ;; but missing tag for 1.393. Requested upstream at:
-             ;; https://github.com/steinbergmedia/bravura/issues/61
-             (commit "3df1714e6f9d522a8d2b6ee6888fa3e68e71199d")))
+             (commit (string-append "bravura-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d0a2z1gl0kzfnd5z0nv2gd226qwll13kis2xrhx213w6r849180"))))
+        (base32 "07m10720p87355azzhf2vhain9bfhk5f1i5lnxg9gpsk0csasqrv"))))
     (build-system font-build-system)
     (home-page "https://www.smufl.org/fonts/")
     (synopsis
