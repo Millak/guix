@@ -12336,7 +12336,7 @@ more robust than systems based on object prevalence.")
 (define-public sbcl-clog
   (package
     (name "sbcl-clog")
-    (version "1.2")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
@@ -12345,12 +12345,14 @@ more robust than systems based on object prevalence.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-clog" version))
        (sha256
-        (base32 "0f4i6571nm0j704zgnh60sc9slifs11byb2gs8gamqjcfh931dap"))))
+        (base32 "1z91j1yb156m12pxk7xiwr4fqgf58xi5fm23rxzv8p6w6x9snvcm"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     (list sbcl-3bmd
+     (list sbcl-atomics
+           sbcl-3bmd
            sbcl-alexandria
            sbcl-bordeaux-threads
+           sbcl-cl-pass
            sbcl-cl-ppcre
            sbcl-cl-sqlite
            sbcl-cl-template
@@ -12362,17 +12364,21 @@ more robust than systems based on object prevalence.")
            sbcl-lack
            sbcl-mgl-pax
            sbcl-parse-float
+           sbcl-print-licenses
            sbcl-quri
            sbcl-trivial-open-browser
            sbcl-websocket-driver))
     (arguments
-     '(#:asd-systems '("clog" "clog/docs" "clog/tools")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-symbol-name
-                    (lambda _
-                      (substitute* "source/clog-docs.lisp"
-                        (("clog:@CLOG-MANUAL")
-                         "clog::@CLOG_MANUAL")))))))
+     (list
+      #:asd-systems ''("clog" "clog/docs")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: https://github.com/rabbibotton/clog/issues/471
+          (add-after 'unpack 'fix-symbol-name
+            (lambda _
+              (substitute* "source/clog-docs.lisp"
+                (("clog:@CLOG-MANUAL")
+                 "clog::@CLOG_MANUAL")))))))
     (home-page "https://github.com/rabbibotton/clog")
     (synopsis "Common Lisp Omnificent GUI")
     (description
