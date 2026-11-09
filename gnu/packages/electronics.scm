@@ -1566,8 +1566,8 @@ worksheet templates.")))
 
 (define-public kicad-cern-libraries
   ;; Upstream does not tag releases.
-  (let ((commit "980670fefdf71965aae6c56194d7f2a68c3e6a68")
-        (revision "0"))
+  (let ((commit "30a7f8d014cc7990c70ead63da55a2a5b8ba96d1")
+        (revision "1"))
     (package
       (name "kicad-cern-libraries")
       (version (git-version "0" revision commit))
@@ -1579,7 +1579,7 @@ worksheet templates.")))
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0lr1p28gknbgsr86hbzh87plagcyc040v6141xmha280n78h2l62"))))
+          (base32 "1cdxcjways8ax3bfa8swjgn60kjy9msvm8mvvcsadv9alj12xis4"))))
       (build-system copy-build-system)
       (arguments
        (list
