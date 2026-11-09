@@ -3496,8 +3496,8 @@ characters.")
 
 (define-public font-sligoil
   ;; No tagged release, see <https://gitlab.com/velvetyne/sligoil/-/issues/1>.
-  (let ((commit "70ae7cdd6bc0862094f2d9859cf98f71eb6209e5")
-        (revision "0"))
+  (let ((commit "d6d999088dff79d3fab81c5661e52f2caa2c479d")
+        (revision "1"))
     (package
       (name "font-sligoil")
       (version (git-version "2.0" revision commit))
@@ -3509,7 +3509,7 @@ characters.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "18mfxk59h115fd13mpwcpnmsm4w9pshdwm8n47aszk2jsrnvxg99"))))
+          (base32 "1cl4438ymcaz7g5adlhf55xqk1lxzx3qqqx3axzqpcw4d8ypyqwj"))))
       (build-system font-build-system)
       (home-page "https://velvetyne.fr/fonts/sligoil")
       (synopsis "Monospace typeface influenced by British isles' culture")
