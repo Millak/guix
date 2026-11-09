@@ -17582,13 +17582,12 @@ the power of the built-in @code{OptionParser}.")
     (propagated-inputs
      (list ruby-anystyle-data
            ruby-bibtex-ruby
+           ruby-gdbm ;required by lib/anystyle/dictionary/gdbm.rb
            ruby-namae
            ruby-wapiti))
     (native-inputs
-     (list ruby-byebug
-           ruby-citeproc
+     (list ruby-citeproc
            ruby-edtf
-           ruby-gdbm
            ruby-rspec
            ruby-unicode-scripts))
     (arguments
