@@ -5384,8 +5384,8 @@ glyphs.")
 
 (define-public font-oswald
   (let ((version "0")
-        (commit "6e65651c229e897dc55fb8d17097ee7f75b2769b")
-        (revision "0"))
+        (commit "89795261ac9eeb9aa8cd99f43982c4e4b0e53261")
+        (revision "1"))
     (package
       (name "font-oswald")
       (version (git-version version revision commit))
@@ -5398,7 +5398,7 @@ glyphs.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0m5c98crw6df6hbhxv4smh6ldzk5fx434fyri8xgnsjjcrkqxy0h"))))
+           "0agg2hqhy4l97saz77v0d6kny39k3qlgil4rd38a1f7fc6wiv1fa"))))
       (build-system font-build-system)
       (home-page "https://github.com/googlefonts/OswaldFont")
       (synopsis "Gothic typeface")
