@@ -4290,39 +4290,33 @@ and simulation Makefiles.")
     (license license:gpl3+)))
 
 (define-public python-migen
-  ;; XXX: The latest version tag (0.9.2) was placed in 2019, there are latest
-  ;; changes supporting Python 3.11 on master branch, see
-  ;; <https://github.com/m-labs/migen/issues/259>.
-  (let ((commit "3dcfedd0b9e533e073228bb3eb0f973d22074919")
-        (revision "2"))
-    (package
-      (name "python-migen")
-      (version (git-version "0.9.2" revision commit))
-      (source
-       (origin
-         ;; Tests fail in the PyPI tarball due to missing files.
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://git.m-labs.hk/M-Labs/migen")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1nygx1p468109b2rmfsfqaqqgbgzn9r5d78fnb304fj96brx4b0x"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-pytest
-             python-setuptools))
-      (propagated-inputs
-       (list python-colorama))
-      (home-page "https://m-labs.hk/gateware/migen/")
-      (synopsis "Python toolbox for building complex digital hardware")
-      (description
-       "Migen FHDL is a Python library that replaces the event-driven paradigm
+  (package
+    (name "python-migen")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.m-labs.hk/M-Labs/migen")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z91szi7hawz6xyn9hby51msffglxznwi8liym0ynphw11rv6lb9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
+    (home-page "https://m-labs.hk/misc/migen/")
+    (synopsis "Python toolbox for building complex digital hardware")
+    (description
+     "Migen FHDL is a Python library that replaces the event-driven paradigm
 of Verilog and VHDL with the notions of combinatorial and synchronous
 statements, has arithmetic rules that make integers always behave like
 mathematical integers, and allows the design's logic to be constructed by a
 Python program.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public python-myhdl
   (let ((commit "7dc29c242cd33cb835c336a81ffc3a461eaa92f4")
