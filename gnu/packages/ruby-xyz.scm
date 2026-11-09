@@ -8528,7 +8528,7 @@ with PostgreSQL 10 and later.")
 (define-public ruby-byebug
   (package
     (name "ruby-byebug")
-    (version "12.0.0")
+    (version "13.0.0")
     (source
      (origin
        (method git-fetch)
@@ -8538,7 +8538,7 @@ with PostgreSQL 10 and later.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pjdadc079rmasgiwdxcz8h9wvzk3mb6xq8xr02xxv616ihwxllk"))
+         "02djsf2mzhs6n4qbfs9r4fmhy27mwl5m8c44nmg45l9s8wd7xdkl"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -8559,7 +8559,8 @@ with PostgreSQL 10 and later.")
             (lambda _
               (delete-file "tasks/release.rake")
               (substitute* "Rakefile"
-                ((".*tasks/release.rake.*") ""))))
+                ((".*tasks/release.rake.*") "")
+                ((".*tasks/docs.rake.*") ""))))
           (add-after 'unpack 'skip-tmp-path-sensitive-test
             (lambda _
               (substitute* "test/commands/where_test.rb"
@@ -8575,17 +8576,64 @@ with PostgreSQL 10 and later.")
               ;; Expects 5, gets 162. From a file containing ~10 lines.
               (substitute* "test/commands/finish_test.rb"
                 (("test_finish_inside_autoloaded_files")
-                 "finish_inside_autoloaded_files"))))
+                 "finish_inside_autoloaded_files"))
+              ;; Incompatible with newer line number style.
+              (substitute* "test/commands/where_test.rb"
+                (("def test_where_displays_current_backtrace_with_fullpaths_by_default"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_backtraces_using_short_callstyle"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_with_argument_less_than_largest_frame"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_with_argument_greater_than_largest_frame"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_instance_exec_block_frames"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_backtraces_using_long_callstyle_by_default"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_current_backtrace_w_shorpaths_if_fullpath_disabled"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_instance_exec_block_frames"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_backtraces_using_short_callstyle"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_with_argument_less_than_largest_frame"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_with_argument_greater_than_largest_frame"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_current_backtrace_with_fullpaths_by_default"
+                  def)
+                 (string-append def ";skip"))
+                (("def test_where_displays_backtraces_using_long_callstyle_by_default"
+                  def)
+                 (string-append def ";skip")))
+              ;; Incompatible with newer backtrace style:
+              ;;   new: "from /path/to/eval.rb:61:in 'Binding#eval'",
+              ;;   old: /\s*from \S+:in \`eval\'/
+              (substitute* "test/processors/command_processor_test.rb"
+                (("def test_shows_backtrace_on_error_if_stack_on_error_enabled"
+                  def)
+                 (string-append def ";skip")))))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list bundler
+     (list ruby-faraday
            ruby-minitest
+           ruby-minitest-mock
            ruby-pry
-           ruby-rake-compiler
-           ruby-rubocop
-           ruby-yard))
+           ruby-rake-compiler))
     (synopsis "Debugger for Ruby 2")
     (description "Byebug is a Ruby 2 debugger implemented using the Ruby 2
 TracePoint C API for execution control and the Debug Inspector C API for call
