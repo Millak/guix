@@ -2037,13 +2037,13 @@ an extensible mechanism for ``name lookups'' in general: host name
 resolution, user accounts, and more (@pxref{Name Service Switch,,, libc,
 The GNU C Library Reference Manual}).
 
-@cindex Network information service (NIS)
-@cindex NIS (Network information service)
+@cindex Network Information Service (NIS)
+@cindex NIS (Network Information Service)
 Being extensible, the NSS supports @dfn{plugins}, which provide new name
 lookup implementations: for example, the @code{nss-mdns} plugin allow
 resolution of @code{.local} host names, the @code{nis} plugin allows
-user account lookup using the Network information service (NIS), and so
-on.  These extra ``lookup services'' are configured system-wide in
+user account lookup using @acronym{NIS, Network Information Service},
+and so on.  These extra ``lookup services'' are configured system-wide in
 @file{/etc/nsswitch.conf}, and all the programs running on the system
 honor those settings (@pxref{NSS Configuration File,,, libc, The GNU C
 Reference Manual}).
