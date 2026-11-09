@@ -973,8 +973,8 @@ The unified Libertinus family consists of:
     (license license:silofl1.1)))
 
 (define-public font-libre-franklin
-  (let ((commit "0022627ebb2a582327569ee45af5d0d9ef31dfea")
-        (revision "1"))
+  (let ((commit "5e76d2f48045806a2d6827622df023aec97cd59e")
+        (revision "2"))
     (package
       (name "font-libre-franklin")
       (version (git-version "1.502" revision commit))
@@ -986,7 +986,7 @@ The unified Libertinus family consists of:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1kfipv9vfivgn1789b9yc6r0l31r6l02nz06icw99zvmfcjbpzf0"))))
+          (base32 "0gxgrip8ziywz03wwc966bn286va6qr66fyaghnamkqf98hpgrb1"))))
       (build-system font-build-system)
       (arguments
        (list
