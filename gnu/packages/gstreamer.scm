@@ -441,6 +441,7 @@ the GStreamer multimedia framework.")
   (package
     (name "gstreamer")
     (version "1.28.1")
+    (replacement gstreamer/fixed)
     (source
      (origin
        (method url-fetch)
@@ -517,6 +518,21 @@ simple plugin with a clean, generic interface.
 
 This package provides the core library and elements.")
     (license license:lgpl2.0+)))
+
+(define gstreamer/fixed
+  (package
+    (inherit gstreamer)
+    (name "gstreamer")
+    (version "1.28.9")
+    (source
+     (origin
+       (inherit (package-source gstreamer))
+       (uri (string-append
+             "https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-"
+             version ".tar.xz"))
+       (sha256
+        (base32
+         "0f7vspcdcgq4m5w07q0cm2dnlxj37201wr6c8m4a6c9ib17p9gvd"))))))
 
 (define-public gst-plugins-base
   (package
