@@ -1414,6 +1414,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
   (package
     (name "gst-editing-services")
     (version "1.28.1")
+    (replacement gst-editing-services/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1450,6 +1451,25 @@ decoders, muxers, and demuxers provided by FFmpeg.")
      "This is a high-level library for facilitating the creation of audio/video
 non-linear editors.")
     (license license:gpl2+)))
+
+(define gst-editing-services/fixed
+  (package
+    (inherit gst-editing-services)
+    (name "gst-editing-services")
+    (version "1.28.9")
+    (source
+     (origin
+       (inherit (package-source gst-editing-services))
+       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
+                          name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "14j614da5zrzfzkxpss7zw2q310m95vs3rr6l8fhjqx0kd1ziji3"))))
+    ;; Repair inputs to refer to updated GStreamer in build.
+    ;; Drop this when unbundling.
+    (inputs (modify-inputs inputs
+              (prepend gstreamer/fixed gst-plugins-base/fixed)))
+    (propagated-inputs (list))))
 
 (define-public gst-plugins/selection
   (lambda* (pkg #:key plugins configure-flags)
