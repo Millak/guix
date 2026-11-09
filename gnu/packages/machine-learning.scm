@@ -7494,13 +7494,13 @@ ML models.")
 (define-public python-gymnasium
   (package
     (name "python-gymnasium")
-    (version "0.29.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gymnasium" version))
        (sha256
-        (base32 "1cab4wsnlsxn2z90qmymv8ppmsq8yq2amiqwid3r0xfbxx92flqs"))))
+        (base32 "0zb9wwnynllrkh8zlbfnn8nrhv3h3syf3aw6cfvxpgralcqgcm4p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7513,7 +7513,7 @@ ML models.")
     (propagated-inputs (list python-cloudpickle python-farama-notifications
                              python-numpy python-typing-extensions))
     (native-inputs
-     (list python-pytest python-scipy python-setuptools python-wheel))
+     (list python-dill python-pytest python-scipy python-setuptools))
     (home-page "https://gymnasium.farama.org/")
     (synopsis
      "Standard API for reinforcement learning and a set of reference environments")
