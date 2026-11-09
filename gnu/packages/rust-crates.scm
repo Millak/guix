@@ -4513,6 +4513,10 @@ fn main() {
   (crate-source "cc" "1.11.0"
                 "0ssz5frnjb3x873yhp2790xf9v8jz8hdbgj28i1gm861rvg8jn9p"))
 
+(define rust-cc-1.11.1
+  (crate-source "cc" "1.11.1"
+                "0mgicvynjmz4xan2nbdi1dr62pjqb9kikml0j21qq3zzdw9aiwjg"))
+
 (define rust-cc-1.2.18
   (crate-source "cc" "1.2.18"
                 "0p6d2pfyrjgqpf2w399wzj4hmyffj6g0gyzg3pdy6xl3gmhlcl2j"))
@@ -17961,6 +17965,10 @@ fn main() {
   (crate-source "itoa" "1.0.18"
                 "10jnd1vpfkb8kj38rlkn2a6k02afvj3qmw054dfpzagrpl6achlg"))
 
+(define rust-itoa-1.0.19
+  (crate-source "itoa" "1.0.19"
+                "1m44ca6ihrapjhlfy1vn4zj207qyhizbv0c1iwgnr6ksc575gl9v"))
+
 (define rust-itoa-1.0.9
   (crate-source "itoa" "1.0.9"
                 "0f6cpb4yqzhkrhhg6kqsw3wnmmhdnnffi6r2xzy248gzi2v0l5dg"))
@@ -21548,6 +21556,10 @@ fn main() {
 (define rust-mime-0.3.17
   (crate-source "mime" "0.3.17"
                 "16hkibgvb9klh0w0jk5crr5xv90l3wlf77ggymzjmvl1818vnxv8"))
+
+(define rust-mime-0.3.18
+  (crate-source "mime" "0.3.18"
+                "18dzfqp5gaza7lg8qqpq1xh83zw79b1al3zryaacy5w1krd8z16m"))
 
 (define rust-mime-guess-2.0.5
   (crate-source "mime_guess" "2.0.5"
@@ -32168,6 +32180,10 @@ fn main() {
   (crate-source "smallvec" "1.16.4"
                 "1j772prjisi2872lxry7d9fkss3dfbjwl16jmsvvp2qvk2qx9mfh"))
 
+(define rust-smallvec-1.16.5
+  (crate-source "smallvec" "1.16.5"
+                "0ipfizwpq0byhrl50xcizs2yf758mgccmq6s5nqk8wszi94hk4ql"))
+
 (define rust-smart-default-0.6.0
   (crate-source "smart-default" "0.6.0"
                 "1xnvxz9wilj4d5b8kg4wbs0yk48wm41fnwkmn3p6wi9rafhmjdhk"))
@@ -33582,6 +33598,10 @@ fn main() {
 (define rust-syn-2.0.98
   (crate-source "syn" "2.0.98"
                 "1cfk0qqbl4fbr3dz61nw21d5amvl4rym6nxwnfsw43mf90d7y51n"))
+
+(define rust-syn-3.0.10
+  (crate-source "syn" "3.0.10"
+                "0ygaz8ccgap0vb0faifk1xv1p2sayg490r038fab1c57lfzcrsaa"))
 
 (define rust-syn-3.0.3
   (crate-source "syn" "3.0.3"
@@ -37722,6 +37742,10 @@ fn main() {
 (define rust-uuid-1.29.0
   (crate-source "uuid" "1.29.0"
                 "0525458ww4jwa0nw513jdrhgwxrldglzvfrbw5gnjl0cc88js3ja"))
+
+(define rust-uuid-1.29.2
+  (crate-source "uuid" "1.29.2"
+                "0z161qj1jw91fz64pmz1vqs9l1y7dpbf8yziwp7vbjfsywwr3ndy"))
 
 (define rust-uuid-1.4.1
   (crate-source "uuid" "1.4.1"
@@ -72873,7 +72897,7 @@ fn main() {
                   rust-bitflags-2.13.2
                   rust-bumpalo-3.20.3
                   rust-bytes-1.12.1
-                  rust-cc-1.10.0
+                  rust-cc-1.11.1
                   rust-cfg-if-1.0.5
                   rust-cfg-aliases-0.2.2
                   rust-chacha20-0.10.2
@@ -72933,7 +72957,7 @@ fn main() {
                   rust-indexmap-2.14.2
                   rust-ipnet-2.12.2
                   rust-itertools-0.14.0
-                  rust-itoa-1.0.18
+                  rust-itoa-1.0.19
                   rust-jni-0.22.4
                   rust-jni-macros-0.22.4
                   rust-jni-sys-0.4.1
@@ -72949,7 +72973,7 @@ fn main() {
                   rust-matchers-0.2.0
                   rust-matchit-0.8.4
                   rust-memchr-2.8.3
-                  rust-mime-0.3.17
+                  rust-mime-0.3.18
                   rust-mio-1.2.4
                   rust-multiversion-no-op-1.0.0
                   rust-nu-ansi-term-0.50.3
@@ -73018,12 +73042,12 @@ fn main() {
                   rust-simd-cesu8-1.2.0
                   rust-simdutf8-0.1.5
                   rust-slab-0.4.12
-                  rust-smallvec-1.16.4
+                  rust-smallvec-1.16.5
                   rust-socket2-0.6.5
                   rust-stable-deref-trait-1.2.1
                   rust-subtle-2.6.1
                   rust-syn-2.0.119
-                  rust-syn-3.0.9
+                  rust-syn-3.0.10
                   rust-sync-wrapper-1.0.2
                   rust-synstructure-0.14.0
                   rust-system-configuration-0.7.0
@@ -73053,7 +73077,7 @@ fn main() {
                   rust-url-2.5.8
                   rust-utf8-iter-1.1.0
                   rust-utf-types-1.0.0
-                  rust-uuid-1.29.0
+                  rust-uuid-1.29.2
                   rust-valuable-0.1.1
                   rust-walkdir-2.5.0
                   rust-want-0.3.2
