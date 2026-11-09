@@ -3644,7 +3644,7 @@ emphasis while still being readable.")
 (define-public font-openmoji
   (package
     (name "font-openmoji")
-    (version "15.1.0")
+    (version "17.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3653,7 +3653,7 @@ emphasis while still being readable.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iil5jmkkqrqgq06q3gvgv7j1bq8499q3h2340prwlfi2sqcqzlk"))))
+        (base32 "1zdk6hf5glijhr50zrrf19j8axvs9j5fwbyy2lxkgzh2vsbzhkcq"))))
     (build-system font-build-system)
     (arguments
      (list
