@@ -813,6 +813,7 @@ model to base your own plug-in on, here it is.")
   (package
     (name "gst-plugins-bad")
     (version "1.28.1")
+    (replacement gst-plugins-bad/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
@@ -1020,6 +1021,76 @@ model to base your own plug-in on, here it is.")
      "GStreamer Bad Plug-ins is a set of plug-ins whose quality aren't up to
 par compared to the rest.")
     (license license:lgpl2.0+)))
+
+(define gst-plugins-bad/fixed
+  (package
+    (inherit gst-plugins-bad)
+    (name "gst-plugins-bad")
+    (version "1.28.9")
+    (source
+     (origin
+       (inherit (package-source gst-plugins-bad))
+       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
+                          name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1cgn8cybqims6ld4zdx5i2s272d9qdx3l54gqiw871jgz1xhnkja"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
+                                                   "gst-plugins-good")))
+                  (substitute* "tests/check/meson.build"
+                    ;; Make gst-plugin-good available for tests, see
+                    ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1426
+                    (("'GST_PLUGIN_SYSTEM_PATH_1_0', ''")
+                     (string-append "'GST_PLUGIN_SYSTEM_PATH_1_0', '"
+                                    gst-plugins-good "/lib/gstreamer-1.0'"))
+
+                    ;; The 'elements_shm.test_shm_live' test sometimes times out
+                    ;; (see:
+                    ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790>).
+                    ((".*'elements/shm\\.c'.*") "")
+
+                    ;; The 'elements_curlhttpsrc' test sometimes times out.
+                    ((".*'elements/curlhttpsrc\\.c'.*") "")
+
+                    ;; The 'mxfdemux' test fails for unknown reasons (see:
+                    ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921>).
+                    ((".*'elements/mxfdemux.c'.*") "")
+
+                    ;; Unexpected critical/warning, see
+                    ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/792>
+                    ((".*'elements/netsim\\.c'.*") "")
+
+                    ;; TODO: Figure out why this test fails on riscv64-linux.
+                    #$@(if (target-riscv64?)
+                           `((("'elements/viewfinderbin\\.c'\\].*],")
+                              "'elements/viewfinderbin.c'], true, ],"))
+                           '())
+
+                    ;; This test is flaky.
+                    ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
+                    (("'elements/camerabin\\.c'\\].*],")
+                     "'elements/camerabin.c'], true, ],")
+
+                    ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
+                    ((".*elements/dtls\\.c.*") "")
+
+                    ;; Unable to create pipeline 'bin.
+                    ;; ( vulkanupload ! vulkancolorconvert ! vulkandownload )':
+                    ;; no element "vulkanupload"
+                    ((".*elements/vkcolorconvert\\.c.*") "")
+                    ((".*elements/vkupload\\.c.*") "")
+                    ((".*elements/vkdownload\\.c.*") "")))))))))
+    ;; Repair inputs to refer to updated GStreamer in build.
+    ;; Drop this when unbundling.
+    (inputs (modify-inputs inputs
+              (prepend gstreamer/fixed gst-plugins-base/fixed)))
+    (propagated-inputs (list))))
 
 (define-public gst-plugins-rs
   (package
