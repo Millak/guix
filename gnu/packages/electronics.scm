@@ -1311,7 +1311,7 @@ characterization result in a liberty library file.")
 (define-public kicad
   (package
     (name "kicad")
-    (version "10.0.7")
+    (version "10.0.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1319,7 +1319,7 @@ characterization result in a liberty library file.")
                     (commit version)))
               (sha256
                (base32
-                "0wzv12hrk08rak65kl1la5yj80x1qspssc2a032cc8w1j1cfs0pv"))
+                "10maf48hvl3mc5rbhwyaiv9ig6pslyj9xzn7xxas1rpdyd22vmjm"))
               ;; See: https://gitlab.com/kicad/code/kicad/-/merge_requests/2659.
               (patches
                (search-patches "kicad-disable-updates.patch"))
@@ -1463,7 +1463,7 @@ package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09v81dk847azpnb39fmm8s11m66hdlnsxzrx5br6bidrgl78dgmi"))))
+                "169yzl37wym1vna56ahdmid0df9v6xdmv3b527vx01w1kmgh4xiw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html"
@@ -1495,7 +1495,7 @@ package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "056m402jkzz3pl5h2k48ywcqcrivvnhwrpc1rrxblcsmk1psfsxb"))))
+                "043jj2wadj5w9f0w9rh3fr2c36cf5alb4qyd16x8gr9h87v7grg1"))))
     (build-system cmake-build-system)
     (native-inputs (list python-wrapper))
     (arguments
@@ -1525,7 +1525,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06qc8nkgfd5301bzqqiqwg44g6pgjn0i9gp8j4585ay1vfd19ab4"))))
+                "16fjhdnzwigabr8kh0cm1kgxqy8hcmzdkmaayzb18y1fcax7fda1"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1542,7 +1542,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q9jdrqcbxypy5zw50ganhkri71pq796ghxx3b10pin0300d1lwl"))))
+                "10ipxri2qxjhsd1rhy8q9mra8ws5545bb7prniw8wyinxg2s8v7f"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
