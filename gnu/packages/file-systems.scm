@@ -2384,7 +2384,7 @@ and rewritable media that wears out (DVD/CD-RW).")
 (define-public fuse-overlayfs
   (package
     (name "fuse-overlayfs")
-    (version "1.13")
+    (version "1.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2392,7 +2392,7 @@ and rewritable media that wears out (DVD/CD-RW).")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "03gqb4czswqhx6zrv9jj88mf3mczk4m7azcjgr785c2lmga442ly"))
+                "1h9zpb71zc5b0l4gnq9w1ldw056xkc6i6j6lz1jpwr3bl8lcbkjj"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
