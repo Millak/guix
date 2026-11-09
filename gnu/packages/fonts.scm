@@ -5330,7 +5330,7 @@ interfaces.")
 (define-public fonts-tlwg
  (package
    (name "fonts-tlwg")
-   (version "0.7.3")
+   (version "0.7.4")
    (source
     (origin
      (method url-fetch)
@@ -5339,7 +5339,7 @@ interfaces.")
            "/releases/download/v" version "/" name "-" version ".tar.xz"))
      (sha256
       (base32
-       "00mv8rmjpsk8jbbl978q3yrc2pxj8a86a3d092563dlc9n8gykkf"))))
+       "0d87fdl4ysvnqlad7hlxyi2shi6hsg27llpqm7j97lp15phd6c95"))))
    (native-inputs (list fontforge))
    (build-system gnu-build-system)
    (home-page "https://github.com/tlwg/fonts-tlwg/")
