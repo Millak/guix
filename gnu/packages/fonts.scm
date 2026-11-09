@@ -498,7 +498,7 @@ in print.  With attention to detail for high resolution rendering.")
 (define-public font-intel-one-mono
   (package
     (name "font-intel-one-mono")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -507,7 +507,7 @@ in print.  With attention to detail for high resolution rendering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1snwxpcdxl62z1mcax19bmsmbw0hi6m0cqkxqz79ydynfch95sd0"))))
+                "0ljz0pw8vyanl91icv1bl20mjir4rp52m64c97li4fzgmlafnixb"))))
     (outputs '("out" "ttf" "woff"))
     (build-system font-build-system)
     (home-page "https://github.com/intel/intel-one-mono")
