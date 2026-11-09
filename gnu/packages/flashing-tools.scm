@@ -878,7 +878,7 @@ production use.")
 (define-public qdl
   (package
     (name "qdl")
-    (version "2.8")
+    (version "2.9.1")
     (source
      (origin
        (method git-fetch)
@@ -887,7 +887,7 @@ production use.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w038zzgl52n0clpn7268f8j8vri8v535cqphzlzqaj6xnsgvhna"))))
+        (base32 "1jhq601xs16qndi3fg1xif0f37nvbzgblik1glpy4gvdrl7nz6fi"))))
     (build-system meson-build-system)
     (native-inputs
      (list libxml2 pkg-config zip))
