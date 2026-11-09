@@ -467,7 +467,7 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
 (define-public fscrypt
   (package
     (name "fscrypt")
-    (version "0.3.5")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -476,7 +476,7 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15b89g7imv4691aq16xn9q6nh6fcdldkxmvysc7igm6a8p1n6bai"))))
+        (base32 "1z99q13ff715185s6pgz3ddgf0g104byv4m8av96gnlmiypgjz6x"))))
     (build-system go-build-system)
     (arguments
      (list
