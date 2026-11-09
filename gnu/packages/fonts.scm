@@ -147,7 +147,7 @@
 (define-public font-0xproto
   (package
     (name "font-0xproto")
-    (version "2.500")
+    (version "2.502")
     (source
      (origin
        (method git-fetch)
@@ -156,7 +156,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kmxgdvh7j91dy5s4l8q3fil0289mxg2f3ixcl06ywrrs2zw8fy8"))))
+        (base32 "0kzbd92pxy4j4ycf3cz9kq8zz87czx05j0x17fc13aw3qhjim8l4"))))
     (build-system font-build-system)
     (home-page "https://github.com/0xType/0xProto")
     (synopsis "Programming font")
