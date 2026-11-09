@@ -536,7 +536,7 @@ debbugs server.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.143")
+    (version "1.0.145")
     (source
      (origin
        (method git-fetch)
@@ -545,7 +545,7 @@ debbugs server.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jsvnywmc786ihzd3dgqj1qnyp1l2kv87hi40rm16dhc17840v3r"))))
+        (base32 "1bsww9pdz7ysi62n0ny06k2iadqn78zpva4vw3m9a269ji757mdy"))))
     (build-system gnu-build-system)
     (arguments
      (list
