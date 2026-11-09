@@ -168,7 +168,7 @@ source code legibility.")
 (define-public font-adwaita
   (package
     (name "font-adwaita")
-    (version "49.0")
+    (version "51.0")
     (source
      (origin
        (method git-fetch)
@@ -177,7 +177,7 @@ source code legibility.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hjir1961ag5d91l1x7pq2lsak4cny7mvsi8cvrqmd83pzy8cw0p"))))
+        (base32 "1bsvd3fm8x28byxi1r16x9fp42fwcgh54rh5vb4adr5aplppmfnp"))))
     (build-system font-build-system)
     (home-page "https://gitlab.gnome.org/GNOME/adwaita-fonts/")
     (synopsis "GNOME Adwaita Fonts")
