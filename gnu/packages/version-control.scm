@@ -896,17 +896,21 @@ everything from small to very large projects with speed and efficiency.")
 (define-public mergiraf
   (package
     (name "mergiraf")
-    (version "0.16.3")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mergiraf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b5rsdz1s68kc37rqvjwpgwj2651arigbzgcf7chdspzjc9fkllk"))))
+        (base32 "03nbm9pf78kqzvz83i5vz8ri8dc05x8vp467frj66zdvic8f2ysa"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:install-source? #f))
+     (list
+      #:install-source? #f
+      #:cargo-test-flags '(list "--"
+                                ;; Requires jujutsu.
+                                "--skip=jj")))
     ;; for tests
     (native-inputs (list git-minimal/pinned))
     (inputs (cargo-inputs 'mergiraf))

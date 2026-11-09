@@ -22831,9 +22831,9 @@ fn main() {
   (crate-source "nonempty-collections" "0.3.1"
                 "17cbpp5qnm2qcwxvmbi57hdiqvf9blfnw3vqwmkglm4xrzld05p2"))
 
-(define rust-nonempty-collections-1.3.0
-  (crate-source "nonempty-collections" "1.3.0"
-                "0aij92hfyxww3ndpayscl7pglq8a4isfh05c51nc66bvnc07w4ix"))
+(define rust-nonempty-collections-1.4.0
+  (crate-source "nonempty-collections" "1.4.0"
+                "0id0fq3wa4kgcmpn56jf1337jb50h647mpxxm4az6dak4wmvk3wq"))
 
 (define rust-nonmax-0.5.5
   (crate-source "nonmax" "0.5.5"
@@ -23894,6 +23894,10 @@ fn main() {
 (define rust-oneshot-0.1.13
   (crate-source "oneshot" "0.1.13"
                 "01x1rp6s5hxx87n2pc5101lxgdrj0gnxj45zss2qb8li4m6cm6r6"))
+
+(define rust-oneshot-0.2.1
+  (crate-source "oneshot" "0.2.1"
+                "033z8p0w8xcnigwapi0w7l5hpizc62rgrgl0z6wkys9cl0b19qng"))
 
 (define rust-onig-6.5.1
   (crate-source "onig" "6.5.1"
@@ -36153,10 +36157,6 @@ fn main() {
   (crate-source "tree-sitter-clojure-orchard" "0.2.9"
                 "1n35gx7yddvawkp7623bz4nilc0ss74h1wyvrmdlglxabxly1831"))
 
-(define rust-tree-sitter-cmake-0.7.1
-  (crate-source "tree-sitter-cmake" "0.7.1"
-                "16jh11mbnknjx7aqkf95j5zfq5drfpwv0sw27r5x55kkvp8ka6vw"))
-
 (define rust-tree-sitter-cmake-0.7.6
   (crate-source "tree-sitter-cmake" "0.7.6"
                 "1y4302681drwm5kwxfm289dr8j6k81izzrg9xp7gfxg77ca11wja"))
@@ -36195,17 +36195,21 @@ fn main() {
   (crate-source "tree-sitter-dart" "0.1.0"
                 "1v7sy7v73mwakicy60y5s822mpz5gr4sawd3dnx95zp6fn3bz9mv"))
 
-(define rust-tree-sitter-dart-orchard-0.3.2
-  (crate-source "tree-sitter-dart-orchard" "0.3.2"
-                "0blh1abr06qxgjjs43w0j1b804gn3rxs0r1vq6mvxbslznhnik1z"))
-
 (define rust-tree-sitter-dart-orchard-0.5.0
   (crate-source "tree-sitter-dart-orchard" "0.5.0"
                 "1d0myc47rnvm1klys2vsyj9qw2afsmigys23v11v09r4pcpji9r6"))
 
+(define rust-tree-sitter-dart-orchard-0.7.1
+  (crate-source "tree-sitter-dart-orchard" "0.7.1"
+                "01y4c488m00p2cfmrhl5fb78r4db83vkix3d9jfl6gdr2a2rd7jm"))
+
 (define rust-tree-sitter-devicetree-0.14.1
   (crate-source "tree-sitter-devicetree" "0.14.1"
                 "0sylmv12namxx3agd99154bfs5vf2r9723vmz6x2q9fqb55qgrmi"))
+
+(define rust-tree-sitter-devicetree-0.15.0
+  (crate-source "tree-sitter-devicetree" "0.15.0"
+                "10alwc7bsnhclrjcyblya5fxd44fg8nnryq263nly7cf51n32r32"))
 
 (define rust-tree-sitter-elisp-1.6.1
   (crate-source "tree-sitter-elisp" "1.6.1"
@@ -36296,10 +36300,6 @@ fn main() {
   (crate-source "tree-sitter-go" "0.25.0"
                 "1shnigi37lrq88b93i1vnha62byy1nykrq62sbac0p435x6hlmn8"))
 
-(define rust-tree-sitter-gomod-orchard-0.5.3
-  (crate-source "tree-sitter-gomod-orchard" "0.5.3"
-                "0pb40777grgf0iwzyj9rb2v7glxc3zk0p4i2qv8gvnn6mlsccmc7"))
-
 ;; TODO: Regenerate src/parser.c from grammar.js using tree-sitter generate
 ;; as a native-input, then delete the shipped copy.
 (define rust-tree-sitter-gomod-1.1.1.2e88687
@@ -36311,9 +36311,13 @@ fn main() {
     (file-name (git-file-name "rust-tree-sitter-gomod" "1.1.1.2e88687"))
     (sha256 (base32 "0j43jls6zmnxmj0j0jf2qi1arlxmqjknsn3nvm08ij2xbkg5by1r"))))
 
-(define rust-tree-sitter-gosum-orchard-0.3.2
-  (crate-source "tree-sitter-gosum-orchard" "0.3.2"
-                "0bkmby2sm99h9icrh358zsrlm60c7mvvwr038q8ms188pq4442zj"))
+(define rust-tree-sitter-gomod-orchard-0.5.8
+  (crate-source "tree-sitter-gomod-orchard" "0.5.8"
+                "0xn5nij4aqb1ijzjiqjfvf748j5d7dbjzmpwm86g3gxvmqlpn8rx"))
+
+(define rust-tree-sitter-gosum-orchard-0.3.4
+  (crate-source "tree-sitter-gosum-orchard" "0.3.4"
+                "0z3fgyl4jg15w54w609cnms5n14v9p610m4bb31gr9bjj95lx126"))
 
 ;; TODO: Regenerate src/parser.c from grammar.js using tree-sitter generate
 ;; as a native-input, then delete the shipped copy.
@@ -36365,10 +36369,6 @@ fn main() {
   (crate-source "tree-sitter-java" "0.23.5"
                 "1mlh3skj2nasrwdz0v865r4hxnk7v8037z8nwqab4yf6r36wp9ha"))
 
-(define rust-tree-sitter-java-orchard-0.3.1
-  (crate-source "tree-sitter-java-orchard" "0.3.1"
-                "0rw3jaf2nibm9q6gizn5v3ss2n075kqrwbdf4icl49lw6pw9al1b"))
-
 (define rust-tree-sitter-java-orchard-0.5.23
   (crate-source "tree-sitter-java-orchard" "0.5.23"
                 "0fa2cjd4dpckvh5prwfw4k20pp76paaal2mngx2i2jm3g87aq31k"))
@@ -36419,10 +36419,6 @@ fn main() {
   (crate-source "tree-sitter-language" "0.1.9"
                 "0jlx3zzinpgz8lym4f74a8y8r5r2jk8np10niakrlmwcwqmmkbyh"))
 
-(define rust-tree-sitter-lua-0.2.0
-  (crate-source "tree-sitter-lua" "0.2.0"
-                "07k4753h1nz3pbffcnclxjz2xcfvb6hb7jv0fs7cbzk517grmnsw"))
-
 (define rust-tree-sitter-lua-0.5.0
   (crate-source "tree-sitter-lua" "0.5.0"
                 "035169zpbbnxmlsck6d26q6r4jsxzban15y30f3ab22i4gsgbald"))
@@ -36430,6 +36426,10 @@ fn main() {
 (define rust-tree-sitter-make-1.1.1
   (crate-source "tree-sitter-make" "1.1.1"
                 "0101h5ilrv2aqjffdlnq2d2m9mpj5fcfzvwamsgv3nnbrg3qv6f5"))
+
+(define rust-tree-sitter-matlab-1.3.3
+  (crate-source "tree-sitter-matlab" "1.3.3"
+                "0f5jpjwxqyzp2j1v5gs1xk0bhslc6ii2nyygg6k1i17fviswqil3"))
 
 (define rust-tree-sitter-md-0.3.2
   (crate-source "tree-sitter-md" "0.3.2"
@@ -36450,6 +36450,10 @@ fn main() {
   (crate-source "tree-sitter-md" "0.5.3"
                 "10m8mwhd25bq0xc4l6si85rafs8pyp05dvlq8n0nqia6wn5kkz9f"))
 
+(define rust-tree-sitter-md-0.5.4
+  (crate-source "tree-sitter-md" "0.5.4"
+                "0vi4sr0fkmz5n6xfh77757bgb2wrsaddhz7p4la9cr62wfzn3mlf"))
+
 (define rust-tree-sitter-newick-1.1.0
   (crate-source "tree-sitter-newick" "1.1.0"
                 "1qgl2gh15h5wv6jiab034vflscvlyp8sica2cbhq9piarxdpii88"))
@@ -36462,13 +36466,13 @@ fn main() {
   (crate-source "tree-sitter-objc" "3.0.2"
                 "1lp1570h6lwhknzq3nn9sf26cfkqbx99vrrm0mpigz13ciavpa4w"))
 
-(define rust-tree-sitter-ocaml-0.24.2
-  (crate-source "tree-sitter-ocaml" "0.24.2"
-                "0h5nx24ffbkdswh7gv1qp5hfxfdz1wbq9i4ybxmzam9q5dcdn6bx"))
-
 (define rust-tree-sitter-ocaml-0.25.0
   (crate-source "tree-sitter-ocaml" "0.25.0"
                 "11bs2jwifjd7kdw1nxg1d3zn37fq4470bi4bw1rqzb3b8xsk550b"))
+
+(define rust-tree-sitter-ocaml-0.26.0
+  (crate-source "tree-sitter-ocaml" "0.26.0"
+                "1q36f1vddigw0d6bsw9dzkmabw2mrnvxmjddykhbrjybrh7v3ba3"))
 
 (define rust-tree-sitter-pascal-0.10.2
   (crate-source "tree-sitter-pascal" "0.10.2"
@@ -36504,9 +36508,9 @@ fn main() {
   (crate-source "tree-sitter-python" "0.25.0"
                 "072anxf7f3wn2jzpa1c8fnnskhwjjkd4qvzlc2zl1rsjjv9mzy3b"))
 
-(define rust-tree-sitter-python-orchard-0.4.2
-  (crate-source "tree-sitter-python-orchard" "0.4.2"
-                "1971z87b8jygps6bpqkdmbar4nc5jbjl7qq3qff4317jixnz22sp"))
+(define rust-tree-sitter-python-orchard-0.4.3
+  (crate-source "tree-sitter-python-orchard" "0.4.3"
+                "0w1sppb774v6scdp9xvk4qvszxf9vyh1ybza0a7lyjvfjs442fdq"))
 
 (define rust-tree-sitter-qmljs-0.3.0
   (crate-source "tree-sitter-qmljs" "0.3.0"
@@ -36534,6 +36538,10 @@ fn main() {
   (crate-source "tree-sitter-regex" "0.24.3"
                 "1hdh7aiic5afam94k1hksrwd31q7jm364vh2ssvs99b2qbw5c9ki"))
 
+(define rust-tree-sitter-requirements-0.6.1
+  (crate-source "tree-sitter-requirements" "0.6.1"
+                "1fmvv5hpr4zx5b30nkwm37b0y051g2bgvwyrjalp5jwmlr5hcagd"))
+
 (define rust-tree-sitter-ruby-0.23.1
   (crate-source "tree-sitter-ruby" "0.23.1"
                 "15cz4h1sfgf838r2pmf7vg9ahh0kwgkvvnjgbdbrrfzn9vm8815y"))
@@ -36550,10 +36558,6 @@ fn main() {
   (crate-source "tree-sitter-rust" "0.24.2"
                 "0i8f28d2gpckdx094pvfzb6by38j65sjriiab313whh7prymg7j3"))
 
-(define rust-tree-sitter-rust-orchard-0.14.0
-  (crate-source "tree-sitter-rust-orchard" "0.14.0"
-                "0nwsnn6lbz4zcdirp772g9rj57npm3fjkwfhhpkxi1di6qmkh3yz"))
-
 (define rust-tree-sitter-rust-orchard-0.16.11
   (crate-source "tree-sitter-rust-orchard" "0.16.11"
                 "05dmrcxdrfcjgd9mnchnlh4l96yva00ga0q7l3kmdjvyqj0pjji0"))
@@ -36561,10 +36565,6 @@ fn main() {
 (define rust-tree-sitter-rust-orchard-0.16.6
   (crate-source "tree-sitter-rust-orchard" "0.16.6"
                 "1hp4fibf1qf0r7kdngarlv4v67mxgknlrbmalygaxhfznh6xdb23"))
-
-(define rust-tree-sitter-scala-0.24.1
-  (crate-source "tree-sitter-scala" "0.24.1"
-                "0acjm7lq0rgca4avcg74l4lrymssrn26s73zqz8g3z5m5103akrv"))
 
 (define rust-tree-sitter-scala-0.25.0
   (crate-source "tree-sitter-scala" "0.25.0"
@@ -36577,6 +36577,10 @@ fn main() {
 (define rust-tree-sitter-scala-0.26.0
   (crate-source "tree-sitter-scala" "0.26.0"
                 "15wkcb46m379hqmrifr1jkz84ynamqmdahd7wr64fm9sy9zllnny"))
+
+(define rust-tree-sitter-scala-0.26.12
+  (crate-source "tree-sitter-scala" "0.26.12"
+                "00lqj79k4x7g8mn6jrpm3hy1ppgzsryx7as6zzx9kjd29slg8bqg"))
 
 (define rust-tree-sitter-scala-0.26.9
   (crate-source "tree-sitter-scala" "0.26.9"
@@ -36618,9 +36622,9 @@ fn main() {
   (crate-source "tree-sitter-swift" "0.7.4"
                 "1zaxvp4nfq942i37k11qgyjcdqkk18a7vc8d7qqrg8xgcijw1216"))
 
-(define rust-tree-sitter-systemverilog-0.2.1
-  (crate-source "tree-sitter-systemverilog" "0.2.1"
-                "0zsis23gf8k15nhg30bb2ivffghd2pn7lwqsafi6rfpi243npg3b"))
+(define rust-tree-sitter-systemverilog-0.4.1
+  (crate-source "tree-sitter-systemverilog" "0.4.1"
+                "1rlmgdq6iiwpwldgpgl7k66jgymry21afi6zbv5ils90zpbh57vx"))
 
 (define rust-tree-sitter-toml-ng-0.6.0
   (crate-source "tree-sitter-toml-ng" "0.6.0"
@@ -76038,176 +76042,191 @@ fn main() {
                     rust-zstd-safe-7.2.4
                     rust-zstd-sys-2.0.16+zstd.1.5.7))
  (mergiraf =>
-           (list rust-adler2-2.0.1
-                 rust-aho-corasick-1.1.4
-                 rust-android-system-properties-0.1.5
+           (list rust-aho-corasick-1.1.5
+                 rust-android-system-properties-0.1.6
                  rust-anstream-1.0.0
                  rust-anstyle-1.0.14
                  rust-anstyle-parse-1.0.0
                  rust-anstyle-query-1.1.5
                  rust-anstyle-wincon-3.0.11
-                 rust-anyhow-1.0.102
-                 rust-arbitrary-1.4.2
-                 rust-arrayvec-0.7.6
-                 rust-autocfg-1.5.0
-                 rust-bitflags-2.11.0
+                 rust-arrayvec-0.7.8
+                 rust-assert-cmd-2.2.2
+                 rust-autocfg-1.5.1
+                 rust-bitflags-2.13.2
                  rust-boxcar-0.2.14
-                 rust-bumpalo-3.20.2
+                 rust-bstr-1.13.1
+                 rust-bumpalo-3.20.3
                  rust-caplog-0.3.0
-                 rust-cc-1.2.58
-                 rust-cfg-if-1.0.4
-                 rust-chrono-0.4.44
-                 rust-clap-4.6.0
-                 rust-clap-builder-4.6.0
-                 rust-clap-derive-4.6.0
-                 rust-clap-lex-1.1.0
+                 rust-cc-1.11.1
+                 rust-cfg-if-1.0.5
+                 rust-chrono-0.4.45
+                 rust-clap-4.6.7
+                 rust-clap-builder-4.6.7
+                 rust-clap-derive-4.6.7
+                 rust-clap-lex-1.1.1
                  rust-colorchoice-1.0.5
-                 rust-console-0.16.3
+                 rust-console-0.16.6
                  rust-core-foundation-sys-0.8.7
-                 rust-crc32fast-1.5.0
-                 rust-derive-arbitrary-1.4.2
+                 rust-crc32fast-1.5.5
                  rust-derive-more-0.99.20
                  rust-derive-more-2.1.1
                  rust-derive-more-impl-2.1.1
+                 rust-diff-0.1.13
+                 rust-difflib-0.4.0
                  rust-diffy-imara-0.3.2
-                 rust-either-1.15.0
+                 rust-either-1.19.0
                  rust-encode-unicode-1.0.0
-                 rust-equivalent-1.0.2
+                 rust-equivalent-1.0.3
                  rust-errno-0.3.14
-                 rust-etcetera-0.10.0
-                 rust-fastrand-2.3.0
-                 rust-find-msvc-tools-0.1.9
+                 rust-etcetera-0.11.0
+                 rust-fastrand-2.5.0
+                 rust-find-msvc-tools-0.1.15
                  rust-fixedbitset-0.4.2
-                 rust-flate2-1.1.9
+                 rust-flate2-1.1.11
+                 rust-float-cmp-0.10.0
                  rust-foldhash-0.1.5
+                 rust-foldhash-0.2.0
+                 rust-futures-core-0.3.34
+                 rust-futures-task-0.3.34
+                 rust-futures-util-0.3.34
                  rust-getrandom-0.3.4
-                 rust-getrandom-0.4.2
-                 rust-glob-0.3.3
+                 rust-getrandom-0.4.3
+                 rust-glob-0.3.4
                  rust-hashbrown-0.12.3
                  rust-hashbrown-0.15.5
-                 rust-hashbrown-0.16.1
+                 rust-hashbrown-0.17.1
                  rust-heck-0.5.0
-                 rust-hermit-abi-0.5.2
-                 rust-home-0.5.12
+                 rust-hermit-abi-0.5.3
                  rust-iana-time-zone-0.1.65
                  rust-iana-time-zone-haiku-0.1.2
-                 rust-id-arena-2.3.0
                  rust-imara-diff-0.1.8
                  rust-indexmap-1.9.3
-                 rust-indexmap-2.13.0
-                 rust-insta-1.47.2
+                 rust-indexmap-2.14.2
+                 rust-insta-1.49.0
                  rust-integer-sqrt-0.1.5
                  rust-is-terminal-0.4.17
                  rust-is-terminal-polyfill-1.70.2
                  rust-itertools-0.10.5
-                 rust-itertools-0.14.0
-                 rust-itoa-1.0.18
-                 rust-js-sys-0.3.94
-                 rust-lazy-static-1.5.0
-                 rust-leb128fmt-0.1.0
-                 rust-libc-0.2.184
+                 rust-itertools-0.15.0
+                 rust-itoa-1.0.19
+                 rust-js-sys-0.3.107
+                 rust-lazy-static-1.5.1
+                 rust-libc-0.2.191
                  rust-linux-raw-sys-0.12.1
-                 rust-log-0.4.29
-                 rust-memchr-2.8.0
-                 rust-miniz-oxide-0.8.9
-                 rust-nonempty-collections-1.3.0
+                 rust-log-0.4.35
+                 rust-memchr-2.8.3
+                 rust-nonempty-collections-1.4.0
+                 rust-normalize-line-endings-0.3.0
                  rust-nu-ansi-term-0.50.3
                  rust-num-traits-0.2.19
                  rust-once-cell-1.21.4
                  rust-once-cell-polyfill-1.70.2
-                 rust-oneshot-0.1.13
+                 rust-oneshot-0.2.1
                  rust-pathfinding-3.0.14
+                 rust-pin-project-lite-0.2.17
                  rust-ppv-lite86-0.2.21
-                 rust-prettyplease-0.2.37
-                 rust-proc-macro2-1.0.106
-                 rust-quote-1.0.45
+                 rust-predicates-3.1.4
+                 rust-predicates-core-1.0.10
+                 rust-predicates-tree-1.0.13
+                 rust-pretty-assertions-1.4.1
+                 rust-proc-macro2-1.0.107
+                 rust-quote-1.0.47
                  rust-r-efi-5.3.0
                  rust-r-efi-6.0.0
-                 rust-rand-0.9.2
+                 rust-rand-0.9.5
                  rust-rand-chacha-0.9.0
                  rust-rand-core-0.9.5
-                 rust-regex-1.12.3
-                 rust-regex-automata-0.4.14
-                 rust-regex-syntax-0.8.10
+                 rust-regex-1.13.1
+                 rust-regex-automata-0.4.18
+                 rust-regex-syntax-0.8.11
                  rust-relative-path-1.9.3
-                 rust-rstest-0.26.1
-                 rust-rstest-macros-0.26.1
+                 rust-rstest-0.27.0
+                 rust-rstest-macros-0.27.0
                  rust-rustc-hash-1.1.0
-                 rust-rustc-hash-2.1.2
+                 rust-rustc-hash-2.1.3
                  rust-rustc-version-0.4.1
-                 rust-rustix-1.1.4
-                 rust-rustversion-1.0.22
-                 rust-semver-1.0.27
-                 rust-serde-1.0.228
-                 rust-serde-core-1.0.228
-                 rust-serde-derive-1.0.228
-                 rust-serde-json-1.0.149
-                 rust-shlex-1.3.0
-                 rust-simd-adler32-0.3.9
+                 rust-rustix-1.1.6
+                 rust-rustversion-1.0.23
+                 rust-semver-1.0.28
+                 rust-serde-1.0.229
+                 rust-serde-core-1.0.229
+                 rust-serde-derive-1.0.229
+                 rust-serde-json-1.0.154
+                 rust-shlex-2.0.1
+                 rust-simd-adler32-0.3.10
                  rust-similar-2.7.0
+                 rust-slab-0.4.12
                  rust-stderrlog-0.6.0
                  rust-streaming-iterator-0.1.9
                  rust-strsim-0.11.1
-                 rust-syn-2.0.117
+                 rust-syn-2.0.119
+                 rust-syn-3.0.10
                  rust-tempfile-3.27.0
                  rust-termcolor-1.1.3
+                 rust-termtree-0.5.1
                  rust-thiserror-1.0.69
-                 rust-thiserror-2.0.18
+                 rust-thiserror-2.0.21
                  rust-thiserror-impl-1.0.69
-                 rust-thiserror-impl-2.0.18
-                 rust-thread-local-1.1.9
+                 rust-thiserror-impl-2.0.21
+                 rust-thread-local-1.1.10
                  rust-tree-edit-distance-0.4.0
-                 rust-tree-sitter-0.25.10
-                 rust-tree-sitter-c-0.24.1
-                 rust-tree-sitter-c-sharp-0.23.1
-                 rust-tree-sitter-cmake-0.7.1
+                 rust-tree-sitter-0.26.13
+                 rust-tree-sitter-bash-0.25.1
+                 rust-tree-sitter-c-0.24.2
+                 rust-tree-sitter-c-sharp-0.23.5
+                 rust-tree-sitter-cmake-0.7.6
                  rust-tree-sitter-cpp-0.23.4
-                 rust-tree-sitter-dart-orchard-0.3.2
-                 rust-tree-sitter-devicetree-0.14.1
+                 rust-tree-sitter-dart-orchard-0.7.1
+                 rust-tree-sitter-devicetree-0.15.0
                  rust-tree-sitter-elixir-0.3.5
+                 rust-tree-sitter-erlang-0.20.0
+                 rust-tree-sitter-fortran-0.6.0
+                 rust-tree-sitter-gleam-1.0.0
                  rust-tree-sitter-go-0.25.0
-                 rust-tree-sitter-gomod-orchard-0.5.3
-                 rust-tree-sitter-gosum-orchard-0.3.2
+                 rust-tree-sitter-gomod-orchard-0.5.8
+                 rust-tree-sitter-gosum-orchard-0.3.4
                  rust-tree-sitter-haskell-0.23.1
                  rust-tree-sitter-hcl-1.1.0
                  rust-tree-sitter-html-0.23.2
                  rust-tree-sitter-ini-1.4.0
-                 rust-tree-sitter-java-orchard-0.3.1
+                 rust-tree-sitter-java-orchard-0.5.23
                  rust-tree-sitter-javascript-0.25.0
                  rust-tree-sitter-json-0.24.8
                  rust-tree-sitter-kotlin-ng-1.1.0
-                 rust-tree-sitter-language-0.1.7
-                 rust-tree-sitter-lua-0.2.0
+                 rust-tree-sitter-language-0.1.9
+                 rust-tree-sitter-lua-0.5.0
                  rust-tree-sitter-make-1.1.1
-                 rust-tree-sitter-md-0.5.3
+                 rust-tree-sitter-matlab-1.3.3
+                 rust-tree-sitter-md-0.5.4
                  rust-tree-sitter-nix-0.3.0
-                 rust-tree-sitter-ocaml-0.24.2
+                 rust-tree-sitter-ocaml-0.26.0
                  rust-tree-sitter-php-0.24.2
                  rust-tree-sitter-properties-0.3.0
-                 rust-tree-sitter-python-orchard-0.4.2
+                 rust-tree-sitter-python-orchard-0.4.3
+                 rust-tree-sitter-qmljs-0.3.1
+                 rust-tree-sitter-r-1.3.0
+                 rust-tree-sitter-requirements-0.6.1
                  rust-tree-sitter-ruby-0.23.1
-                 rust-tree-sitter-rust-orchard-0.14.0
-                 rust-tree-sitter-scala-0.24.1
+                 rust-tree-sitter-rust-orchard-0.16.11
+                 rust-tree-sitter-scala-0.26.12
+                 rust-tree-sitter-scheme-0.24.7
                  rust-tree-sitter-solidity-1.2.13
                  rust-tree-sitter-starlark-1.3.0
-                 rust-tree-sitter-systemverilog-0.2.1
+                 rust-tree-sitter-systemverilog-0.4.1
                  rust-tree-sitter-toml-ng-0.7.0
                  rust-tree-sitter-typescript-0.23.2
                  rust-tree-sitter-xml-0.7.0
                  rust-tree-sitter-yaml-0.7.2
                  rust-typed-arena-2.0.2
-                 rust-unicode-ident-1.0.24
-                 rust-unicode-xid-0.2.6
+                 rust-typed-path-0.12.4
+                 rust-unicode-ident-1.0.27
                  rust-utf8parse-0.2.2
-                 rust-wasip2-1.0.2+wasi-0.2.9
-                 rust-wasip3-0.4.0+wasi-0.3.0-rc-2026-01-06
-                 rust-wasm-bindgen-0.2.117
-                 rust-wasm-bindgen-macro-0.2.117
-                 rust-wasm-bindgen-macro-support-0.2.117
-                 rust-wasm-bindgen-shared-0.2.117
-                 rust-wasm-encoder-0.244.0
-                 rust-wasm-metadata-0.244.0
-                 rust-wasmparser-0.244.0
+                 rust-wait-timeout-0.2.1
+                 rust-wasip2-1.0.4+wasi-0.2.12
+                 rust-wasm-bindgen-0.2.130
+                 rust-wasm-bindgen-macro-0.2.130
+                 rust-wasm-bindgen-macro-support-0.2.130
+                 rust-wasm-bindgen-shared-0.2.130
                  rust-winapi-util-0.1.11
                  rust-windows-core-0.62.2
                  rust-windows-implement-0.60.2
@@ -76215,29 +76234,15 @@ fn main() {
                  rust-windows-link-0.2.1
                  rust-windows-result-0.4.1
                  rust-windows-strings-0.5.1
-                 rust-windows-sys-0.59.0
                  rust-windows-sys-0.61.2
-                 rust-windows-targets-0.52.6
-                 rust-windows-aarch64-gnullvm-0.52.6
-                 rust-windows-aarch64-msvc-0.52.6
-                 rust-windows-i686-gnu-0.52.6
-                 rust-windows-i686-gnullvm-0.52.6
-                 rust-windows-i686-msvc-0.52.6
-                 rust-windows-x86-64-gnu-0.52.6
-                 rust-windows-x86-64-gnullvm-0.52.6
-                 rust-windows-x86-64-msvc-0.52.6
-                 rust-wit-bindgen-0.51.0
-                 rust-wit-bindgen-core-0.51.0
-                 rust-wit-bindgen-rust-0.51.0
-                 rust-wit-bindgen-rust-macro-0.51.0
-                 rust-wit-component-0.244.0
-                 rust-wit-parser-0.244.0
-                 rust-zerocopy-0.8.48
-                 rust-zerocopy-derive-0.8.48
-                 rust-zip-6.0.0
-                 rust-zlib-rs-0.6.3
-                 rust-zmij-1.0.21
-                 rust-zopfli-0.8.3))
+                 rust-wit-bindgen-0.57.1
+                 rust-yansi-1.0.1
+                 rust-zerocopy-0.8.63
+                 rust-zerocopy-derive-0.8.63
+                 rust-zip-8.6.0
+                 rust-zlib-rs-0.6.8
+                 rust-zmij-1.0.23
+                 rust-zopfli-0.8.4))
  (mesa =>
        (list rust-bitflags-2.9.1
              rust-cfg-if-1.0.0
