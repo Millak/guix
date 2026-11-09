@@ -5410,8 +5410,8 @@ laptops and mobile devices.")
 
 (define-public font-teko
   (let ((version "0")
-        (commit "2bf909d46b0061a5e3e16e8acc4fef670e36a8f2")
-        (revision "0"))
+        (commit "77ced857c8ebe9a98c2ad81530d02af2df43979d")
+        (revision "1"))
     (package
       (name "font-teko")
       (version (git-version version revision commit))
@@ -5424,7 +5424,7 @@ laptops and mobile devices.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "18gwb3k4a3a2406pxpxh9zcziggajl8wwki4730xsh1m066f6gk9"))))
+           "155al44w675vl9izwhvdy16808cmhhnnznh4n73vbyy3z8sxs55v"))))
       (build-system font-build-system)
       (home-page "https://github.com/googlefonts/teko")
       (synopsis "Devanagari and Latin scripts typeface")
