@@ -5160,7 +5160,7 @@ prevalent typefaces in Traditional Chinese regions.")))
 (define-public font-spleen
   (package
     (name "font-spleen")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5168,7 +5168,7 @@ prevalent typefaces in Traditional Chinese regions.")))
                     version "/spleen-" version ".tar.gz"))
               (sha256
                (base32
-                "0brp1kyp6i5q9zk3hpj5ngxh4js0aw2m6d4yrzxmif3f39pwaiwb"))))
+                "12cssq47m0kx84ik9w2bcwplfbl7gha9fbrbhs617ljnddf94hpc"))))
     (build-system font-build-system)
     (outputs '("out" ;OTB
                "bdf" "otf" "pcf" "psf"))
