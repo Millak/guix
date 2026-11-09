@@ -538,7 +538,7 @@ modifying encrypted directories.")
 (define-public fscryptctl
   (package
     (name "fscryptctl")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -547,7 +547,7 @@ modifying encrypted directories.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15zbmh9jlhqbai7lcaqyvymrjjcdi0l9zli9j51skwap59sq9jz6"))))
+        (base32 "1bdlg7k1fr2w7wj3vb066x1wr7irs9v0srxm19vfm6c7wa5269ri"))))
     (build-system gnu-build-system)
     (arguments
      (list
