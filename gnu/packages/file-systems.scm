@@ -2221,7 +2221,7 @@ while working with large number of files.")
 (define-public squashfuse
   (package
     (name "squashfuse")
-    (version "0.6.1")
+    (version "0.6.5")
     (source
      (origin
        (method git-fetch)
@@ -2230,7 +2230,7 @@ while working with large number of files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16ds2xlk6hb5cggi6di8s0aalir3mrx7rk24rw5daad1xw4dbq0y"))))
+        (base32 "0v4d4jblf32c9j9rsyx88gx9finjyka7y8cqpsa7n7c5gz2s5vaj"))))
     (build-system gnu-build-system)
     (arguments
      (list
