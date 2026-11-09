@@ -14,6 +14,7 @@
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -537,6 +538,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
+    (replacement gst-plugins-base/fixed)
     (version "1.28.1")
     (source
      (origin
@@ -645,6 +647,21 @@ This package provides the core library and elements.")
     (description "This package provides an essential exemplary set of plug-ins
 for the GStreamer multimedia library.")
     (license license:lgpl2.0+)))
+
+(define gst-plugins-base/fixed
+  (package
+    (inherit gst-plugins-base)
+    (name "gst-plugins-base")
+    (version "1.28.9")
+    (source
+     (origin
+       (inherit (package-source gst-plugins-base))
+       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
+                          name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1hfxgf29wklvqq08nbijrqmyb7rc0cn9dsy0cgvsxri0nmladzf1"))
+       (patches (list))))))
 
 (define-public gst-plugins-good
   (package

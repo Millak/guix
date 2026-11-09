@@ -1,0 +1,41 @@
+From 3f34f35f07de9aedc22c314b8faa1d158b85fba8 Mon Sep 17 00:00:00 2001
+From: Edward Hervey <edward@centricular.com>
+Date: Tue, 13 Oct 2026 10:44:15 +0200
+Subject: [PATCH] decodebin3: fail gracefully when a stream has no collection
+
+mq_slot_handle_stream_start() asserted that every stream-start matched
+a known stream collection, so an upstream publishing a pad whose
+stream-collection does not cover the stream-start it then emits turned
+a stream problem into a process abort.
+
+Post a stream error naming the stream id and the pad instead, and return
+without touching the output collection. Selection state is left as it
+was so the remaining inputs keep working.
+
+Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12700>
+---
+ gst/playback/gstdecodebin3.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/gst/playback/gstdecodebin3.c b/gst/playback/gstdecodebin3.c
+index 7286570d133..b199adfe66a 100644
+--- a/gst/playback/gstdecodebin3.c
++++ b/gst/playback/gstdecodebin3.c
+@@ -3378,7 +3378,13 @@ mq_slot_handle_stream_start (MultiQueueSlot * slot, GstEvent * stream_event)
+ 
+   collection =
+       find_collection_for_stream (dbin, (gchar *) slot->active_stream_id);
+-  g_assert (collection);
++  if (G_UNLIKELY (collection == NULL)) {
++    GST_ELEMENT_ERROR (dbin, STREAM, FAILED,
++        ("Stream %s is not part of any known stream collection",
++            slot->active_stream_id),
++        ("pad %s:%s", GST_DEBUG_PAD_NAME (slot->src_pad)));
++    goto beach;
++  }
+ 
+   /* check if all streams are present for that collection. We do it now since we
+    * might just have a single stream in the collection */
+-- 
+GitLab
+

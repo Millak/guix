@@ -1,0 +1,51 @@
+From 8aec614e5c05599818cf3689a2139d85bce990dc Mon Sep 17 00:00:00 2001
+From: Edward Hervey <edward@centricular.com>
+Date: Tue, 13 Oct 2026 09:57:39 +0200
+Subject: [PATCH] parsebin: wait for the parser to publish its stream-id before
+ exposing
+
+A chain was declared complete as soon as a parser was plugged, since
+chain->parsed is set at plug time. Parsers create their stream-id
+lazily, on the first data they push, so the exposed pad published a
+stream-collection built from an earlier stream-start and then emitted a
+different one. decodebin3 could not find a collection covering the
+stream and aborted in mq_slot_handle_stream_start().
+
+Require the endpad target to have published a stream-id before rule (c)
+declares the chain complete. Exposure then happens from the block probe
+on that target, once it has produced events, so the collection and the
+stream-start agree by construction.
+
+Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12700>
+---
+ .../gst-plugins-base/gst/playback/gstparsebin.c    | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/gst/playback/gstparsebin.c b/gst/playback/gstparsebin.c
+index 535f91a8bf9..3d073932297 100644
+--- a/gst/playback/gstparsebin.c
++++ b/gst/playback/gstparsebin.c
+@@ -3148,9 +3148,17 @@ gst_parse_chain_is_complete (GstParseChain * chain)
+     }
+   }
+ 
+-  if (chain->parsed) {
+-    complete = TRUE;
+-    goto out;
++  if (chain->parsed && chain->endpad) {
++    /* Plugging a parser is not enough to expose: the parser creates its
++     * stream-id lazily, on the first data it pushes, so a pad exposed here
++     * would publish a stream-collection built from an earlier stream-start
++     * and then emit a different one. The ghost mirrors its target's sticky
++     * events, so wait until the pad we are about to publish knows its own
++     * identity; the block probe on the target triggers exposure once it does. */
++    gchar *sid = gst_pad_get_stream_id (GST_PAD (chain->endpad));
++
++    complete = (sid != NULL);
++    g_free (sid);
+   }
+ 
+ out:
+-- 
+GitLab
+
