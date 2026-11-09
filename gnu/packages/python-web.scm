@@ -5403,6 +5403,161 @@ recursively from Google Drive with option to filter them by file
 formats (PDF/XML/CSV).")
     (license license:expat)))
 
+(define-public python-genshi
+  (package
+    (name "python-genshi")
+    (version "0.7.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edgewall/genshi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dmf0ggp0s3371jv483kjriw9jscawxcik6q70a0wqjdfh5383i6"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-six))
+    (home-page "https://genshi.edgewall.org/")
+    (synopsis "Toolkit for generation of output for the web")
+    (description "Genshi is a Python library that provides an integrated set
+of components for parsing, generating, and processing HTML, XML or other
+textual content for output generation on the web.")
+    (license license:bsd-3)))
+
+(define-public python-gevent-websocket
+  (package
+    (name "python-gevent-websocket")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gevent-websocket" version))
+       (sha256
+        (base32 "1c2zv2rahp1gil3cj66hfsqgy0n35hz9fny3ywhr2319d0lz7bky"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-gevent))
+    (home-page "https://gitlab.com/noppo/gevent-websocket")
+    (synopsis "Websocket handler for the gevent pywsgi server")
+    (description
+     "Websocket handler for the gevent pywsgi server, a Python network
+library.
+
+Features include:
+@itemize
+@item integration on both socket level or using an abstract interface
+@item RPC and PubSub framework using @acronym{WebSocket Application Messaging
+Protocol, WAMP}
+@item easily extendible using a simple WebSocket protocol plugin API
+@end itemize")
+    (license license:asl2.0)))
+
+(define-public python-geventhttpclient
+  (package
+    (name "python-geventhttpclient")
+    (version "2.3.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/geventhttpclient/geventhttpclient")
+                    (commit version)
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1diq6n9sr92rsqbpxlbhbn1d22hrlzp6swykz9bfzh7sxpywa6j8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Disable network tests.
+      '(list "-k"
+             (string-append "not test_client_simple"
+                            " and not test_client_ssl"
+                            " and not test_client_with_default_headers"
+                            " and not test_client_without_leading_slash"
+                            " and not test_download"
+                            " and not test_fail_invalid_ca_certificate"
+                            " and not test_httpbin_multipart"
+                            " and not test_multi_queries_greenlet_safe"
+                            " and not test_no_form_encode_header"
+                            " and not test_no_form_encoded_header"
+                            " and not test_request_with_headers"
+                            " and not test_response_context_manager"
+                            " and not test_urllib_request"))))
+    (native-inputs (list nss-certs-for-test
+                         python-dpkt python-pytest python-requests
+                         python-setuptools python-wheel))
+    (propagated-inputs (list python-brotli python-certifi python-gevent
+                             python-urllib3))
+    (home-page "https://github.com/geventhttpclient/geventhttpclient")
+    (synopsis "HTTP client library for gevent")
+    (description "@code{python-geventhttpclient} is a high performance,
+concurrent HTTP client library for python using @code{gevent}.")
+    (license license:expat)))
+
+(define-public python-gitlab
+  (package
+    (name "python-gitlab")
+    (version "7.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-gitlab/python-gitlab")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rf1hz5n724f8sfc7g3fzfz96jsv9y145pi6gc8qscsjq3z4vi37"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/unit/test_graphql.py"
+              ;; XXX: Missing helper script.
+              "-k" "not test_data_from_helper" "tests/unit")))
+    (native-inputs
+     (list python-anyio
+           python-pytest
+           python-responses
+           python-setuptools))
+    (propagated-inputs (list python-requests python-requests-toolbelt))
+    (home-page "https://github.com/python-gitlab/python-gitlab")
+    (synopsis "Interact with GitLab API")
+    (description "This package provides an extended library for interacting
+with GitLab instances through their API.")
+    (license license:lgpl3+)))
+
+(define-public python-giturlparse
+  (package
+    (name "python-giturlparse")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nephila/giturlparse")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fdbxp176p17sn5xc1418mz2vk00hlcsd5qmi2fdcfphqal6raan"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/nephila/giturlparse")
+    (synopsis "Git URL parsing module")
+    (description
+     "This package provides a git URL parsing module which supports parsing
+and rewriting of remote git URLs from various hosting providers.")
+    (license license:asl2.0)))
+
 (define-public python-globus-sdk
   (package
     (name "python-globus-sdk")
@@ -5440,6 +5595,413 @@ formats (PDF/XML/CSV).")
      "This package provides a SDK for convenient Pythonic interface to
 @url{https://www.globus.org/, Globus} APIs.")
     (license license:asl2.0)))
+
+(define-public python-google
+  (package
+    (name "python-google")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google" version))
+       (sha256
+        (base32 "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;There are no tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-beautifulsoup4))
+    (home-page "https://breakingcode.wordpress.com/")
+    (synopsis "Python bindings to the Google search engine")
+    (description
+     "This package provides Python bindings for using the Google search
+engine.  Its module is called @code{googlesearch}.")
+    (license license:bsd-3)))
+
+(define-public python-google-api-client
+  (package
+    (name "python-google-api-client")
+    (version "2.198.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/google-api-python-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1adjr3ylp8bwbvywxm11hs4y913pvaga0dn6nwmb3622y62zxfhg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         "-k"
+         (string-join
+          (list
+           ;; XXX: Deprecated behavior.
+           "not test_client_options_universe_configured_with_mtls"
+           "test_universe_env_var_configured_with_mtls"
+           ;; XXX: Requires CA certificates.
+           "test_credentials_and_credentials_file_mutually_exclusive")
+          " and not ")
+         "tests")))
+    (native-inputs
+     (list python-parameterized
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-google-api-core
+           python-google-auth
+           python-google-auth-httplib2
+           python-httplib2
+           python-pyparsing
+           python-uritemplate-3))
+    (home-page "https://github.com/google/google-api-python-client")
+    (synopsis "Core Python library for accessing Google APIs")
+    (description "Python client library for Google's discovery based APIs")
+    (license license:asl2.0)))
+
+(define-public python-google-api-core
+  (package
+    (name "python-google-api-core")
+    (version "2.29.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-api-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ahs8abyl7719paarlnspqp8yds149w7vm3w7zz6f7q04sscd862"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: DeprecationWarning: datetime.datetime.utcfromtimestamp() is
+      ;; deprecated and scheduled for removal in a future version. Use
+      ;; timezone-aware objects to represent datetimes in UTC:
+      ;; datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+      #~(list "-W" "ignore::DeprecationWarning")))
+    (propagated-inputs
+     (list python-google-auth
+           python-googleapis-common-protos
+           python-protobuf
+           python-proto-plus
+           python-requests))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-setuptools))
+    (home-page "https://github.com/googleapis/python-api-core")
+    (synopsis "Google API client core library")
+    (description
+     "This library defines common helpers used by all Google API clients.")
+    (license license:asl2.0)))
+
+(define-public python-google-auth
+  (package
+    (name "python-google-auth")
+    (version "2.56.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google_auth" version))
+       (sha256
+        (base32 "0lx5cw49lfjqvd9vx1vlslrxyh9q0xd6d46np5a2dab9nlqa03zr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-aiohttp
+           python-cryptography
+           python-pyasn1-modules
+           python-requests
+           python-rsa
+           python-urllib3))
+    (native-inputs
+     (list nss-certs-for-test
+           python-aiohttp
+           python-aioresponses
+           python-flask
+           python-freezegun
+           python-grpcio
+           python-oauth2client
+           python-packaging
+           python-pyjwt
+           python-pyopenssl
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-localserver
+           python-pyu2f
+           python-requests
+           python-responses
+           python-rsa
+           python-setuptools
+           python-urllib3))
+    (home-page "https://github.com/googleapis/google-auth-library-python")
+    (synopsis "Google Authentication Library")
+    (description "This library simplifies using Google's various
+server-to-server authentication mechanisms to access Google APIs.")
+    (license license:asl2.0)))
+
+(define-public python-google-auth-httplib2
+  (package
+    (name "python-google-auth-httplib2")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "google_auth_httplib2" version))
+              (sha256
+               (base32 "0dgdzy2ps3z71dc2b4s1fhmyx094nq0sg75sagav995p0ji31c6m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-google-auth python-httplib2))
+    (native-inputs
+     (list python-pytest
+           python-pyparsing
+           python-pytest-localserver
+           python-flask
+           python-setuptools))
+    (home-page "https://github.com/googleapis/google-cloud-python")
+    (synopsis "Google Authentication Library: httplib2 transport")
+    (description "This package provides a Google Authentication Library plugin
+for httplib2 transport.")
+    (license license:asl2.0)))
+
+(define-public python-google-auth-oauthlib
+  (package
+    (name "python-google-auth-oauthlib")
+    (version "1.2.4")
+    (home-page
+     "https://github.com/GoogleCloudPlatform/\
+google-auth-library-python-oauthlib")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j25kdbs2j1x23pdv4n49xl9pz2ppn55vsav65ir796kq4lf9nca"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-google-auth python-requests-oauthlib))
+    (native-inputs
+     (list python-click python-mock python-pytest python-setuptools))
+    (synopsis "Google Authentication Library: oauthlib")
+    (description "This package provides a Google Authentication Library plugin
+with oauthlib.")
+    (license license:asl2.0)))
+
+(define-public python-google-cloud-core
+  (package
+    (name "python-google-cloud-core")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-cloud-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d7li74cakgl9vghxfir9nxwy36980alvxwgwjg0zyla3hgj07cq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: DeprecationWarning: datetime.datetime.utcfromtimestamp() is
+      ;; deprecated and scheduled for removal in a future version. Use
+      ;; timezone-aware objects to represent datetimes in UTC:
+      ;; datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+      #~(list "-W" "ignore::DeprecationWarning")))
+    (propagated-inputs (list python-google-api-core python-google-auth))
+    (native-inputs
+     (list python-grpcio
+           python-grpcio-status
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/googleapis/python-cloud-core")
+    (synopsis "Google Cloud API client core library")
+    (description
+     "This library defines common helpers (e.g. base @code{Client} classes)
+used by all of the @code{google-cloud-*} packages.")
+    (license license:asl2.0)))
+
+(define-public python-google-cloud-storage
+  (package
+    (name "python-google-cloud-storage")
+    (version "2.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-storage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19w10v2j4ciwlf8j2ylm77f8z1b0kqzg8lkh9rvh2swv1zrhydpj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Missing test_utils.retry.
+         "--ignore=tests/system/"
+         ;; Needs docker.
+         "--ignore=tests/conformance/"
+         ;; XXX: Deprecations.
+         "-k" (string-join
+               (list "not test_set_api_request_attr"
+                     "test_create_bucket_w_custom_endpoint"
+                     "test_ctor_w_api_endpoint_override"
+                     "test_ctor_w_custom_endpoint_use_auth"
+                     "test_list_buckets_w_custom_endpoint")
+               " and not ")
+         "tests")))
+    (native-inputs
+     (list python-googleapis-common-protos
+           python-mock
+           python-pytest
+           python-test-utils
+           python-setuptools))
+    (propagated-inputs
+     (list python-google-api-core
+           python-google-auth
+           python-google-cloud-core
+           python-google-resumable-media
+           python-protobuf
+           python-requests))
+    (home-page "https://github.com/googleapis/python-storage")
+    (synopsis "Google Cloud Storage API client library")
+    (description
+     "Google Cloud Storage allows you to store data on Google infrastructure,
+and it can be used to distribute large data objects to users via direct
+download.  This package provides a Google Cloud Storage API client library for
+Python.")
+    (license license:asl2.0)))
+
+(define-public python-google-resumable-media
+  (package
+    (name "python-google-resumable-media")
+    (version "2.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url
+               "https://github.com/googleapis/google-resumable-media-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ndida5yr06bal0m09yri80bvf8x7yy690b14ywnxl4ixi8rlh6s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Missing test_utils.retry.
+         "--ignore-glob=tests*/system/"
+         ;; XXX: md5_hash is not mock.sentinel.md5_hash
+         "-k" (string-join
+               (list "not test_brotli"
+                     "test_constructor"
+                     "test_decompress")
+               " and not "))))
+    (propagated-inputs (list python-google-crc32c))
+    (native-inputs
+     (list python-google-auth
+           python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-test-utils))
+    (home-page "https://github.com/googleapis/google-resumable-media-python")
+    (synopsis "Utilities for Google Media Downloads and Resumable Uploads")
+    (description "This package provides utilities for Google Media Downloads
+and Resumable Uploads.")
+    (license license:asl2.0)))
+
+(define-public python-googleapis-common-protos
+  (package
+    (name "python-googleapis-common-protos")
+    (version "1.66.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-api-common-protos")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fb7bcmjngmwwhqrldslli6r5z3s6r2kj4ywjmdjj92d1i51c29r"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-protobuf))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/googleapis/python-api-common-protos")
+    (synopsis "Common protobufs used in Google APIs")
+    (description
+     "This package contains Python classes generated from the common protos in
+the @code{googleapis/api-common-protos} repository.")
+    (license license:asl2.0)))
+
+(define-public python-grequests
+  (let ((commit "60f70e99e942a2df378b4e4f6202dcf862754c2d")
+        (revision "0"))
+    (package
+      (name "python-grequests")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/kennethreitz/grequests")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0132yv1rr4pmrmwasrnasqbnd80pi6rgy52608731p7lidkmxz9a"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; XXX: Most failing tests seem to be caused by network access,
+        ;; but there is no easy/flag way to disable tests selectively.
+        #:tests? #f
+        #:test-backend #~'unittest
+        #:test-flags #~(list "tests.py")))
+      (propagated-inputs (list python-gevent python-requests))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/kennethreitz/grequests")
+      (synopsis "Python library for asynchronous HTTP requests")
+      (description
+       "GRequests is a Python library that allows you to use @code{Requests}
+with @code{Gevent} to make asynchronous HTTP Requests easily.")
+      (license license:bsd-2))))
+
+(define-public python-grid5000
+  (package
+    (name "python-grid5000")
+    (version "1.2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/msimonin/python-grid5000")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               "0px5dr6kn7i5dyy4g42vqap1zpkc4hdvg7prrxdkkl57lfhz5w61")))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests python-ipython python-pyyaml))
+    (home-page "https://pypi.org/project/python-grid5000/")
+    (synopsis "Grid5000 python client")
+    (description
+     "python-grid5000 is a python package wrapping the Grid5000 REST API.
+You can use it as a library in your python project or you can explore the
+Grid5000 resources interactively using the embedded shell.")
+    (license license:gpl3+)))
 
 (define-public python-guardpost
   (package
@@ -5487,6 +6049,31 @@ Its features include
 @item Built-in support for JSON Web Tokens (JWTs) authentication.
 @end itemize")
     (license license:expat)))
+
+(define-public python-gwebsockets
+  (package
+    (name "python-gwebsockets")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sugarlabs/gwebsockets")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w422yz0qdix5xb6aqrrci1s1hy4whncspwb03m9ankqww0s1yv2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pygobject))
+    (home-page "https://github.com/sugarlabs/gwebsockets")
+    (synopsis "GLib based websockets server")
+    (description
+     "This package provides a websocket server written in Python.  It uses GIO
+for network communication and hence it easily integrates with the GLib
+mainloop.")
+    (license license:asl2.0)))
 
 (define-public python-habanero
   (package
@@ -10866,140 +11453,6 @@ WSGI.")
 library.")
     (license license:asl2.0)))
 
-(define-public python-grequests
-  (let ((commit "60f70e99e942a2df378b4e4f6202dcf862754c2d")
-        (revision "0"))
-    (package
-      (name "python-grequests")
-      (version (git-version "0.7.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/kennethreitz/grequests")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0132yv1rr4pmrmwasrnasqbnd80pi6rgy52608731p7lidkmxz9a"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; XXX: Most failing tests seem to be caused by network access,
-        ;; but there is no easy/flag way to disable tests selectively.
-        #:tests? #f
-        #:test-backend #~'unittest
-        #:test-flags #~(list "tests.py")))
-      (propagated-inputs (list python-gevent python-requests))
-      (native-inputs (list python-setuptools))
-      (home-page "https://github.com/kennethreitz/grequests")
-      (synopsis "Python library for asynchronous HTTP requests")
-      (description
-       "GRequests is a Python library that allows you to use @code{Requests}
-with @code{Gevent} to make asynchronous HTTP Requests easily.")
-      (license license:bsd-2))))
-
-(define-public python-gwebsockets
-  (package
-    (name "python-gwebsockets")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sugarlabs/gwebsockets")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0w422yz0qdix5xb6aqrrci1s1hy4whncspwb03m9ankqww0s1yv2"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; No tests upstream.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-pygobject))
-    (home-page "https://github.com/sugarlabs/gwebsockets")
-    (synopsis "GLib based websockets server")
-    (description
-     "This package provides a websocket server written in Python.  It uses GIO
-for network communication and hence it easily integrates with the GLib
-mainloop.")
-    (license license:asl2.0)))
-
-(define-public python-geventhttpclient
-  (package
-    (name "python-geventhttpclient")
-    (version "2.3.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/geventhttpclient/geventhttpclient")
-                    (commit version)
-                    (recursive? #true)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1diq6n9sr92rsqbpxlbhbn1d22hrlzp6swykz9bfzh7sxpywa6j8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Disable network tests.
-      '(list "-k"
-             (string-append "not test_client_simple"
-                            " and not test_client_ssl"
-                            " and not test_client_with_default_headers"
-                            " and not test_client_without_leading_slash"
-                            " and not test_download"
-                            " and not test_fail_invalid_ca_certificate"
-                            " and not test_httpbin_multipart"
-                            " and not test_multi_queries_greenlet_safe"
-                            " and not test_no_form_encode_header"
-                            " and not test_no_form_encoded_header"
-                            " and not test_request_with_headers"
-                            " and not test_response_context_manager"
-                            " and not test_urllib_request"))))
-    (native-inputs (list nss-certs-for-test
-                         python-dpkt python-pytest python-requests
-                         python-setuptools python-wheel))
-    (propagated-inputs (list python-brotli python-certifi python-gevent
-                             python-urllib3))
-    (home-page "https://github.com/geventhttpclient/geventhttpclient")
-    (synopsis "HTTP client library for gevent")
-    (description "@code{python-geventhttpclient} is a high performance,
-concurrent HTTP client library for python using @code{gevent}.")
-    (license license:expat)))
-
-(define-public python-gevent-websocket
-  (package
-    (name "python-gevent-websocket")
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gevent-websocket" version))
-       (sha256
-        (base32 "1c2zv2rahp1gil3cj66hfsqgy0n35hz9fny3ywhr2319d0lz7bky"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; no tests in PyPI or git
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-gevent))
-    (home-page "https://gitlab.com/noppo/gevent-websocket")
-    (synopsis "Websocket handler for the gevent pywsgi server")
-    (description
-     "Websocket handler for the gevent pywsgi server, a Python network
-library.
-
-Features include:
-@itemize
-@item integration on both socket level or using an abstract interface
-@item RPC and PubSub framework using @acronym{WebSocket Application Messaging
-Protocol, WAMP}
-@item easily extendible using a simple WebSocket protocol plugin API
-@end itemize")
-    (license license:asl2.0)))
-
 (define-public python-requests-oauthlib
   (package
     (name "python-requests-oauthlib")
@@ -11208,30 +11661,6 @@ library for Python")
 and CSS files,supporting a variety of different filters, including YUI, jsmin,
 jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (license license:bsd-2)))
-
-(define-public python-genshi
-  (package
-    (name "python-genshi")
-    (version "0.7.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edgewall/genshi")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dmf0ggp0s3371jv483kjriw9jscawxcik6q70a0wqjdfh5383i6"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-six))
-    (home-page "https://genshi.edgewall.org/")
-    (synopsis "Toolkit for generation of output for the web")
-    (description "Genshi is a Python library that provides an integrated set
-of components for parsing, generating, and processing HTML, XML or other
-textual content for output generation on the web.")
-    (license license:bsd-3)))
 
 (define-public python-uritemplate
   (package
@@ -11487,120 +11916,6 @@ asynchronously.")
     (synopsis "Yet another URL library")
     (description "@code{yarl} module provides handy @code{URL} class
 for URL parsing and changing.")
-    (license license:asl2.0)))
-
-(define-public python-google
-  (package
-    (name "python-google")
-    (version "3.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google" version))
-       (sha256
-        (base32 "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;There are no tests.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-beautifulsoup4))
-    (home-page "https://breakingcode.wordpress.com/")
-    (synopsis "Python bindings to the Google search engine")
-    (description
-     "This package provides Python bindings for using the Google search
-engine.  Its module is called @code{googlesearch}.")
-    (license license:bsd-3)))
-
-(define-public python-google-api-client
-  (package
-    (name "python-google-api-client")
-    (version "2.198.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/google/google-api-python-client")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1adjr3ylp8bwbvywxm11hs4y913pvaga0dn6nwmb3622y62zxfhg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         "-k"
-         (string-join
-          (list
-           ;; XXX: Deprecated behavior.
-           "not test_client_options_universe_configured_with_mtls"
-           "test_universe_env_var_configured_with_mtls"
-           ;; XXX: Requires CA certificates.
-           "test_credentials_and_credentials_file_mutually_exclusive")
-          " and not ")
-         "tests")))
-    (native-inputs
-     (list python-parameterized
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-google-api-core
-           python-google-auth
-           python-google-auth-httplib2
-           python-httplib2
-           python-pyparsing
-           python-uritemplate-3))
-    (home-page "https://github.com/google/google-api-python-client")
-    (synopsis "Core Python library for accessing Google APIs")
-    (description "Python client library for Google's discovery based APIs")
-    (license license:asl2.0)))
-
-(define-public python-google-auth-httplib2
-  (package
-    (name "python-google-auth-httplib2")
-    (version "0.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "google_auth_httplib2" version))
-              (sha256
-               (base32 "0dgdzy2ps3z71dc2b4s1fhmyx094nq0sg75sagav995p0ji31c6m"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-google-auth python-httplib2))
-    (native-inputs
-     (list python-pytest
-           python-pyparsing
-           python-pytest-localserver
-           python-flask
-           python-setuptools))
-    (home-page "https://github.com/googleapis/google-cloud-python")
-    (synopsis "Google Authentication Library: httplib2 transport")
-    (description "This package provides a Google Authentication Library plugin
-for httplib2 transport.")
-    (license license:asl2.0)))
-
-(define-public python-google-auth-oauthlib
-  (package
-    (name "python-google-auth-oauthlib")
-    (version "1.2.4")
-    (home-page
-     "https://github.com/GoogleCloudPlatform/\
-google-auth-library-python-oauthlib")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j25kdbs2j1x23pdv4n49xl9pz2ppn55vsav65ir796kq4lf9nca"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-google-auth python-requests-oauthlib))
-    (native-inputs
-     (list python-click python-mock python-pytest python-setuptools))
-    (synopsis "Google Authentication Library: oauthlib")
-    (description "This package provides a Google Authentication Library plugin
-with oauthlib.")
     (license license:asl2.0)))
 
 (define-public whoogle-search
@@ -12163,38 +12478,6 @@ for HTTP/2 is planned.")
 the source code of a project.  It supports many translation file formats and
 is part of the Weblate translation platform.")
     (license license:gpl3+)))
-
-(define-public python-gitlab
-  (package
-    (name "python-gitlab")
-    (version "7.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/python-gitlab/python-gitlab")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rf1hz5n724f8sfc7g3fzfz96jsv9y145pi6gc8qscsjq3z4vi37"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=tests/unit/test_graphql.py"
-              ;; XXX: Missing helper script.
-              "-k" "not test_data_from_helper" "tests/unit")))
-    (native-inputs
-     (list python-anyio
-           python-pytest
-           python-responses
-           python-setuptools))
-    (propagated-inputs (list python-requests python-requests-toolbelt))
-    (home-page "https://github.com/python-gitlab/python-gitlab")
-    (synopsis "Interact with GitLab API")
-    (description "This package provides an extended library for interacting
-with GitLab instances through their API.")
-    (license license:lgpl3+)))
 
 (define-public python-path-and-address
   (package
@@ -13604,28 +13887,6 @@ over IMAP:
 @end itemize")
     (license license:asl2.0)))
 
-(define-public python-giturlparse
-  (package
-    (name "python-giturlparse")
-    (version "0.12.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nephila/giturlparse")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fdbxp176p17sn5xc1418mz2vk00hlcsd5qmi2fdcfphqal6raan"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/nephila/giturlparse")
-    (synopsis "Git URL parsing module")
-    (description
-     "This package provides a git URL parsing module which supports parsing
-and rewriting of remote git URLs from various hosting providers.")
-    (license license:asl2.0)))
-
 (define-public python-hstspreload
   (package
     (name "python-hstspreload")
@@ -14004,242 +14265,6 @@ Features:
     (synopsis "Simple proxy server (SOCKS4(a), SOCKS5(h), HTTP tunnel)")
     (description "This package provides a simple proxy server (SOCKS4(a),
 SOCKS5(h), HTTP tunnel).")
-    (license license:asl2.0)))
-
-(define-public python-google-auth
-  (package
-    (name "python-google-auth")
-    (version "2.56.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google_auth" version))
-       (sha256
-        (base32 "0lx5cw49lfjqvd9vx1vlslrxyh9q0xd6d46np5a2dab9nlqa03zr"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-aiohttp
-           python-cryptography
-           python-pyasn1-modules
-           python-requests
-           python-rsa
-           python-urllib3))
-    (native-inputs
-     (list nss-certs-for-test
-           python-aiohttp
-           python-aioresponses
-           python-flask
-           python-freezegun
-           python-grpcio
-           python-oauth2client
-           python-packaging
-           python-pyjwt
-           python-pyopenssl
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-localserver
-           python-pyu2f
-           python-requests
-           python-responses
-           python-rsa
-           python-setuptools
-           python-urllib3))
-    (home-page "https://github.com/googleapis/google-auth-library-python")
-    (synopsis "Google Authentication Library")
-    (description "This library simplifies using Google's various
-server-to-server authentication mechanisms to access Google APIs.")
-    (license license:asl2.0)))
-
-(define-public python-google-resumable-media
-  (package
-    (name "python-google-resumable-media")
-    (version "2.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url
-               "https://github.com/googleapis/google-resumable-media-python")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ndida5yr06bal0m09yri80bvf8x7yy690b14ywnxl4ixi8rlh6s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; XXX: Missing test_utils.retry.
-         "--ignore-glob=tests*/system/"
-         ;; XXX: md5_hash is not mock.sentinel.md5_hash
-         "-k" (string-join
-               (list "not test_brotli"
-                     "test_constructor"
-                     "test_decompress")
-               " and not "))))
-    (propagated-inputs (list python-google-crc32c))
-    (native-inputs
-     (list python-google-auth
-           python-mock
-           python-pytest
-           python-pytest-asyncio
-           python-setuptools
-           python-test-utils))
-    (home-page "https://github.com/googleapis/google-resumable-media-python")
-    (synopsis "Utilities for Google Media Downloads and Resumable Uploads")
-    (description "This package provides utilities for Google Media Downloads
-and Resumable Uploads.")
-    (license license:asl2.0)))
-
-(define-public python-googleapis-common-protos
-  (package
-    (name "python-googleapis-common-protos")
-    (version "1.66.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/googleapis/python-api-common-protos")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fb7bcmjngmwwhqrldslli6r5z3s6r2kj4ywjmdjj92d1i51c29r"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-protobuf))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/googleapis/python-api-common-protos")
-    (synopsis "Common protobufs used in Google APIs")
-    (description
-     "This package contains Python classes generated from the common protos in
-the @code{googleapis/api-common-protos} repository.")
-    (license license:asl2.0)))
-
-(define-public python-google-api-core
-  (package
-    (name "python-google-api-core")
-    (version "2.29.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/googleapis/python-api-core")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ahs8abyl7719paarlnspqp8yds149w7vm3w7zz6f7q04sscd862"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; XXX: DeprecationWarning: datetime.datetime.utcfromtimestamp() is
-      ;; deprecated and scheduled for removal in a future version. Use
-      ;; timezone-aware objects to represent datetimes in UTC:
-      ;; datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
-      #~(list "-W" "ignore::DeprecationWarning")))
-    (propagated-inputs
-     (list python-google-auth
-           python-googleapis-common-protos
-           python-protobuf
-           python-proto-plus
-           python-requests))
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-mock
-           python-setuptools))
-    (home-page "https://github.com/googleapis/python-api-core")
-    (synopsis "Google API client core library")
-    (description
-     "This library defines common helpers used by all Google API clients.")
-    (license license:asl2.0)))
-
-(define-public python-google-cloud-core
-  (package
-    (name "python-google-cloud-core")
-    (version "2.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/googleapis/python-cloud-core")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1d7li74cakgl9vghxfir9nxwy36980alvxwgwjg0zyla3hgj07cq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; XXX: DeprecationWarning: datetime.datetime.utcfromtimestamp() is
-      ;; deprecated and scheduled for removal in a future version. Use
-      ;; timezone-aware objects to represent datetimes in UTC:
-      ;; datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
-      #~(list "-W" "ignore::DeprecationWarning")))
-    (propagated-inputs (list python-google-api-core python-google-auth))
-    (native-inputs
-     (list python-grpcio
-           python-grpcio-status
-           python-pytest
-           python-setuptools))
-    (home-page "https://github.com/googleapis/python-cloud-core")
-    (synopsis "Google Cloud API client core library")
-    (description
-     "This library defines common helpers (e.g. base @code{Client} classes)
-used by all of the @code{google-cloud-*} packages.")
-    (license license:asl2.0)))
-
-(define-public python-google-cloud-storage
-  (package
-    (name "python-google-cloud-storage")
-    (version "2.19.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/googleapis/python-storage")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19w10v2j4ciwlf8j2ylm77f8z1b0kqzg8lkh9rvh2swv1zrhydpj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; XXX: Missing test_utils.retry.
-         "--ignore=tests/system/"
-         ;; Needs docker.
-         "--ignore=tests/conformance/"
-         ;; XXX: Deprecations.
-         "-k" (string-join
-               (list "not test_set_api_request_attr"
-                     "test_create_bucket_w_custom_endpoint"
-                     "test_ctor_w_api_endpoint_override"
-                     "test_ctor_w_custom_endpoint_use_auth"
-                     "test_list_buckets_w_custom_endpoint")
-               " and not ")
-         "tests")))
-    (native-inputs
-     (list python-googleapis-common-protos
-           python-mock
-           python-pytest
-           python-test-utils
-           python-setuptools))
-    (propagated-inputs
-     (list python-google-api-core
-           python-google-auth
-           python-google-cloud-core
-           python-google-resumable-media
-           python-protobuf
-           python-requests))
-    (home-page "https://github.com/googleapis/python-storage")
-    (synopsis "Google Cloud Storage API client library")
-    (description
-     "Google Cloud Storage allows you to store data on Google infrastructure,
-and it can be used to distribute large data objects to users via direct
-download.  This package provides a Google Cloud Storage API client library for
-Python.")
     (license license:asl2.0)))
 
 (define-public python-smart-open
@@ -15395,31 +15420,6 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
      "This package provides @code{python-pybadges}: a library and command-line
 tool for generating Github-style badges as SVG images.")
     (license license:asl2.0)))
-
-(define-public python-grid5000
-  (package
-    (name "python-grid5000")
-    (version "1.2.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.inria.fr/msimonin/python-grid5000")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               "0px5dr6kn7i5dyy4g42vqap1zpkc4hdvg7prrxdkkl57lfhz5w61")))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-requests python-ipython python-pyyaml))
-    (home-page "https://pypi.org/project/python-grid5000/")
-    (synopsis "Grid5000 python client")
-    (description
-     "python-grid5000 is a python package wrapping the Grid5000 REST API.
-You can use it as a library in your python project or you can explore the
-Grid5000 resources interactively using the embedded shell.")
-    (license license:gpl3+)))
 
 (define-public python-pynetbox
   (package
