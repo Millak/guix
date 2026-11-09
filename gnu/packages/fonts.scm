@@ -1922,7 +1922,7 @@ noncharacters are also represented.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "2026.09.01")
+    (version "2026.11.01")
     (source
      (origin
        (method git-fetch)
@@ -1931,7 +1931,7 @@ noncharacters are also represented.")
              (commit (string-append "noto-monthly-release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "008ldgy38c89x2iz0nbi32kcngf6qy3m9zq9a0amv80i8nhah6bm"))))
+        (base32 "0kx4kgkvzlm3i2sljzn3mbis21al43sb5kylpqwl7mfdmyrzdvrq"))))
     (build-system font-build-system)
     (arguments
      (list
