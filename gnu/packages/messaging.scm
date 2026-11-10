@@ -1382,7 +1382,7 @@ basic IRC protocol, CTCP, and DCC connections.")
                              python-pillow
                              python-qrcode
                              python-slixmpp
-                             python-sqlalchemy-2
+                             python-sqlalchemy
                              python-thumbhash
                              python-typing-extensions))
     (native-inputs
@@ -1559,7 +1559,7 @@ of xmpppy.")
            python-pyopenssl
            python-pysequoia
            python-qrcode
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-truststore))
     (propagated-inputs
      (list dconf))

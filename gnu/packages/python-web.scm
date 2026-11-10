@@ -4251,7 +4251,7 @@ origin than that of the web application.")
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-sqlmodel-minimal
            python-strawberry-graphql-minimal
            python-types-orjson
@@ -4428,7 +4428,7 @@ pattern.")
            python-psycopg
            ;; python-scylla-driver                  ;not packaged yet in Guix
            ;; python-sqlakeyset                     ;not packaged yet in Guix
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-sqlmodel
            python-tortoise-orm))
     (home-page "https://uriyyo-fastapi-pagination.netlify.app/")
@@ -5246,7 +5246,7 @@ storage.")
            python-pytest))
     (propagated-inputs
      (list python-flask
-           python-sqlalchemy-2))
+           python-sqlalchemy))
     (home-page "https://github.com/mitsuhiko/flask-sqlalchemy")
     (synopsis "Module adding SQLAlchemy support to your Flask application")
     (description
@@ -13529,7 +13529,7 @@ forked version whose pypi name is @code{marshmallow_jsonapi_minfork}.")
            python-genshi
            python-jinja2
            python-pytest
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-webtest
            python-setuptools))
     (propagated-inputs

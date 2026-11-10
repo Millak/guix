@@ -2210,7 +2210,7 @@ flake8 to check PEP-8 naming conventions.")
            python-msgspec
            python-pydantic
            python-pymongo
-           python-sqlalchemy-2))
+           python-sqlalchemy))
     (home-page "https://polyfactory.litestar.dev/latest/")
     (synopsis "Mock data generation factories")
     (description

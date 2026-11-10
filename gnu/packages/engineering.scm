@@ -2132,7 +2132,7 @@ bindings for Python, Java, OCaml and more.")
                              python-redis
                              python-requests
                              python-rsa
-                             python-sqlalchemy-2
+                             python-sqlalchemy
                              python-tornado
                              python-urllib3
                              python-watchdog

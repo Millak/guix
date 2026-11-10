@@ -16401,7 +16401,7 @@ following CLI scripts:
      (list python-ipython
            python-ipython-genutils
            python-prettytable
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-sqlparse))
     (home-page "https://github.com/catherinedevlin/ipython-sql")
     (synopsis "RDBMS access via IPython")
@@ -29751,7 +29751,7 @@ access the system cron automatically and simply using a direct API.")
            python-pytz
            python-setuptools
            python-setuptools-scm
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-tornado
            python-twisted))
     (propagated-inputs

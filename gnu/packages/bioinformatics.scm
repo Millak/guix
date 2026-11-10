@@ -12187,7 +12187,7 @@ Cuffdiff or Ballgown programs.")
            python-psycopg
            python-psycopg2-binary
            python-pyyaml
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-sqlparse))
     (home-page "https://github.com/fhcrc/taxtastic")
     (synopsis "Tools for taxonomic naming and annotation")

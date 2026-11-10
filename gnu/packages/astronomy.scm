@@ -14890,7 +14890,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
            python-repoze-lru
            python-scipy
            python-setuptools
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-tblib
            python-tqdm
            python-translationstring

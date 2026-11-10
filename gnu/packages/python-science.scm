@@ -3327,7 +3327,7 @@ of Pandas
            python-pytest
            python-pytz
            python-scipy
-           python-sqlalchemy-2
+           python-sqlalchemy
            python-tables
            python-tabulate
            python-typing-extensions

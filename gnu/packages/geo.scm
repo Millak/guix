@@ -1013,7 +1013,7 @@ lets developers use the functionality of Proj in their own software.")
            python-numpy
            python-requests
            python-scipy
-           python-sqlalchemy-2))
+           python-sqlalchemy))
     (home-page "https://www.obspy.org")
     (synopsis "Python framework for seismological observatories")
     (description
