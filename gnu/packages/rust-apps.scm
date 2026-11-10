@@ -143,6 +143,7 @@
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages wxwidgets))
 
@@ -3898,6 +3899,32 @@ which generates JavaScript glue code for communicating between WebAssembly
 modules and JavaScript.")
     ;; Choose either license at your option.
     (license (list license:expat license:asl2.0))))
+
+(define-public sf2-cutter
+  (package
+    (name "sf2-cutter")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/FelixGSE/sf2-cutter")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l2z908f1qf5s6hlpwsjdd3xaypisld907l45fhhji63x2pxwjjx"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:features '(list "sf3-write")))
+    (inputs (cons libvorbis (cargo-inputs 'sf2-cutter)))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/FelixGSE/sf2-cutter")
+    (synopsis "Cut, split, merge, and convert SoundFonts")
+    (description "This package provides a command line tool to extract
+presets from a SoundFont and merge them back together.  It also handles
+conversion between SF2 and SF3 formats.")
+    (license license:expat)))
 
 (define-public sniffglue
   (package

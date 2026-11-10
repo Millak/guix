@@ -1,0 +1,109 @@
+Index: aotuv_lancer_vorbis_sys-0.1.6/Cargo.toml
+===================================================================
+--- aotuv_lancer_vorbis_sys-0.1.6.orig/Cargo.toml
++++ aotuv_lancer_vorbis_sys-0.1.6/Cargo.toml
+@@ -79,3 +79,6 @@ optional = true
+ 
+ [build-dependencies.cc]
+ version = "1.2.55"
++
++[build-dependencies.pkg-config]
++version = "0.3"
+Index: aotuv_lancer_vorbis_sys-0.1.6/build.rs
+===================================================================
+--- aotuv_lancer_vorbis_sys-0.1.6.orig/build.rs
++++ aotuv_lancer_vorbis_sys-0.1.6/build.rs
+@@ -4,23 +4,17 @@ use std::{env, env::current_dir};
+ use bindgen::RustTarget;
+ 
+ fn main() {
+-	#[cfg(feature = "build-time-bindgen")]
+-	let ogg_vendor_path = current_dir()
+-		.expect("Could not get current working directory")
+-		.join("ogg_vendor");
+-
+-	let vorbis_vendor_path = current_dir()
+-		.expect("Could not get current working directory")
+-		.join("vorbis_vendor");
+-
+-	println!(
+-		"cargo:rerun-if-changed={}",
+-		vorbis_vendor_path
+-			.to_str()
+-			.expect("The vorbis_vendor submodule is in a non-UTF-8 path")
+-	);
+-
+-	let vorbis_include_path = vorbis_vendor_path.join("include");
++        let Ok(ogg_vendor) = pkg_config::Config::new().probe("ogg") else {
++                panic!("guix: ogg library not found");
++        };
++        let Ok(vorbis_vendor) = pkg_config::Config::new().probe("vorbis") else {
++                panic!("guix: ogg library not found");
++        };
++
++	let ogg_include_path = &ogg_vendor.include_paths[0];
++	let vorbis_include_path = &vorbis_vendor.include_paths[0];
++	println!("cargo:rustc-link-lib=vorbis");
++	println!("cargo:rustc-link-lib=vorbisenc");
+ 	println!("cargo:include={}", vorbis_include_path.to_str().unwrap());
+ 
+ 	#[cfg(feature = "build-time-bindgen")]
+@@ -40,8 +34,7 @@ fn main() {
+ 		)
+ 		.disable_header_comment()
+ 		.clang_arg(format!("-I{}", vorbis_include_path.to_str().unwrap()))
+-		.clang_arg(format!("-I{}/lib", vorbis_vendor_path.to_str().unwrap()))
+-		.clang_arg(format!("-I{}/include", ogg_vendor_path.to_str().unwrap()))
++		.clang_arg(format!("-I{}", ogg_include_path.to_str().unwrap()))
+ 		.clang_arg("-DOV_EXCLUDE_STATIC_CALLBACKS")
+ 		.allowlist_function("vorbis_.*")
+ 		.allowlist_function("ov_.*")
+@@ -66,48 +59,4 @@ fn main() {
+ 		.expect("Unable to generate bindings")
+ 		.write_to_file("src/bindings.rs")
+ 		.unwrap();
+-
+-	cc::Build::new()
+-		// libvorbis
+-		.file(vorbis_vendor_path.join("lib/mdct.c"))
+-		.file(vorbis_vendor_path.join("lib/smallft.c"))
+-		.file(vorbis_vendor_path.join("lib/block.c"))
+-		.file(vorbis_vendor_path.join("lib/envelope.c"))
+-		.file(vorbis_vendor_path.join("lib/window.c"))
+-		.file(vorbis_vendor_path.join("lib/lsp.c"))
+-		.file(vorbis_vendor_path.join("lib/lpc.c"))
+-		.file(vorbis_vendor_path.join("lib/analysis.c"))
+-		.file(vorbis_vendor_path.join("lib/synthesis.c"))
+-		.file(vorbis_vendor_path.join("lib/psy.c"))
+-		.file(vorbis_vendor_path.join("lib/info.c"))
+-		.file(vorbis_vendor_path.join("lib/floor1.c"))
+-		.file(vorbis_vendor_path.join("lib/floor0.c"))
+-		.file(vorbis_vendor_path.join("lib/cpu.c"))
+-		.file(vorbis_vendor_path.join("lib/xmmlib.c"))
+-		.file(vorbis_vendor_path.join("lib/res0.c"))
+-		.file(vorbis_vendor_path.join("lib/mapping0.c"))
+-		.file(vorbis_vendor_path.join("lib/registry.c"))
+-		.file(vorbis_vendor_path.join("lib/codebook.c"))
+-		.file(vorbis_vendor_path.join("lib/sharedbook.c"))
+-		.file(vorbis_vendor_path.join("lib/lookup.c"))
+-		.file(vorbis_vendor_path.join("lib/bitrate.c"))
+-		// libvorbisfile
+-		.file(vorbis_vendor_path.join("lib/vorbisfile.c"))
+-		// libvorbisenc
+-		.file(vorbis_vendor_path.join("lib/vorbisenc.c"))
+-		// Avoid warning flood from upstream code we'd rather not touch
+-		.warnings(false)
+-		.flag_if_supported("-Wno-discarded-qualifiers") // GCC
+-		.flag_if_supported("-Wno-incompatible-pointer-types-discards-qualifiers") // Clang
+-		.flag_if_supported("-Wno-int-conversion") // GCC and Clang
+-		.flag_if_supported("-Wno-implicit-int") // GCC
+-		.flag_if_supported("-Wno-return-type") // Clang
+-		// libogg headers
+-		.include(env::var_os("DEP_OGG_INCLUDE").unwrap())
+-		.include(vorbis_vendor_path.join("lib"))
+-		.include(vorbis_include_path)
+-		// Fixes building on Windows with the GCC toolchain, and maybe other
+-		// platforms with a modern C compiler
+-		.define("HAVE_STDINT_H", None)
+-		.compile("vorbis");
+ }

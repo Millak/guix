@@ -822,6 +822,14 @@
   (crate-source "aom-sys" "0.3.3"
                 "0bc1dzl3c95s44q7c1i0vnj7fhiqf44in8w22nw5vmp1vgbpadk2"))
 
+(define rust-aotuv-lancer-vorbis-sys-0.1.6
+  (crate-source "aotuv_lancer_vorbis_sys" "0.1.6"
+                "09cjb06wfjmjvwa65vpig2lzzshh179ys2xnk08jy3c6c4dgvi2v"
+                #:patches (search-patches
+                           "rust-aotuv-lancer-vorbis-use-system-deps.patch")
+                #:snippet '(for-each delete-file-recursively
+                                     '("ogg_vendor" "vorbis_vendor"))))
+
 (define rust-apache-avro-0.17.0
   (crate-source "apache-avro" "0.17.0"
                 "04zf09qy77ylsfyq8hsi27bv3vhw8b95li37jnqzij8f7a285vqs"
@@ -24548,9 +24556,20 @@ fn main() {
   (crate-source "oem_cp" "2.0.0"
                 "1r0fn4bnmc78pkqhvzjjbm1zidgzvryspdz6hsdb1nml5a83h09k"))
 
+(define rust-ogg-0.8.0
+  (crate-source "ogg" "0.8.0"
+                "0vjxmqcv9252aj8byy70iy2krqfjknfcxg11lcyikj11pzlb8lb9"))
+
 (define rust-ogg-0.9.2
   (crate-source "ogg" "0.9.2"
                 "0azf3npw93y62fj7ha5lmppjcvlsrly7mc4gmynfllj0ip6qvazx"))
+
+(define rust-ogg-next-sys-0.1.5
+  (crate-source "ogg_next_sys" "0.1.5"
+                "16q4mchig1m51124xpgfqxcflj46ldjzpbikwq3vphj7w947lbgd"
+                #:patches (search-patches
+                           "rust-ogg-next-use-system-ogg.patch")
+                #:snippet '(delete-file-recursively "ogg_vendor")))
 
 (define rust-ogg-pager-0.7.2
   (crate-source "ogg_pager" "0.7.2"
@@ -39407,6 +39426,10 @@ fn main() {
 (define rust-volatile-register-0.2.2
   (crate-source "volatile-register" "0.2.2"
                 "1k0rkm81qyhn4r8f03z0sch2kyikkgjjfalpaami9c08c8m7whyy"))
+
+(define rust-vorbis-rs-0.5.6
+  (crate-source "vorbis_rs" "0.5.6"
+                "0cqrkhpwgd4gzmqq9x434lxf58rdvxrrnzlkiiza5xw0saadmia9"))
 
 (define rust-vparser-1.2.1
   (crate-source "vparser" "1.2.1"
@@ -104662,6 +104685,100 @@ fn main() {
                           rust-zerovec-0.11.8
                           rust-zerovec-derive-0.11.6
                           rust-zmij-1.0.23))
+ (sf2-cutter =>
+             (list rust-anstream-1.0.0
+                   rust-anstyle-1.0.14
+                   rust-anstyle-parse-1.0.0
+                   rust-anstyle-query-1.1.5
+                   rust-anstyle-wincon-3.0.11
+                   rust-aotuv-lancer-vorbis-sys-0.1.6
+                   rust-autocfg-1.5.1
+                   rust-bit-set-0.11.1
+                   rust-bit-vec-0.10.2
+                   rust-bitflags-2.13.2
+                   rust-borsh-1.8.1
+                   rust-borsh-derive-1.8.1
+                   rust-byteorder-1.5.0
+                   rust-bytes-1.12.1
+                   rust-cc-1.11.1
+                   rust-cfg-if-1.0.5
+                   rust-cfg-aliases-0.2.2
+                   rust-chacha20-0.10.2
+                   rust-clap-4.6.7
+                   rust-clap-builder-4.6.7
+                   rust-clap-complete-4.6.11
+                   rust-clap-derive-4.6.7
+                   rust-clap-lex-1.1.1
+                   rust-clap-mangen-0.3.3
+                   rust-colorchoice-1.0.5
+                   rust-console-0.16.6
+                   rust-core-detect-1.0.0
+                   rust-cpufeatures-0.3.1
+                   rust-dialoguer-0.12.0
+                   rust-encode-unicode-1.0.0
+                   rust-equivalent-1.0.3
+                   rust-errno-0.3.14
+                   rust-fastrand-2.5.0
+                   rust-find-msvc-tools-0.1.15
+                   rust-fnv-1.0.7
+                   rust-getrandom-0.4.3
+                   rust-hashbrown-0.17.1
+                   rust-heck-0.5.0
+                   rust-indexmap-2.14.2
+                   rust-is-terminal-polyfill-1.70.2
+                   rust-itoa-1.0.19
+                   rust-lewton-0.10.2
+                   rust-libc-0.2.191
+                   rust-linux-raw-sys-0.12.1
+                   rust-memchr-2.8.3
+                   rust-num-traits-0.2.19
+                   rust-ogg-0.8.0
+                   rust-ogg-next-sys-0.1.5
+                   rust-once-cell-1.21.4
+                   rust-once-cell-polyfill-1.70.2
+                   rust-pkg-config-0.3.34
+                   rust-proc-macro-crate-3.5.0
+                   rust-proc-macro2-1.0.107
+                   rust-proptest-1.12.0
+                   rust-quick-error-1.2.3
+                   rust-quote-1.0.47
+                   rust-r-efi-6.0.0
+                   rust-rand-0.10.3
+                   rust-rand-core-0.10.1
+                   rust-rand-xorshift-0.5.0
+                   rust-regex-syntax-0.8.11
+                   rust-roff-1.1.1
+                   rust-rustix-1.1.6
+                   rust-rusty-fork-0.3.1
+                   rust-serde-1.0.229
+                   rust-serde-core-1.0.229
+                   rust-serde-derive-1.0.229
+                   rust-serde-json-1.0.154
+                   rust-serde-spanned-1.1.3
+                   rust-shell-words-1.1.1
+                   rust-shlex-2.0.1
+                   rust-strsim-0.11.1
+                   rust-syn-3.0.10
+                   rust-tempfile-3.27.0
+                   rust-thiserror-2.0.21
+                   rust-thiserror-impl-2.0.21
+                   rust-tinyvec-1.13.3
+                   rust-toml-1.2.1+spec-1.1.0
+                   rust-toml-datetime-1.1.3+spec-1.1.0
+                   rust-toml-edit-0.25.19+spec-1.1.0
+                   rust-toml-parser-1.1.5+spec-1.1.0
+                   rust-toml-writer-1.2.0+spec-1.1.0
+                   rust-unarray-0.1.4
+                   rust-unicode-ident-1.0.27
+                   rust-unicode-width-0.2.3
+                   rust-utf8parse-0.2.2
+                   rust-vorbis-rs-0.5.6
+                   rust-wait-timeout-0.2.1
+                   rust-windows-link-0.2.1
+                   rust-windows-sys-0.61.2
+                   rust-winnow-1.0.5
+                   rust-zeroize-1.9.1
+                   rust-zmij-1.0.23))
  (shadowenv =>
             (list rust-aho-corasick-1.1.4
                   rust-anstream-1.0.0

@@ -1,0 +1,55 @@
+Index: ogg_next_sys-0.1.5/build.rs
+===================================================================
+--- ogg_next_sys-0.1.5.orig/build.rs
++++ ogg_next_sys-0.1.5/build.rs
+@@ -4,23 +4,18 @@ use std::env::current_dir;
+ use bindgen::RustTarget;
+ 
+ fn main() {
+-	let ogg_vendor_path = current_dir()
+-		.expect("Could not get current working directory")
+-		.join("ogg_vendor");
++        let Ok(ogg_vendor) = pkg_config::Config::new().probe("ogg") else {
++                panic!("guix: ogg library not found");
++        };
+ 
+-	println!(
+-		"cargo:rerun-if-changed={}",
+-		ogg_vendor_path.to_str().unwrap()
+-	);
+-
+-	let include_path = ogg_vendor_path.join("include");
++	let include_path = &ogg_vendor.include_paths[0];
+ 	println!("cargo:include={}", include_path.to_str().unwrap());
+ 
+ 	#[cfg(feature = "build-time-bindgen")]
+ 	bindgen::Builder::default()
+ 		.header(include_path.join("ogg/ogg.h").to_str().unwrap())
+ 		.disable_header_comment()
+-		.clang_arg(format!("-I{}/include", ogg_vendor_path.to_str().unwrap()))
++		.clang_arg(format!("-I{}", include_path.to_str().unwrap()))
+ 		.allowlist_function("ogg.*")
+ 		.allowlist_type("ogg.*")
+ 		.blocklist_item("__.*")
+@@ -30,10 +25,4 @@ fn main() {
+ 		.expect("Unable to generate bindings")
+ 		.write_to_file("src/bindings.rs")
+ 		.unwrap();
+-
+-	cc::Build::new()
+-		.file(ogg_vendor_path.join("src/bitwise.c"))
+-		.file(ogg_vendor_path.join("src/framing.c"))
+-		.include(include_path)
+-		.compile("ogg");
+ }
+Index: ogg_next_sys-0.1.5/Cargo.toml
+===================================================================
+--- ogg_next_sys-0.1.5.orig/Cargo.toml
++++ ogg_next_sys-0.1.5/Cargo.toml
+@@ -62,3 +62,6 @@ optional = true
+ 
+ [build-dependencies.cc]
+ version = "1.2.55"
++
++[build-dependencies.pkg-config]
++version = "0.3"
