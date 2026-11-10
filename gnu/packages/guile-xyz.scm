@@ -1537,7 +1537,7 @@ order to provide IDE functionality for Guile Scheme.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -1547,7 +1547,7 @@ order to provide IDE functionality for Guile Scheme.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fkd7j3ivs87z41hgf6wm9f5awp816viadm1gdr8ph9zmhb688c0"))))
+         "0q7gs18j71ps54cq7rckad2fir5x181kb47yjall9xw1bxkkr83x"))))
     (build-system guile-build-system)
     (arguments
      (list
