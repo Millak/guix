@@ -29732,45 +29732,26 @@ access the system cron automatically and simply using a direct API.")
 (define-public python-apscheduler
   (package
     (name "python-apscheduler")
-    (version "3.11.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "apscheduler" version))
-              (sha256
-               (base32
-                "0hgg7r3s1k6qj4fy3whrpyqj8vm0wvk3lk4c1h15z07caaq6d69a"))))
+    (version "3.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/agronholm/apscheduler")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ja9zpgd0b4di2dyxmvwz82a97ifa838ll0hnnwx67qqwc61wlbb"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 701 passed, 252 skipped, 13 deselected, 201 warnings
-      #:test-flags
-      ;; XXX: Some tests hang or fail with verity of errors:
-      ;; E   RuntimeError: There is no current event loop in thread 'MainThread'.
-      #~(list #$@(map (lambda (test) (string-append "--deselect="
-                                                    "tests/test_executors.py::"
-                                                    test))
-                      (list "test_broken_pool"
-                            "test_max_instances[processpool-pytz]"
-                            "test_max_instances[processpool-zoneinfo]"
-                            "test_run_coroutine_job_tornado"
-                            "test_run_job_error[processpool-pytz]"
-                            "test_run_job_error[processpool-zoneinfo]"
-                            "test_submit_job[processpool-pytz-error]"
-                            "test_submit_job[processpool-pytz-executed]"
-                            "test_submit_job[processpool-pytz-missed]"
-                            "test_submit_job[processpool-zoneinfo-error]"
-                            "test_submit_job[processpool-zoneinfo-executed]"
-                            "test_submit_job[processpool-zoneinfo-missed]")))))
     (native-inputs
      (list python-anyio
            python-gevent
-           python-pyside-6
            python-pytest
            python-pytest-asyncio
            python-pytz
            python-setuptools
            python-setuptools-scm
-           python-sqlalchemy
+           python-sqlalchemy-2
            python-tornado
            python-twisted))
     (propagated-inputs
