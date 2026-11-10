@@ -8048,38 +8048,34 @@ Encryption} (JOSE) Web Standards.")
 (define-public python-jsonpickle
   (package
     (name "python-jsonpickle")
-    (version "4.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jsonpickle" version))
-              (sha256
-               (base32
-                "0dipys8p4hkqnp9nwkpysfv7mhws2hrr73wgn00pdmq4n990hrzw"))))
+    (version "4.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jsonpickle/jsonpickle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02ahz44snp8d7aa3xp96afknv0hp3ji3kqbnk9mxldhdnmiayiwx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC")
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo")))))))
+      ;; tests: 338 passed, 23 skipped, 1 deselected, 338 warnings
+      #:test-flags
+      ;; Ignore benchmark tests, fuzzing and tests requiring NumPy and Pandas.
+      #~(list "--ignore=benchmarking/"
+              "--ignore=fuzzing/"
+              "--ignore=jsonpickle/ext/numpy.py"
+              "--ignore=jsonpickle/ext/pandas.py"
+              "--ignore=jsonpickle/tags_pd.py"
+              ;; See: <https://github.com/jsonpickle/jsonpickle/issues/601>.
+              "--deselect=tests/jsonpickle_test.py::test_warnings")))
     (native-inputs
-     (list python-bson
-           python-ecdsa
-           python-feedparser
-           python-pymongo
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-enabler
+     (list python-pytest
            python-setuptools
            python-setuptools-scm
            python-simplejson
-           python-sqlalchemy
-           python-ujson
-           python-wheel
            tzdata-for-tests))
     (home-page "https://jsonpickle.github.io/")
     (synopsis "Serialize object graphs into JSON")
