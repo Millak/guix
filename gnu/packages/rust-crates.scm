@@ -22884,9 +22884,9 @@ fn main() {
                 "1yhv5hf2124p7jl38hwiha7dpj399w67y0v4ixpwpa93fsnjrxk6"))
 
 (define rust-mysqlclient-sys-0.5.2
-  ;; TODO REVIEW: Check bundled sources.
   (crate-source "mysqlclient-sys" "0.5.2"
-                "0fwgksglj1h5f9cwq1mrc3ir9z9haria07j2hsnf87wryvw129dp"))
+                "0fwgksglj1h5f9cwq1mrc3ir9z9haria07j2hsnf87wryvw129dp"
+                #:snippet '(delete-file-recursively "bindings")))
 
 (define rust-n0-future-0.3.0
   (crate-source "n0-future" "0.3.0"
