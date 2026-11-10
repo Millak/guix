@@ -411,7 +411,7 @@ The following services are supported:
      "libgnunetchat is a client-side library for applications to use the
 Messenger service of GNUnet, providing chats, groups, contacts and file
 sharing.")
-    (home-page "https://git.gnunet.org/libgnunetchat.git")
+    (home-page "https://git.gnunet.org/gnunet/libgnunetchat")
     (license license:agpl3+)))
 
 (define-public gnunet-messenger-cli
