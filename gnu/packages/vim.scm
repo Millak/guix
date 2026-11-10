@@ -932,7 +932,7 @@ and support for fonts with ligatures.")
 (define-public vifm
   (package
     (name "vifm")
-    (version "0.14.4")
+    (version "0.14.5")
     (source
       (origin
         (method url-fetch)
@@ -943,7 +943,7 @@ and support for fonts with ligatures.")
                               "vifm-" version ".tar.bz2")))
         (sha256
          (base32
-          "06yvbzj5m8609xa7sa1inh5m4b1h9z6k6z99s2issafq23n35g20"))))
+          "08h4jqcxcxk7l4z87cfy6jbmxzpnjg1qwdb2w7f1rsbwcgb3zqsx"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-build-timestamp")
