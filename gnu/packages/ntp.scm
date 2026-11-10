@@ -322,16 +322,16 @@ by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.
 (define-public openntpd
   (package
     (name "openntpd")
-    (version "7.2")
+    (version "7.9p1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/openntpd-portable/openntpd-portable")
-              (commit "cf202d14cb46d1b37638a13e7ed5c1d4143878fe")))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-         (base32 "1l7xp5yscdwc4llnb55z2k0vcw197qd9zcwb4gm2vi1m7an3aygx"))))
+         (base32 "01sck6pm9mp85ahcajgg8fydhijaxdcpkxy3bsn03vjm5h9w6f9l"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
@@ -349,6 +349,11 @@ by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.
                               "/cert.pem")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'dont-create-runstatedir
+           (lambda _
+             ;; don't try to create /var.
+             (substitute* "src/Makefile.am"
+               (("DESTDIR\\)\\$\\(runstatedir") "TMPDIR"))))
          (add-after 'unpack 'copy-openbsd
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "openbsd")
@@ -396,11 +401,11 @@ by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.
             (method git-fetch)
             (uri (git-reference
                    (url "https://github.com/openbsd/src")
-                   ;; the commit hash for the 7.2 release in OpenBSD.
-                   (commit "b3121f2f06d5822c63d53f93b0df3f0c846d8fce")))
+                   ;; the commit hash for the 7.9 release in OpenBSD.
+                   (commit "bb8e03cabd2f8e2503e178dd95d38b806dea3e1a")))
             (file-name (git-file-name name version))
             (sha256
-              (base32 "0dif6vcli9i7gx0aw93an9vk164729gayyfbm1z1w9hqvwq4r4dm"))))
+              (base32 "015w1x0cnjpqxjz0caxabw10nm4hg70g1fzy59vbv1cf13aj248d"))))
         ;; enable TLS time constraints. See ntpd.conf(5).
         ("libressl" ,libressl)))
     (native-inputs
