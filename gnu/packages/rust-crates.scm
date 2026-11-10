@@ -20329,9 +20329,13 @@ fn main() {
                                (("5\\.6\\.2") "5.4.5")))))
 
 (define rust-liblzma-sys-0.4.9
-  ;; TODO REVIEW: Check bundled sources.
   (crate-source "liblzma-sys" "0.4.9"
-                "1fcjcihja3p0wk15ccf1rzq5c19i4g84isbsgrxqv9v7yf0kazkw"))
+                "1fcjcihja3p0wk15ccf1rzq5c19i4g84isbsgrxqv9v7yf0kazkw"
+                #:snippet '(begin
+                             (delete-file-recursively "xz")
+                             ;; Allow an older version of xz.
+                             (substitute* "build.rs"
+                               (("5\\.8\\.0") "5.4.5")))))
 
 (define rust-libm-0.1.4
   (crate-source "libm" "0.1.4"
