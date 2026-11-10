@@ -911,7 +911,7 @@ clusters.config.guix.list=\\
        ("java-osgi-core" ,java-osgi-core-8.0.0)
        ("java-osgi-cmpn" ,java-osgi-cmpn-7.0.0)
        ("java-bouncycastle" ,java-bouncycastle-1.77)
-       ("java-commons-codec" ,java-commons-codec-1.17.1)
+       ("java-commons-codec" ,java-commons-codec)
        ("java-felix-main" ,java-felix-main-7.0.5)
        ("java-junixsocket-common" ,java-junixsocket-common-2)
        ("java-junixsocket-native-common" ,java-junixsocket-native-common-2.5.1)
