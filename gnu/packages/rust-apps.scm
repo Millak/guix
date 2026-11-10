@@ -2839,7 +2839,7 @@ Mollysocket.")
 (define-public ncspot
   (package
     (name "ncspot")
-    (version "1.5.0")
+    (version "1.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2848,7 +2848,7 @@ Mollysocket.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z9pbcwc973skgv8rndgif6vwjw4f8vr163rdpr95zwg2mxafc6n"))))
+                "1hpjlaclwv3xxlvyjhp10g0l4vfasak7w2hcxhnnzslj9qzh47bx"))))
     (build-system cargo-build-system)
     (arguments
      (list
