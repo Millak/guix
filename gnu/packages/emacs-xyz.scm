@@ -3532,54 +3532,63 @@ diffs.")
       (license license:expat))))
 
 (define-public emacs-majutsu
-  (package
-    (name "emacs-majutsu")
-    (version "0.6.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/0WD0/majutsu")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1b840z3p10jyh8d6kmj7syad7308qr9p09gsci4gmha0iw3adnx5"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      ;; XXX: Test fails with `void-function transient--set-layout' when using
-      ;; wrapped ert-runner.
-      #:test-command
-      #~'(".ert-runner-real")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-references
-            (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "majutsu-jj.el"
-                ("majutsu-jj-executable"
-                 (search-input-file inputs "bin/jj")))))
-          (add-after 'install 'install-docs
-            (lambda _
-              (with-directory-excursion "docs"
-                (invoke "make" "majutsu.info")
-                (install-file "majutsu.info"
-                              (in-vicinity #$output "share/info"))))))))
-    (native-inputs
-     ;; Use unwrapped ert-runner in test, adding its inputs here.
-     (modify-inputs (package-inputs emacs-ert-runner)
-       (delete "bash-minimal")
-       (prepend emacs-ert-runner texinfo)))
-    (inputs (list jujutsu))
-    (propagated-inputs (list emacs-magit))
-    (home-page "https://github.com/0WD0/majutsu")
-    (synopsis "Emacs interface for Jujutsu version control system")
-    (description
-     "Majutsu provides a @code{emacs-magit}-style interface for
+  ;; The latest 0.6.0 release has a wrong regexp
+  ;; in majutsu-diff--offset-in-buffer.
+  (let ((commit "40b6ed9b7f0271266f666a66dfdfafccb11408cb")
+        (revision "0"))
+    (package
+      (name "emacs-majutsu")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/0WD0/majutsu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kjc64gx2ag1knpxh8pbapg6hw9wycdh11fmcsgkfzyanp5kbi8z"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~'("ert-runner" "-L" "test")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "majutsu-jj.el"
+                  ("majutsu-jj-executable"
+                   (search-input-file inputs "bin/jj")))
+                (substitute* "majutsu-interactive.el"
+                  (("/bin/sh")
+                   (search-input-file inputs "bin/sh")))
+                (substitute* "test/majutsu-squash-test.el"
+                  (("/bin/sh")
+                   (which "sh")))))
+            (add-after 'install 'install-docs
+              (lambda _
+                (with-directory-excursion "docs"
+                  (invoke "make" "majutsu.info")
+                  (install-file "majutsu.info"
+                                (in-vicinity #$output "share/info")))))
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" "/tmp")))
+            (add-before 'check 'init-jujutsu-repository
+              (lambda _
+                (invoke "jj" "git" "init"))))))
+      (native-inputs (list emacs-embark emacs-ert-runner
+                           git-minimal jujutsu texinfo))
+      (inputs (list bash-minimal jujutsu))
+      (propagated-inputs (list emacs-consult emacs-magit emacs-plz))
+      (home-page "https://github.com/0WD0/majutsu")
+      (synopsis "Emacs interface for Jujutsu version control system")
+      (description
+       "Majutsu provides a @code{emacs-magit}-style interface for
 @code{jujutsu}, offering an efficient way to interact with Jujutsu repositories
 from within Emacs.")
-    (license
-     (list license:gpl3+
-           license:expat))))
+      (license (list license:gpl3+ license:expat)))))
 
 (define-public emacs-conflict-buttons
   ;; No releases
