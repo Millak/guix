@@ -135,16 +135,16 @@ other external or custom tools for further processing.")
 (define-public python-aioresponses
   (package
     (name "python-aioresponses")
-    (version "0.7.2")
+    (version "0.7.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pnuckowski/aioresponses")
-             (commit version)))
+              (url "https://github.com/pnuckowski/aioresponses")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fcm1rl1h91c2ca446kl5r2q229a8cfad2xn9gmsmdvn29wm35kc"))))
+        (base32 "0dni7a7mzaxks0w5fkhavlyqhgi48lxq1p3n612nffc9lh3khhpj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -154,9 +154,26 @@ other external or custom tools for further processing.")
          (string-append
           ;; These tests require network access.
           "not test_address_as_instance_of_url_combined_with_pass_through "
-          "and not test_pass_through_with_origin_params"))))
-    (native-inputs (list python-pbr python-ddt python-pytest python-setuptools))
-    (propagated-inputs (list python-aiohttp))
+          "and not test_pass_through_with_origin_params "
+          "and not test_pass_through_unmatched_requests"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            ;; See: <https://github.com/pnuckowski/aioresponses/issues/289>
+            ;; and <https://github.com/pnuckowski/aioresponses/pull/288>.
+            (lambda _
+              (substitute* "aioresponses/core.py"
+                (("kwargs\\['writer'\\] = None" m)
+                 (string-append m "\n
+        if 'stream_writer' in inspect.signature(response_class).parameters:
+            kwargs['stream_writer'] = Mock(output_size=0)\n"))))))))
+    (native-inputs
+     (list python-ddt
+           python-pbr
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs (list python-aiohttp python-packaging))
     (home-page "https://github.com/pnuckowski/aioresponses")
     (synopsis "Mock out requests made by ClientSession from aiohttp package")
     (description
