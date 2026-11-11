@@ -310,8 +310,8 @@ such as @url{https://taler.net, GNU Taler}.")
 
 (define-public taler-docs
   ;; No tag or commit; use the latest commit.
-  (let ((commit "546383b1df85904bb233f183eb912b347bc170af")
-        (revision "2"))
+  (let ((commit "4ff818c30cb225be4153dd1527b5d494361d016d")
+        (revision "3"))
     (package
       (name "taler-docs")
       (version (git-version "0.0.0" revision commit))
@@ -323,7 +323,7 @@ such as @url{https://taler.net, GNU Taler}.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0j15y9wbr4bfarwpkm15nzk9fqxyqqb2r6s132drrlrm3clymdv5"))
+                  "0a4kk2gc13rvwvky6nkmg76p7f9cja3yzd1isgkivgxb3k4y0xz7"))
                 (modules '((guix build utils)))
                 (snippet
                  #~(begin
@@ -331,6 +331,7 @@ such as @url{https://taler.net, GNU Taler}.")
                      (delete-all-but "_exts"
                                      ;; These are custom extensions.
                                      "ebicsdomain.py"
+                                     "sidebar_toggle.py"
                                      "typescriptdomain.py")
                      (substitute* "conf.py"
                        (("httpdomain.httpdomain")
