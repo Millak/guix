@@ -3763,7 +3763,6 @@ from the command line.")
            qtbase
            qtsvg
            rubberband
-           suil
            zlib))
     (native-inputs
      (list pkg-config qttools))
