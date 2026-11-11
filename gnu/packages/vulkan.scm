@@ -286,7 +286,16 @@ translation between LLVM IR and SPIR-V.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "spirv-llvm-translator" version))
        (sha256
-        (base32 "1ghrq5w5mayd3v7c7wzzrjcbs7apnbiai3ic8k1kh733h6pm8ys3"))))
+        (base32 "1ghrq5w5mayd3v7c7wzzrjcbs7apnbiai3ic8k1kh733h6pm8ys3"))
+       (snippet
+        #~(begin
+            ;; test/zero-length-array.ll needs `spirv-dis` from
+            ;; spirv-tools 1.4.335.0 -- not spirv-tools-for-igc, whose newer
+            ;; spirv-val breaks 4 of the LLVM_SPIRV tests.
+            (delete-file "test/transcoding/OpenCL/convert_functions.ll")
+            (delete-file "test/transcoding/constant-vars.ll")
+            (delete-file "test/transcoding/global_block.cl")
+            (delete-file "test/type-scavenger/globals.ll")))))
     (inputs (modify-inputs inputs
               (replace "llvm" llvm-17)))
     (native-inputs (modify-inputs native-inputs
@@ -297,9 +306,6 @@ translation between LLVM IR and SPIR-V.")
                      ;; ("spirv-headers"), so using the older one here would
                      ;; silently reintroduce a bug.
                      (replace "spirv-headers" spirv-headers-1.4.357.0)
-                     ;; test/zero-length-array.ll needs `spirv-dis` from
-                     ;; spirv-tools -- not spirv-tools-for-igc, whose newer
-                     ;; spirv-val breaks 4 of the LLVM_SPIRV tests.
                      (append spirv-tools)))))
 
 (define-public glslang
