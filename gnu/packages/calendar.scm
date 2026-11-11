@@ -18,6 +18,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
+;;; Copyright © 2026 Benjamin Slade <emacsomancer@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -214,6 +215,31 @@ algorithms library for calendar dates and durations.  It also provides the
 The Discordian calendar was made popular by the \"Illuminatus!\" trilogy
 by Robert Shea and Robert Anton Wilson.")
     (license license:public-domain)))
+
+(define-public ics-to-org
+  (package
+    (name "ics-to-org")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/andyreagan/ics-to-org")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v0cfhw5b7mqiflv1wgz58fxr4xxrpfgll7188rgh7jgdkpxwhgz"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling python-pytest))
+    (propagated-inputs (list python-icalendar))
+    (home-page "https://github.com/andyreagan/ics-to-org")
+    (synopsis "Synchronise convert iCalendar events with Org mode files")
+    (description
+     "This package synchronises iCalendar events to Org mode files
+while preserving user notes, allowing converting of ICS files to
+Org-mode files.")
+    (license license:expat)))
 
 (define-public libical
   (package
