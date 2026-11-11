@@ -605,11 +605,13 @@ reading and editing of existing PDF files.")
       (uri (string-append "https://dl.xpdfreader.com/xpdf-" version ".tar.gz"))
       (sha256
        (base32 "0zhk9n4mk62mfbl086g1kknk2smrhnl44v9q2bvy1bkcqhkzaf0w"))))
-   (build-system cmake-build-system)
-   (inputs (list cups freetype libpng qtbase-5 zlib))
+   (build-system qt-build-system)
+   (inputs (list cups freetype libpng qtsvg zlib))
    (arguments
-    `(#:tests? #f))                   ; there is no check target
-   (synopsis "Viewer for PDF files based on the Motif toolkit")
+    (list
+     #:tests? #f                      ; there is no check target
+     #:qtbase qtbase))
+   (synopsis "Viewer for PDF files")
    (description
     "Xpdf is a viewer for Portable Document Format (PDF) files.")
    (license license:gpl3)             ; or gpl2, but not gpl2+
