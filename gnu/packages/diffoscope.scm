@@ -146,24 +146,22 @@
                ;; Increase verbosity of tests and provide a summary
                (invoke "pytest" "-vv" "-r" "sxX"))))
           (add-after 'install 'install-man-page
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (man (string-append out "/share/man/man1")))
-                (install-file "doc/diffoscope.1" man)))))))
+            (lambda _
+              (install-file "doc/diffoscope.1"
+                            (string-append #$output "/share/man/man1")))))))
     (inputs (list rpm                   ;for rpm-python
                   python-debian
                   python-libarchive-c
                   python-magic
                   python-tlsh
                   acl                   ;for getfacl
-                  coreutils             ;for stat
+                  coreutils-minimal     ;for stat
                   diffutils             ;for diff
                   xxd))
     (native-inputs
      (append
       (list help2man
             python-setuptools
-            python-wheel
 
             ;; Below are packages used for tests.
             binwalk
