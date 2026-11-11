@@ -5137,11 +5137,7 @@ database adapter for Python.")
        (sha256
         (base32 "15jxwgla3q4xsp6rw8inqaiy1kdzc8l2cixj8amqcf0ji47icrxg"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--deselect=tests/test_describe.py::test_inherits"
-              "--deselect=tests/test_describe.py::test_single_mapper")))
+    (arguments (list #:tests? #f))   ;deprecate candidate
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -5153,7 +5149,9 @@ database adapter for Python.")
     (description
      "This package provides a program to build Entity Relationship diagrams
 from a SQLAlchemy model (or directly from the database).")
-    (license license:bsd-3)))
+    (license license:bsd-3)
+    ;; XXX: Deprecation candidate, not compatible with SQLAlchemy 2+.
+    (properties `((hidden? . #t)))))
 
 (define-public yoyo-migrations
   (package
