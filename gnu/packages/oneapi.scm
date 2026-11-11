@@ -235,11 +235,11 @@ typedef __UINT64_TYPE__ uint64_t;
                                 "../vc-intrinsics")))
           (add-after 'unpack 'add-spirv-tools
             (lambda _
-              (copy-recursively #$(package-source spirv-tools-for-igc)
+              (copy-recursively #$(package-source spirv-tools)
                                 "../SPIRV-Tools")))
           (add-after 'unpack 'add-spirv-headers
             (lambda _
-              (copy-recursively #$(package-source spirv-headers-1.4.357.0)
+              (copy-recursively #$(package-source spirv-headers)
                                 "../SPIRV-Headers")))
           (replace 'configure
             (lambda* (#:key configure-flags #:allow-other-keys)
@@ -258,9 +258,9 @@ typedef __UINT64_TYPE__ uint64_t;
                          python
                          python-mako
                          python-pyyaml
-                         spirv-headers-1.4.357.0
+                         spirv-headers
                          spirv-llvm-translator-17
-                         spirv-tools-for-igc
+                         spirv-tools
                          vc-intrinsics))
     (home-page "https://github.com/intel/intel-graphics-compiler")
     (synopsis "Intel Graphics Compiler for OpenCL")
