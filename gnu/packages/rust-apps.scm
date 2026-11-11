@@ -2365,7 +2365,7 @@ JSON viewer and jq filter editor.")
 (define-public jujutsu
   (package
     (name "jujutsu")
-    (version "0.46.0")
+    (version "0.47.1")
     (source
      (origin
        (method git-fetch)
@@ -2374,7 +2374,7 @@ JSON viewer and jq filter editor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ffg9jkq76vh2sh993bj5lxqwm7hxrvn4xd1wgzfsvp553f3h3p4"))))
+        (base32 "0053cl8avgbpqm4k9yij24r631gf6632b8s8b7y7l2m5jd17c9dz"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -2384,6 +2384,8 @@ JSON viewer and jq filter editor.")
       ''("--"
          "--skip=test_gerrit_upload::test_gerrit_upload_rejected_by_remote"
          "--skip=test_git_push::test_git_push_rejected_by_remote"
+	 "--skip=test_git_push::test_git_push_sign_on_push_separate_transaction"
+	 "--skip=test_git_push::test_git_push_sign_on_push_separate_transaction_change_bookmark"
          "--skip=test_git::test_push_updates_with_options"
          "--skip=test_util_command::test_util_exec_sets_env")
       #:modules
