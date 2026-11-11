@@ -37288,30 +37288,28 @@ inserts it as an Org entry instead of displaying it in a new buffer.")
     (license license:gpl3+)))
 
 (define-public emacs-org-rss-publishing
-  (let ((commit "7f7d1e0c2c777015b81362a3292a3c851b939913")
-        (revision "0"))
-    (package
-      (name "emacs-org-rss-publishing")
-      (version (git-version "0.8" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~taingram/org-publish-rss")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "067rk9wdz2cnrmzn1058knhz6p28an8ybbgkfgmr4z872f63r2yy"))))
-      (build-system emacs-build-system)
-      (arguments `(#:tests? #false)) ;no tests
-      (home-page "https://git.sr.ht/~taingram/org-publish-rss")
-      (synopsis "RSS generator for Org Mode's built-in publishing system")
-      (description "This package adds new RSS generation options to the
+  (package
+    (name "emacs-org-rss-publishing")
+    (version "0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~taingram/org-publish-rss")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10blscg2bippx37cyj8zsx79iddsdw6czdvpd5my0542mdin47bf"))))
+    (build-system emacs-build-system)
+    (arguments `(#:tests? #false)) ;no tests
+    (home-page "https://git.sr.ht/~taingram/org-publish-rss")
+    (synopsis "RSS generator for Org Mode's built-in publishing system")
+    (description "This package adds new RSS generation options to the
 @code{org-publish-project-alist} variable (see the Org manual if you are new to
 the publishing options).  It adds @code{:auto-rss} and other options that work
 similar to the included @code{:auto-sitemap} functionality.  This should make it
 easy for users to add RSS feeds to existing Org-based websites.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-blimp
   (let ((commit "e420763d6d18b5d1be552cdbc47f91418343db03"))
