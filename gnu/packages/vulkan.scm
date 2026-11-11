@@ -290,7 +290,7 @@ translation between LLVM IR and SPIR-V.")
        (snippet
         #~(begin
             ;; test/zero-length-array.ll needs `spirv-dis` from
-            ;; spirv-tools 1.4.335.0 -- not spirv-tools-for-igc, whose newer
+            ;; spirv-tools 1.4.335.0 -- not spirv-tools, whose newer
             ;; spirv-val breaks 4 of the LLVM_SPIRV tests.
             (delete-file "test/transcoding/OpenCL/convert_functions.ll")
             (delete-file "test/transcoding/constant-vars.ll")
@@ -301,11 +301,6 @@ translation between LLVM IR and SPIR-V.")
     (native-inputs (modify-inputs native-inputs
                      (replace "clang" clang-17)
                      (replace "llvm" llvm-17)
-                     ;; Must be this newer package, not plain spirv-headers
-                     ;; -- inherited configure-flags look it up by input name
-                     ;; ("spirv-headers"), so using the older one here would
-                     ;; silently reintroduce a bug.
-                     (replace "spirv-headers" spirv-headers-1.4.357.0)
                      (append spirv-tools)))))
 
 (define-public glslang
