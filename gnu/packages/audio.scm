@@ -5351,10 +5351,7 @@ the Turtle syntax.")
      `(#:tests? #f))                    ;no check target
     (inputs
      (list lv2
-           gtk+-2
-           gtk+
-           qtbase-5
-           qtx11extras))
+           gtk+))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/suil/")
