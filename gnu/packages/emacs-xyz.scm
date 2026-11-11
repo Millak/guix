@@ -39053,6 +39053,36 @@ behavior;
       (home-page "https://codeberg.org/ideasman42/emacs-bray/")
       (license license:gpl3+))))
 
+(define-public emacs-with-command-redo
+  ;; MELPA source does not contain tests.
+  (let ((commit "b3e3c86e2cbeb097552a1bff000905ad28de7907")
+        (revision "0"))
+    (package
+      (name "emacs-with-command-redo")
+      (version (git-version "0.2" revision commit))
+      (source
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://codeberg.org/ideasman42/emacs-with-command-redo")
+                  (commit commit)))
+           (file-name (git-file-name name version))
+           (sha256
+            (base32
+             "0kn6mlim6an53kwh09fiyvjgavm42l7sdmb3nsrmw47dky2za827"))))
+      (build-system emacs-build-system)
+      (arguments
+        (list #:test-command #~(list "make" "test")))
+      (native-inputs
+        (list python-wrapper))
+      (home-page "https://codeberg.org/ideasman42/emacs-with-command-redo")
+      (synopsis "Repeat commands with automatic undo")
+      (description
+       "This package provides a generic mechanism for running a command repeatedly where
+  each successive call undoes the previous result before applying the next.
+  Consumers build cycling, completion, or other repeat-with-redo behaviors on top.")
+      (license license:gpl3+))))
+
 (define-public emacs-meep
   ;; No tagged releases. Version taken from meep.el.
   (let ((commit "de7f3c51bcfcb54417f3c59ae9db2ce24d9ec7bd")
