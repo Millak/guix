@@ -225,7 +225,6 @@
            kcoreaddons
            kguiaddons
            kio
-           kjs
            kwidgetsaddons
            libcloudproviders
            libp11
