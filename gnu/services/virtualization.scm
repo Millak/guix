@@ -1731,8 +1731,9 @@ CONFIG, a <virtual-build-machine>, is up and running."
                          (or (connect sock address)
                              ;; Wait for at most 0.5s to avoid blocking the
                              ;; build process for too long.
-                             (match (select (list sock) '() '() 0 500000)
-                               (((_) () ()) #t)
+                             (match (select '() (list sock) '() 0 500000)
+                               ((() (_) ())
+                                (false-if-exception (connect sock address)))
                                (_ #f))))
 
                        (close-port sock)
