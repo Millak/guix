@@ -4612,6 +4612,7 @@ fort ok https://github.com/thadeusb/flask-cache.")
     (license license:bsd-3)))
 
 (define-public python-flask-combo-jsonapi
+  ;; XXX: No updates for 3y not compatible with current version of Flask.
   (let ((commit "3cfff98ecdbadc45d25a3fd443ad67d3743be6f5")
         (revision "0"))
     (package
@@ -4629,19 +4630,7 @@ fort ok https://github.com/thadeusb/flask-cache.")
       (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-flags
-        #~(list
-           "-k"
-           (string-join
-            (list
-             ;; XXX: This tests a feature that doesn't make sense when dropping
-             ;; marshmallow < 3 support.
-             "not test_compute_schema_propagate_context"
-             ;; The following tests fail for unknown reasons (see:
-             ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
-             "test_get_list_with_simple_filter_relationship_custom_qs_api"
-             "test_get_list_with_simple_filter_relationship_error")
-            " and not "))
+        #:tests? #f ;deprecation candidate
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'loosen-requirements
