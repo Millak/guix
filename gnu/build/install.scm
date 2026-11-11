@@ -263,6 +263,7 @@ disk."
 
   (let ((tmpdir (string-append target "/tmp")))
     (mkdir-p tmpdir)
+    (chmod tmpdir #o1777)
     (mount tmpdir "/tmp" "none" MS_BIND))
 
   (let* ((rw-dir (string-append target backing-directory))
