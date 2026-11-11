@@ -612,7 +612,7 @@ significantly increases the risk of irreversible data loss!")
 (define-public gocryptfs
   (package
     (name "gocryptfs")
-    (version "2.6.1")
+    (version "2.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -621,7 +621,7 @@ significantly increases the risk of irreversible data loss!")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09cmvfjkv0nazw52f9vxf4br75wlyng81s6vslk5zqydlrqwa0mr"))))
+                "0sb5qr30ahgqbwipwq57z2v2q0wrfd8i8k5fj3djq8b5ldqw3fvk"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -677,6 +677,7 @@ significantly increases the risk of irreversible data loss!")
                     go-golang-org-x-crypto
                     go-golang-org-x-sys
                     go-golang-org-x-term
+                    go-golang-org-x-text
                     openssl
                     pkg-config))
     (inputs (list
