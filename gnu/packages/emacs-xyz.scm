@@ -39085,8 +39085,8 @@ behavior;
 
 (define-public emacs-meep
   ;; No tagged releases. Version taken from meep.el.
-  (let ((commit "de7f3c51bcfcb54417f3c59ae9db2ce24d9ec7bd")
-        (revision "0"))
+  (let ((commit "c83335eb7484eaf8549b2fbf51f8dd2e0223dad8")
+        (revision "1"))
     (package
       (name "emacs-meep")
       (version (git-version "0.0.1" revision commit))
@@ -39099,10 +39099,14 @@ behavior;
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0hbi4jd6h35a12l1y0gs52898lvw3cs9mcxbqwdvazmzz8wzwia7"))))
+           "1411srv70jfn6nlrfhl1qq8jj3j3f9yb96r8g8a31ambq11q3jg8"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:tests? #f))              ; No tests.
+       (list #:test-command #~(list "make" "test")))
+      (native-inputs
+       (list emacs-repeat-fu
+             emacs-with-command-redo
+             python-wrapper))
       (propagated-inputs
        (list emacs-bray))
       (synopsis "Lightweight modal editing functionalities")
