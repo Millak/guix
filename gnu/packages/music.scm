@@ -3208,8 +3208,6 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
 and manipulating rhythms such as accelerandi, taleas, and more.")
     (license license:expat)))
 
-(define-deprecated-package abjad-ext-rmakers python-abjad-ext-rmakers)
-
 (define-public python-pysmf
   (let ((commit "8a98a557470301f5a471d07d37f334a5b8892602")
         (revision "1"))
