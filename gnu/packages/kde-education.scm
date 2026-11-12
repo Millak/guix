@@ -177,9 +177,6 @@ Currently available boards include:
     (license (list license:silofl1.1    ; bundled fonts
                    license:agpl3+))))
 
-;; 2026-02-15
-(define-deprecated-package gcompris gcompris-qt)
-
 (define-public kalgebra
   (package
     (name "kalgebra")
