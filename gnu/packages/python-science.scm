@@ -6535,13 +6535,13 @@ tissue-specificity metrics for gene expression.")
     (arguments
      (list
       #:test-flags
-      ;; Tests are time sensitive.
-      #~(map (lambda (test) (string-append "--deselect=test_perf/" test))
-             (list "test_value_performance.py::test_perf_divmod"
-                   "test_value_performance.py::test_perf_parse_atom"
-                   "test_value_performance.py::test_perf_scale"))
+      #~(list "--ignore=test_perf/")        ;compute instance benchmark tests
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*test_perf.*") ""))))
           (add-after 'unpack 'patch-requirements
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "requirements.txt"
