@@ -1252,8 +1252,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
            python-lxml
            python-markdown
            python-pyenchant
-           python-pyqt
-           qtsvg-5))
+           python-pyqt-6))
     (home-page "http://www.theologeek.ch/manuskript/")
     (synopsis "Tool for writers")
     (description "Manuskript provides a rich environment to help
