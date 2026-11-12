@@ -6257,7 +6257,7 @@ supported plugins.")
 (define-public go-github-com-containernetworking-plugins
   (package
     (name "go-github-com-containernetworking-plugins")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -6266,11 +6266,7 @@ supported plugins.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l3jgbizq0yaxld07hsdbh6ix2w6i789101ddk0ldnsmr93jg6ni"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (delete-file-recursively "vendor")))))
+        (base32 "0f3446777lrlz5pvmswviwrzxiwbbwqv9y8rjvcwkxw0dzqmh3r5"))))
     (build-system go-build-system)
     (arguments
      (list
