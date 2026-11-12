@@ -3179,8 +3179,6 @@ detail of symbols on the page.")
 music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
     (license license:expat)))
 
-(define-deprecated-package abjad-ext-nauert python-abjad-ext-nauert)
-
 (define-public python-abjad-ext-rmakers
   (package
     (name "python-abjad-ext-rmakers")
