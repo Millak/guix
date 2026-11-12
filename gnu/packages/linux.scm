@@ -11146,9 +11146,6 @@ file systems.")
 from the xfsprogs package.  It is meant to be used in initrds.")
     (license (package-license xfsprogs/static))))
 
-(define-deprecated-package xfs_repair/static
-  "xfs_repair-static" xfs-repair/static)
-
 (define-public genext2fs
   (package
     (name "genext2fs")
