@@ -4048,9 +4048,6 @@ to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
 
-;; XXX: Deprecated on <2026-05-02>.
-(define-deprecated-package python-pyliblo python-pyliblo3)
-
 (define-public python-sofa
   (package
     (name "python-sofa")
