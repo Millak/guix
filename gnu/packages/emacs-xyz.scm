@@ -47202,8 +47202,6 @@ different configuration options to org-node 2 so you DO have to set
 it up again.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-org-node-3 emacs-org-node)
-
 (define-public emacs-org-super-links
   (package
     (name "emacs-org-super-links")
