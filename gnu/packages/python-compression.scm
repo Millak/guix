@@ -275,7 +275,7 @@ were a single file.")
 (define-public python-cramjam
   (package
     (name "python-cramjam")
-    (version "2.11.0.post1")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -284,30 +284,14 @@ were a single file.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1028aydcjy7917vsgg67v6cnskzw0wk4x1vz017mar99yiq7z349"))))
+        (base32 "0z1576vlfk4m9x8rj98xz6b9l5agf3hh7i2819yhhjl1z0q5zk7d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 740 passed, 1 skipped, 4 deselected
       #:test-flags
-      #~(list "--ignore=benchmarks/test_bench.py"
-              #$@(map (lambda (test)
-                        (string-append "--deselect=tests/test_variants.py::"
-                                       test))
-                      ;; FIXME: Did not raise cramjam.DecompressionError
-                      (list "test_variants_raise_exception[deflate]"
-                            ;; This test fails nondeterministically.
-                            "test_variants_decompress_into[zlib-Buffer-File]"
-                            ;; could not convert string to float: '<' -
-                            ;; Consider hexadecimal for huge integer literals
-                            ;; to avoid decimal conversion limits.
-                            "test_variants_decompress_into[lz4-numpy-bytes]"
-                            ;; could not convert string to float: 'M' -
-                            ;; Consider hexadecimal for huge integer literals
-                            ;; to avoid decimal conversion limits.
-                            "test_variants_decompress_into[zstd-File-Buffer]")))
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
+      #~(list "--ignore=benchmarks/test_bench.py")
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build pyproject-build-system)
                   (guix build utils))
