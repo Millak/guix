@@ -1506,7 +1506,7 @@ tools in a live programming environment.")
 (define-public noctalia-shell
   (package
     (name "noctalia-shell")
-    (version "5.4.1")
+    (version "5.5.0")
     (source
      (origin
        (method git-fetch)
@@ -1515,12 +1515,13 @@ tools in a live programming environment.")
               (commit (string-append "v" version))))
        (file-name (git-file-name "noctalia" version))
        (sha256
-        (base32 "0ih3aizacgi1v5b5qq907p3j6vsx0wjvnf9hc9gqwasb1dqir8cg"))
+        (base32 "0zr1fhvf6znv741gqcjdcaq59yfdla1fdnbhwvzshds5wfzzjm14"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; All bundled libraries are provided by package inputs.
-            (delete-file-recursively "third_party")))))
+            (delete-file-recursively "third_party")
+            (delete-file-recursively "lib/third_party")))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1535,10 +1536,8 @@ tools in a live programming environment.")
           (add-after 'unpack 'patch-shell-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((shell (search-input-file inputs "bin/sh")))
-                (substitute* (cons* "src/capture/screenshot_service.cpp"
-                                    "src/core/process/process.cpp"
-                                    "src/scripting/luau_host.cpp"
-                                    (find-files "tests" "\\.(sh|cpp)$"))
+                (substitute* (append (find-files "src" "\\.(sh|cpp)$")
+                                     (find-files "tests" "\\.(sh|cpp)$"))
                   (("/bin/sh") shell))
                 (substitute* "assets/dev.noctalia.Noctalia.desktop"
                   (("Exec=sh ")
@@ -1553,7 +1552,14 @@ tools in a live programming environment.")
               (setenv "TMPDIR" "/tmp")))
           (add-before 'check 'set-test-assets-directory
             (lambda _
-              (setenv "NOCTALIA_ASSETS_DIR" "../source/assets")))
+              (setenv "NOCTALIA_ASSETS_DIR" "../source/assets")
+              ;; Copy /lib/assets over to /assets so that they come under
+              ;; NOCATALIA_ASSETS_DIR and be available to tests. Otherwise
+              ;; quite a few tests will fail. The next update will add a new
+              ;; env var that will allow setting the path to /lib/assets
+              ;; separately, and this will be removed
+              (copy-recursively "../source/lib/assets"
+                                "../source/assets")))
           (add-after 'install 'install-documentation
             (lambda _
               (let ((documentation (string-append #$output
