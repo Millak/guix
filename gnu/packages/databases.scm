@@ -4635,26 +4635,37 @@ simple and Pythonic domain language.")
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
-    (version "0.42.1")
+    (version "0.43.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kvesteri/sqlalchemy-utils")
-             (commit version)))
+              (url "https://github.com/kvesteri/sqlalchemy-utils")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ny1p352p0dlgrf9fnmzj7ld1rga5zj698qpla1kdaliwwh6xawn"))))
+        (base32 "06c8bwrcf1d9az4fk6jba8ay2wni3bczk2yniblxd7mydkdq0v3p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; XXX: These tests require additional inputs.
-      #~(list "--deselect=tests/test_views.py::TestMySqlTrivialView"
-              "--deselect=tests/functions/test_database.py::\
-TestDatabasePostgresPg8000::test_create_and_drop"
-              "--deselect=tests/functions/test_database.py::\
-TestDatabasePostgresPsycoPG2CFFI::test_create_and_drop")
+      ;; Tests require pg8000, psycopg2cffi, and pymysql.
+      #~(map (lambda (ls) (string-append "--deselect=tests/"
+                                         (string-join ls "::")))
+             '(("functions/test_database.py" "TestDatabasePostgresPg8000"
+                "test_create_and_drop")
+               ("functions/test_database.py"
+                "TestDatabasePostgresPsycoPG2CFFI" "test_create_and_drop")
+               ("test_views.py" "TestMySqlTrivialView"
+                "test_life_cycle_cascade")
+               ("test_views.py" "TestMySqlTrivialView"
+                "test_life_cycle_no_cascade")
+               ("test_views.py" "TestMySqlTrivialView"
+                "test_life_cycle_replace")
+               ("test_views.py" "TestMySqlTrivialView"
+                "test_life_cycle_replace_existing")
+               ("test_views.py" "TestMySqlTrivialView"
+                "test_replace_materialized")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'start-postgresql
@@ -4670,13 +4681,14 @@ TestDatabasePostgresPsycoPG2CFFI::test_create_and_drop")
                           "-o" (string-append "-k " dbdir)
                           "-l" (string-append dbdir "/db.log")
                           "start")
-	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                  (invoke "psql" "-h" dbdir "-d" "postgres"
                           "-c" "CREATE DATABASE sqlalchemy_utils_test;"))))))))
-    (propagated-inputs (list python-six python-sqlalchemy))
+    (propagated-inputs (list python-sqlalchemy))
     (native-inputs
      (list postgresql
            python-dateutil
            python-flexmock
+           python-psycopg
            python-psycopg2
            python-pytest
            python-pytz
