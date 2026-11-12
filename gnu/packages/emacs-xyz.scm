@@ -29611,9 +29611,6 @@ the format.")
      "@code{nov.el} provides a major mode for reading EPUB documents.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-nov-el
-  emacs-nov)
-
 (define-public epipe
   (package
     (name "epipe")
