@@ -50,14 +50,14 @@
 (define-public scribus
   (package
     (name "scribus")
-    (version "1.6.6")
+    (version "1.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/scribus/scribus/"
                            version "/scribus-" version ".tar.gz"))
        (sha256
-        (base32 "00pydwhgrbvg33c7k9w8fzybxm09lky66jcnhx773a6i8921zszb"))))
+        (base32 "18jd6gzx6lbcvp26v8ihh5k882aklmqsb1yj1qs1byh5ma59155v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test target
