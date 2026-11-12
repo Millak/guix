@@ -35367,9 +35367,6 @@ and extensibility.  It can easily be extended to various Text-to-Text
 conversion scenarios.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-go-translate
-  emacs-gt)
-
 (define-public emacs-google-translate
   (let ((commit "e84599df7c70870b33dd6c902b527d7f78310815")
         (revision "0"))
