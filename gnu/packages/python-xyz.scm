@@ -13442,17 +13442,20 @@ shares the same interface.")
 (define-public python-pdftotext
   (package
     (name "python-pdftotext")
-    (version "3.0.0")
+    (version "4.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pdftotext" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~jalan/pdftotext")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ahs7c0qh3gyafxwrg9p4gcqwcrnc7y57adzm0ama52f2lcjnrf3"))))
+        (base32 "0jmcz9jm4x2zqvpnayqgzdn5kjyjmhwaillhjw01hbfcx54mbb66"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list poppler))
-    (home-page "https://github.com/jalan/pdftotext")
+    (home-page "https://git.sr.ht/~jalan/pdftotext")
     (synopsis "Simple PDF text extraction")
     (description "Pdftotext is a Python library of PDF text extraction.")
     (license license:expat)))
