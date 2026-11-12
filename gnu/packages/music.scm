@@ -4258,9 +4258,6 @@ Standard Recording Code} (ISRCs) from audio CDs and submit them to
 @url{https://musicbrainz.org/, MusicBrainz}.")
     (license license:gpl3+)))
 
- ;; May be removed after 2026-01-31
-(define-deprecated-package python-isrcsubmit isrcsubmit)
-
 (define-public python-pylast
   (package
     (name "python-pylast")
