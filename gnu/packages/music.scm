@@ -3145,8 +3145,6 @@ LilyPond music notation package, you can use Abjad to control the typographic
 detail of symbols on the page.")
     (license license:expat)))
 
-(define-deprecated-package abjad python-abjad)
-
 (define-public python-abjad-ext-nauert
   (package
     (name "python-abjad-ext-nauert")
