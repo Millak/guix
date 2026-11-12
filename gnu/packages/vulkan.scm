@@ -722,7 +722,7 @@ constant management, and opcode emission.")
 (define-public vulkan-validationlayers
   (package
     (name "vulkan-validationlayers")
-    (version "1.4.335.0")
+    (version "1.4.357.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -737,7 +737,7 @@ constant management, and opcode emission.")
                            "")))
               (sha256
                (base32
-                "06kx3769xn6xrk2xjs5k9hpkv8gvmjwn7yvz423yy7d9fzgnn70m"))))
+                "1gfdvbh69699j8jxyy6f5jbr2c366r1fkldk1ala0crwmn5mrv80"))))
     (build-system cmake-build-system)
     (inputs (list glslang
                   libxrandr
@@ -753,7 +753,8 @@ constant management, and opcode emission.")
     (arguments
      (list #:tests? #f ; tests crash on some hardware (various upstream issues)
            #:configure-flags
-           #~(list "-DBUILD_TESTS=ON")
+           #~(list "-DBUILD_TESTS=ON"
+		   "-DUPDATE_DEPS=OFF") ; Disable automatic dependency updates
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'set-layer-path-in-manifest
