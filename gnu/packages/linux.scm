@@ -11787,7 +11787,7 @@ headers.")
 (define-public bcc
   (package
     (name "bcc")
-    (version "0.30.0")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
@@ -11797,7 +11797,7 @@ headers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0b5la0yn6x6ll73drnrm5v5yibbrzkvl86hqivkrmnpgy8cqn0cy"))))
+         "0b7kd2kqk081wl010l0vkz8a5nwq6fknl8h51fsipj2ff6c61rwn"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison
