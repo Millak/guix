@@ -1325,9 +1325,6 @@ MySQL databases, using an API that is compliant with the Python Database API
 Specification v2.0 (PEP 249).")
     (license license:gpl2)))
 
-(define-deprecated-package python-mysql-connector-python
-  mysql-connector-python)
-
 (define-public mariadb
   (package
     (name "mariadb")
