@@ -5181,9 +5181,6 @@ Abstract Syntax Trees} API.")
 Automation} with a focus on usability and extensibility.")
     (license license:eupl1.2)))
 
-(define-deprecated-package symbiyosys
-  sby)
-
 (define-public sv-lang
   (package
     (name "sv-lang")
