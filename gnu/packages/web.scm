@@ -10199,14 +10199,14 @@ the directory and document structures.")
 (define-public siege
   (package
     (name "siege")
-    (version "4.1.7")
+    (version "4.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.joedog.org/siege/siege-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "09ihp4sycjm8ixd0k4c7lyni4b0w2nh8gghdss1r75srs7nhq57c"))))
+                "06ql8ai2yaqxk2njxbzhl2glrmbf4yzp32l850wfnsh826nbzmf0"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--with-zlib="
