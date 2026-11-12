@@ -2333,7 +2333,7 @@ as created by Podman, CRI-O and containerd.")))
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.9.1")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -2342,10 +2342,7 @@ as created by Podman, CRI-O and containerd.")))
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12z6w2jk6xgfiwdxys7skpkxldz1cgaa7scgfcr90lsghay59s6w"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "vendor")))))
+        (base32 "0f3446777lrlz5pvmswviwrzxiwbbwqv9y8rjvcwkxw0dzqmh3r5"))))
     (build-system go-build-system)
     (arguments
      (list
