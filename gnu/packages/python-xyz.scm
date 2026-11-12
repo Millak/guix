@@ -31728,9 +31728,6 @@ CLI commands via setuptools entry-points.")
     (home-page "https://github.com/click-contrib/click-plugins")
     (license license:bsd-3)))
 
-;; XXX: Deprecated on <2026-03-23>.
-(define-deprecated-package python-click-plugins-1 python-click-plugins)
-
 (define-public python-diceware
   (package
     (name "python-diceware")
