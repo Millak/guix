@@ -2183,7 +2183,7 @@ overlaybd image
 (define-public buildah
   (package
     (name "buildah")
-    (version "1.44.1")
+    (version "1.46.1")
     (source
      (origin
        (method git-fetch)
@@ -2191,7 +2191,7 @@ overlaybd image
              (url "https://github.com/containers/buildah")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0ivy7i0pqzhpsnd38l9favi32vgm0xcsn5bg4cxxqg6yzgw0fshh"))
+        (base32 "1n6apm338czzygfrxwvgx658a0mh50ra5kiai1hyjxy5gskv19pb"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
