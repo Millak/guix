@@ -5716,5 +5716,3 @@ currently has extensive Verilog-2005 support, and performs synthesis of VHDL
 code using external plugins.  It provides a basic set of synthesis algorithms
 for various application domains, including FPGAs and ASICs.")
     (license license:isc)))
-
-(define-deprecated-package yosys-clang yosys)
