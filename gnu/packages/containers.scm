@@ -2580,7 +2580,7 @@ defined in a per-project configuration file.")
 (define-public crun
   (package
     (name "crun")
-    (version "1.30.1")
+    (version "1.31")
     (source
      (origin
        (method git-fetch)
@@ -2590,7 +2590,7 @@ defined in a per-project configuration file.")
               (recursive? #t)))
        (sha256
         (base32
-         "0xcplka3n3blj7yycdxc0v9231fbcpbhn2kx9vdysa5p13bv1hvh"))
+         "1cqz61xadpjd4zgbh21k4cwl95cqds0x0jby8kj3zdzyxrrl69wc"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
