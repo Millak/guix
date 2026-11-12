@@ -1305,8 +1305,6 @@ VPN.  The gratis tier offers unlimited bandwidth for up to 10 devices.")
     (home-page "https://github.com/ProtonVPN/linux-cli")
     (license license:gpl3+)))
 
-(define-deprecated-package protonvpn-cli proton-vpn-cli)
-
 (define-public tinc
   (package
     (name "tinc")
