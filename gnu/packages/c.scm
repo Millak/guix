@@ -1307,9 +1307,6 @@ portability.")
     (license (list license:bsd-2        ;all files except...
                    license:bsd-3))))    ;...the unidef.1 manual page
 
-(define-deprecated/public-alias byacc
-  (@ (gnu packages compiler-tools) byacc))
-
 (define-public argparse
   (package
     (name "argparse")
