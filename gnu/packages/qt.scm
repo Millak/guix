@@ -4998,9 +4998,6 @@ PySide2, PyQt6, PySide6) and additional custom QWidgets.")
 bindings (PySide, PySide2, PyQt4 and PyQt5).")
     (license license:expat)))
 
-;; XXX: Deprecated on <2026-03-13>.
-(define-deprecated-package python-qt.py python-qt-py)
-
 (define-public python-superqt
   ;; XXX: Move to (gnu packages python-graphics) or closer to mantid to
   ;; prevent adding python-science module here.
