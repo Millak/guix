@@ -1305,9 +1305,6 @@ is not available for Guile 2.0.")
      (modify-inputs native-inputs
        (replace "guile" guile-2.2)))))
 
-;; Deprecated on 2026-04-23
-(define-deprecated-package guile-fibers-next guile-fibers)
-
 (define-public guile-kracht
   (package
     (name "guile-kracht")
