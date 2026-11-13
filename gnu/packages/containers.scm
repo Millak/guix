@@ -780,50 +780,6 @@ pulling for Containerd implemented in @code{eStargz} - Standard-Compatible
 Extensions to Tar.gz Layers for Lazy Pulling Container Images.")
     (license license:asl2.0)))
 
-(define-public go-github-com-containernetworking-plugins
-  (package
-    (name "go-github-com-containernetworking-plugins")
-    (version "1.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/containernetworking/plugins")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0f3446777lrlz5pvmswviwrzxiwbbwqv9y8rjvcwkxw0dzqmh3r5"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:tests? #f ;access to /var is required
-      #:import-path "github.com/containernetworking/plugins"))
-    (propagated-inputs
-     (list go-github-com-alexflint-go-filemutex
-           go-github-com-buger-jsonparser
-           go-github-com-containernetworking-cni
-           go-github-com-coreos-go-iptables
-           go-github-com-coreos-go-systemd-v22
-           go-github-com-godbus-dbus-v5
-           go-github-com-insomniacslk-dhcp
-           go-github-com-mattn-go-shellwords
-           ;; go-github-com-microsoft-hcsshim                ;Windows only
-           go-github-com-networkplumbing-go-nft
-           go-github-com-opencontainers-selinux
-           go-github-com-pkg-errors
-           go-github-com-safchain-ethtool
-           go-github-com-vishvananda-netlink
-           go-github-com-vishvananda-netns
-           go-golang-org-x-sys
-           go-sigs-k8s-io-knftables))
-    (home-page "https://github.com/containernetworking/plugins")
-    (synopsis "Reference and example networking plugins")
-    (description
-     "Some @url{https://www.cni.dev, CNI} network plugins, maintained by the
-containernetworking team.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-containers-gvisor-tap-vsock
   (package
     (name "go-github-com-containers-gvisor-tap-vsock")
