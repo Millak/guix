@@ -880,9 +880,9 @@ is based on Vim's builtin plugin support.")
                    ;; nvim remembers its build options, including the compiler with
                    ;; its complete path.  This adds gcc to the closure of nvim, which
                    ;; doubles its size.  We remove the reference here.
-                   (substitute* "cmake.config/versiondef.h.in"
-                     (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
-                   #t))
+                   (substitute* (list "cmake.config/CMakeLists.txt"
+                                      "cmake.config/versiondef.h.in")
+                     (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))))
                (add-after 'install 'install-guix-nvim.vim
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let ((nvimdir (string-append (assoc-ref outputs "out")
