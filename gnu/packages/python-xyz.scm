@@ -10720,7 +10720,7 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.5.3")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -10729,20 +10729,36 @@ bookmarks using a declarative input in the form of a markdown file.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vblgi0mb1jcwgf8f3rslw82g28fjl6n52mwgsm7p7y2nrixdrjb"))))
+        (base32 "0031mvv8wsyipag3hdwdjdrv4ii5ivz3f8m4mm6b1ky3lykxgk6g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1319 passed, 103 skipped, 3 xpassed, 563 warnings
+      ;; tests: 1325 passed, 106 skipped, 8 deselected, 445 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; Disabled to avoid having to depend on ipython/jupyter.
-              "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
+      #~(list "--parallel-threads" (number->string (min 8 (parallel-job-count)))
+              "--iterations" "1"
+              "-k" (string-append
+                    ;; Disabled to avoid dependency on ipython/jupyter.
+                    "not test_parallel_call_cached_function_defined_in_jupyter"
+                    ;; Tests are flaky under the load, see:
+                    ;; <https://github.com/joblib/joblib/issues/1426>.
+                    " and not test_nested_parallel_warnings"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            ;; Taken from project's CI.
+            (lambda _
+              (setenv "JOBLIB_TESTS_DEFAULT_PARALLEL_BACKEND" "threading")
+              (setenv "NO_LZ4" "true")
+              (setenv "NO_NUMPY" "true")
+              (setenv "PYTEST_RUN_PARALLEL_VERBOSE" "1"))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-xdist
+           python-pytest-run-parallel
            python-setuptools))
+    (propagated-inputs
+     (list python-cloudpickle python-psutil))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
     (description
