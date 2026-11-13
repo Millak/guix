@@ -1898,6 +1898,14 @@ description: ~a
                  (map find-team team-names)
                  (hash-map->list (lambda (_ value) value) %teams)))))
 
+(define (all-teams)
+  "Return a list of all teams."
+  (hash-map->list (lambda (_ team) team) %teams))
+
+(define (all-members)
+  "Return a list of all team members."
+  (sort-members (append-map team-members (all-teams))))
+
 
 (define (diff-revisions rev-start rev-end)
   "Return the list of added, modified or removed files between REV-START
@@ -2005,7 +2013,7 @@ and REV-END, two git revision strings."
     (("cc" . team-names)
      (apply cc (map find-team team-names)))
     (("cc-all-team-members")
-     (apply cc (hash-map->list (lambda (_ team) team) %teams)))
+     (apply cc (all-teams)))
     (("cc-members" patch-file)
      (unless (file-exists? patch-file)
        (error "patch file does not exist:" patch-file))
@@ -2034,6 +2042,9 @@ and REV-END, two git revision strings."
       team-names))
     (("show" . team-names)
      (list-teams team-names))
+    (("gcd-quorum")
+     (format #true "~d~%"
+             (inexact->exact (ceiling (* 0.25 (length (all-members)))))))
     (("codeowners")
      (export-codeowners (current-output-port)))
     (("sync-codeberg-teams" token)
@@ -2061,6 +2072,8 @@ Commands:
       compatibility mode with Linux get_maintainer.pl
   show <team-name>
       display <team-name> properties
+  gcd-quorum
+      show how many members are needed for the acceptance of a GCD
   codeowners
       write a 'CODEOWNERS' file suitable for Codeberg on standard output
   sync-codeberg-teams <token>
