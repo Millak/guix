@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -96,6 +97,26 @@
  (scheme-mode
   .
   ((indent-tabs-mode . nil)
+
+   (eval . (setq imenu-generic-expression
+                 (append
+                  `(("Gexp compiler"
+                     ,(rx bol (zero-or-more space)
+                          "(define-gexp-compiler"
+                          (one-or-more space)
+                          (zero-or-one "(")
+                          (group (one-or-more (or word (syntax symbol)))))
+                     1)
+                    ("Test"
+                     ,(rx bol (zero-or-more space)
+                          "(test-"
+                          (or "eq" "equal" "error" "assert" "equalm" "assertm")
+                          (one-or-more space)
+                          ?\"
+                          (group (one-or-more (not (any ?\"))))
+                          ?\")
+                     1))
+                  imenu-generic-expression)))
 
    ;; Emacs 28 changed the behavior of 'lisp-fill-paragraph', which causes the
    ;; first line of package descriptions to extrude past 'fill-column', and
