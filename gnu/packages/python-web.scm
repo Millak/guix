@@ -6561,6 +6561,7 @@ to be used directly, and is instead intended to be used from
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 470 passed, 67 skipped, 212 deselected, 49 subtests passed
       #:test-flags
       ;; We don't have sentence_transformers...
       '(list "--ignore=contrib/sentence_transformers/test_sentence_transformers.py"
@@ -6614,28 +6615,20 @@ to be used directly, and is instead intended to be used from
            python-pyyaml
            python-requests
            python-tqdm
-           python-typing-extensions))
+           python-typing-extensions
+           ;; [optional]
+           python-typer))
     (native-inputs
-     (list python-aiohttp
-           python-fastapi
-           python-jedi
-           python-jinja2
-           python-numpy
-           python-pillow
-           python-pydantic
+     (list python-jedi
            python-pytest
-           python-pytest-asyncio
            python-pytest-env
            python-pytest-mock
            python-pytest-rerunfailures
-           python-pytest-vcr
-           python-pytest-xdist
            python-setuptools
-           python-types-requests
-           python-types-toml
-           python-types-urllib3
-           python-typing-extensions
-           python-urllib3))
+           ;; Test with minimal variants of Web frameworks.
+           python-aiohttp-minimal
+           python-fastapi-minimal
+           python-starlette-minimal))
     (home-page "https://huggingface.co/docs/huggingface_hub/")
     (synopsis "Client library for accessing the huggingface.co hub")
     (description
