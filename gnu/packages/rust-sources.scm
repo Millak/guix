@@ -1188,17 +1188,17 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
 intelligence.")
      (license license:expat))))
 
-;;; Workspace dependency of depolymerization.
+;;; Workspace dependency of depolymerization and libeufin.
 (define-public rust-taler
   ;; Things are a bit unstable at the moment for depolymerization, and
   ;; building from tagged releases does not work.  Use what its Cargo.lock
   ;; refers to for now.
-  (let ((commit "3ce4de773233fad0b30fa5f8cba4efd0bf8dff8f")
-        (revision "2"))
+  (let ((commit "17738972b96f82774532dc162e80815f99feb7ee")
+        (revision "0"))
     (hidden-package
      (package
        (name "rust-taler")
-       (version (git-version "1.6.1" revision commit))
+       (version (git-version "1.6.2" revision commit))
        (source
         (origin
           (method git-fetch)
@@ -1208,7 +1208,7 @@ intelligence.")
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "0gyj5c6ffrsg71ilhw7n6b53qmcaxj011x0rsc7xn909pfyi8kxk"))))
+            "1rrjwdivxvsyb10jziqf9r50ap6dlzqsnpx3z7s7l81izhki7r8w"))))
        (build-system cargo-build-system)
        (arguments
         (list

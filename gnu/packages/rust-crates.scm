@@ -10079,6 +10079,10 @@ fn main() {
   (crate-source "errno" "0.3.14"
                 "1szgccmh8vgryqyadg8xd58mnwwicf39zmin3bsn63df2wbbgjir"))
 
+(define rust-errno-0.3.15
+  (crate-source "errno" "0.3.15"
+                "0xj7g0gdrgylxchyzxpfvvb5322j87zbhgal3pjr1fyfyiw6wpg3"))
+
 (define rust-errno-dragonfly-0.1.2
   (crate-source "errno-dragonfly" "0.1.2"
                 "1grrmcm6q8512hkq5yzch3yv8wafflc2apbmsaabiyk44yqz2s5a"))
@@ -10365,7 +10369,7 @@ fn main() {
   (crate-source "failure_derive" "0.1.8"
                 "1936adqqk080439kx2bjf1bds7h89sg6wcif4jw0syndcv3s6kda"))
 
-(define rust-failure-injection-1.5.0.3ce4de7
+(define rust-failure-injection-1.5.0.1773897
   package:rust-taler)
 
 (define rust-fake-simd-0.1.2
@@ -16440,7 +16444,7 @@ fn main() {
   (crate-source "http-cache-semantics" "2.1.1"
                 "0abi9v57fkyg42x1s4pbj6lf8snxknq81ibx6cifcvybjh7j84a3"))
 
-(define rust-http-client-1.5.0.3ce4de7
+(define rust-http-client-1.5.0.1773897
   package:rust-taler)
 
 (define rust-http-content-range-0.2.4
@@ -26996,6 +27000,10 @@ fn main() {
   (crate-source "prometheus-client" "0.25.1"
                 "1hpzm4gj85z3jywr04ihf17z4h71ddl1aad6qibqynjzl08xr10p"))
 
+(define rust-prometheus-client-0.25.2
+  (crate-source "prometheus-client" "0.25.2"
+                "15p6h8gs7qzwggnk6prmas7sna0hq2la064xfr2hzrl0pzbhl5bd"))
+
 (define rust-prometheus-client-derive-encode-0.5.1
   (crate-source "prometheus-client-derive-encode" "0.5.1"
                 "1r4hz19zkrn6ivb078w94yf3x420chx3fb0cl9j4zybgd6a4iqq1"))
@@ -29720,6 +29728,10 @@ fn main() {
   (crate-source "rpassword" "7.5.4"
                 "15n1fgzr5x17bwp5ydmrmr5gmn0bclww9clwvr9x1qs7byhid8rd"))
 
+(define rust-rpassword-7.5.5
+  (crate-source "rpassword" "7.5.5"
+                "0r04pvgl73dvmd4jm44l7m58bqf6hls3szzi3zv8sqab63cwb8hz"))
+
 (define rust-rpds-1.2.0
   (crate-source "rpds" "1.2.0"
                 "0d7vpyignq837rh9wgcrq53xplsg5b85a3bcbq0x7m0rx22z8xcy"))
@@ -30577,6 +30589,10 @@ fn main() {
 (define rust-rustls-webpki-0.103.16
   (crate-source "rustls-webpki" "0.103.16"
                 "10djm2f00xzi5qlbcfqjhhn2smk2h9aw8b4l74qncz4xsfvb2hs4"))
+
+(define rust-rustls-webpki-0.103.17
+  (crate-source "rustls-webpki" "0.103.17"
+                "1m9zhn7hxx8xkn16833cd6634z6l045rf72sr8zq453wi057d873"))
 
 (define rust-rustls-webpki-0.103.4
   (crate-source "rustls-webpki" "0.103.4"
@@ -34444,19 +34460,19 @@ fn main() {
   (crate-source "take-until" "0.2.0"
                 "1fqbg8pk6yl03k9pr411h6fvj8ygknx42w3bwv0khyx6vyh6znwb"))
 
-(define rust-taler-api-1.5.0.3ce4de7
+(define rust-taler-api-1.5.0.1773897
   package:rust-taler)
 
-(define rust-taler-build-1.5.0.3ce4de7
+(define rust-taler-build-1.5.0.1773897
   package:rust-taler)
 
-(define rust-taler-common-1.5.0.3ce4de7
+(define rust-taler-common-1.5.0.1773897
   package:rust-taler)
 
-(define rust-taler-macros-1.5.0.3ce4de7
+(define rust-taler-macros-1.5.0.1773897
   package:rust-taler)
 
-(define rust-taler-test-utils-1.5.0.3ce4de7
+(define rust-taler-test-utils-1.5.0.1773897
   package:rust-taler)
 
 (define rust-tame-index-0.22.0
@@ -37904,6 +37920,10 @@ fn main() {
   (crate-source "unicode-properties" "0.1.4"
                 "07fpm3sqq7lm9gmgpxa93z31q933h3c3ypfwy4cdh6l42g3miw3x"))
 
+(define rust-unicode-properties-0.1.5
+  (crate-source "unicode-properties" "0.1.5"
+                "0cqq9jq11jnxr8x8cxa0c1fz5q0k2kz1r00jadsvms10xf3x4flr"))
+
 (define rust-unicode-reverse-1.0.9
   (crate-source "unicode-reverse" "1.0.9"
                 "0xhcybbgy0l8s8n7sfd6hxi854f8znlxqkspzfnr8c62xf44hvsb"))
@@ -40509,6 +40529,10 @@ fn main() {
 (define rust-webpki-roots-1.0.11
   (crate-source "webpki-roots" "1.0.11"
                 "0wgidma8qmksdhmx8pnbpg8m1zx08llqbqz7gn7br1xjnaxq1wpm"))
+
+(define rust-webpki-roots-1.0.12
+  (crate-source "webpki-roots" "1.0.12"
+                "15qjddsxq07bvzb8456m3r5zazp71slqsb9ck4f73a0n3hqcjrbj"))
 
 (define rust-webpki-roots-1.0.3
   (crate-source "webpki-roots" "1.0.3"
@@ -55489,7 +55513,7 @@ fn main() {
                          rust-errno-0.3.14
                          rust-etcetera-0.11.0
                          rust-event-listener-5.4.2
-                         rust-failure-injection-1.5.0.3ce4de7
+                         rust-failure-injection-1.5.0.1773897
                          rust-fastrand-2.5.0
                          rust-fd-lock-4.0.4
                          rust-find-msvc-tools-0.1.15
@@ -55663,11 +55687,11 @@ fn main() {
                          rust-syn-3.0.9
                          rust-sync-wrapper-1.0.2
                          rust-synstructure-0.14.0
-                         rust-taler-api-1.5.0.3ce4de7
-                         rust-taler-build-1.5.0.3ce4de7
-                         rust-taler-common-1.5.0.3ce4de7
-                         rust-taler-macros-1.5.0.3ce4de7
-                         rust-taler-test-utils-1.5.0.3ce4de7
+                         rust-taler-api-1.5.0.1773897
+                         rust-taler-build-1.5.0.1773897
+                         rust-taler-common-1.5.0.1773897
+                         rust-taler-macros-1.5.0.1773897
+                         rust-taler-test-utils-1.5.0.1773897
                          rust-tempfile-3.27.0
                          rust-thiserror-2.0.21
                          rust-thiserror-impl-2.0.21
@@ -72817,7 +72841,7 @@ fn main() {
                  rust-http-1.5.0
                  rust-http-body-1.1.0
                  rust-http-body-util-0.1.5
-                 rust-http-client-1.5.0.3ce4de7
+                 rust-http-client-1.5.0.1773897
                  rust-http-range-header-0.4.2
                  rust-httparse-1.10.1
                  rust-httpdate-1.0.3
@@ -72995,11 +73019,11 @@ fn main() {
                  rust-synstructure-0.14.0
                  rust-system-configuration-0.7.0
                  rust-system-configuration-sys-0.6.0
-                 rust-taler-api-1.5.0.3ce4de7
-                 rust-taler-build-1.5.0.3ce4de7
-                 rust-taler-common-1.5.0.3ce4de7
-                 rust-taler-macros-1.5.0.3ce4de7
-                 rust-taler-test-utils-1.5.0.3ce4de7
+                 rust-taler-api-1.5.0.1773897
+                 rust-taler-build-1.5.0.1773897
+                 rust-taler-common-1.5.0.1773897
+                 rust-taler-macros-1.5.0.1773897
+                 rust-taler-test-utils-1.5.0.1773897
                  rust-tempfile-3.27.0
                  rust-thiserror-2.0.21
                  rust-thiserror-impl-2.0.21
@@ -108249,7 +108273,6 @@ fn main() {
               rust-axum-macros-0.5.1
               rust-base64-0.22.1
               rust-base64-0.23.1
-              rust-bitflags-1.3.2
               rust-bitflags-2.13.2
               rust-block-buffer-0.10.4
               rust-block-buffer-0.12.1
@@ -108258,7 +108281,7 @@ fn main() {
               rust-bytes-1.12.1
               rust-cast-0.3.0
               rust-castaway-0.2.4
-              rust-cc-1.10.0
+              rust-cc-1.11.1
               rust-cfg-if-1.0.5
               rust-chacha20-0.10.2
               rust-chrono-0.4.45
@@ -108290,14 +108313,11 @@ fn main() {
               rust-crunchy-0.2.4
               rust-crypto-common-0.1.6
               rust-crypto-common-0.2.2
-              rust-ctutils-0.4.7
+              rust-ctutils-0.4.8
               rust-darling-0.24.1
               rust-darling-core-0.24.1
               rust-darling-macro-0.24.1
               rust-dashmap-6.2.1
-              rust-defmt-1.2.0
-              rust-defmt-macros-1.2.0
-              rust-defmt-parser-1.1.0
               rust-derive-more-2.1.1
               rust-derive-more-impl-2.1.1
               rust-diff-0.1.13
@@ -108310,13 +108330,13 @@ fn main() {
               rust-dunce-1.0.5
               rust-either-1.19.0
               rust-equivalent-1.0.3
-              rust-errno-0.3.14
+              rust-errno-0.3.15
               rust-etcetera-0.11.0
               rust-event-listener-5.4.2
               rust-fastrand-2.5.0
               rust-fd-lock-4.0.4
               rust-find-msvc-tools-0.1.15
-              rust-flate2-1.1.10
+              rust-flate2-1.1.11
               rust-flume-0.12.0
               rust-fnv-1.0.7
               rust-foldhash-0.2.0
@@ -108368,10 +108388,10 @@ fn main() {
               rust-indexmap-2.14.2
               rust-is-terminal-polyfill-1.70.2
               rust-itertools-0.13.0
-              rust-itoa-1.0.18
-              rust-jiff-0.2.38
-              rust-jiff-core-0.1.1
-              rust-jiff-static-0.2.38
+              rust-itoa-1.0.19
+              rust-jiff-0.2.43
+              rust-jiff-core-0.1.5
+              rust-jiff-static-0.2.43
               rust-jiff-tzdb-0.1.9
               rust-jiff-tzdb-platform-0.1.3
               rust-jni-0.22.4
@@ -108379,7 +108399,7 @@ fn main() {
               rust-jni-sys-0.4.1
               rust-jni-sys-macros-0.4.1
               rust-jobserver-0.1.35
-              rust-js-sys-0.3.106
+              rust-js-sys-0.3.107
               rust-lazy-static-1.5.1
               rust-libc-0.2.191
               rust-libredox-0.1.25
@@ -108389,11 +108409,11 @@ fn main() {
               rust-litemap-0.8.3
               rust-litrs-1.0.1
               rust-lock-api-0.4.14
-              rust-log-0.4.34
+              rust-log-0.4.35
               rust-matchit-0.8.4
               rust-md-5-0.11.0
               rust-memchr-2.8.3
-              rust-mime-0.3.17
+              rust-mime-0.3.18
               rust-mio-1.2.4
               rust-nu-ansi-term-0.50.3
               rust-num-traits-0.2.19
@@ -108417,7 +108437,7 @@ fn main() {
               rust-potential-utf-0.1.6
               rust-pretty-assertions-1.4.1
               rust-proc-macro2-1.0.107
-              rust-prometheus-client-0.25.1
+              rust-prometheus-client-0.25.2
               rust-prometheus-client-derive-encode-0.5.1
               rust-quote-1.0.47
               rust-r-efi-6.0.0
@@ -108429,16 +108449,16 @@ fn main() {
               rust-regex-automata-0.4.18
               rust-regex-syntax-0.8.11
               rust-ring-0.17.14
-              rust-rpassword-7.5.4
+              rust-rpassword-7.5.5
               rust-rtoolbox-0.0.6
               rust-rustc-version-0.4.1
               rust-rustix-1.1.6
               rust-rustls-0.23.46
               rust-rustls-native-certs-0.8.5
-              rust-rustls-pki-types-1.15.1
+              rust-rustls-pki-types-1.16.0
               rust-rustls-platform-verifier-0.7.1
               rust-rustls-platform-verifier-android-0.2.0
-              rust-rustls-webpki-0.103.16
+              rust-rustls-webpki-0.103.17
               rust-rustversion-1.0.23
               rust-ryu-1.0.23
               rust-same-file-1.0.6
@@ -108466,7 +108486,7 @@ fn main() {
               rust-simd-cesu8-1.2.0
               rust-simdutf8-0.1.5
               rust-slab-0.4.12
-              rust-smallvec-1.16.4
+              rust-smallvec-1.16.5
               rust-socket2-0.6.5
               rust-spin-0.9.9
               rust-sqlx-0.9.0
@@ -108486,7 +108506,7 @@ fn main() {
               rust-strum-macros-0.28.0
               rust-subtle-2.6.1
               rust-syn-2.0.119
-              rust-syn-3.0.9
+              rust-syn-3.0.10
               rust-sync-wrapper-1.0.2
               rust-synstructure-0.14.0
               rust-tempfile-3.27.0
@@ -108515,7 +108535,7 @@ fn main() {
               rust-unicode-bidi-0.3.18
               rust-unicode-ident-1.0.27
               rust-unicode-normalization-0.1.26
-              rust-unicode-properties-0.1.4
+              rust-unicode-properties-0.1.5
               rust-unicode-segmentation-1.13.3
               rust-unicode-width-0.2.3
               rust-untrusted-0.7.1
@@ -108524,7 +108544,7 @@ fn main() {
               rust-utf8-iter-1.1.0
               rust-utf8parse-0.2.2
               rust-utf-types-1.0.0
-              rust-uuid-1.29.0
+              rust-uuid-1.29.2
               rust-valuable-0.1.1
               rust-vcpkg-0.2.15
               rust-version-check-0.9.5
@@ -108532,13 +108552,13 @@ fn main() {
               rust-walkdir-2.5.0
               rust-want-0.3.2
               rust-wasi-0.11.1+wasi-snapshot-preview1
-              rust-wasm-bindgen-0.2.129
-              rust-wasm-bindgen-macro-0.2.129
-              rust-wasm-bindgen-macro-support-0.2.129
-              rust-wasm-bindgen-shared-0.2.129
-              rust-web-sys-0.3.106
-              rust-webpki-root-certs-1.0.11
-              rust-webpki-roots-1.0.11
+              rust-wasm-bindgen-0.2.130
+              rust-wasm-bindgen-macro-0.2.130
+              rust-wasm-bindgen-macro-support-0.2.130
+              rust-wasm-bindgen-shared-0.2.130
+              rust-web-sys-0.3.107
+              rust-webpki-root-certs-1.0.12
+              rust-webpki-roots-1.0.12
               rust-whoami-2.1.3
               rust-winapi-0.3.9
               rust-winapi-i686-pc-windows-gnu-0.4.0
