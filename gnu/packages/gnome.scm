@@ -8435,6 +8435,59 @@ contacts, tasks, and calendar information.  It was originally developed for
 Evolution (hence the name), but is now used by other packages as well.")
     (license license:lgpl2.0)))
 
+(define-public evolution-ews
+  (package
+    (name "evolution-ews")
+    (version "3.60.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/evolution-ews/"
+                           (version-major+minor version) "/"
+                           "evolution-ews-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0d4rinm8fq5wyp1zhsz1fhm1x9d2x19309lnvvk21pdwndzwzlnc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                    ;there are no tests
+      #:configure-flags
+      ;; Evolution-EWS normally installs its backend modules and Camel
+      ;; providers into the directories reported by evolution-data-server's
+      ;; and evolution's pkg-config files, which are in the store.
+      ;; FORCE_INSTALL_PREFIX rewrites those directories so that everything
+      ;; is installed under this package's own output instead.
+      #~(list "-DFORCE_INSTALL_PREFIX=ON")))
+    (native-inputs
+     (list `(,glib "bin")
+           intltool
+           pkg-config))
+    (inputs
+     (list evolution
+           evolution-data-server
+           dbus
+           gdk-pixbuf
+           glib
+           gnome-desktop
+           gtk+
+           json-glib
+           libical
+           libmspack
+           libsoup
+           libxml2
+           webkitgtk-for-gtk3
+           xz
+           zlib))
+    (home-page "https://gitlab.gnome.org/GNOME/evolution-ews")
+    (synopsis "Microsoft Exchange Web Services support for Evolution")
+    (description
+     "Evolution-EWS is an Evolution Data Server backend that provides access to
+Microsoft Exchange servers through the Exchange Web Services (EWS) protocol.
+It adds mail, calendar and address book backends to Evolution, including
+support for Microsoft 365 and Office 365 accounts via OAuth 2.0.")
+    (license license:lgpl2.1)))
+
 (define-public network-manager
   (package
     (name "network-manager")
