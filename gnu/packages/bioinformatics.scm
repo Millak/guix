@@ -3782,7 +3782,13 @@ the managed genomes, STAR indexing and mapping and more.")
       #:test-flags
       ;; Assertion is not equal.
       #~(list (string-append "--deselect=pygam/tests/test_gridsearch.py::"
-                             "test_gridsearch_all_dimensions_independent"))))
+                             "test_gridsearch_all_dimensions_independent"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("scipy>=1.11.1,<1.17") "scipy")))))))
     (native-inputs
      (list python-matplotlib
            python-mock
