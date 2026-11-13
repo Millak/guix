@@ -722,45 +722,28 @@ line utility to manage image metadata.")
 (define-public python-pyglet
   (package
     (name "python-pyglet")
-    (version "2.0.18")
+    (version "2.1.19")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyglet" version))
        (sha256
-        (base32 "1p4rizj81vfqxal288m3afbrgk0il3w7k5kmhai2sah8f26j7ybw"))))
+        (base32 "1gplv76hiiwqnqs6c61lczb0cqz2nywvl156gf8n034lvwjf1ykp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 666 passed, 19 skipped, 2 deselected, 2 xfailed
       #:test-flags
-      #~(list "tests"
-              "--ignore=tests/interactive"
-              ;; All tests errored
-              "--ignore=tests/integration/media/test_openal.py"
-              "--ignore=tests/integration/text/test_empty_document.py"
-              ;; Tests failed
-              "-k" (string-append "not test2"
-                                  " and not test5"
-                                  " and not testPad"
-                                  " and not testPad"
-                                  " and not testRange"
-                                  " and not testRect"
-                                  " and not testRect"
-                                  " and not testSet"
-                                  " and not testSquare"
-                                  " and not testSquare"
-                                  " and not testTuple"
-                                  " and not testTupleRange"
-                                  " and not test_context_noshare_texture"
-                                  " and not test_context_share_texture"
-                                  " and not test_method"
-                                  " and not test_openal_listener"
-                                  " and not test_parse_all_controller_mappings"
-                                  " and not test_player_play"
-                                  " and not test_player_play_multiple"
-                                  " and not test_stream_write_needed"
-                                  " and not test_window_caption"
-                                  " and not test_window_caption_from_argv"))
+      ;; XXX: Try to run intarctive tests as well.
+      ;; pyglet.media.drivers.openal.interface.OpenALException: OpenAL
+      ;; Exception [40964: b'Invalid Value']: Failed to open device.
+      #~(list (string-append "--deselect=tests/unit/media/test_listener.py"
+                             "::test_openal_listener")
+              ;;  AttributeError: module 'pyglet.window' has no attribute
+              ;;  'xlib'
+              (string-append "--deselect=tests/unit/test_input.py"
+                             "::test_parse_all_controller_mappings")
+         "tests/base" "tests/unit")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-lib-paths
@@ -774,6 +757,8 @@ line utility to manage image metadata.")
                                  "pyglet/libs/x11/xf86vmode.py"
                                  "pyglet/libs/x11/xinerama.py"
                                  "pyglet/libs/x11/xlib.py"
+                                 "pyglet/libs/x11/xrandr.py"
+                                 "pyglet/libs/x11/xrender.py"
                                  "pyglet/libs/x11/xsync.py"
                                  "pyglet/media/drivers/openal/lib_openal.py"
                                  "pyglet/media/drivers/pulse/lib_pulseaudio.py")
@@ -818,7 +803,14 @@ line utility to manage image metadata.")
                          "lib/libopenal.so"))
                 (("'pulse'")
                  (format #f "'~a/~a'" #$(this-package-input "pulseaudio")
-                         "lib/libpulse.so")))))
+                         "lib/libpulse.so"))
+                (("[\"']Xrandr[\"']")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libXrandr.so.2")))
+                (("\"Xrender\"")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libXrender.so.1"))
+                 ))))
           (add-before 'check 'prepare-test-environment
             (lambda _
               ;; The test suite requires a running X server.
@@ -843,6 +835,8 @@ line utility to manage image metadata.")
            libx11
            libxext
            libxinerama
+           libxrandr
+           libxrender
            libxxf86vm
            mesa
            openal
