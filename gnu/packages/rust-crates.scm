@@ -18460,6 +18460,10 @@ fn main() {
   (crate-source "jiff" "0.2.38"
                 "10x38b9qb1b47mq54d9j4ljkpk7i5ygvknn0lf4h1sybbmqhbc5j"))
 
+(define rust-jiff-0.2.39
+  (crate-source "jiff" "0.2.39"
+                "0g7ghdl0minhwgkwf036ld5lmcdnwbf7kf5h75f9xj5si82h7irs"))
+
 (define rust-jiff-0.2.41
   (crate-source "jiff" "0.2.41"
                 "0fk2f7bx4qmckg1jarhyqhglh42nslkk8bl50628zb2rmkpxrvzw"))
@@ -18487,6 +18491,10 @@ fn main() {
 (define rust-jiff-core-0.1.1
   (crate-source "jiff-core" "0.1.1"
                 "130jqxlbrmll1ahvm9lwr06grmzpmnx5wc6j0n8crkiw0ivgwljy"))
+
+(define rust-jiff-core-0.1.2
+  (crate-source "jiff-core" "0.1.2"
+                "14qf99yrvnzm8rsvz7va43kgij398x26wpfk6s6gpfjkxc4k7r5f"))
 
 (define rust-jiff-core-0.1.4
   (crate-source "jiff-core" "0.1.4"
@@ -18539,6 +18547,10 @@ fn main() {
 (define rust-jiff-static-0.2.38
   (crate-source "jiff-static" "0.2.38"
                 "0p39a035j9c634llmr8lh1jz7ml8gqrbsla4d3j7wz6gadr83j9c"))
+
+(define rust-jiff-static-0.2.39
+  (crate-source "jiff-static" "0.2.39"
+                "0gd96qg3jvxapr4a06nbrq2dq4skjbx06hxprklx1dvyqrq29hvd"))
 
 (define rust-jiff-static-0.2.41
   (crate-source "jiff-static" "0.2.41"
@@ -55451,7 +55463,7 @@ fn main() {
                          rust-bytes-1.12.1
                          rust-cast-0.3.0
                          rust-castaway-0.2.4
-                         rust-cc-1.10.0
+                         rust-cc-1.11.0
                          rust-cfg-if-1.0.5
                          rust-chacha20-0.10.2
                          rust-chrono-0.4.45
@@ -55487,7 +55499,7 @@ fn main() {
                          rust-crypto-common-0.2.2
                          rust-csv-1.4.0
                          rust-csv-core-0.1.13
-                         rust-ctutils-0.4.7
+                         rust-ctutils-0.4.8
                          rust-darling-0.24.1
                          rust-darling-core-0.24.1
                          rust-darling-macro-0.24.1
@@ -55570,13 +55582,13 @@ fn main() {
                          rust-is-terminal-polyfill-1.70.2
                          rust-itertools-0.13.0
                          rust-itoa-1.0.18
-                         rust-jiff-0.2.38
-                         rust-jiff-core-0.1.1
-                         rust-jiff-static-0.2.38
+                         rust-jiff-0.2.39
+                         rust-jiff-core-0.1.2
+                         rust-jiff-static-0.2.39
                          rust-jiff-tzdb-0.1.9
                          rust-jiff-tzdb-platform-0.1.3
                          rust-jobserver-0.1.35
-                         rust-js-sys-0.3.106
+                         rust-js-sys-0.3.107
                          rust-lazy-static-1.5.1
                          rust-libc-0.2.191
                          rust-libredox-0.1.25
@@ -55586,7 +55598,7 @@ fn main() {
                          rust-litemap-0.8.3
                          rust-litrs-1.0.1
                          rust-lock-api-0.4.14
-                         rust-log-0.4.34
+                         rust-log-0.4.35
                          rust-matchit-0.8.4
                          rust-md-5-0.11.0
                          rust-memchr-2.8.3
@@ -55617,7 +55629,7 @@ fn main() {
                          rust-powerfmt-0.2.1
                          rust-pretty-assertions-1.4.1
                          rust-proc-macro2-1.0.107
-                         rust-prometheus-client-0.25.1
+                         rust-prometheus-client-0.25.2
                          rust-prometheus-client-derive-encode-0.5.1
                          rust-proptest-1.12.0
                          rust-quickcheck-1.1.0
@@ -55719,7 +55731,7 @@ fn main() {
                          rust-unicode-bidi-0.3.18
                          rust-unicode-ident-1.0.27
                          rust-unicode-normalization-0.1.26
-                         rust-unicode-properties-0.1.4
+                         rust-unicode-properties-0.1.5
                          rust-unicode-segmentation-1.13.3
                          rust-unicode-width-0.2.3
                          rust-untrusted-0.7.1
@@ -55735,11 +55747,11 @@ fn main() {
                          rust-vte-0.14.1
                          rust-walkdir-2.5.0
                          rust-wasi-0.11.1+wasi-snapshot-preview1
-                         rust-wasm-bindgen-0.2.129
-                         rust-wasm-bindgen-macro-0.2.129
-                         rust-wasm-bindgen-macro-support-0.2.129
-                         rust-wasm-bindgen-shared-0.2.129
-                         rust-web-sys-0.3.106
+                         rust-wasm-bindgen-0.2.130
+                         rust-wasm-bindgen-macro-0.2.130
+                         rust-wasm-bindgen-macro-support-0.2.130
+                         rust-wasm-bindgen-shared-0.2.130
+                         rust-web-sys-0.3.107
                          rust-webpki-roots-1.0.11
                          rust-whoami-2.1.3
                          rust-winapi-0.3.9
