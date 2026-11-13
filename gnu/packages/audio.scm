@@ -3036,29 +3036,19 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
               (sha256
                (base32
                 "0pa1npwa7rhf07m3f77828jh45drlqdgk6qip9ndhfhyhmvwgxf2"))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
      (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(let ((dir (string-append "FreePatsGM-SF2-" #$version))
-              (file (string-append "FreePatsGM-" #$version ".sf2"))
-              (out (string-append %output "/share/soundfonts"))
-              (doc (string-append %output "/share/doc/freepats-gm-" #$version)))
-          (use-modules (guix build utils))
-          (invoke (search-input-file %build-inputs "/bin/7z")
-                  "e" (assoc-ref %build-inputs "source")
-                  (string-append dir "/" file)
-                  (string-append dir "/gpl.txt")
-                  (string-append dir "/cc0.txt")
-                  (string-append dir "/readme.txt"))
-          (mkdir-p out)
-          (copy-file file (string-append out "/FreePatsGM.sf2"))
-          (mkdir-p doc)
-          (for-each
-           (lambda (file)
-             (copy-file file (string-append doc "/" file)))
-           (find-files "." "\\.txt$")))))
+      #:install-plan
+      #~'((#$(string-append "FreePatsGM-" version ".sf2")
+           "share/soundfonts/FreePatsGM.sf2")
+          ("." #$(string-append "share/doc/freepats-gm-" version)
+           #:include-regexp ("\\.txt$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "7z" "e" (assoc-ref inputs "source")))))))
     (native-inputs (list 7zip))
     (home-page "https://freepats.zenvoid.org/SoundSets/general-midi.html")
     (synopsis "General MIDI sound set")
