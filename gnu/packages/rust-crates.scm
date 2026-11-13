@@ -43165,6 +43165,10 @@ fn main() {
   (crate-source "zip" "9.1.3"
                 "1jvcwaz17n4nywi03bggyw5pdcqcbr2m02iiqacvjd1a2jfv6mhi"))
 
+(define rust-zip-9.3.0
+  (crate-source "zip" "9.3.0"
+                "09h4v3v1sd9pwmvk16i5nzx44mp657nnv6c6ynp4jnv0s8b7zsza"))
+
 (define rust-zipsign-api-0.1.5
   (crate-source "zipsign-api" "0.1.5"
                 "1h20rb71gcidgjclw19nz0hfb0dyk8v6vlddcnkxknrcz0zhd9nv"))
@@ -72750,7 +72754,7 @@ fn main() {
                  rust-bytes-1.12.1
                  rust-calamine-0.37.0
                  rust-castaway-0.2.4
-                 rust-cc-1.10.0
+                 rust-cc-1.11.0
                  rust-cfg-if-1.0.5
                  rust-cfg-aliases-0.2.2
                  rust-chacha20-0.10.2
@@ -72778,14 +72782,14 @@ fn main() {
                  rust-cpufeatures-0.3.1
                  rust-crc-3.4.0
                  rust-crc-catalog-2.5.0
-                 rust-crc32fast-1.5.3
+                 rust-crc32fast-1.5.4
                  rust-crossbeam-queue-0.3.14
                  rust-crossbeam-utils-0.8.23
                  rust-crossterm-0.29.0
                  rust-crossterm-winapi-0.9.1
                  rust-crypto-common-0.1.6
                  rust-crypto-common-0.2.2
-                 rust-ctutils-0.4.7
+                 rust-ctutils-0.4.8
                  rust-darling-0.24.1
                  rust-darling-core-0.24.1
                  rust-darling-macro-0.24.1
@@ -72810,7 +72814,7 @@ fn main() {
                  rust-dunce-1.0.5
                  rust-either-1.19.0
                  rust-encode-unicode-1.0.0
-                 rust-encoding-rs-0.8.42
+                 rust-encoding-rs-0.8.44
                  rust-equivalent-1.0.3
                  rust-errno-0.3.14
                  rust-etcetera-0.11.0
@@ -72878,9 +72882,9 @@ fn main() {
                  rust-ipnet-2.12.2
                  rust-is-terminal-polyfill-1.70.2
                  rust-itoa-1.0.18
-                 rust-jiff-0.2.38
-                 rust-jiff-core-0.1.1
-                 rust-jiff-static-0.2.38
+                 rust-jiff-0.2.39
+                 rust-jiff-core-0.1.2
+                 rust-jiff-static-0.2.39
                  rust-jiff-tzdb-0.1.9
                  rust-jiff-tzdb-platform-0.1.3
                  rust-jni-0.22.4
@@ -72900,7 +72904,7 @@ fn main() {
                  rust-litemap-0.8.3
                  rust-litrs-1.0.1
                  rust-lock-api-0.4.14
-                 rust-log-0.4.34
+                 rust-log-0.4.35
                  rust-lru-slab-0.1.3
                  rust-matchit-0.8.4
                  rust-md-5-0.11.0
@@ -72940,7 +72944,7 @@ fn main() {
                  rust-ppv-lite86-0.2.21
                  rust-pretty-assertions-1.4.1
                  rust-proc-macro2-1.0.107
-                 rust-prometheus-client-0.25.1
+                 rust-prometheus-client-0.25.2
                  rust-prometheus-client-derive-encode-0.5.1
                  rust-quick-xml-0.42.0
                  rust-quinn-0.11.12
@@ -73070,7 +73074,7 @@ fn main() {
                  rust-unicode-bidi-0.3.18
                  rust-unicode-ident-1.0.27
                  rust-unicode-normalization-0.1.26
-                 rust-unicode-properties-0.1.4
+                 rust-unicode-properties-0.1.5
                  rust-unicode-segmentation-1.13.3
                  rust-unicode-width-0.2.3
                  rust-unicode-xid-0.2.6
@@ -73138,7 +73142,7 @@ fn main() {
                  rust-zerotrie-0.2.5
                  rust-zerovec-0.11.9
                  rust-zerovec-derive-0.11.7
-                 rust-zip-9.1.3
+                 rust-zip-9.3.0
                  rust-zlib-rs-0.6.8
                  rust-zmij-1.0.23
                  rust-zopfli-0.8.4))

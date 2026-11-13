@@ -21,7 +21,9 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
@@ -132,8 +134,8 @@ adapters (depolymerizer) for the Taler ecosystem.")
 (define-public libeufin
   ;; Use the latest commit for now, as it contains the to-be-released Rust
   ;; port.
-  (let ((commit "a816bfded7ee6655d268c9090491f5ccec201228")
-        (revision "0"))
+  (let ((commit "097e0498bf1f7c3dc7aa4ed3587f2adf59946fcd")
+        (revision "1"))
     (package
       (name "libeufin")
       (version (git-version "1.6.11" revision commit))
@@ -145,12 +147,9 @@ adapters (depolymerizer) for the Taler ecosystem.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1pcva3y3bccgaq8cd2f81y076gsg2zxzc3fj236xcbmxjs3fp35b"))))
+                  "1jx2yl9qx3z71gnjqfk9f4nmwy8z6r5s21jpx0qs6h41pppic8qw"))))
       (arguments
        (list
-        ;; The test suite currently often fails in the Guix build environment
-        ;; (see: <https://bugs.gnunet.org/view.php?id=11876>).
-        #:tests? #f
         #:install-source? #f
         #:cargo-package-crates '(list "libeufin-bank"
                                       "libeufin-ebics"
@@ -162,12 +161,6 @@ adapters (depolymerizer) for the Taler ecosystem.")
                                      "libeufin-nexus")
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'do-not-run-clippy
-              ;; TODO: Remove after the newer bootstrap rust is no longer
-              ;; used.
-              (lambda _
-                (substitute* "Makefile"
-                  ((".*clippy --all-targets.*") ""))))
             (add-after 'unpack 'adjust-version-info
               (lambda _
                 (call-with-output-file ".version"
@@ -223,7 +216,8 @@ adapters (depolymerizer) for the Taler ecosystem.")
                     (invoke "createdb" "-h" dbdir
                             "taler_rust_check"))))))))
       (build-system cargo-build-system)
-      (native-inputs (list postgresql taler-docs))
+      (native-inputs (list nss-certs-for-test postgresql `(,rust "tools")
+                           taler-docs))
       (inputs (cons mimalloc (cargo-inputs 'libeufin)))
       (home-page "https://www.taler.net/")
       (synopsis "Taler component for hosting or accessing regional banks")
