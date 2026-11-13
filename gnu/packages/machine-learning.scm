@@ -1067,8 +1067,18 @@ generation, etc.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0pk435vmhls3nshfnhhyrig6swa43z7f8qdc1fakcma8i4j7macp"))))
+      (arguments
+       (substitute-keyword-arguments arguments
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'get-ui
+                (lambda _
+                  (with-directory-excursion "tools/ui"
+                    (copy-file #$(this-package-input "ui.tar.gz") "ui.tar.gz")
+                    (invoke "tar" "xvf" "ui.tar.gz")
+                    (rename-file #$(string-append "llama-b" ui-build) "dist"))))))))
       (inputs
-       (list ggml openssl
+       (list ggml-for-whisper openssl
              (origin
                (method url-fetch)
                (uri
@@ -1078,7 +1088,7 @@ generation, etc.")
                (file-name "ui.tar.gz")
                (sha256
                 (base32
-                 "0ng2rsjqdipk8vkpxas783c291cr9137jyz3cf90c7wlw2qkkq6c"))))))))
+                 "0qz1gc50ryz8gyddl368insi97jklc7hgwwj5d7kg1525l7mn36y"))))))))
 
 (define-public whisper-cpp
   (package
