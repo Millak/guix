@@ -10342,7 +10342,7 @@ defining data schemas.")
 (define-public python-zope-sqlalchemy
   (package
     (name "python-zope-sqlalchemy")
-    (version "1.6")
+    (version "4.1")
     (source
      (origin
        (method git-fetch)
@@ -10351,7 +10351,7 @@ defining data schemas.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z4gw4i95dyqxsvrahk4fav008045n8kyxpn3fa887snmpvcjhng"))))
+        (base32 "0p4v28mxg3b96nkaf68f6fxismjxcvd57j2pbnxs5ss57fb7bihk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
