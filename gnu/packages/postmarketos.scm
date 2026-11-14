@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Sughosha <sughosha@proton.me>
 ;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2026 Mark Muth <MarkMuth@gmx.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,17 +38,17 @@
 (define-public pmbootstrap
   (package
     (name "pmbootstrap")
-    (version "3.6.0")
+    (version "3.12.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url (string-append "https://gitlab.postmarketos.org/"
-                                  "postmarketOS/pmbootstrap.git"))
+              (url (string-append "https://gitlab.nura.eco/"
+                                  "nura/pmbootstrap.git"))
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "161q8nr9vwa7bbi5d7bqan0h7dn573xqmr48iadr3km897d3ivdh"))))
+        (base32 "1hxmvqnv938vdrfzfgxlc7h8b38wz3swncphh9pvf29x2rqh7sym"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -99,9 +100,9 @@
                   procps
                   tar
                   util-linux))
-    (home-page "https://gitlab.com/postmarketOS/pmbootstrap")
-    (synopsis "Bootstrap a postmarketOS system")
+    (home-page "https://gitlab.nura.eco/nura/pmbootstrap")
+    (synopsis "Bootstrap a Nura/postmarketOS system")
     (description
      "This package provides a sophisticated chroot, build and flash tool
-to develop and install postmarketOS.")
+to develop and install Nura.")
     (license license:gpl3+)))
