@@ -4952,9 +4952,7 @@ managers for automatically closing connections.")
 (define-public python-databases
   (package
     (name "python-databases")
-    ;; 0.9.0 needs sqlalchemy>=2.0.7
-    ;; 0.8.0 needs sqlalchemy>=1.4.42,<1.5
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -4963,7 +4961,7 @@ managers for automatically closing connections.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "183yawn8w561y1ni117rf5zaxm4gqqbcmi9fp52xd5fx2dj8qy3v"))))
+        (base32 "1lwm1f8crkc4w7ffh11l7msnnbmfxlswwvyk3lkn118332l51zv5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
