@@ -13518,7 +13518,7 @@ of @url{https://pkg.go.dev/golang.org/x/xerrors}")
 (define-public go-github-com-go-git-go-billy-v5
   (package
     (name "go-github-com-go-git-go-billy-v5")
-    (version "5.6.0")
+    (version "5.9.2")
     (source
      (origin
        (method git-fetch)
@@ -13527,7 +13527,7 @@ of @url{https://pkg.go.dev/golang.org/x/xerrors}")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "061yczvpxq5xcnjbi8ywx0qvrispi8pwk3nqky5cv1dsi6xzkchc"))))
+        (base32 "1w6b4fpyicd67rq9ba4a9cwnrvw0hsqz4qmy0klibkyv15758icp"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -13537,7 +13537,7 @@ of @url{https://pkg.go.dev/golang.org/x/xerrors}")
            go-github-com-stretchr-testify
            go-gopkg-in-check-v1))
     (propagated-inputs
-     (list go-github-com-cyphar-filepath-securejoin-0.4.1
+     (list go-github-com-cyphar-filepath-securejoin
            go-golang-org-x-sys))
     (home-page "https://github.com/go-git/go-billy/")
     (synopsis "File system abstraction for Go")
