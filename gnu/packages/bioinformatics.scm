@@ -3239,15 +3239,22 @@ and gene expression visualization.")
 (define-public python-metacells
   (package
     (name "python-metacells")
-    (version "0.9.5")
+    ;; 0.9.5 (2024-09-26);
+    (properties '((commit . "c5bd77a962f8ec9946779dd124b407bb9012c774")
+                  (revision . "0")))
+    (version (git-version "0.9.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "metacells" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tanaylab/metacells")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rb1r8l1ypfmvd3lwlx7ksfbjvgpnybn1s84a8n9gcpz9yx2rhbs"))))
-    #;
-    (properties '((tunable? . #t)))
+        (base32 "0qh2gjsgy2r9qbccshrzdimmpbm21wpp9kwba2p1x97sl0lvj17z"))
+       (snippet #~(rmdir "pybind11"))))   ;remove git module
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3263,28 +3270,27 @@ and gene expression visualization.")
             (lambda _
               ;; Without this they pass -march=native to the compiler.
               (setenv "WHEEL" "1")))
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; Numba needs a writable dir to cache functions.
-              (setenv "NUMBA_CACHE_DIR" "/tmp")
-              (delete-file-recursively "metacells")))
           (add-before 'sanity-check 'pre-sanity-check
             (lambda _
               ;; Numba needs a writable dir to cache functions.
-              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+              (setenv "NUMBA_CACHE_DIR" "/tmp")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "metacells"))))))
     (propagated-inputs (list python-anndata
                              python-cvxpy
                              python-fastcluster
                              python-igraph
+                             python-importlib-metadata
                              python-numpy
-                             python-pandas
+                             python-pandas-2
                              python-psutil
                              python-pyyaml
                              python-scanpy
                              python-scipy
                              python-threadpoolctl
                              python-umap-learn))
-    (native-inputs (list pybind11-2 python-pytest python-setuptools))
+    (native-inputs (list pybind11 python-pytest python-setuptools))
     (home-page "https://github.com/tanaylab/metacells")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
