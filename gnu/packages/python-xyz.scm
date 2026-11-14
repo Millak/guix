@@ -3882,7 +3882,7 @@ networks.")
 (define-public python-scverse-misc
   (package
     (name "python-scverse-misc")
-    (version "0.1.1")
+    (version "0.1.8")
     (source
      (origin
        (method git-fetch)
@@ -3891,14 +3891,25 @@ networks.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14gqrafilfzlc9rydz90rifs48icqvdqa80qsfsmhrwv25mwwjry"))))
+        (base32 "0gmvhnzs273gifwkna9a03bzlhpf6qvx2f0j71iy4djgg96pv12j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Optinal tests, Pydantic fails to validate inputs.
       #~(list "--deselect=tests/settings/test_runtime.py::test_dotenv[2]"
-              "--deselect=tests/settings/test_runtime.py::test_dotenv[4]")))
+              "--deselect=tests/settings/test_runtime.py::test_dotenv[4]"
+              ;; Cycles with anndata.
+              "--deselect=tests/test_datasets.py::test_load_anndata_reads_h5ad"
+              ;; Tests requir Sphinx.
+              "--ignore=tests/deprecation_decorator/test_sphinx.py"
+              "--ignore=tests/extension/test_sphinx.py"
+              "--ignore=tests/settings/test_sphinx.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "src"))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -3906,9 +3917,10 @@ networks.")
            python-pyyaml))
     (propagated-inputs
      (list python-session-info2
-           python-typing-extensions
+           python-typing-extensions    ;Python version < 3.13
            ;; [optional]
            python-dotenv
+           python-pooch
            python-pydantic-settings))
     (home-page "https://github.com/scverse/scverse-misc")
     (synopsis "Miscellaneous utility code used by scverse packages")
