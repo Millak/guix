@@ -12054,7 +12054,7 @@ package included with Emacs.")
 (define-public emacs-vhdl-ts-mode
   (package
     (name "emacs-vhdl-ts-mode")
-    (version "0.3.3")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -12063,14 +12063,14 @@ package included with Emacs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y41cva3qknisxnskmn1s15r3ja2hcf4bbzc5nx1z9xk2ndh8rzf"))))
+        (base32 "1yhcamcn6fw18lncb9rhi2rm9an2c7lswjwz721jmjbmhkilzv7f"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:tests? #f         ;the testing framework, test-hdl, requires network
       #:test-command #~(list "make")))
     ;; TODO: Switch to tree-sitter-vhdl once supported.
-    (propagated-inputs (list tree-sitter-vhdl-0))
+    (propagated-inputs (list tree-sitter-vhdl))
     (home-page "https://github.com/gmlarumbe/vhdl-ts-mode/")
     (synopsis "VHDL Tree-sitter mode")
     (description
