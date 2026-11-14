@@ -92,7 +92,7 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "1.1.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -101,7 +101,7 @@ different (virtual) machine than the one to which the USB device is attached.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cw3a0xkmlkc5a0yydbcyvr1hhxm0x6msn8d4pf1q4ck4q97ff3q"))))
+                "0bs88wi3r14lrqcqafm7c9lm5savxlm91nzcd5114jki7ci0l6nr"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -110,7 +110,10 @@ different (virtual) machine than the one to which the USB device is attached.")
                "-Ddrm-renderers=amdgpu-experimental,msm")))
     (inputs (list libepoxy mesa libdrm))
     (propagated-inputs (list libva vulkan-loader))
-    (native-inputs (list pkg-config python vulkan-headers))
+    (native-inputs (list pkg-config
+                         python-minimal
+                         python-pyyaml
+                         vulkan-headers))
     (synopsis "Virtual 3D GPU library")
     (description "A virtual 3D GPU library that enables a virtualized operating
 system to use the host GPU to accelerate 3D rendering.")
