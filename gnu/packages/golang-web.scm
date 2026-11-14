@@ -23209,26 +23209,28 @@ and is designed to be accessible to both humans and machines.")
 (define-public go-github-com-vektah-gqlparser-v2
   (package
     (name "go-github-com-vektah-gqlparser-v2")
-    (version "2.5.31")
+    (version "2.5.64")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/vektah/gqlparser")
-             (commit (string-append "v" version))))
+              (url "https://github.com/vektah/gqlparser")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fg0p4q4ryh59jrcdbzh6kvs98525dhj52xc6d2r3yhsgbjm3qns"))))
+        (base32 "09svd1v5h6w5ql45bprsa4snwinchp45f3sqpmfvi87bzb50ljk2"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "proptest")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/vektah/gqlparser/v2"))
     (native-inputs
-     (list go-github-com-andreyvit-diff
-           go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-agnivade-levenshtein
-           go-gopkg-in-yaml-v3))
+           go-go-yaml-in-yaml-v3))
     (home-page "https://github.com/vektah/gqlparser")
     (synopsis "Port of the parser from @code{graphql-js} into golang")
     (description
