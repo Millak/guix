@@ -28350,6 +28350,19 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
      (package-propagated-inputs go-github-com-bradfitz-go-tool-cache))
     (propagated-inputs '())))
 
+(define-public gqlgen
+  (package/inherit go-github-com-99designs-gqlgen
+    (name "gqlgen")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (append (package-native-inputs go-github-com-99designs-gqlgen)
+             (package-propagated-inputs go-github-com-99designs-gqlgen)))
+    (propagated-inputs '())))
+
 (define-public menshen
   (package/inherit go-0xacab-org-leap-menshen
     (name "menshen")
