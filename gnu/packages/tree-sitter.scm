@@ -2078,8 +2078,8 @@ files.")))
 (define-public tree-sitter-vhdl
   (tree-sitter-grammar
    "vhdl" "VHDL"
-   "11q2sxac26mn00a7k4vy1wgd6bhh0v0p8arj9r8zb9phn3sqwwjm"
-   "2.0.0"
+   "0nhprgjw19531q4xzjgmx2r9kx6dkic3i16lgsjhqyssgzjhwcfc"
+   "2.0.3"
    #:repository-url "https://github.com/jpt13653903/tree-sitter-vhdl"))
 
 ;;; TODO: Remove this package when emacs-vhdl-ts-mode switches to jpt13653903.
