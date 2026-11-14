@@ -145,6 +145,8 @@
             scandir*
             getxattr
             setxattr
+            XATTR_CREATE
+            XATTR_REPLACE
 
             fcntl-flock
             lock-file
@@ -1107,6 +1109,8 @@ OBJECT can be either a string, file-port or file descriptor."
                                            `(* * * ,size_t ,int)))
 (define %libc-fsetxattr (syscall->procedure int "fsetxattr"
                                            `(,int * * ,size_t ,int)))
+(define XATTR_CREATE 1)
+(define XATTR_REPLACE 2)
 
 (define setxattr
   (lambda* (object key value #:optional (flags 0))
