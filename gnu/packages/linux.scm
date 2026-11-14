@@ -976,7 +976,7 @@ GEXP)."
 ;; linux-libre-headers-latest points to the latest headers package
 ;; and should be used as a dependency for packages that depend on
 ;; the headers.
-(define-public linux-libre-headers-latest linux-libre-headers-7.2)
+(define-public linux-libre-headers-latest linux-libre-headers-7.3)
 
 
 ;;;
