@@ -372,7 +372,7 @@ using the Git pkt-line format used in various Git operations.")
   (package
     (inherit go-github-com-go-git-go-git-v5)
     (name "go-github-com-go-git-go-git-v6")
-    (version "6.0.0-alpha.4")
+    (version "6.0.0-beta.1")
     (source
      (origin
        (method git-fetch)
@@ -381,16 +381,30 @@ using the Git pkt-line format used in various Git operations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1whmxb0035c7qxnr3lkypcdrdlcg3mc49d20c1kk1q4zyx2v4zgl"))))
+        (base32 "08l6np81ci1wbnk9rv75x539c421grb3rcazhj2ny2pr61vziszj"))))
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:import-path _) "github.com/go-git/go-git/v6")))
+       ((#:import-path _) "github.com/go-git/go-git/v6")
+       ((#:tests? #t #t) #f)))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-go-git-go-git-v5)
-       (replace "go-github-com-go-git-go-billy-v5"
-         go-github-com-go-git-go-billy-v6)
-       (replace "go-github-com-go-git-gcfg"
-         go-github-com-go-git-gcfg-v2)))))
+     (list ;; go-github-com-microsoft-go-winio     ;Windows only
+           go-github-com-armon-go-socks5
+           go-github-com-emirpasic-gods
+           go-github-com-gliderlabs-ssh
+           go-github-com-go-git-gcfg-v2
+           go-github-com-go-git-go-billy-v6
+           go-github-com-go-git-go-git-fixtures-v6
+           go-github-com-kevinburke-ssh-config
+           go-github-com-pjbgf-sha1cd
+           go-github-com-protonmail-go-crypto
+           go-github-com-sergi-go-diff
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-text))))
 
 (define-public go-github-com-cli-go-gh-v2
   (package
