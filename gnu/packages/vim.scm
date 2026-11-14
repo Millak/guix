@@ -1117,25 +1117,26 @@ msgpack-rpc API.")
 (define-public vim-asyncrun
   (package
     (name "vim-asyncrun")
-    (version "2.12.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/skywind3000/asyncrun.vim")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0hyz3bgbwmg85534ab71w2sr6fj94mz498ayn9bvhn4g7y6c951n"))))
+    (version "2.13.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/skywind3000/asyncrun.vim")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ky0y5wf5ir0awm6jmnq0d374za4l89jbg4cjzcznv8a798h75bh"))))
     (build-system vim-build-system)
     (arguments
      (list
-       #:plugin-name "asyncrun"))
+      #:plugin-name "asyncrun"))
     (home-page "https://github.com/skywind3000/asyncrun.vim")
     (synopsis "Run Async Shell Commands in Vim")
-    (description "This plugin takes the advantage of new APIs in Vim 8 (and
-NeoVim) to enable you to run shell commands in background and read output in the
-quickfix window in realtime.")
+    (description
+     "This plugin takes the advantage of new APIs in Vim 8 (and
+NeoVim) to enable you to run shell commands in background and read the output in
+the quickfix window in realtime.")
     (license license:expat)))
 
 (define-public neovim-asyncrun
