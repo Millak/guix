@@ -171,7 +171,7 @@ following the Japanese kanban (boarding) style.")
 (define-public git-bug
   (package
     (name "git-bug")
-    (version "0.10.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -180,14 +180,7 @@ following the Japanese kanban (boarding) style.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s3y8ll2942d6my2wz6bbipram4l6brbwwfvp2nr8cchzrb23dl8"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; git-bug supports v2, remove when a fresh release is tagged.
-            (substitute* (find-files "." "\\.go$")
-              (("github.com/blevesearch/bleve")
-               "github.com/blevesearch/bleve/v2"))))))
+        (base32 "15h1sz5z8wgnq7d8rg6zpajlprr95h8d48y6d4f073rhi9xc4845"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -195,44 +188,67 @@ following the Japanese kanban (boarding) style.")
       #:import-path "github.com/git-bug/git-bug"
       #:embed-files
       #~(list "prelude.graphql")
+      #:build-flags
+      #~(list (string-append
+               "-ldflags="
+               "-X github.com/git-bug/git-bug/commands.GitCommit=" #$version
+               " -X github.com/git-bug/git-bug/commands.GitLastTag=" #$version
+               " -X github.com/git-bug/git-bug/commands.GitExactTag=" #$version))
       #:test-flags
+      ;; These tests require network access.
       #~(list "-skip" (string-join
-                       (list
-                        ;; These tests require network access.
-                        "TestValidateProject"
-                        "TestValidateUsername"
-                        ;; This test is buggy. See
-                        ;; https://github.com/git-bug/git-bug/issues/809
-                        "TestGoGitRepo_Indexes")
-                       "|"))))
+                       (list "TestPeriodic"
+                             "TestStoreLoad"
+                             "TestSubCacheDerived"
+                             "TestValidateProject"
+                             "TestValidateUsername"
+                             ;; Test fails to find ssh comand.
+                             "TestGitRepoSSH"
+                             ;; An error is expected but got nil.
+                             "TestGoGitStorage_Config")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-github-com-99designs-gqlgen
            go-github-com-99designs-keyring
+           go-github-com-michaelmure-go-term-text
+           go-github-com-protonmail-go-crypto
            go-github-com-araddon-dateparse
            go-github-com-awesome-gocui-gocui
-           go-github-com-blevesearch-bleve-v2
+           go-github-com-blevesearch-snowballstem
+           go-github-com-coder-websocket
            go-github-com-dustin-go-humanize
            go-github-com-fatih-color
+           go-github-com-fsnotify-fsnotify
+           go-github-com-git-bug-gitconfig
            go-github-com-go-git-go-billy-v5
            go-github-com-go-git-go-git-v5
            go-github-com-gorilla-mux
            go-github-com-hashicorp-golang-lru-v2
-           go-github-com-michaelmure-go-term-text
+           go-github-com-icrowley-fake
+           go-github-com-mattn-go-isatty
            go-github-com-phayes-freeport
-           go-github-com-protonmail-go-crypto
            go-github-com-shurcool-githubv4
            go-github-com-skratchdot-open-golang
            go-github-com-spf13-cobra
            go-github-com-stretchr-testify
            go-github-com-vbauerster-mpb-v8
            go-github-com-vektah-gqlparser-v2
-           ;; The build fails with the latest (v1.28.1)
-           ;; go-gitlab-com-gitlab-org-api-client-go. See
-           ;; https://github.com/git-bug/git-bug/issues/1514 So, we use the
-           ;; version specified in go.mod.
-           go-gitlab-com-gitlab-org-api-client-go-0.116
+           go-gitlab-com-gitlab-org-api-client-go
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-net
            go-golang-org-x-oauth2
-           go-github-com-icrowley-fake
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-modernc-org-sqlite
+           go-resenje-org-singleflight
            ;; git is required only for tests.
            git-minimal/pinned))
     (home-page "https://github.com/git-bug/git-bug")
