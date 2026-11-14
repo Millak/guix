@@ -1333,7 +1333,7 @@ learning frameworks.")
 (define-public python-fast-array-utils
   (package
     (name "python-fast-array-utils")
-    (version "1.4.1")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1342,11 +1342,13 @@ learning frameworks.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07qbsbsmzycxa5nib39zp7rfwcj3cvqyg4mpfkdn7xg2bmqprl7n"))))
+        (base32 "0wrb1h3x700dfkycgaksdr0hyd50a3yimqd299k2kvz23k9nmqd8"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; tests: 1455 passed, 1621 skipped, 232 deselected
-     (list #:test-flags #~(list "-m" "not benchmark")))
+     (list
+      #:test-flags
+      #~(list "-m" "not benchmark"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))))
     (native-inputs
      (list python-dask-minimal
            python-hatch-docstring-description
@@ -1356,10 +1358,11 @@ learning frameworks.")
            python-numba
            python-packaging
            python-pytest
+           python-pytest-xdist
            python-pytest-doctestplus
            python-scipy-minimal))
     (propagated-inputs
-     (list python-numpy))
+     (list python-array-api-compat python-numpy))
     (home-page "https://fast-array-utils.scverse.org/")
     (synopsis "Fast array utilities")
     (description
