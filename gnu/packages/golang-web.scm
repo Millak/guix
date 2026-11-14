@@ -1852,7 +1852,7 @@ It's an alternative fork of @url{https://github.com/go-fed/httpsig}.")
 (define-public go-github-com-99designs-gqlgen
   (package
     (name "go-github-com-99designs-gqlgen")
-    (version "0.17.86")
+    (version "0.17.98")
     (source
      (origin
        (method git-fetch)
@@ -1861,10 +1861,11 @@ It's an alternative fork of @url{https://github.com/go-fed/httpsig}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yv97h2c75f2b5w4x4xjflzypgi5irsxadzckckbb94bdn2pylyy"))))
+        (base32 "1ayh3c74icg96x11mnmbbc4mplh1abvan22n7vcwsqrb3r4jxnqr"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/99designs/gqlgen"
       #:embed-files
       #~(list "bash_autocomplete" "powershell_autocomplete.ps1"
@@ -1873,64 +1874,54 @@ It's an alternative fork of @url{https://github.com/go-fed/httpsig}.")
       #~(list "-skip"
               (string-join
                ;; These tests require network access.
-               (list "TestAltairHandler_Integrity"
-                     "TestApolloSandboxHandler_Integrity"
+               (list "TestApolloSandboxHandler_Integrity"
                      "TestHandler_Integrity"
-                     ;; These tests fail due to the way our go-build-system
-                     ;; unpacks and lays out the source code.
-                     "TestImportPathForDir"
-                     "TestRewriter/out_of_scope_dir"
-                     ;; Commenting out autobind generates the modules
-                     ;; necessary for these tests. See discussion at
-                     ;; https://github.com/99designs/gqlgen/issues/1765 But
-                     ;; then, go mod tidy fails probably because we disable
-                     ;; modules in our go-build-system by setting
-                     ;; GO111MODULE=off.
+                     "TestAltairHandler_Integrity"
+                     ;; GO111MODULE=on is required.
+                     "TestGenerate"
+                     "TestLayoutFollowSchema"
+                     "TestLayoutFollowSchemaWithCustomFilename"
+                     "TestModelGeneration"
+                     ;; generating core failed: unable to load <...>
                      "TestAutobinding"
                      "TestCodeGeneration"
                      "TestCodeGenerationFederation2"
-                     "TestGenerate"
-                     "TestGenerateWithSchemaMutator"
                      "TestInjectSourceLate"
                      "TestModelGenerationDirectiveEmbedding"
                      "TestNoEntities"
-                     "TestWithEntities")
+                     "TestPerformanceOptionsIndividually"
+                     "TestPerformanceOptionsWithAutobind"
+                     "TestWithEntities"
+                     ;; Should be empty, but was github.com/99designs
+                     "TestImportPathForDir"
+                     "TestRewriter/out_of_scope_dir")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-permissions
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                ;; Make some go files writable. Some tests fail when they are
-                ;; not.
-                (for-each (lambda (file)
-                            (chmod file #o644))
-                          (append (find-files "plugin" "^schema.custom.go$")
-                                  (find-files "plugin" "^schema.resolvers.go$")
-                                  (find-files "plugin" "^generated\\.go$")
-                                  (find-files "plugin" "^generated_[^.]*\\.go$")))))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GODEBUG" "asynctimerchan=0")
+              (setenv "GOTOOLCHAIN" "local"))))))
     (native-inputs
-     (list go-github-com-matryer-moq))
+     (list go-github-com-mattn-go-isatty
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v3))
     (propagated-inputs
-     (list go-github-com-go-viper-mapstructure-v2
+     (list go-github-com-coder-websocket
+           go-github-com-go-viper-mapstructure-v2
            go-github-com-goccy-go-yaml
            go-github-com-google-uuid
-           go-github-com-gorilla-websocket
            go-github-com-hashicorp-golang-lru-v2
-           go-github-com-kevinmbeaulieu-eq-go
            go-github-com-logrusorgru-aurora-v4
            go-github-com-mattn-go-colorable
-           go-github-com-mattn-go-isatty
-           go-github-com-puerkitobio-goquery
            go-github-com-sosodev-duration
-           go-github-com-stretchr-testify
-           go-github-com-urfave-cli-v3
            go-github-com-vektah-gqlparser-v2
+           go-golang-org-x-net
+           go-golang-org-x-sync
            go-golang-org-x-text
            go-golang-org-x-tools
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
-    (home-page "https://github.com/99designs/gqlgen")
+           go-google-golang-org-protobuf))
+    (home-page "https://gqlgen.com/")
     (synopsis "Go GraphQL server library")
     (description
      "gqlgen is a @command{go generate} based GraphQL server library.  It
