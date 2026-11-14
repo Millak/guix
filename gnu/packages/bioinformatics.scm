@@ -19361,7 +19361,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.12.2")
+    (version "1.12.6")
     (source
      (origin
        (method git-fetch)
@@ -19371,94 +19371,34 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02mmsz267zyx1ndw9qqsrccxhjr65xpyyqbf5i1j761y7mm4aayh"))))
+         "0aljyn6yfwh2l34lq7m1pyrm765nh4bqg1y6ix5bjsw10y0qw3ld"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2052 passed, 101 skipped, 100 xfailed, 12 warnings, 34
-      ;; subtests passed
+      ;; tests: 639 passed, 55 skipped, 10 xfailed, 32 subtests passed
       #:test-flags
       ;; XXX: There is an "internet" marker but it has no effect when
       ;; deselected, forcing to download data from Internet during tests
       ;; anyway.
-      #~(list "-m" "not gpu"
+      #~(list "-m" "not gpu and not internet"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      ;; Tests requiring Internet access.
-                      '(("test_pca.py" "test_pca_rep")
-                        ("test_scaling.py" "test_clip")
-                        ("test_pca.py" "test_pca_n_pcs")
-                        ("test_pca.py" "test_pca_sparse")
-                        ("test_pca.py" "test_pca_chunked")
-                        ("test_paga.py" "test_paga_compare")
-                        ("test_pca.py" "test_pca_reproducible")
-                        ("test_plotting.py" "test_string_mask")
-                        ("notebooks/test_pbmc3k.py" "test_pbmc3k")
-                        ("test_plotting.py" "test_scrublet_plots")
-                        ("test_metrics.py" "test_modularity_adata")
-                        ("test_plotting.py" "test_umap_mask_equal")
-                        ("test_aggregated.py" "test_aggregate_axis")
-                        ("test_aggregated.py"
-                         "test_var_no_catastrophic_cancellation")
-                        ("test_datasets.py" "test_download_failure")
-                        ("test_pca.py" "test_covariance_eigh_impls")
-                        ("test_plotting.py" "test_highest_expr_genes")
-                        ("test_pca.py" "test_sparse_dask_input_errors")
-                        ("test_plotting.py" "test_umap_mask_mult_plots")
-                        ("test_plotting.py" "test_violin_scale_warning")
-                        ("test_preprocessing.py" "test_regress_out_int")
-                        ("test_aggregated.py" "test_aggregate_arraytype")
-                        ("test_aggregated.py" "test_aggregate_vs_pandas")
-                        ("test_highly_variable_genes.py" "test_keep_layer")
-                        ("test_score_genes.py" "test_score_with_reference")
-                        ("test_highly_variable_genes.py" "test_cutoff_info")
-                        ("test_aggregated.py" "test_aggregate_incorrect_dim")
-                        ("test_plotting.py" "test_umap_mask_no_modification")
-                        ("test_aggregated.py"
-                         "test_aggregate_bad_dask_array")
-                        ("test_highly_variable_genes.py"
-                         "test_no_filter_genes")
-                        ("test_highly_variable_genes.py"
-                         "test_dask_consistency")
-                        ("test_highly_variable_genes.py"
-                         "test_seurat_v3_warning")
-                        ("test_highly_variable_genes.py"
-                         "test_compare_to_seurat_v3")
-                        ("external/test_harmony_integrate.py"
-                         "test_harmony_integrate")
-                        ("test_plotting.py"
-                         "test_plot_rank_genes_groups_gene_symbols")
-                        ("test_highly_variable_genes.py"
-                         "test_pearson_residuals_batch")
-                        ("test_normalization.py"
-                         "test_normalize_pearson_residuals_pca")
-                        ("test_normalization.py"
-                         "test_normalize_matrix_types")
-                        ("test_highly_variable_genes.py"
-                         "test_pearson_residuals_general")
-                        ("test_highly_variable_genes.py"
-                         "test_subset_inplace_consistency")
-                        ("test_normalization.py"
-                         "test_normalize_pearson_residuals_errors")
-                        ("test_normalization.py"
-                         "test_normalize_pearson_residuals_recipe")
-                        ("test_normalization.py"
-                         "test_normalize_pearson_residuals_warnings")
-                        ("test_highly_variable_genes.py"
-                         "test_pearson_residuals_inputchecks")
-                        ("test_plotting_embedded/test_embeddings.py"
-                         "test_raise_save_future_warning")
-                        ("test_highly_variable_genes.py"
-                         "test_seurat_v3_mean_var_output_with_batchkey")
-                        ("test_plotting_embedded/test_embeddings.py"
-                         "test_embedding_colorbar_location")))
-              (string-append "--deselect=tests/test_plotting.py"
-                             "::test_umap_categories_change_"
-                             "when_rerun_with_more_categories")
-              (string-append "--deselect=tests/test_plotting.py"
-                             "::test_umap_categories_dont_change_"
-                             "when_rerun_with_fewer_categories")
+              "--ignore=external/"
+              "--ignore=get/"
+              ;; Internet is still required to obtain test data.
+              "--ignore=tests/external/test_harmony_integrate.py"
+              "--ignore=tests/plotting/legacy/embedded/test_embeddings.py"
+              "--ignore=tests/plotting/legacy/test_paga.py"
+              "--ignore=tests/plotting/legacy/test_pbmc3k.py"
+              "--ignore=tests/plotting/legacy/test_plotting.py"
+              "--ignore=tests/test_aggregated.py"
+              "--ignore=tests/test_datasets.py"
+              "--ignore=tests/test_highly_variable_genes.py"
+              "--ignore=tests/test_metrics.py"
+              "--ignore=tests/test_normalization.py"
+              "--ignore=tests/test_pca.py"
+              "--ignore=tests/test_preprocessing.py"
+              "--ignore=tests/test_scaling.py"
+              "--ignore=tests/test_score_genes.py"
               (string-append "--deselect=get/_aggregated.py"
                              "::scanpy.get._aggregated.aggregate")
               (string-append "--deselect=external/pp/_magic.py"
@@ -19466,70 +19406,15 @@ implementation differs in these ways:
               (string-append "--deselect=external/pp/_harmony_integrate.py"
                              "::scanpy.external.pp."
                              "_harmony_integrate.harmony_integrate")
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                             (string-join ls "::")))
-                      ;; Failed to correctly find n_neighbors for some samples.
-                      '(("test_neighbors.py"
-                         "test_distances_all[pynndescent]")
-                        ("test_ingest.py" "test_neighbors_defaults[3]")
-                        ("test_ingest.py" "test_neighbors_defaults[4]")))
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                             (string-join ls "::")))
-                      ;; TypeError: unsupported operand type(s) for *: 'NoneType'.
-                      '(("test_ingest.py" "test_ingest_map_embedding_umap")
-                        ("test_ingest.py" "test_ingest_function")
-                        ("test_ingest.py" "test_ingest_backed")
-                        ("test_ingest.py" "test_neighbors")
-                        ("test_ingest.py" "test_representation")))
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      ;; Tests failing with error: Image files did not match.
-                      '(("test_plotting.py" "test_rankings")
-                        ("test_plotting.py" "test_dotplot_obj")
-                        ("test_plotting.py" "test_stacked_violin_obj")
-                        ("test_plotting.py" "test_dotplot_add_totals")
-                        ("test_plotting.py" "test_rank_genes_group_axes")
-                        ("test_plotting.py" "test_scatter_no_basis_per_obs")
-                        ("test_plotting.py"
-                         "test_dotplot_matrixplot_stacked_violin")
-                        ("test_plotting_embedded/test_spatial.py"
-                         "test_spatial_general")
-                        ("test_plotting_embedded/test_spatial.py"
-                         "test_visium_empty_img_key")
-                        ("test_plotting_embedded/test_spatial.py"
-                         "test_spatial_external_img")))
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      ;; Failed on deprecation warnings.
-                      '(("external/test_magic.py" "test_magic_copy")
-                        ("external/test_magic.py" "test_magic_default")
-                        ("external/test_magic.py" "test_magic_pca_only")
-                        ("test_preprocessing.py"
-                         "test_regress_out_constants")
-                        ("test_preprocessing.py"
-                         "test_regress_out_reproducible")
-                        ("test_preprocessing.py"
-                         "test_regress_out_constants_equivalent")))
-              #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      ;; TypeError: deprecate_kwarg() missing 1 required
-                      ;; positional argument: 'new_arg_name'
-                      '(("test_preprocessing.py" "test_regress_out_categorical")
-                        ;; TypeError: Cannot interpret
-                        ;; '<StringDtype(na_value=nan)>' as a data type
-                        ("test_combat.py" "test_norm")
-                        ;; TypeError: only integer scalar arrays can be
-                        ;; converted to a scalar index
-                        ("test_combat.py" "test_covariates")
-                        ("test_combat.py" "test_combat_obs_names")
-                        ("test_combat.py" "test_silhouette")
-                        ;; [XPASS(strict)] seaborn violin plot is
-                        ;; incompatible with pandas 3
-                        ("test_plotting.py" "test_rank_genes_groups")
-                        ;; pytest.PytestUnhandledThreadExceptionWarning:
-                        ;; Exception in thread ExecutorManagerThread
-                        ("test_preprocessing.py"
-                         "test_regress_out_categorical"))))
+              ;; Tests fail to find data files relatively, and picking up from
+              ;; installed store path where they are absent.
+              "--ignore=tests/plotting/legacy/embedded/test_spatial.py"
+              ;; DeprecationWarning: Call to deprecated method task. (Use
+              ;; TaskLogger.log_task instead) -- Deprecated since version
+              ;; 1.1.0.
+              "--deselect=tests/external/test_magic.py::test_magic_copy"
+              "--deselect=tests/external/test_magic.py::test_magic_default"
+              "--deselect=tests/external/test_magic.py::test_magic_pca_only")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -19539,10 +19424,12 @@ implementation differs in these ways:
                 ((".*pyparsing.warnings.*") ""))))
           (add-before 'check 'pre-check
             (lambda _
+              (setenv "MPLBACKEND" "agg")
               ;; Numba needs a writable dir to cache functions.
               (setenv "NUMBA_CACHE_DIR" "/tmp")
               ;; For Matplotlib.
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "src"))))))
     (propagated-inputs
      (list python-anndata
            python-certifi
