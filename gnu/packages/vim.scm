@@ -794,25 +794,25 @@ codes by showing different levels of parentheses in different colors.")
 (define-public editorconfig-vim
   (package
     (name "editorconfig-vim")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/editorconfig/editorconfig-vim")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0mp80bi2m56bb93szw87vy6q5s85yk9g91sl4pr51316rgdv5kkv"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/editorconfig/editorconfig-vim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "045cflq8pjm41dv9cb7a0in1kxk2mhwyci2w3h01p1zr6cdda1b2"))))
     (build-system vim-build-system)
     (arguments
      (list
-       #:plugin-name "editorconfig"
-       #:vim? #t))
+      #:plugin-name "editorconfig"
+      #:vim? #t))
     (home-page "https://editorconfig.org/")
     (synopsis "EditorConfig plugin for Vim")
-    (description "EditorConfig makes it easy to maintain the correct coding
+    (description
+     "EditorConfig makes it easy to maintain the correct coding
 style when switching between different text editors and between different
 projects.  The EditorConfig project maintains a file format and plugins for
 various text editors which allow this file format to be read and used by those
