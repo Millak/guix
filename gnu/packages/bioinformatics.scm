@@ -5757,7 +5757,7 @@ with MOFA+ in Python.")
 (define-public python-mudata
   (package
     (name "python-mudata")
-    (version "0.3.10")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -5766,17 +5766,27 @@ with MOFA+ in Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s0vkxmbw6kbyl5pxgr296g9g0wpjggzcxrj5i67lgg1kzxkqb8k"))))
+        (base32 "1vnl0fwy7yg7vzpgnjbxpm3wj404yvmniir13ssp1bzrajbm45dz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 484 passed, 1 deselected, 2 xfailed, 1343 warnings
+      ;; tests: 519 passed, 22 deselected, 2 xfailed
       #:test-flags
-      ;; TypeError: MetaAcc.get() missing 1 required positional argument: 'k'
-      #~(list "--deselect=tests/test_obs_var.py::test_accessors")))
+      ;; DeprecationWarning: This setting will be removed in 0.14 (deprecated
+      ;; in 0.13) and zarr v3 will be the default
+      #~(list "--deselect=tests/test_io.py::test_write_read_basic"
+              "--deselect=tests/test_io.py::test_write_read_zarr_adata"
+              "--deselect=tests/test_io.py::test_write_read_mod_obs_colname"
+              (string-append "--deselect=tests/test_io_backwards_compat.py"
+                             "::test_backwards_compat_files")
+              ;; Network access is required.
+              "--deselect=tests/test_accessors.py::test_to_from_json"
+              "--deselect=tests/test_accessors.py::test_to_from_json_mod")))
     (native-inputs
-     (list python-hatch-vcs
+     (list python-dask       ;for anndata[dask]
+           python-hatch-vcs
            python-hatchling
+           python-jsonschema
            python-pytest))
     (propagated-inputs
      (list python-anndata
