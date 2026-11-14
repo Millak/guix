@@ -19734,61 +19734,31 @@ set.")
 (define-public instrain
   (package
     (name "instrain")
-    ;; Git repository does not tag releases, use the latest commit from master
-    ;; branch.
-    (properties '((commit . "f172367e599851a6cb90048ae890d1bb6569063f")
-                  (revision . "1")))
-    (version (git-version "1.10.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/MrOlm/instrain")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12rrkcckna7k095clir9100cz6i5dn77anih6aq1blbsg4yhprnr"))))
+        (base32 "1gjzkvm8qm136s9929qgvkhi1vi2k4wsb2w258qnlx9sa83f1dyq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10 failed, 86 passed, 15 skipped, 220 warnings
+      ;; tests: 109 passed, 15 skipped, 3 deselected, 2231 warnings
       #:test-flags
-      #~(list #$@(map (lambda (test)
-                        (string-append "--deselect=test/tests/" test))
-                      ;; Mixture of "FileNotFoundError" and "AssertionError"
-                      ;; errors.
-                      (list "test_genes.py::test_genes_0"
-                            "test_genes.py::test_genes_1"
-                            "test_genes.py::test_genes_2"
-                            "test_genes.py::test_genes_3"
-                            "test_parse_gene_annotations.py::test_PA_2"
-                            "test_polymorpher.py::test_polymorpher_unit_0"
-                            "test_polymorpher.py::test_polymorpher_unit_3"
-                            "test_quick_profile.py::test_quick_profile_0"
-                            "test_quick_profile.py::test_quick_profile_1"
-                            "test_quick_profile.py::test_quick_profile_2")))
+      ;; FileNotFoundError, tests fail to find relative data.
+      #~(list "--deselect=test/tests/test_quick_profile.py::test_quick_profile_0"
+              "--deselect=test/tests/test_quick_profile.py::test_quick_profile_1"
+              "--deselect=test/tests/test_quick_profile.py::test_quick_profile_2")
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch-relative-imports
-           (lambda _
-             ;; See: <https://github.com/MrOlm/inStrain/issues/218>.
-             (mkdir "test/test_backend/")
-             (substitute* (find-files "test/tests" "test_.*\\.py")
-               (("from test_utils import BTO")
-                "from .test_utils import BTO")
-               (("import test_utils") "from . import test_utils"))
-             (substitute* "docker/run_instrain.py"
-               (("from s3_utils")
-                "from .s3_utils")
-               (("from job_utils")
-                "from .job_utils"))))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("biopython<=1.74") "biopython")
-               ((".*pytest.*") "")))))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ((".*pytest.*") "")))))))
     (propagated-inputs
      (list python-biopython
            python-h5py
