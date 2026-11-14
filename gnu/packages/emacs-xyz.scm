@@ -50649,8 +50649,8 @@ Emacs.")
 
 (define-public emacs-fpga
   ;; Includes support for cadence genus.
-  (let ((commit "48ec1572ab3c96cbc20d0c542cfe56124e05d48b")
-        (revision "0"))
+  (let ((commit "08fcb62f585aec2b286ffa19540a152e953d2cde")
+        (revision "1"))
     (package
       (name "emacs-fpga")
       (version (git-version "0.3.0" revision commit))
@@ -50662,7 +50662,7 @@ Emacs.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0j1573m59iadip4qpg457jdl22gdgx1w41irdd0s300yqsrjxyms"))))
+          (base32 "1l32wjv3k9cckmkkqf11z42a9pj8xa6x8zl7sw299w8myazyhavd"))))
       (build-system emacs-build-system)
       ;;there are no tests
       (arguments
