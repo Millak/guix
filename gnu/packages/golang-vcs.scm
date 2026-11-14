@@ -310,39 +310,52 @@ using the Git pkt-line format used in various Git operations.")
 (define-public go-github-com-go-git-go-git-v5
   (package
     (name "go-github-com-go-git-go-git-v5")
-    (version "5.16.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-git/go-git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vfg2wy9b29llkjw6h2yjvj8jw6wgf3wbxkplsxm8bcjfin5prvn"))))
+    (version "5.19.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-git/go-git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gisy7mcbc9xsg5q1r9g83jcbx39w7n419bbdawz5487xndnw43a"))
+       (snippet
+        ;; Submodules with their own go.mod files and packaged separately.
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "cli")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;requires network connection
       #:import-path "github.com/go-git/go-git/v5"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'setup
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((git #$(this-package-native-input "git-minimal"))
-                     (git-bin (string-append git "/bin"))
-                     (git-exe (string-append git-bin "/git")))
-                (setenv "GIT_DIST_PATH=" git)
-                (setenv "GIT_EXEC_PATH=" git-bin)
-                (setenv "HOME" (getcwd))
-                (invoke git-exe "config" "--global" "user.email" "gha@example.com")
-                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")))))))
+      #:test-subdirs
+      ;; Run tests not required network access.
+      #~(list "config" "plumbing" "utils/diff" "utils/sync" "utils/trace"
+              "internal/url" "utils/binary" "utils/ioutil" "plumbing/hash"
+              "plumbing/cache" "storage/memory" "plumbing/object"
+              "plumbing/storer" "plumbing/revlist" "utils/merkletrie"
+              "internal/pathutil" "internal/revision" "plumbing/filemode"
+              "plumbing/transport" "storage/filesystem" "plumbing/format/diff"
+              "plumbing/format/index" "storage/transactional"
+              "plumbing/format/config" "utils/merkletrie/index"
+              "utils/merkletrie/noder" "plumbing/format/idxfile"
+              "plumbing/format/objfile" "plumbing/format/pktline"
+              "plumbing/protocol/packp" "plumbing/transport/client"
+              "plumbing/transport/server" "storage/filesystem/dotgit"
+              "plumbing/format/commitgraph" "utils/merkletrie/filesystem"
+              "plumbing/format/gitattributes" "plumbing/format/commitgraph/v2"
+              "utils/merkletrie/internal/frame"
+              "plumbing/protocol/packp/sideband"
+              "utils/merkletrie/internal/fsnoder"
+              "plumbing/protocol/packp/capability"
+              "plumbing/transport/internal/common")))
     (native-inputs
      (list git-minimal/pinned
            go-github-com-stretchr-testify
            go-gopkg-in-check-v1))
     (propagated-inputs
      (list go-dario-cat-mergo
+           go-github-com-protonmail-go-crypto
            go-github-com-armon-go-socks5
            go-github-com-elazarl-goproxy
            go-github-com-emirpasic-gods
@@ -355,7 +368,6 @@ using the Git pkt-line format used in various Git operations.")
            go-github-com-jbenet-go-context
            go-github-com-kevinburke-ssh-config
            go-github-com-pjbgf-sha1cd
-           go-github-com-protonmail-go-crypto
            go-github-com-sergi-go-diff
            go-github-com-skeema-knownhosts
            go-github-com-xanzy-ssh-agent
