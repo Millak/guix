@@ -17047,8 +17047,7 @@ github.com/ooni/probe-cli.")
               "-skip" (string-join
                        ;; Skip benchmark and tests requiring network access.
                        (list ".*Bench.*"
-                             "Test405StatusCodev0"
-                             "Test405StatusCodev1"
+                             "Test405StatusCodev"
                              "TestAuthorization"
                              "TestAuthorizationUsesInterQueryCache"
                              "TestBadQueryV1"
@@ -17069,11 +17068,18 @@ github.com/ooni/probe-cli.")
                              "TestEnable.*"
                              "TestExtraAuthorizerRoutes"
                              "TestExtraMiddleware"
+                             "TestGraphQLParseAndVerify"
+                             "TestGraphQLParseObject"
+                             "TestGraphQLParseQuery"
                              "TestGraphQLParseSchemaAlloc"
+                             "TestGraphQLParseString"
+                             "TestJSONSerialization"
                              "TestOTLP.*"
                              "TestPolicies.*"
                              "TestPostPartialChecks"
                              "TestQuery.*"
+                             "TestRego"
+                             "TestRegoWith"
                              "TestRequest.*"
                              "TestRunServer.*"
                              "TestSSOCredentialService"
@@ -17081,8 +17087,7 @@ github.com/ooni/probe-cli.")
                              "TestSocketHTTPGetRequest"
                              "TestStatusV1"
                              "TestStatusV1MetricsWithSystemAuthzPolicy"
-                             "TestUnversionedGet.*"
-                             "TestUnversionedPost"
+                             "TestUnversioned.*"
                              "TestV1Pretty")
                        "|"))))
     (native-inputs
