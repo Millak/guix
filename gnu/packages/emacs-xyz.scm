@@ -11928,7 +11928,7 @@ snippets for yasnippet.")
 (define-public emacs-vhdl-ext
   (package
     (name "emacs-vhdl-ext")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -11937,7 +11937,7 @@ snippets for yasnippet.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c9cfwadi18ib4psnf5xlgdjg75038fq1zhz2fxcjdp2kjwv5nwb"))))
+        (base32 "1910zadgxfh6388qkny1625y4c2aqawi08fjgqkih9k767skmbmg"))))
     (build-system emacs-build-system)
     (arguments
      (list
