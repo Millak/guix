@@ -278,7 +278,7 @@ possibility to differentiate functions that contain matrix functions as
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.13.0rc3")
+    (version "0.13.4")
     (source
      (origin
        (method git-fetch)
@@ -287,12 +287,12 @@ possibility to differentiate functions that contain matrix functions as
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hbnp4pw8wpn2lcds0wa92kb8x4bdkiv76dijg7g4pj0v86qm034"))))
+        (base32 "0nblv85iqhayg9gz78ii7qqzw2w8719xwp8a2as2sc3dc1dvlq4c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 6677 passed, 1842 skipped, 195 xfailed, 4842 warnings, 98
-      ;; subtests passed
+      ;; tests: 6508 passed, 1837 skipped, 191 xfailed, 4856 warnings, 98
+      ;;        subtests passed
       #:test-flags
       #~(list "-m" "not gpu"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
