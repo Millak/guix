@@ -277,17 +277,19 @@ more.")
   (package
     (inherit igraph)
     (name "python-igraph")
-    (version "0.11.8")
+    (version "0.11.9")
     (source (origin
               (method git-fetch)
-              ;; The PyPI archive lacks tests.
               (uri (git-reference
                     (url "https://github.com/igraph/python-igraph")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c73nypzm2apqqwzqxxhbh692h4ri2x8q4i8f7q2kwczz156v19k"))))
+                "1dyk7aznkjqj533khrphphlcxj6cdm0qcy04xcfn1s3cxz3z8n3l"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(delete-file-recursively "vendor"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -310,8 +312,7 @@ more.")
      (list python-texttable))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://igraph.org/python/")
     (synopsis "Python bindings for the igraph network analysis library")))
 
