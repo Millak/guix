@@ -1882,6 +1882,8 @@ collaboration using typical untrusted file hosts or services.")
           (add-before 'check 'make-HOME-writable
             (lambda _
               (setenv "HOME" "/tmp")))
+          ;; See: <https://codeberg.org/guix/guix/issues/12557>.
+          #;
           (add-after 'install 'functional-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
