@@ -2906,7 +2906,7 @@ wlr-layer-shell.")
                   hwdata
                   libdisplay-info
                   libdrm
-                  libinput
+                  libinput-minimal
                   libliftoff
                   libxcb
                   libxkbcommon
