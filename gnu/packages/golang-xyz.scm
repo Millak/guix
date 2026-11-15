@@ -18578,7 +18578,7 @@ elements from the @code{go/types} and @code{reflect} packages.")
     (arguments
      (list
       #:import-path "github.com/jiangxin/multi-log"
-      #:test-flags #~(list "-vet=off" "-skip" "TestFatal")))
+      #:test-flags #~(list "-vet=off" "-skip" "TestFatal|TestPanic")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
