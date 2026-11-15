@@ -39603,12 +39603,11 @@ tool."))))
   (package/inherit go-github-com-vbatts-go-mtree
     (name "go-mtree")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-vbatts-go-mtree)
-       ((#:tests? _ #t) #f)
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/vbatts/go-mtree/cmd/gomtree")
        ((#:install-source? _ #t) #f)
        ((#:skip-build? _ #t) #f)
-       ((#:import-path _) "github.com/vbatts/go-mtree/cmd/gomtree")
+       ((#:tests? _ #t) #f)
        ((#:unpack-path _ "") "github.com/vbatts/go-mtree")))
     (native-inputs
      (package-propagated-inputs go-github-com-vbatts-go-mtree))
