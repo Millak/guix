@@ -633,7 +633,7 @@ parser definition into a C output.")
     (native-inputs
      (list
       ;; Runtime dependencies for binaries used as a bootstrap.
-      brotli/fixed
+      brotli
       c-ares-for-node-lts
       cpp-ada-url-parser
       googletest
@@ -661,7 +661,7 @@ parser definition into a C output.")
       util-linux))
     (inputs
      (list bash-minimal
-           brotli/fixed
+           brotli
            c-ares-for-node-lts
            coreutils-minimal
            cpp-ada-url-parser
