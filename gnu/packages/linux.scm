@@ -2793,7 +2793,7 @@ This package provides the @command{corefreqd} data collection daemon, the
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "4.22.2")
+    (version "4.25.0")
     (source
      (origin
        (method git-fetch)
@@ -2802,7 +2802,7 @@ This package provides the @command{corefreqd} data collection daemon, the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0akjyz8nhhpcr4y4xmhghd4253mndzhhi5qggr2z315vpxfr7rl4"))))
+        (base32 "0av247mi6swk22lm815m9kfyn2b49rbxayam72syk5bpz4j7wi00"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
