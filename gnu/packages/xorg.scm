@@ -5935,7 +5935,7 @@ X11 servers, Windows, or macOS.")
   (package
     (inherit xpra)
     (name "xpra")
-    (version "5.1.6")
+    (version "5.1.7")
     (source
      (origin
        (method git-fetch)
@@ -5944,7 +5944,7 @@ X11 servers, Windows, or macOS.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "144ihyjmnyk0gznly3hwcxrrjs14pixjcbh8l0rjvq1pnqcvkvrh"))
+        (base32 "0irchnap1yc2ycxx5647ss0gm693ilxfgqqx6282by8x6zh15x5i"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))))
 
