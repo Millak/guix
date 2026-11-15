@@ -294,15 +294,23 @@ SYSTEM."
                                 #:url (channel-url %default-guix-channel)
                                 #:commit commit))
 
-  (map
-   (lambda (system)
-     (let ((name (string->symbol
-                  (string-append "guix." system)))
-           (drv (run-with-store store
-                  (channel-instances->derivation (list instance)
-                                                 #:system system))))
-       (derivation->job name drv)))
-   systems))
+  ;; TODO: Traditionally the build farms have used grafting for these
+  ;; derivations, since it wasn't possible to disable grafting when computing
+  ;; them.
+  ;;
+  ;; Also, since grafting doesn't work at the top level here, it's important
+  ;; to compute the derivations with grafts enabled for users to have a chance
+  ;; of getting substitutes.
+  (parameterize ((%graft? #t))
+    (map
+     (lambda (system)
+       (let ((name (string->symbol
+                    (string-append "guix." system)))
+             (drv (run-with-store store
+                    (channel-instances->derivation (list instance)
+                                                   #:system system))))
+         (derivation->job name drv)))
+     systems)))
 
 ;; Architectures that are able to build or cross-build Guix System images.
 ;; This does not mean that other architectures are not supported, only that
