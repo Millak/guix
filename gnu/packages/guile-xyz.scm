@@ -1153,19 +1153,31 @@ tables.")
         (base32 "1d8xg3w54s8rzfr9b8jrali8w78b46sxap8rwc18k2ks887dfa7i"))))
     (build-system gnu-build-system)
     (arguments
-     (if (target-hurd?)
-         (list #:phases
-               #~(modify-phases %standard-phases
-                   (add-before 'check 'disable-more-tests
-                     (lambda _
-                       (substitute* "Makefile"
-                         ;; clock_nanosleep with a clock from
-                         ;; pthread-getcpuclockid fails with EINVAL
-                         ;; https://codeberg.org/guile/fibers/issues/171
-                         (("tests/preemption.scm") "")
-                         ;; heap grows too much
-                         (("tests/cancel-port-waiters.scm") ""))))))
-         '()))
+     (cond ((target-aarch64?)
+            (list #:phases
+                  #~(modify-phases %standard-phases
+                      (add-before 'check 'disable-jit
+                        (lambda _
+                          ;; XXX: Due to a JIT bug in Guile 3.0.9 on AArch64,
+                          ;; some tests would hang:
+                          ;; <https://codeberg.org/fibers/fibers/issues/83>.
+                          ;; Disable JIT for now; re-enable it when Guile 3.0.10+
+                          ;; is used.  (Note: The Shepherd disables JIT on
+                          ;; AArch64 so it can safely use Fibers.)
+                          (setenv "GUILE_JIT_THRESHOLD" "-1"))))))
+           ((target-hurd?)
+            (list #:phases
+                  #~(modify-phases %standard-phases
+                      (add-before 'check 'disable-more-tests
+                        (lambda _
+                          (substitute* "Makefile"
+                            ;; clock_nanosleep with a clock from
+                            ;; pthread-getcpuclockid fails with EINVAL
+                            ;; https://codeberg.org/guile/fibers/issues/171
+                            (("tests/preemption.scm") "")
+                            ;; heap grows too much
+                            (("tests/cancel-port-waiters.scm") "")))))))
+           (else '())))
     (native-inputs
      (list texinfo pkg-config autoconf-2.71 automake libtool
            guile-3.0            ;for 'guild compile
