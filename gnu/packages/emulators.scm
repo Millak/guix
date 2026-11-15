@@ -3206,7 +3206,7 @@ that compiles to WebAssembly.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2026.3.0")
+    (version "2026.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3215,7 +3215,7 @@ that compiles to WebAssembly.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p1swai3b115hwwvkwxqmhn0ikpj1vzw8dwwqrjxam2ig21ihlf0"))))
+        (base32 "1cija1k0xf0v2lrv1nar6qrk92nn9jm32mv4c0zzwn42483xy4qq"))))
     (build-system gnu-build-system)
     (arguments
      (list
