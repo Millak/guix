@@ -379,7 +379,7 @@ DICOM WSI files.")
 (define-public libpng
   (package
    (name "libpng")
-   (version "1.6.39")  ; Remember to also update libpng-apng if possible!
+   (version "1.6.59")  ; Remember to also update libpng-apng if possible!
    (source (origin
             (method url-fetch)
             (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
@@ -392,7 +392,7 @@ DICOM WSI files.")
                         "/libpng16/libpng-" version ".tar.xz")))
             (sha256
              (base32
-              "0dv90dxvmqpk7mbywyjbz8lh08cv4b0ksqp1y62mzvmlf379cihz"))))
+              "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags '("--disable-static")))
@@ -405,26 +405,7 @@ DICOM WSI files.")
     "Libpng is the official PNG (Portable Network Graphics) reference
 library.  It supports almost all PNG features and is extensible.")
    (license license:zlib)
-   (home-page "http://www.libpng.org/pub/png/libpng.html")
-   (replacement libpng-next)))
-
-(define-public libpng-next
-  (package
-    (inherit libpng)
-    (version "1.6.59")
-    (source (origin
-	      (method url-fetch)
-	      (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
-				        version "/libpng-" version ".tar.xz")
-		         (string-append
-			  "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-			  "/libpng16/libpng-" version ".tar.xz")
-		         (string-append
-			  "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-			  "/libpng16/libpng-" version ".tar.xz")))
-	      (sha256
-	       (base32
-                "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))))
+   (home-page "http://www.libpng.org/pub/png/libpng.html")))
 
 (define-public libpng-apng
   ;; The APNG patch is maintained separately and may lag behind upstream libpng.

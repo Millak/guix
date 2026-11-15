@@ -3929,7 +3929,7 @@ target_link_libraries\\(PCSX2_FLAGS INTERFACE vulkan-headers\\)") ""))
                   kddockwidgets
                   libjpeg-turbo
                   libpcap
-                  libpng-next
+                  libpng
                   libwebp
                   libxi
                   libxrandr
