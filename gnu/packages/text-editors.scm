@@ -2044,6 +2044,40 @@ syntax highlighting, customizable color scheme (including support for 24-bit tru
 colours), kitty keyboard protocol, editorconfig support, amongst other features.")
     (license license:gpl2)))
 
+(define-public thoth
+  ;; no release
+  (let ((commit "b5f39f61deedff5b9e46995b2d03ff8a4b2e9e52")
+        (revision "0"))
+    (package
+      (name "thoth")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "http://git.sr.ht/~sporeball/thoth")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1sy04yw56zj4gmgs7dr9lxh8kfv5kdrszlsfy42bnwxvrfz07wjx"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))
+      (inputs (list ncurses))
+      (home-page "http://git.sr.ht/~sporeball/thoth")
+      (synopsis "Question-based notetaking tool")
+      (description
+       "Thoth is a modal-based, single-buffer notetaking tool
+where every note must be written as a series of questions and answers.")
+      (license license:expat))))
+
 (define-public zed
   (package
     (name "zed")
