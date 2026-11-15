@@ -29895,7 +29895,7 @@ and bundle formats.")
 (define-public go-github-com-sirupsen-logrus
   (package
     (name "go-github-com-sirupsen-logrus")
-    (version "1.9.3")
+    (version "1.10.2")
     (source
      (origin
        (method git-fetch)
@@ -29904,7 +29904,7 @@ and bundle formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jz7nyq88i9fwfpp7krl046q62kjn6lb9j4r932bxnpypl1hwc49"))))
+        (base32 "07k45nvj9ml0518n9ww1lzcpj3f50n6r3iq9dc2mjqv9afgs44nl"))))
     (build-system go-build-system)
     (arguments
      (list
