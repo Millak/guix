@@ -2835,7 +2835,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangobar
   (package
     (name "mangobar")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -2844,11 +2844,10 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "042a1p5wk030pawnzhkrbnpl8jznqlf62kpx1aw1vxirk2yzrpd2"))))
+        (base32 "0f4pm2jf1lmqd1n9b8ns138fwcw4g06q67qcswfvr75slkzc7qn7"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
-           python
            wayland))
     (inputs
      (list cairo
@@ -2857,6 +2856,7 @@ limited size and a few external dependencies.  It is configurable via
            eudev
            fcft
            gdk-pixbuf
+           libxkbcommon
            pango
            pixman
            pulseaudio
