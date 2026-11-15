@@ -3990,6 +3990,33 @@ Alternatively the menu can be bound globally, for example:
 @code{(global-set-key [S-down-mouse-3] 'minions-minor-modes-menu)}.")
     (license license:gpl3+)))
 
+(define-public emacs-nael
+  (package
+    (name "emacs-nael")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/mekeor/nael")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08j5fl6rydr9nvffqgzwjm9zzbwfwzy11p6k9psxwl30j39b0z2z"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:lisp-directory "nael"))
+    (home-page "https://codeberg.org/mekeor/nael")
+    (synopsis "Lean 4 major mode for Emacs")
+    (description
+     "Nael is a major mode for the Lean 4 language.  It provides
+Abbrev- and Skeleton-based input of Unicode symbols, and teaches
+Eglot and ElDoc about Lean-specific LSP extensions, such as
+displaying the tactic state at point.")
+    (license (list license:asl2.0 license:gpl3))))
+
 (define-public emacs-nano-modeline
   (let ((commit "04676d57a1e602123a593836745a744d1b2028fb")) ;version bump
     (package
