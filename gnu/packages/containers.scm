@@ -2637,7 +2637,7 @@ Container Runtime fully written in C.")
 (define-public distrobox
   (package
     (name "distrobox")
-    (version "1.8.2.4")
+    (version "1.8.2.5")
     (source
      (origin
        (method git-fetch)
@@ -2645,7 +2645,7 @@ Container Runtime fully written in C.")
              (url "https://github.com/89luca89/distrobox")
              (commit version)))
        (sha256
-        (base32 "07kqgr5diwvkks3fn1r0nnpfqq6gngqyx4x7lxs06ri6g0a4knvf"))
+        (base32 "1jzd3zhvrkibjql4a4r1g09cvlkgbzhg2hdaj5qwmbn7jh3jv8xj"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
