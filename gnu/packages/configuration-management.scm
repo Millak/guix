@@ -94,7 +94,7 @@ everything is configured the way it's supposed to be.")
 (define-public chezmoi
   (package
     (name "chezmoi")
-    (version "2.72.1")
+    (version "2.74.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -103,7 +103,7 @@ everything is configured the way it's supposed to be.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qfp2iighx5889lssx8m0xv3pw8mysxards4x8vz8bzsflmgm3ig"))))
+                "0pj206sjbaidh0wk6zfm287k9rby0i026payffq7vkaax7v0p6z1"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -133,27 +133,25 @@ everything is configured the way it's supposed to be.")
                (string-append #$output "/bin/chezmoi")))))))
     (native-inputs
      (list go-filippo-io-age
-           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
-           go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azsecrets
-           go-github-com-burntsushi-toml
-           go-github-com-masterminds-sprig-v3
-           go-github-com-shopify-ejson
            go-github-com-alecthomas-assert-v2
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azsecrets
            go-github-com-bartventer-httpcache
            go-github-com-betterleaks-betterleaks
            go-github-com-bmatcuk-doublestar-v4
            go-github-com-bradenhilton-mozillainstallhash
+           go-github-com-burntsushi-toml
            go-github-com-charmbracelet-bubbles
            go-github-com-charmbracelet-bubbletea
            go-github-com-charmbracelet-glamour
            go-github-com-charmbracelet-lipgloss
            go-github-com-coreos-go-semver
+           go-github-com-dustin-go-humanize
            go-github-com-fsnotify-fsnotify
            go-github-com-go-git-go-git-v5
-           go-github-com-go-sprout-sprout
            go-github-com-go-viper-mapstructure-v2
            go-github-com-goccy-go-yaml
            go-github-com-google-go-github-v72
@@ -161,12 +159,14 @@ everything is configured the way it's supposed to be.")
            go-github-com-gopasspw-gopass
            go-github-com-itchyny-gojq
            go-github-com-klauspost-compress
+           go-github-com-masterminds-sprig-v3
            go-github-com-mitchellh-copystructure
            go-github-com-muesli-combinator
            go-github-com-muesli-termenv
            go-github-com-nwaples-rardecode-v2
            go-github-com-pete-woods-go-expect
            go-github-com-rogpeppe-go-internal
+           go-github-com-shopify-ejson
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
            go-github-com-tailscale-hujson
