@@ -2708,11 +2708,13 @@ It is inspired by Xmonad and dwm.  Its major features include:
     (version "7.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://leahneukirchen.org/releases/cwm-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/leahneukirchen/cwm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "147wn3njb3mr0h53qyafx81nj7jssbkllv07ayghv62pbxm0axgc"))))
+        (base32 "0ix1aal33qn2knvz3m207iyb3n5z08r6yk7ixiw0c0lghkhv2bv0"))))
     (build-system gnu-build-system)
     (arguments
      (list
