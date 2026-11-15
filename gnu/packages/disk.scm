@@ -419,7 +419,7 @@ similarity.")
 (define-public gdu
   (package
     (name "gdu")
-    (version "5.36.1")
+    (version "5.37.0")
     (source
      (origin
        (method git-fetch)
@@ -428,16 +428,21 @@ similarity.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wpmflp0jmmpzynn420ywgd0nvgm10ijdwksqgn97f48f1yibllf"))))
+        (base32 "0qssxxi1li7s4h83yygif826shvryccs6sxw2b6rp1ish35ir4jp"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/dundee/gdu/v5/cmd/gdu"
+      #:import-path "github.com/dundee/gdu/v5/..."
       #:unpack-path "github.com/dundee/gdu/v5"
-      #:test-subdirs #~(list "../../...")))
+      #:build-flags
+      #~(list (string-append
+               "-ldflags=-X github.com/dundee/gdu/v5/build.Version=" #$version
+               " -X github.com/dundee/gdu/v5/build.User=Guix"
+               " -X github.com/dundee/gdu/v5/build.Time=2026-08-18"))))
     (native-inputs
      (list go-github-com-dgraph-io-badger-v4
+           go-github-com-ebitengine-purego
            go-github-com-fatih-color
            go-github-com-gdamore-tcell-v2
            go-github-com-h2non-filetype
