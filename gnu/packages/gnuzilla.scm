@@ -444,7 +444,7 @@ preferences/advanced-scripts.dtd"
            libcanberra
            libgnome
            libjpeg-turbo
-           libpng-apng-next
+           libpng-apng
            ;; UNBUNDLE-ME! libogg
            ;; UNBUNDLE-ME! libtheora ; wants theora-1.2, not yet released
            ;; UNBUNDLE-ME! libvorbis

@@ -411,7 +411,7 @@ library.  It supports almost all PNG features and is extensible.")
   ;; The APNG patch is maintained separately and may lag behind upstream libpng.
   (package
     (name "libpng-apng")
-    (version "1.6.39")
+    (version "1.6.59")
     (source
      (origin
        (method url-fetch)
@@ -424,7 +424,7 @@ library.  It supports almost all PNG features and is extensible.")
                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
                    "/libpng16/libpng-" version ".tar.xz")))
        (sha256
-        (base32 "0dv90dxvmqpk7mbywyjbz8lh08cv4b0ksqp1y62mzvmlf379cihz"))))
+        (base32 "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -456,7 +456,7 @@ library.  It supports almost all PNG features and is extensible.")
                                   version "/libpng-" version "-apng.patch.gz"))
                   (sha256
                    (base32
-                    "1z8cx011a2c7vagwgi92rbmky1wi8awmrdldqh9f5k80pbmbdi2a"))))))
+                    "1459wz9p3pv7m4zid66wjczyfnfr1r8fw0alwa41xjjkk6f3ls99"))))))
     (native-inputs
      (list libtool))
     ;; libpng.la says "-lz", so propagate it.
@@ -468,72 +468,7 @@ library.  It supports almost all PNG features and is extensible.")
 extension of the APNG (Portable Network Graphics) format.
 APNG patch provides APNG support to libpng.")
     (home-page "https://sourceforge.net/projects/libpng-apng/")
-    (license license:zlib)
-    (replacement libpng-apng/fixed)))
-
-;; Temporary and kept around to avoid rebuild. Consider removing if
-;; dependent packages are rebuilt anyway.
-(define-public libpng-apng-next
-  (package
-    (inherit libpng-apng)
-    (version "1.6.50")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
-                                 version "/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-                   "/libpng16/libpng-" version ".tar.xz")
-                  (string-append
-                   "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-                   "/libpng16/libpng-" version ".tar.xz")))
-       (sha256
-        (base32
-         "01r34c31gq136jwshdfira44wbl6nb8qfgj4a4vam9r0hr8rdwsd"))))
-    (inputs
-     (modify-inputs inputs
-       (replace "apng"
-         (origin
-           (method url-fetch)
-           (uri
-            (string-append "mirror://sourceforge/libpng-apng/libpng16/"
-                           version "/libpng-" version "-apng.patch.gz"))
-           (sha256
-            (base32
-             "0r811izi40qzy69jmhz0xlkpqlsjj89bang1b3ma6a5igh6dqzb8"))))))
-    (replacement libpng-apng/fixed)))
-
-(define libpng-apng/fixed
-  ;; Temporary graft to avoid rebuilds.
-  (package
-    (inherit libpng-apng)
-    (version "1.6.59")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
-                                  version "/libpng-" version ".tar.xz")
-                   (string-append
-                    "ftp://ftp.simplesystems.org/pub/libpng/png/src"
-                    "/libpng16/libpng-" version ".tar.xz")
-                   (string-append
-                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
-                    "/libpng16/libpng-" version ".tar.xz")))
-        (sha256
-         (base32
-          "12a3vczm54yz1cwai027clxxqkg7sr5v3ivakg5h7y1piaix43fq"))))
-    (inputs
-     (modify-inputs inputs
-       (replace "apng"
-         (origin
-           (method url-fetch)
-           (uri
-            (string-append "mirror://sourceforge/libpng-apng/libpng16/"
-                           version "/libpng-" version "-apng.patch.gz"))
-           (sha256
-            (base32
-             "1459wz9p3pv7m4zid66wjczyfnfr1r8fw0alwa41xjjkk6f3ls99"))))))))
+    (license license:zlib)))
 
 (define-public pngcrush
   (package

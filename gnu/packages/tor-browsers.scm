@@ -231,7 +231,7 @@ Browser.")
            libcanberra
            libgnome
            libjpeg-turbo
-           libpng-apng-next
+           libpng-apng
            libwebp
            libxft
            libevent
