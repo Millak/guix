@@ -291,7 +291,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/engineering.scm			\
   %D%/packages/enlightenment.scm		\
   %D%/packages/entr.scm				\
-  %D%/packages/patches/eom-fix-girepository.patch \
   %D%/packages/erlang.scm			\
   %D%/packages/erlang-xyz.scm			\
   %D%/packages/esolangs.scm			\
