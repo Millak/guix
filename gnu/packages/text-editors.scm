@@ -1364,7 +1364,7 @@ editors.")
     (synopsis "Tool to verify that project files match @code{.editorconfig}")
     (description
      "@code{editorconfig-checker} is a lint tool to verify that a project
-matches the specifications in @{.editorconfig} file.  It runs quickly,
+matches the specifications in @file{.editorconfig} file.  It runs quickly,
 providing a frequent style check and the output format can be configured to
 interface with CI pipeline UIs.")
     (license license:expat)))

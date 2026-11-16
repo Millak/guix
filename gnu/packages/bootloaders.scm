@@ -882,7 +882,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (home-page "https://www.devicetree.org/")
     (synopsis "python bindings for libfdt")
     (description
-     "This package provides python bindings for @{libfdt}, a utility
+     "This package provides python bindings for @code{libfdt}, a utility
 library for reading and manipulating the Linux Kernel Device Tree binary format.")
     (license (list license:gpl2+ license:bsd-2))))
 

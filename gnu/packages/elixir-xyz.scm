@@ -277,7 +277,7 @@ implementing a handful of (mostly) arrow macros.")
     (synopsis
      "Writes and updates tests for you")
     (description
-     "This packag provides @{assert_value, an @code{ExUnit} assert
+     "This package provides @code{assert_value}, an @code{ExUnit} assert
 that writes and updates tests for you.")
     (home-page "https://hexdocs.pm/assert_value/")
     (license license:expat)))

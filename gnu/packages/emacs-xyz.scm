@@ -11665,7 +11665,7 @@ code.  It was created based on the usage of @code{ob-C}.")
       (home-page "https://github.com/jwiegley/ob-gptel/")
       (synopsis "Org Babel support for evaluating @code{gptel} prompts.")
       (description "@code{ob-gptel} is a backend for Org Babel.  It provides
-an alternative interface to evaluate @{gptel} prompts as Org mode blocks.")
+an alternative interface to evaluate @code{gptel} prompts as Org mode blocks.")
       (license license:gpl3+))))
 
 (define-public emacs-ob-restclient
@@ -24917,7 +24917,7 @@ information inside the Dired buffer.")
     (home-page "https://gitlab.com/xuhdev/dired-quick-sort/")
     (synopsis "Automatic sorting of Dired buffers")
     (description
-     "@{dired-quick-sort} provides persistent quick sorting of Dired buffers
+     "@code{dired-quick-sort} provides persistent quick sorting of Dired buffers
 in various ways with @code{hydra}.")
     (license license:gpl3+)))
 
@@ -34931,7 +34931,7 @@ calendar.")
       (synopsis "Zotra frontend for Emacs")
       (description
        "@code{Emacs-zotra} provides functions to fetch bibliographic
-information in different formats (e.g. @{bibtex}) using website urls or search
+information in different formats (e.g. @code{bibtex}) using website urls or search
 identifiers.
 
 This library connects to different @code{zotero} translators:

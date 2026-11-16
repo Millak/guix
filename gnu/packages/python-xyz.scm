@@ -1348,7 +1348,7 @@ that aims to provide an intuitive & efficient developer experience.")
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://tecnocode.co.uk/dbus-deviation/")
     (synopsis "D-Bus introspection XML parser")
-    (description "The @{dbus-deviation} library and utility parses D-Bus
+    (description "The @code{dbus-deviation} library and utility parses D-Bus
 introspection XML and processes it in various ways.  For example, it can
 represent a parsed D-Bus API XML description as an @acronym{AST, abstract
 syntax tree}, or calculate the differences between two D-Bus APIs.")
