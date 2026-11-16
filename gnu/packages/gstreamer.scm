@@ -633,8 +633,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.28.1")
-    (replacement gst-plugins-good/fixed)
+    (version "1.28.9")
     (source
      (origin
        (method url-fetch)
@@ -643,7 +642,8 @@ for the GStreamer multimedia library.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "139n8in88003dbx4kv6i69zhl4bs07f1mf201q2n4yhvwjp2d3kk"))))
+        (base32
+         "1x57khx9qwfybdpsywvnbrpyqgfj48m32q2yx59a41ip92bws675"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -744,25 +744,6 @@ licensing.  Documented and dressed up in tests.  If you're looking for a role
 model to base your own plug-in on, here it is.")
     (home-page "https://gstreamer.freedesktop.org/")
     (license license:lgpl2.0+)))
-
-(define gst-plugins-good/fixed
-  (package
-    (inherit gst-plugins-good)
-    (name "gst-plugins-good")
-    (version "1.28.9")
-    (source
-     (origin
-       (inherit (package-source gst-plugins-good))
-       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
-                          name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1x57khx9qwfybdpsywvnbrpyqgfj48m32q2yx59a41ip92bws675"))))
-    ;; Repair inputs to refer to updated GStreamer in build.
-    ;; Drop this when unbundling.
-    (inputs (modify-inputs inputs
-              (prepend gstreamer/fixed gst-plugins-base/fixed)))
-    (propagated-inputs (list))))
 
 (define-public gst-plugins-good-qt
   (package
