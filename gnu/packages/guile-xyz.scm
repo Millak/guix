@@ -6587,8 +6587,7 @@ text-oriented consoles with keyboard and mouse input.")
                   (("guile_sitedir = .*")
                    (format #f "guile_sitedir = '~a/share/guile/site/~a/'\n"
                            #$output
-                           #$((@ (guix build guile-build-system)
-                                 target-guile-effective-version))))
+                           (target-guile-effective-version)))
                   (("guile_extdir = .*")
                    (format #f "guile_extdir = '~a/lib/guile/~a/extensions'"
                            #$output
@@ -6607,38 +6606,36 @@ client and server API of the @acronym{OSC, Open Sound Control} format.")
     (inherit guile-osc-lib)
     (name "guile-osc")
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'fix-build-recipe
-            (lambda _
-              (substitute* "meson.build"
-                (("depends: .*") ""))))
-          (add-before 'build 'patch-install-paths
-            (lambda _
-              (substitute* "../source/open-sound-control/api.scm"
-                (("\\(load-extension.*")
-                 (format #f
-                         "(load-extension \"~a/lib/guile/~a/extensions/libguile-osc.so\"\n"
-                         #$(this-package-input "guile-osc-lib")
-                         #$((@ (guix build guile-build-system)
-                               target-guile-effective-version)))))))
-          (add-before 'check 'set-sitedir
-            (lambda _
-              (substitute* "../source/meson.build"
-                (("guile_sitedir = .*")
-                 (format #f "guile_sitedir = '~a/share/guile/site/~a/'\n"
-                         #$output
-                         #$((@ (guix build guile-build-system)
-                               target-guile-effective-version))))
-                (("guile_cachedir = .*")
-                 (format #f "guile_cachedir = '~a/lib/guile/~a/site-ccache'\n"
-                         #$output
-                         #$((@ (guix build guile-build-system)
-                               target-guile-effective-version))))
-                (("guile_extdir = .*")
-                 (format #f "guile_extdir = '~a/lib/'" #$output)))))
-          (delete 'shrink-runpath))))
+     (substitute-keyword-arguments arguments
+       ((#:phases phases #~%standard-phases)
+        (with-imported-modules '((guix build guile-build-system))
+          #~(modify-phases %standard-phases        ;ignore parent phases
+              (add-before 'configure 'fix-build-recipe
+                (lambda _
+                  (substitute* "meson.build"
+                    (("depends: .*") ""))))
+              (add-before 'build 'patch-install-paths
+                (lambda _
+                  (substitute* "../source/open-sound-control/api.scm"
+                    (("\\(load-extension.*")
+                     (format #f
+                             "(load-extension \"~a/lib/guile/~a/extensions/libguile-osc.so\"\n"
+                             #$(this-package-input "guile-osc-lib")
+                             (target-guile-effective-version))))))
+              (add-before 'check 'set-sitedir
+                (lambda _
+                  (substitute* "../source/meson.build"
+                    (("guile_sitedir = .*")
+                     (format #f "guile_sitedir = '~a/share/guile/site/~a/'\n"
+                             #$output
+                             (target-guile-effective-version)))
+                    (("guile_cachedir = .*")
+                     (format #f "guile_cachedir = '~a/lib/guile/~a/site-ccache'\n"
+                             #$output
+                             (target-guile-effective-version)))
+                    (("guile_extdir = .*")
+                     (format #f "guile_extdir = '~a/lib/'" #$output)))))
+              (delete 'shrink-runpath))))))
     (inputs (list guile-3.0-latest guile-osc-lib liblo))
     (home-page "https://github.com/taw10/guile-osc")
     (synopsis "OSC API Implementation")
