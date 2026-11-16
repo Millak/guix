@@ -24,8 +24,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix licenses)
-  #:use-module (gnu packages libusb))
+  #:use-module (gnu packages libusb)
+  #:use-module (gnu packages python-build))
 
 (define-public libphidget22
   (package
@@ -51,3 +53,37 @@
    (description synopsis)))
 
 (define-deprecated-package libphidget libphidget22)
+
+(define-public python-phidget22
+  (package
+    (name "python-phidget22")
+    (version "1.27.20261112")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "phidget22" version))
+       (sha256
+        (base32 "0xgg5gpwzx944gq2ahp7vagx920fn05hp59053qpahanbvlqcp2b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'record-libphidget-file-name
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "Phidget22/_phidget_support.py"
+                     (("libs_path = .*")
+                      (let ((libphidget (search-input-file
+                                         inputs
+                                         "lib/libphidget22.so")))
+                        (string-append "libs_path = '"
+                                       (dirname libphidget)
+                                       "'\n")))))))
+       #:tests? #f))                              ;no tests
+    (inputs (list libphidget22))
+    (native-inputs (list python-setuptools))
+    (home-page "https://www.phidgets.com")
+    (synopsis "Python bindings for the Phidget library")
+    (description
+     "This package provides Python bindings to the libphidget library, which
+allows you to control Phidget devices.")
+    (license bsd-3)))
