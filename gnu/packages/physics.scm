@@ -372,16 +372,16 @@ bindings, and the python-style library in modern C++.")
 (define-public python-gofit
   (package
     (name "python-gofit")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ralna/gofit")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ralna/gofit")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x7kk97k4v1mzgs29z9i2yidjx4hmdwhng77178l564hn29k1c2b"))))
+        (base32 "0x999y0336wjiybibqf3spb72rv4v9d2n0w1ycrh89v87g08baas"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -395,19 +395,25 @@ bindings, and the python-style library in modern C++.")
                 (("install_requires=")
                  "setup_requires="))))
           (replace 'check
+            ;; Taken from project's CI.
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; test_multistart_ls.py needs cubic.txt in cwd
-                (copy-file "tests/cubic.txt" "cubic.txt")
-                (for-each (lambda (test)
-                            (invoke "python" test))
-                          (find-files "tests" "^test_.*\\.py$"))))))))
-    (native-inputs (list pybind11-2 python-setuptools cmake python-pytest
-                         python-numpy))
+                (with-directory-excursion "tests"
+                  (for-each (lambda (test)
+                              (invoke "python" test))
+                            (find-files "tests" "^test_.*\\.py$")))))))))
+    (native-inputs
+     (list pybind11
+           python-setuptools
+           cmake-minimal
+           python-numpy))
     (inputs (list eigen))
-    (home-page "https://github.com/ralna/gofit")
+    (home-page "https://ralna.github.io/GOFit/")
     (synopsis "GOFit: Global Optimization for Fitting problems")
-    (description "GOFit: Global Optimization for Fitting problems.")
+    (description
+     "GOFit is a package of C++ algorithms with Python interfaces designed for
+the global optimization of parameters in curve fitting, i.e. for nonlinear
+least-squares problems arising from curve fitting.")
     (license license:bsd-3)))
 
 (define-public python-mslice
