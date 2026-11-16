@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libphidget)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -26,25 +27,27 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages libusb))
 
-(define-public libphidget
+(define-public libphidget22
   (package
-   (name "libphidget")
-   (version "2.1.9.20190409")
+   (name "libphidget22")
+   ;; See file 'library_version' in the tarball for the version string.
+   (version "1.27.20261112")
    (source (origin
             (method url-fetch)
             (uri (string-append
-                  "https://www.phidgets.com/downloads/phidget21/libraries/"
-                  "linux/libphidget/libphidget_"
-                  version ".tar.gz"))
+                  "https://cdn.phidgets.com/downloads/phidget22/libraries/"
+                  "linux/libphidget22.tar.gz"))
             (sha256
-             (base32 "07w54dmr75vq2imngfy66nk1sxlvkzhl2p6g362q0a02f099jy0f"))))
+             (base32
+              "1w6h5h5x1b9fy8dzbc3h04m9v3h9v6a426iqarmgliz4rvza9jki"))))
    (build-system gnu-build-system)
    (arguments
-    (list #:configure-flags
-          #~(list "CFLAGS=-Wno-incompatible-pointer-types -O2 -g")))
+    (list #:configure-flags #~(list "--disable-static")))
    (inputs (list libusb))
    (outputs '("out" "debug"))
    (home-page "https://www.phidgets.com/")
    (license lgpl3+)
    (synopsis "C library to manipulate Phidgets")
    (description synopsis)))
+
+(define-deprecated-package libphidget libphidget22)
