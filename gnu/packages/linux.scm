@@ -11709,7 +11709,7 @@ persistent over reboots.")
 (define-public libbpf
   (package
     (name "libbpf")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -11719,7 +11719,7 @@ persistent over reboots.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1r1ysy8xpdz2nqs0svk4772fbykqh414mqivwylbj5r9v1nf8r02"))))
+         "1ncndd1hddll65yaglg9d17m5f073s13x904bazz1az31kx7wy5r"))))
     (build-system gnu-build-system)
     (arguments
      (list
