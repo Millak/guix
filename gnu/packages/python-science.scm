@@ -6820,7 +6820,7 @@ tabular datasets.  This package provides the core modules of Vaex.")
 (define-public python-vector
   (package
     (name "python-vector")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -6829,7 +6829,7 @@ tabular datasets.  This package provides the core modules of Vaex.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxcihgs2cxxhfayv9ixis4pgjnp45c33pqym6cdp0n8j4y6y6zm"))))
+        (base32 "1ja2kra9xsykamrav8h0hg562ixlvix5bg94cz6kazj9b0624ysj"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list ;; python-dask-awkward   ;not packaged yet in Guix
