@@ -1720,7 +1720,7 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public mate-utils
   (package
     (name "mate-utils")
-    (version "1.28.0")
+    (version "1.28.3")
     (source
      (origin
        (method git-fetch)
@@ -1730,7 +1730,7 @@ can be used as backgrounds in the MATE Desktop environment.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l900d46g2snw1c97m897g263h3yk14wyc5z2jxz2svi4qrb047c"))))
+        (base32 "03qw0jk7ihc4b82md02bc0sa0g518pg4vmgiyhcf1hxnb7l93iyw"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      ;; Newer itstool does the following--and that causes parallel builds to fail:
