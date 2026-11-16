@@ -551,6 +551,62 @@ You can run @command{make} automatically as you work using
 to build again each time you update a package file, run
 @samp{watchexec -w gnu/packages -- make -j4}.
 
+@menu
+* Working on the System Installer::     Hack the installation image.
+@end menu
+
+@node Working on the System Installer
+@subsection Working on the System Installer
+
+If you want to build the installation image with your local tree
+checkout and ensure that your changes land in it, please read this
+section.
+
+You can produce an image of the system installer by running a command
+like this one (@pxref{Building the
+Installation Image}):
+
+@example
+./pre-inst-env guix system image -t iso9660 gnu/system/install.scm
+@end example
+
+This will print a message such as:
+
+@example
+Updating channel 'guix' from Git repository at
+'/home/user/projects/guix/'...
+@end example
+
+The installation image uses @code{(current-guix)} for both the system
+itself and the installer program.  That means that you will always be on
+the commit you built from when you boot the installer.  You can be in
+shell in a TTY, you can be installing the system from the installer,
+both will run the Guix commit you built the installation image from.
+This means you should commit your changes before building the installer
+if you want to ensure the changes will appear.
+
+Still, the image will use the @code{guix} package from @code{(gnu
+packages package-management)} for the new system it creates in the
+installation process---e.g., for @code{guix-service-type}.  This means
+that the installed system might not have the changes you made.  If you
+need them, make sure to bump the @code{guix} package to one of your
+commits as well.  On releases, right after the tagged commit, the
+package is bumped and image built from it to mitigate this issue.  The
+image also refers to the package (through the
+@file{gnu/system/examples/bare-bones.tmpl} template) to ensure that the
+installation doesn't have to redownload the package unnecessarily.
+
+This will also print a message such as:
+
+@example
+guix system: warning: channel authentication disabled
+@end example
+
+This happens because authentication of commits is disabled for default
+@code{(current-guix)} because otherwise, you would have to sign those
+commits. There is nothing to worry about, every commits up to yours are
+authenticated.
+
 @node The Perfect Setup
 @section The Perfect Setup
 
