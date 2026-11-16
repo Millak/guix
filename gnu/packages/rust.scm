@@ -1485,6 +1485,8 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
            (package-propagated-inputs base-rust)))
       (native-inputs
        (modify-inputs native-inputs
+         ;; Remove the test inputs
+         (delete "gdb" "git-minimal" "procps")
          (prepend (cross-gcc target
                              #:libc (cross-libc target)))
          (prepend (if (target-mingw? target)
@@ -1550,7 +1552,10 @@ ar = \"ar\"
 [dist]
 ") port)))))))))
     ;; Use native-inputs of base rust.
-    (native-inputs (package-native-inputs rust))))
+    (native-inputs
+     (modify-inputs (package-native-inputs rust)
+       ;; Remove the test inputs
+       (delete "gdb" "git-minimal" "procps")))))
 
 (define-public rust-analyzer
   (package
