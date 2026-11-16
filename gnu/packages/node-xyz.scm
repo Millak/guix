@@ -4281,23 +4281,12 @@ connection.")))
           (add-after 'unpack 'chdir-to-wasm-api
             (lambda _
               (chdir "wasm-mappings/source-map-mappings-wasm-api")))
-          (add-after 'configure 'configure-target
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((sysroot
-                     (assoc-ref inputs
-                                "rust-sysroot-for-wasm32-unknown-unknown")))
-                (mkdir-p ".cargo")
-                (with-atomic-file-replacement ".cargo/config"
-                  (lambda (in out)
-                    (display (string-append "\
-[target.wasm32-unknown-unknown]
-linker = 'lld'
-
-[build]
-target = ['wasm32-unknown-unknown']
-") out)
-                    (dump-port in out)))
-                (setenv "RUSTFLAGS" (string-append "--sysroot " sysroot)))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (apply (assoc-ref %standard-phases 'configure)
+                     (append args
+                             (list #:target "wasm32-unknown-unknown"
+                                   #:cargo-target "wasm32-unknown-unknown")))))
           (replace 'build
             (lambda _
               (invoke "python3" "./build.py"
