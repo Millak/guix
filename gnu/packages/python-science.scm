@@ -1688,7 +1688,7 @@ necessary for reproducing the experiments in the paper.")
 (define-public python-hepunits
   (package
     (name "python-hepunits")
-    (version "2.4.6")
+    (version "2.4.7")
     (source
      (origin
        (method git-fetch)
@@ -1697,7 +1697,7 @@ necessary for reproducing the experiments in the paper.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xkgaf7kmj1zrr8vd65xnam43xb9bd70q3kg7fvlshmd51k8z35r"))))
+        (base32 "1p86cdwl5krl3wav9gi4zv5kay22gh0w4x0ghsfgrnmm5258750y"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatch-vcs
