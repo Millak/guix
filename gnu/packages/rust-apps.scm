@@ -4343,6 +4343,121 @@ blanks grouped by language.")
 (define-deprecated/public-alias typstyle
   (@ (gnu packages typst) typstyle))
 
+(define-public uutils-coreutils
+  (package
+    (name "uutils-coreutils")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uutils/coreutils")
+              (commit version)))
+       (file-name (git-file-name "uutils-coreutils" version))
+       (patches
+        ;; Use installed translations and preserve Guix's TZDIR in tests.
+        (search-patches
+         "uutils-coreutils-find-installed-uucore-locales.patch"
+         "uutils-coreutils-tests-preserve-tzdir.patch"))
+       (sha256
+        (base32 "1pk4irhkgcjs1vm6m0ypmmx83cjv4gk93ghn6gi0k1vwz3zbp67x"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:features '(list "unix")
+      #:cargo-test-flags
+      '(append
+        ;; The Cargo check phase does not honor #:features.
+        '("--features" "unix" "--")
+        ;; These upstream tests rely on FHS paths, account databases, login
+        ;; sessions, signals, or filesystem block-allocation details
+        ;; unavailable or unstable in the standard Guix build environment.
+        (append-map
+         (lambda (name) (list "--skip" name))
+         '("test_chgrp::test_big_h"
+           "test_chgrp::test_big_p"
+           "test_chgrp::test_error_1"
+           "test_chgrp::test_fail_silently"
+           "test_chgrp::test_preserve_root"
+           "test_chgrp::test_preserve_root_symlink"
+           "test_chgrp::test_preserve_root_symlink_cwd_root"
+           "test_chown::test_big_p"
+           "test_chown::test_chown_only_group"
+           "test_chown::test_chown_only_owner"
+           "test_chown::test_chown_only_owner_colon"
+           "test_chown::test_chown_owner_group"
+           "test_chown::test_chown_owner_group_mix"
+           "test_chown::test_passgrp::test_gid2grp"
+           "test_chown::test_passgrp::test_grp2gid"
+           "test_chown::test_passgrp::test_uid2usr"
+           "test_chown::test_passgrp::test_usr2uid"
+           "test_cp::test_cp_debug_reflink_auto_sparse_always_non_sparse_file_with_long_zero_sequence"
+           "test_cp::test_cp_sparse_always_empty"
+           "test_cp::test_cp_sparse_always_non_empty"
+           "test_dd::test_multiple_processes_reading_stdin"
+           "test_df::test_type_option_with_file"
+           "test_du::test_du_dereference_args"
+           "test_echo::test_cmd_result_stderr_check_and_stderr_str_check"
+           "test_env::test_flags_after_command"
+           "test_groups::test_groups"
+           "test_groups::test_groups_username"
+           "test_install::test_install_and_strip"
+           "test_install::test_install_and_strip_with_program"
+           "test_install::test_install_and_strip_with_program_hyphen"
+           "test_install::test_install_and_strip_with_signal_terminated_program"
+           "test_install::test_install_unprivileged_option_u_skips_chown"
+           "test_logname::test_normal"
+           "test_logname::test_output_format"
+           "test_ls::test_device_number"
+           "test_pinky::test_long_format"
+           "test_seq::test_sigpipe_ignored_reports_write_error"
+           "test_split::test_filter"
+           "test_split::test_filter_broken_pipe"
+           "test_split::test_filter_with_env_var_set"
+           "test_stat::test_format_created_seconds"
+           "test_stat::test_format_created_time"
+           "test_stat::test_mount_point_combined_with_other_specifiers"
+           "test_stat::test_percent_escaping"
+           "test_stat::test_symlinks"
+           "test_stdbuf::test_stdbuf_reports_signalled_command"
+           "test_tail::test_stdin_via_script_redirection_and_pipe"
+           "test_test::test_file_N"
+           "test_test::test_file_not_owned_by_egid"
+           "test_test::test_file_not_owned_by_euid"
+           "test_timeout::test_forward_sigint_to_child")))
+      #:modules '((guix build cargo-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-time-zone-data
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (setenv "TZDIR"
+                      (search-input-directory
+                       (or native-inputs inputs) "share/zoneinfo"))))
+          ;; The install target also installs the manpages, locales and
+          ;; completions.
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      "PROFILE=release"
+                      "MULTICALL=y"
+                      "CARGOFLAGS=--offline"
+                      (string-append "PREFIX=" #$output)))))))
+    (native-inputs
+     (list e2fsprogs
+           tzdata-for-tests))
+    (inputs
+     (cargo-inputs 'uutils-coreutils))
+    (home-page "https://github.com/uutils/coreutils")
+    (synopsis "Rust implementation of the GNU core utilities")
+    (description
+     "uutils Coreutils provides Rust implementations of the GNU core
+utilities.  The commands are exposed through symbolic links to a multicall
+executable.")
+    (license license:expat)))
+
 (define-public vhdl-ls
   (package
     (name "vhdl-ls")

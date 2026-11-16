@@ -1,0 +1,29 @@
+From 5b282719b219bf0cf1f5133782b7cf83166011f0 Mon Sep 17 00:00:00 2001
+From: coopi <coopi@noreply.codeberg.org>
+Date: Sun, 15 Nov 2026 23:18:58 +0400
+Subject: [PATCH] fix(tests): preserve TZDIR in utility subprocesses
+
+The test harness clears the environment of each subprocess, which discards TZDIR
+even when the test environment provides a timezone database.  Forward it
+explicitly so date tests can resolve named timezones in isolated builds.
+---
+ tests/uutests/src/lib/util.rs | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tests/uutests/src/lib/util.rs b/tests/uutests/src/lib/util.rs
+index a8152cbba..085c92c59 100644
+--- a/tests/uutests/src/lib/util.rs
++++ b/tests/uutests/src/lib/util.rs
+@@ -1908,6 +1908,9 @@ impl UCommand {
+                 .iter()
+                 .map(|(k, v)| (OsString::from(k), OsString::from(v))),
+         );
++        if let Some(tzdir) = env::var_os("TZDIR") {
++            cmd_env.push(("TZDIR".into(), tzdir));
++        }
+         if let Some(path) = env::var_os("PATH") {
+             cmd_env.push(("PATH".into(), path));
+         }
+-- 
+2.55.0
+

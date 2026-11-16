@@ -1,0 +1,101 @@
+From 00a14a4e07acff8fe176b6968b3345f20488f4e6 Mon Sep 17 00:00:00 2001
+From: Piotr Kubaj <pkubaj@FreeBSD.org>
+Date: Fri, 18 Sep 2026 15:35:22 +0200
+Subject: [PATCH] uucore: find the common locales of installed builds
+
+find_uucore_locales_dir() derives the directory of the common strings
+from the locales directory of a utility by walking up the source tree
+(src/uu/<util>/locales -> src/uucore/locales). That only exists in a
+development checkout. A release binary gets its locales directory from
+get_locales_dir(), which looks next to the executable
+(<bindir>/locales/<util>, <prefix>/share/locales/<util> or
+<bindir>/<util>). Walking up from there ends at a path such as
+/usr/uucore/locales, so the common strings were never read from disk
+and only the embedded English ones were left: with LANG=fr_FR.UTF-8 a
+utility printed its own messages in French, but still "Usage:" and
+"error:" instead of "Utilisation:" and "erreur".
+
+In all three of those layouts the uucore directory sits beside the one
+of the utility. That is where the "locales" target of the GNUmakefile
+puts it, and where errors_resource() already reads uucore/errors from.
+Look there when the source tree is not found.
+
+With this, the three French tests of test_localization_and_colors.rs
+pass against a release build that has its locales next to the binary.
+So far they only passed in debug builds, which read the locales from
+CARGO_MANIFEST_DIR.
+---
+ src/uucore/src/lib/mods/locale.rs | 50 ++++++++++++++++++++++++-------
+ 1 file changed, 40 insertions(+), 10 deletions(-)
+
+diff --git a/src/uucore/src/lib/mods/locale.rs b/src/uucore/src/lib/mods/locale.rs
+index 0b49087bc..3c09978ab 100644
+--- a/src/uucore/src/lib/mods/locale.rs
++++ b/src/uucore/src/lib/mods/locale.rs
+@@ -228,16 +228,24 @@ fn find_uucore_locales_dir(utility_locales_dir: &Path) -> Option<PathBuf> {
+         .canonicalize()
+         .unwrap_or_else(|_| utility_locales_dir.to_path_buf());
+ 
+-    // Walk up: locales -> printenv -> uu -> src
+-    let uucore_locales = normalized_dir
+-        .parent()? // printenv
+-        .parent()? // uu
+-        .parent()? // src
+-        .join("uucore")
+-        .join("locales");
+-
+-    // Only return if the directory actually exists
+-    uucore_locales.exists().then_some(uucore_locales)
++    // In the source tree, walk up: locales -> printenv -> uu -> src
++    let in_source_tree = normalized_dir
++        .parent() // printenv
++        .and_then(Path::parent) // uu
++        .and_then(Path::parent) // src
++        .map(|src| src.join("uucore").join("locales"));
++
++    // Next to an installed binary, the directory sits beside the one of the
++    // utility: <locales>/printenv -> <locales>/uucore
++    let installed = normalized_dir
++        .parent()
++        .map(|locales| locales.join("uucore"));
++
++    // Only return a directory that actually exists
++    [in_source_tree, installed]
++        .into_iter()
++        .flatten()
++        .find(|dir| dir.exists())
+ }
+ 
+ /// Create a bundle that combines common and utility-specific strings
+@@ -1135,6 +1143,28 @@ invalid-syntax = This is { $missing
+         }
+     }
+ 
++    /// The common strings also have to be found next to an installed binary,
++    /// where there is no source tree to walk up and the uucore directory sits
++    /// beside the one of the utility.
++    #[test]
++    fn test_find_uucore_locales_dir_installed_layout() {
++        //   <temp>/share/locales/fake_util/ <- locales directory of the utility
++        //   <temp>/share/locales/uucore/    <- common strings
++        let temp_dir = TempDir::new().expect("Failed to create temp directory");
++        let locales = temp_dir.path().join("share").join("locales");
++        let util_dir = locales.join("fake_util");
++        let uucore_dir = locales.join("uucore");
++
++        fs::create_dir_all(&util_dir).expect("Failed to create fake util locales dir");
++        assert_eq!(find_uucore_locales_dir(&util_dir), None);
++
++        fs::create_dir_all(&uucore_dir).expect("Failed to create fake uucore locales dir");
++        assert_eq!(
++            find_uucore_locales_dir(&util_dir),
++            Some(uucore_dir.canonicalize().unwrap())
++        );
++    }
++
+     #[test]
+     fn test_localizer_format_primary_bundle() {
+         let temp_dir = create_test_locales_dir();
+-- 
+2.47.3
+
