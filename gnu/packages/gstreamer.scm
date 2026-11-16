@@ -1228,8 +1228,7 @@ think twice about shipping them.")
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.28.1")
-    (replacement gst-libav/fixed)
+    (version "1.28.9")
     (source
      (origin
        (method url-fetch)
@@ -1238,7 +1237,7 @@ think twice about shipping them.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "16zfxw6h865sqi71j47lllr3y7jlnwsrwmfxvjnxh3wdlfn1madz"))))
+        (base32 "0sqqk41j6660g9f58ga8nhyjr9hl5krqqafjj44ahwh9lwgz4gab"))))
     (build-system meson-build-system)
     (native-inputs (list perl pkg-config python-wrapper ruby))
     (inputs (list ffmpeg))
@@ -1248,25 +1247,6 @@ think twice about shipping them.")
 decoders, muxers, and demuxers provided by FFmpeg.")
     (home-page "https://gstreamer.freedesktop.org/")
     (license license:lgpl2.0+)))
-
-(define gst-libav/fixed
-  (package
-    (inherit gst-libav)
-    (name "gst-libav")
-    (version "1.28.9")
-    (source
-     (origin
-       (inherit (package-source gst-libav))
-       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
-                          name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0sqqk41j6660g9f58ga8nhyjr9hl5krqqafjj44ahwh9lwgz4gab"))))
-    ;; Repair inputs to refer to updated GStreamer in build.
-    ;; Drop this when unbundling.
-    (inputs (modify-inputs inputs
-              (prepend gstreamer/fixed gst-plugins-base/fixed)))
-    (propagated-inputs (list))))
 
 (define-public gst-editing-services
   (package
