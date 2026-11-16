@@ -6568,7 +6568,7 @@ for static dimensionality checking and protobuffer serialization.")
 (define-public python-uhi
   (package
     (name "python-uhi")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -6577,7 +6577,7 @@ for static dimensionality checking and protobuffer serialization.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hrk39w6mim91kk70vclh7k3fpwn8d1h6g9gh0jx16f5ii8py8i6"))))
+        (base32 "08h7nyxnnpxq8yx1fc4h5i1487q3j057h6nqfb0bk65r9javnca2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
