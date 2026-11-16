@@ -1,0 +1,28 @@
+Set ALPSCore to use Guix's `googletest` instead of a bundled one.
+
+diff --git a/common/cmake/ALPSEnableTests.cmake b/common/cmake/ALPSEnableTests.cmake
+index 0389ef8..b8166a0 100644
+--- a/common/cmake/ALPSEnableTests.cmake
++++ b/common/cmake/ALPSEnableTests.cmake
+@@ -34,17 +34,10 @@ function(UseGtest gtest_root)
+ endfunction()
+ 
+ # enable testing with gtest - fetch it if needed
+-if (NOT tests_are_already_enabled) 
+-    if (ALPS_GLOBAL_BUILD)
+-        set(gtest_root "${PROJECT_SOURCE_DIR}/common/deps/gtest-1.16.0")
+-    else(ALPS_GLOBAL_BUILD)
+-        set(gtest_root "${PROJECT_SOURCE_DIR}/../common/deps/gtest-1.16.0")
+-    endif(ALPS_GLOBAL_BUILD)
+-
+-    UseGtest(${gtest_root})
+-    unset(gtest_root)
+-    # set (LINK_TEST  ${GTEST_MAIN_LIBRARIES}) 
+-    include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
++if (NOT tests_are_already_enabled)
++    find_package(GTest REQUIRED)
++    set(GTEST_LIBRARY GTest::gtest)
++    set(GTEST_MAIN_LIBRARIES GTest::gtest_main)
+     set(tests_are_already_enabled TRUE)
+ endif(NOT tests_are_already_enabled)
+ 

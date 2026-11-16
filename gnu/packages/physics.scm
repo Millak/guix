@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025, 2026 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025, 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Danny Milosavljevic <dannym@friendly-machines.com>
@@ -140,6 +140,44 @@ diagonalization, classical and quantum Monte Carlo, dynamical mean field
 theory, and density matrix renormalization group methods.  It contains both
 ready to use applications and C++ library for simplifying the development of
 such components.")
+    (license license:expat)))
+
+(define-public alpscore
+  (package
+    (name "alpscore")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ALPSCore/ALPSCore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h8mgq55cv07hizfys6iq4iq6ing84dicrzpfnz71hrrlpvh888d"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "common/deps/gtest-1.16.0"))
+       (patches
+        (search-patches "alpscore-unbundle-googletest.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'patch-source-shebangs 'sh-in-tests
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "common/cmake/ALPSEnableTests.cmake"
+                         (("/bin/sh")
+                          (search-input-file inputs "/bin/sh"))))))))
+    (native-inputs (list googletest))
+    (inputs (list boost eigen hdf5 openmpi))
+    (home-page "https://alpscore.org/")
+    (synopsis "Applications and Libraries for Physics Simulations Core
+libraries")
+    (description
+     "The ALPSCore project, based on the ALPS (Algorithms and
+Libraries for Physics Simulations) provides a set of C++ libraries
+facilitating developing condensed matter physics simulation applications
+using Monte Carlo and Green's functions methods.")
     (license license:expat)))
 
 (define-public cif-core
