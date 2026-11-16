@@ -3240,7 +3240,7 @@ and quadratic objectives using the Simplex algorithm.")
 (define-public python-cylp
   (package
     (name "python-cylp")
-    (version "0.94.0")
+    (version "0.94.3")
     (source
      (origin
        (method git-fetch)
@@ -3249,43 +3249,17 @@ and quadratic objectives using the Simplex algorithm.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rgqmwvmpdzl6ygwy3nm33vpphl2ldzpqj0xakh9hg1ccaa3fs6l"))))
+        (base32 "028pay58yzgjn00blw4f97kgjgz0sk7nly7klgs4dkdwfflw895g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 52 passed, 55 warnings
       #:test-flags
-      ;; XXX: All tests in this file are SEGFAULT, see:
-      ;; <https://codeberg.org/guix/guix/issues/2912>.
-      #~(list "--ignore=cylp/py/test_PySolve.py"
-              "--ignore=cylp/tests/test_CyClpSimplex.py"
-              "--ignore=cylp/tests/test_QP.py"
-              ;; All tests are failed.
-              "--ignore=cylp/tests/test_MIP.py")
+      #~(list "--pyargs" "cylp")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'numpy-compatibility
-            ;; XXX: See: <https://github.com/coin-or/CyLP/issues/227>.
-            ;;
-            ;; AttributeError: module 'numpy' has no attribute
-            ;; 'float'. `np.float` was a deprecated alias for the builtin
-            ;; `float`. To avoid this error in existing code, use `float` by
-            ;; itself. Doing this will not modify any behavior and is safe. If
-            ;; you specifically wanted the numpy scalar type, use `np.float64`
-            ;; here. The aliases was originally deprecated in NumPy 1.20; for
-            ;; more details and guidance see the original release note at:
-            ;; https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+          (add-before 'check 'remove-local-source
             (lambda _
-              (substitute* '("cylp/py/utils/sparseUtil.py"
-                             "cylp/tests/test_sparseUtil.py")
-                (("np.float") "float"))))
-          ;; XXX: Adding "--pyargs" option, changing test directory, and
-          ;; removing local source did not work; rebuilding extensions takes
-          ;; some time but it's only thing which worked to enable tests.
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  (invoke "python" "setup.py" "build_ext" "--inplace")))))))
+              (delete-file-recursively "cylp"))))))
     (native-inputs
      (list pkg-config
            python-cython
