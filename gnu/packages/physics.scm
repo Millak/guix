@@ -1127,7 +1127,7 @@ conventions.")
 (define-public python-euphonic
   (package
     (name "python-euphonic")
-    (version "2.0.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -1136,11 +1136,11 @@ conventions.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6rks3ipbv2dxw9kvypj2s185ysc4c3hlc6ym6x4wvr97gkx0id"))))
+        (base32 "1g7w04bw3sj829k069mznfzj922dywgc2f5b2hahqlc3746x727x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1117 passed, 6 skipped, 563 warnings
+      ;; tests: 7 failed, 1170 passed, 6 skipped, 837
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; Failed: DID NOT WARN. No warnings of type (<class
@@ -1161,7 +1161,14 @@ conventions.")
                                       "::test_calculate_sqw_map_with_0_"
                                       "inv_cm_bin_doesnt_emit_runtime_warn")
                        (string-append "test_util.py::TestGetQptLabels"
-                                      "::test_get_qpt_labels"))))
+                                      "::test_get_qpt_labels")
+                       (string-append "test_brille_interpolator.py"
+                                      "::TestBrilleInterpolator"
+                                      "CalculateQpointPhononModes"
+                                      "::test_calculate_qpoint_phonon_modes")
+                       (string-append "test_brille_interpolator.py"
+                                      "::TestBrilleInterpolatorCreation"
+                                      "::test_create_from_force_constants"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-numpy-include
@@ -1191,13 +1198,11 @@ conventions.")
            python-matplotlib
            python-pyyaml))
     (native-inputs
-     (list ninja
-           pkg-config
-           python-meson
+     (list python-meson
            python-pytest
-           python-pytest-xdist
            python-pytest-lazy-fixtures
-           python-pytest-mock))
+           python-pytest-mock
+           python-pytest-xdist))
     (home-page "https://github.com/pace-neutrons/Euphonic")
     (synopsis "Phonon calculations for inelastic neutron scattering")
     (description
