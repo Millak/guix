@@ -504,17 +504,16 @@ not a GUI application.")
 (define-public python-physics-tenpy
   (package
     (name "python-physics-tenpy")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/tenpy/tenpy")
-              (commit (string-append "v" version))
-              (recursive? #t)))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b1yky4gn2s1h0yl7l3a6mq1ji2zj0a74fyflhlapii7awmwas5q"))))
+        (base32 "1ycjxgvhqrn6qsjamxsyi8madinc49x2y5725k1k51qv24icbhr6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
