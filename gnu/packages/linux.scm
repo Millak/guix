@@ -11787,7 +11787,7 @@ headers.")
 (define-public bcc
   (package
     (name "bcc")
-    (version "0.31.0")
+    (version "0.37.0")
     (source
      (origin
        (method git-fetch)
@@ -11797,7 +11797,7 @@ headers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0b7kd2kqk081wl010l0vkz8a5nwq6fknl8h51fsipj2ff6c61rwn"))))
+         "16i8gbx40ipb24a1m22fvi0knz922ja3zjd3nfmxzj7jkslidx1r"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison
@@ -11805,7 +11805,7 @@ headers.")
            (@ (gnu packages compression) zip)))
     (inputs
      (list bash-minimal                 ;for wrap-program
-           clang-15
+           clang-18
            elfutils
            luajit
            libbpf
