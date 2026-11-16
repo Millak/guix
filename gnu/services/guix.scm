@@ -609,12 +609,6 @@
   (build-servers    guix-data-service-configuration-build-servers
                     (default #f)))
 
-(define (guix-data-service-profile-packages config)
-  "Return the guix-data-service package, this will populate the
-ca-certificates.crt file in the system profile."
-  (list
-   (guix-data-service-package config)))
-
 (define (guix-data-service-shepherd-services config)
   (match-record config <guix-data-service-configuration>
     (package user group port host extra-options extra-process-jobs-options
@@ -793,8 +787,6 @@ ca-certificates.crt file in the system profile."
    (name 'guix-data-service)
    (extensions
     (list
-     (service-extension profile-service-type
-                        guix-data-service-profile-packages)
      (service-extension shepherd-root-service-type
                         guix-data-service-shepherd-services)
      (service-extension activation-service-type
