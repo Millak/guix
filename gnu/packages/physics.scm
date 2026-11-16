@@ -256,7 +256,7 @@ Chung, Ying-Jer Kao, Pochung Chen;
 (define-public python-brille
   (package
     (name "python-brille")
-    (version "0.8.3")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -265,7 +265,7 @@ Chung, Ying-Jer Kao, Pochung Chen;
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vyxa7k6yrpxizbmljrv7bnsf7dzxsfbs4id36x09jjxwh7dysjj"))))
+        (base32 "1d54z21z23scjjy16z0s07ph2xwp09prfjz80pzp7dd4jlkl9j7v"))))
     (build-system cmake-build-system)
     (arguments
      (list
