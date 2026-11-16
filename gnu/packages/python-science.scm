@@ -4223,6 +4223,68 @@ search in Python.")
 written in Python which can be used to run NeuroML2 models.")
     (license license:lgpl3)))
 
+(define-public python-pylhe
+  (package
+    (name "python-pylhe")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/pylhe")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q6s7yxkgh9byhjirgm7rmkanvdmbl33lbf76ffbhys7z418mf8f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 51 passed, 13 deselected, 2 warnings
+      #:test-flags
+      ;; Network access is required.
+      #~(list "--ignore=tests/test_awkward.py"
+              "--ignore=tests/test_backwards_compatibility.py"
+              "--ignore=tests/test_classes.py"
+              "--ignore=tests/test_lhe_reader.py"
+              "--ignore=tests/test_lhe_writer.py"
+              "--ignore=tests/test_scales.py"
+              "-k" (string-join
+                    (list "not test_LHEEvent_graph_render"
+                          "test_LHEEvent_graph_source"
+                          "test_LHEEvent_graph_source_nonstandard_pdg"
+                          "test_count_events_matches_hdf5_events_dataset_l"
+                          "test_get_particles_returns_lheparticles"
+                          "test_iterate_read_file"
+                          "test_lhe_to_lheh5_roundtrip_preserves_weights"
+                          "test_lheh5_hpcgen_roundtrip"
+                          "test_mime"
+                          "test_read_init_matches_lheinit_specification"
+                          "test_read_iter_events_reads_nominal_weight_and_p")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-scikit-hep-testdata))
+    (propagated-inputs
+     (list python-awkward
+           python-graphviz
+           python-h5py
+           python-numpy
+           python-particle
+           python-vector))
+    (home-page "https://scikit-hep.org/pylhe/")
+    (synopsis "Lightweight Python interface to read and write LHE files")
+    (description
+     "This package provides a small package to get structured data out of
+@acronym{Les Houches Event files, LHE} files.")
+    (license license:asl2.0)))
+
 (define-public python-pymcubes
   (package
     (name "python-pymcubes")
