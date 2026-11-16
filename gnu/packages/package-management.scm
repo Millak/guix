@@ -678,6 +678,13 @@ the Nix package manager.")
                (inherit guix)
                (source source)
                (build-system channel-build-system)
+               (arguments
+                ;; This is safe to disable authentication here because the
+                ;; commits are either already authenticated or they are user
+                ;; owned and uncommited changes are ran anyway
+                ;; (./pre-inst-env)
+                (ensure-keyword-arguments arguments
+                                          '(#:authenticate? #f)))
                (inputs '())
                (native-inputs '())
                (propagated-inputs '())))
