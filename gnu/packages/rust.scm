@@ -1190,6 +1190,7 @@ cargo = \"" (search-input-file inputs "bin/cargo") "\"
 rustc = \"" (search-input-file inputs "bin/rustc") "\"
 docs = false
 python = \"" (search-input-file inputs "bin/python") "\"
+gdb = \"" (search-input-file inputs "bin/gdb") "\"
 vendor = true
 submodules = false
 [install]
@@ -1209,13 +1210,6 @@ cxx = \"" (search-input-file inputs "bin/g++") "\"
 ar = \"" (search-input-file inputs "bin/ar") "\"
 [dist]
 ") port)))))
-             (add-after 'configure 'add-gdb-to-config
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((gdb (assoc-ref inputs "gdb")))
-                   (substitute* "config.toml"
-                     (("^python =.*" all)
-                      (string-append all
-                                     "gdb = \"" gdb "/bin/gdb\"\n"))))))
              (replace 'build
                ;; Phase overridden to also build more tools.
                (lambda* (#:key parallel-build? #:allow-other-keys)
