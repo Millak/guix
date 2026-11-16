@@ -1161,8 +1161,7 @@ after their category.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.28.1")
-    (replacement gst-plugins-ugly/fixed)
+    (version "1.28.9")
     (source
      (origin
        (method url-fetch)
@@ -1170,7 +1169,7 @@ after their category.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0y2sz79ms498mag3rsvkng8q5pmg9f2v0njfq3zw7k1z0v5z70j0"))))
+        (base32 "128i9g5k2v8mhlrjmqxf022g3q0syc45qsz0i1a6y632d59m42jm"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
@@ -1225,25 +1224,6 @@ around their neck, or a lock-up license, or any other problem that makes you
 think twice about shipping them.")
     (home-page "https://gstreamer.freedesktop.org/")
     (license license:lgpl2.0+)))
-
-(define gst-plugins-ugly/fixed
-  (package
-    (inherit gst-plugins-ugly)
-    (name "gst-plugins-ugly")
-    (version "1.28.9")
-    (source
-     (origin
-       (inherit (package-source gst-plugins-ugly))
-       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
-                          name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "128i9g5k2v8mhlrjmqxf022g3q0syc45qsz0i1a6y632d59m42jm"))))
-    ;; Repair inputs to refer to updated GStreamer in build.
-    ;; Drop this when unbundling.
-    (inputs (modify-inputs inputs
-              (prepend gstreamer/fixed gst-plugins-base/fixed)))
-    (propagated-inputs (list))))
 
 (define-public gst-libav
   (package
