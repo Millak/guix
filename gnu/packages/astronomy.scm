@@ -6789,9 +6789,6 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
-;; XXX: Deprecated on <2026-05-16>.
-(define-public python-gwcs-1 python-gwcs)
-
 (define-public python-gwdatafind
   (package
     (name "python-gwdatafind")
