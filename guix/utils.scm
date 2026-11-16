@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -103,6 +103,7 @@
             host-hurd64?
             host-x86-64?
             target-mingw?
+            target-wasm?
             target-x86-32?
             target-x86-64?
             target-x86?
@@ -793,6 +794,14 @@ function, use target-hurd64? or system-hurd64? instead."
        ;; is a valid triplet (see the (gnu ci) module) and 'w64' and 'x86_64'
        ;; are 64-bit.
        (string-suffix? "-mingw32" target)))
+
+(define* (target-wasm? #:optional (target (%current-target-system)))
+  "Is the architecture of TARGET a Wasm variant?"
+  (and target
+       ;; config.guess identifies the CPU as wasm32 or wasm64 as the
+       ;; 32-bit and 64-bit variants of Wasm (or WebAssembly).
+       (or (string-prefix? "wasm32" target)
+           (string-prefix? "wasm64" target))))
 
 (define* (target-x86-32? #:optional (target (or (%current-target-system)
                                                 (%current-system))))
