@@ -573,39 +573,43 @@ formats.")
     (license license:bsd-3)))
 
 (define-public qolibri
+ (let ((commit "e8759a17777685f2605fa9392753aa86df95d94f")
+       (revision "0"))
   (package
     (name "qolibri")
-    (version "2.1.4")
+    (version (git-version "2.1.4" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url"https://github.com/ludios/qolibri")
-             (commit version)))
+             (url"https://github.com/mvf/qolibri")
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "066y7jcq9vg6hnvn7qxckzhd1qkgfzpzhw69nw5psm43qbaca8lg"))))
+        (base32 "0al1631narlxixlx4lqwszaxssp925njs776vwa7q17vwkwf90kf"))))
     (build-system qt-build-system)
     (arguments
-     '(#:tests? #f)) ; no test target
+     (list
+       #:qtbase qtbase
+       #:tests? #f ; no test target
+       #:configure-flags #~(list "-DQOLIBRI_USE_SYSTEM_EB=ON")))
     (native-inputs
-     (list qttools-5))
+     (list qttools))
     (inputs
      (list libeb
-           qtbase-5
-           qtmultimedia-5
-           qtquickcontrols2-5
-           qtdeclarative-5
-           qtwayland-5
-           qtwebchannel-5
-           qtwebengine-5
+           qt5compat
+           qtmultimedia
+           qtdeclarative
+           qtwayland
+           qtwebchannel
+           qtwebengine
            zlib))
     (synopsis "EPWING dictionary reader")
     (description "qolibri is a dictionary viewer for the EPWING dictionary
 format.  Most monolingual Japanese dictionaries can only be found in the
 EPWING format.")
-    (home-page "https://github.com/ludios/qolibri")
-    (license license:gpl2)))
+    (home-page "https://github.com/mvf/qolibri")
+    (license license:gpl2))))
 
 (define-public mdk
   (package
