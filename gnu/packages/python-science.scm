@@ -3459,7 +3459,7 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-particle
   (package
     (name "python-particle")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -3468,7 +3468,7 @@ production-critical data pipelines or reproducible research settings.  With
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sfv7d5l1f6vgv4aliq0swvswpz580zk0zp7frbkq786jmx9zxs7"))))
+        (base32 "1fqgipy55qnm78a9brg6vkr552yylfpkmvi48jj5f1hy6zlwgjzk"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatch-vcs
