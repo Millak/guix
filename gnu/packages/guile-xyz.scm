@@ -167,7 +167,6 @@
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix utils)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:select (alist-delete))
   #:use-module (srfi srfi-26))
@@ -4089,22 +4088,22 @@ available:
      ;; This test uses (ice-9 textual-ports), which does not exist on 2.0.
      (list #:make-flags #~(list "XFAIL_TESTS=logging.logger.scm")))
     (native-inputs
-     (alist-replace "guile" (list guile-2.0)
-                    (package-native-inputs guile-lib)))
+     (modify-inputs native-inputs
+       (replace "guile" guile-2.0)))
     (inputs
-     (alist-replace "guile" (list guile-2.0)
-                    (package-inputs guile-lib)))))
+     (modify-inputs inputs
+       (replace "guile" guile-2.0)))))
 
 (define-public guile2.2-lib
   (package
     (inherit guile-lib)
     (name "guile2.2-lib")
     (native-inputs
-     (alist-replace "guile" (list guile-2.2)
-                    (package-native-inputs guile-lib)))
+     (modify-inputs native-inputs
+       (replace "guile" guile-2.2)))
     (inputs
-     (alist-replace "guile" (list guile-2.2)
-                    (package-inputs guile-lib)))))
+     (modify-inputs inputs
+       (replace "guile" guile-2.2)))))
 
 (define-public guile-minikanren
   (package

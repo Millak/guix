@@ -56,7 +56,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
-  #:use-module ((guix build utils) #:select (alist-replace delete-file-recursively))
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -806,9 +805,8 @@ C library variant NEWLIB."
            (newlib-with-xgcc
             (package
               (inherit newlib)
-              (native-inputs
-               (alist-replace "xgcc" (list xgcc)
-                              (package-native-inputs newlib)))))
+              (native-inputs (modify-inputs native-inputs
+                               (replace "xgcc" xgcc)))))
            (libstdc++
             (if nano?
                 (make-libstdc++-nano-arm-none-eabi xgcc newlib-with-xgcc)

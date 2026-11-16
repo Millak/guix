@@ -89,7 +89,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -10312,9 +10311,8 @@ parse trees.")))
             (delete 'remove-unrelated-languages)
             (delete 'generate-test-parsers)))))
     (inputs
-      (alist-replace
-        "java-antlr4-runtime" (list java-antlr4-runtime-4.1)
-        (package-inputs antlr4)))))
+     (modify-inputs inputs
+       (replace "java-antlr4-runtime" java-antlr4-runtime-4.1)))))
 
 (define-public java-tunnelvisionlabs-antlr4-runtime-annotations
   (package
@@ -10429,10 +10427,8 @@ the runtime library of ANTLR.")))
   (package
     (inherit java-tunnelvisionlabs-antlr4-runtime-bootstrap)
     (native-inputs
-      (alist-replace
-        "antlr4" (list java-tunnelvisionlabs-antlr4-bootstrap)
-        (package-native-inputs
-         java-tunnelvisionlabs-antlr4-runtime-bootstrap)))
+      (modify-inputs native-inputs
+        (replace "antlr4" java-tunnelvisionlabs-antlr4-bootstrap)))
     (properties
      (alist-delete
       'hidden?
@@ -10442,9 +10438,8 @@ the runtime library of ANTLR.")))
   (package
     (inherit java-tunnelvisionlabs-antlr4-bootstrap)
     (inputs
-      (alist-replace
-        "java-antlr4-runtime" (list java-tunnelvisionlabs-antlr4-runtime)
-        (package-inputs java-tunnelvisionlabs-antlr4-bootstrap)))
+      (modify-inputs inputs
+        (replace "java-antlr4-runtime" java-tunnelvisionlabs-antlr4-runtime)))
     (properties
      (alist-delete
       'hidden?

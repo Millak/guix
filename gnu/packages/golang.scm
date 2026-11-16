@@ -70,7 +70,6 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix memoization)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -650,8 +649,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; We continue to use gccgo-12 since it provides go-1.18.
      ;; We remove gold since it causes test failures on aarch64-linux.
      (if (member (%current-system) (package-supported-systems go-1.4))
-         (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17))
-         (alist-delete "gold" (package-native-inputs go-1.17))))
+         (modify-inputs native-inputs
+           (replace "go" go-1.17))
+         (modify-inputs native-inputs
+           (delete "gold"))))
     (properties
      `((hidden? . #t)                         ;for bootstrap only
        (compiler-cpu-architectures
@@ -842,7 +843,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   ((".*tsan1[34].*") ""))))))))
     (native-inputs
      ;; Go 1.22 and later requires Go 1.20 as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.20) (package-native-inputs go-1.20)))))
+     (modify-inputs native-inputs
+       (replace "go" go-1.20)))))
 
 (define %go-1.23-arm64-micro-architectures
   ;; https://go.dev/wiki/MinimumRequirements#arm64
@@ -899,7 +901,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                      (else (list #t)))))))))
     (native-inputs
      ;; Go 1.24 and later requires Go 1.22+ as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.22) (package-native-inputs go-1.22)))
+     (modify-inputs native-inputs
+       (replace "go" go-1.22)))
     (properties
      `((hidden? . #t)                         ;for bootstrap only
        (compiler-cpu-architectures
@@ -1006,7 +1009,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                    (string-append all "\n        t.Skip(\"golang.org/issue/73977\")\n")))))))))
     (native-inputs
      ;; Go 1.26 and later requires Go 1.24.6+ as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.24) (package-native-inputs go-1.25)))
+     (modify-inputs native-inputs
+       (replace "go" go-1.24)))
     (properties
      (alist-delete 'hidden? (package-properties go-1.24)))))
 
