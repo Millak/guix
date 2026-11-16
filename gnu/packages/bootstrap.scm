@@ -43,7 +43,6 @@
   #:use-module ((guix derivations)
                 #:select (raw-derivation derivation-input derivation->output-path))
   #:use-module (guix utils)
-  #:use-module ((guix build utils) #:select (elf-file?))
   #:use-module ((guix gexp) #:select (lower-object local-file))
   #:use-module (guix monads)
   #:use-module (guix memoization)

@@ -19,7 +19,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libftdi)
-  #:use-module (guix build utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
   #:use-module (guix gexp)

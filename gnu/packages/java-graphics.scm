@@ -26,7 +26,6 @@
   #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
-  #:use-module (guix build utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages batik)

@@ -29,7 +29,6 @@
   #:use-module (gnu system shadow)
   #:use-module ((gnu system file-systems) #:select (file-system-mapping))
   #:use-module (gnu build linux-container)
-  #:use-module (guix build utils)
   #:autoload   (guix least-authority) (%default-preserved-environment-variables
                                        least-authority-wrapper)
   #:use-module (guix gexp)

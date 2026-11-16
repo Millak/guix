@@ -46,7 +46,6 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
 
 ;; This package provides a "dev.cpio" file usable as a base for booting Heads.

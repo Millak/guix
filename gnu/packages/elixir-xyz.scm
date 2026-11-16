@@ -27,8 +27,6 @@
   #:use-module (gnu packages erlang-xyz)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages)
-  #:use-module (guix build mix-build-system)
-  #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mix)
   #:use-module (guix download)

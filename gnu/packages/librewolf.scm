@@ -52,7 +52,6 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module ((guix build utils) #:select (alist-replace))
 
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)

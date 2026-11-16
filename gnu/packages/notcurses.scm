@@ -23,7 +23,6 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (guix packages)
-  #:use-module (guix build utils)
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)

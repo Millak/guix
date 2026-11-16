@@ -36,7 +36,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix build utils) #:select (parallel-job-count))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)

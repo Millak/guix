@@ -65,7 +65,6 @@
   #:use-module (guix bzr-download)
   #:use-module (guix git-download)
   #:use-module (guix search-paths)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)

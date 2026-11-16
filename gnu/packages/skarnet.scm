@@ -27,8 +27,6 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module ((guix build utils)
-                #:select (search-input-file search-input-directory))
   #:use-module (guix build-system gnu))
 
 (define-public skalibs

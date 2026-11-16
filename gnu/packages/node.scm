@@ -56,7 +56,6 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system gnu)
   #:use-module (guix derivations)
   #:use-module (guix download)

@@ -55,7 +55,6 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
 
 

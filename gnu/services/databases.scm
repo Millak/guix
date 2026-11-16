@@ -46,7 +46,6 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (guix build-system trivial)
-  #:use-module (guix build union)
   #:use-module (guix deprecation)
   #:use-module (guix modules)
   #:use-module (guix packages)
