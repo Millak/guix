@@ -203,7 +203,6 @@ gnu/packages/hdl.scm
 gnu/packages/heads.scm
 gnu/packages/hexedit.scm
 gnu/packages/high-availability.scm
-gnu/packages/hugs.scm
 gnu/packages/hurd.scm
 gnu/packages/i2p.scm
 gnu/packages/ibus.scm
