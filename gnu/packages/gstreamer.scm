@@ -522,8 +522,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (replacement gst-plugins-base/fixed)
-    (version "1.28.1")
+    (version "1.28.9")
     (source
      (origin
       (method url-fetch)
@@ -531,8 +530,7 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "15r42ff1mwkj5p3z0dij6d9isi1q02gmjnp8i26xgx9gm71a8ihl"))
-      (patches (search-patches "gst-plugins-base-null-pointer.patch"))))
+        "1hfxgf29wklvqq08nbijrqmyb7rc0cn9dsy0cgvsxri0nmladzf1"))))
     (build-system meson-build-system)
     (propagated-inputs
      (list glib                     ;required by gstreamer-sdp-1.0.pc
@@ -631,21 +629,6 @@ This package provides the core library and elements.")
     (description "This package provides an essential exemplary set of plug-ins
 for the GStreamer multimedia library.")
     (license license:lgpl2.0+)))
-
-(define gst-plugins-base/fixed
-  (package
-    (inherit gst-plugins-base)
-    (name "gst-plugins-base")
-    (version "1.28.9")
-    (source
-     (origin
-       (inherit (package-source gst-plugins-base))
-       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
-                          name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1hfxgf29wklvqq08nbijrqmyb7rc0cn9dsy0cgvsxri0nmladzf1"))
-       (patches (list))))))
 
 (define-public gst-plugins-good
   (package
