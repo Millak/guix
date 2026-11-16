@@ -1086,28 +1086,28 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
   (package
     (name "emacs-bqn-mode")
     ;; Upstream releases are tagged by date.
-    (version "2026-02-08")
+    (version "2026-11-16")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/museoa/bqn-mode/")
+             (url "https://codeberg.org/museoa/bqn-mode/")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m9l4if3a9i6r76v370gh6azgj2lwqcnpavfv2bkvm9ad56f3pa8"))))
+        (base32 "1pp8rkzxf710xij4xz0awl9b3nw9nsvss78gvyr7q4mxkqrlkpv1"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:tests? #f)) ;No tests found in source.
+     (list #:tests? #f))                ; No tests.
     (propagated-inputs (list emacs-compat emacs-eros))
+    (home-page "https://codeberg.org/museoa/bqn-mode/")
     (synopsis "Emacs major mode for the BQN programming language")
     (description
      "This package provides a major mode for editing and executing BQN code.
 It can be used to interactively evaluate BQN code in buffer or can be used to
 launch BQN REPL sessions.  For evaluating BQN code or spawning interpreters an
 executable implementation is required such as @code{cbqn} or @code{dbqn}.")
-    (home-page "https://github.com/museoa/bqn-mode/")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public emacs-cfrs
   (package
