@@ -59,36 +59,38 @@
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-  (package
-    (name "gnumach-headers")
-    (version "1.8+git20260224")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
-              (commit (string-append "v" version))))
-       (patches (search-patches "gnumach-version.patch"))
-       (file-name (git-file-name "gnumach" version))
-       (sha256
-        (base32 "08s3a8fr4pax66n3v2darjzi2vgab30k1siqq9djdaa0r0ssnai8"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda _
-             (invoke "make" "install-data" "install-data-hook")))
-         (delete 'build))
-       #:tests? #f))
-    (native-inputs
-     (list autoconf automake texinfo))
-    (supported-systems %hurd-systems)
-    (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
-    (synopsis "GNU Mach kernel headers")
-    (description
-     "Headers of the GNU Mach kernel.")
-    (license gpl2+)))
+  (let ((commit "90199be69e58bb80869165f648a4542e12f41c79")
+        (revision "0"))
+    (package
+      (name "gnumach-headers")
+      (version (git-version "1.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
+                (commit commit)))
+         (patches (search-patches "gnumach-version.patch"))
+         (file-name (git-file-name "gnumach" version))
+         (sha256
+          (base32 "1jpv8dqcp1b39xx7qnhwqljwq5xlsrl11z60s9yhw05vd2p0kd8r"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda _
+               (invoke "make" "install-data" "install-data-hook")))
+           (delete 'build))
+         #:tests? #f))
+      (native-inputs
+       (list autoconf automake texinfo))
+      (supported-systems %hurd-systems)
+      (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
+      (synopsis "GNU Mach kernel headers")
+      (description
+       "Headers of the GNU Mach kernel.")
+      (license gpl2+))))
 
 (define-public mig
   (let ((revision "1")
