@@ -102,6 +102,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
@@ -384,6 +385,34 @@ Python 3.3 and later, rather than on Python 2.")
     (description
      "This package provides a Python library providing graph algorithms
 optimized for version control systems.")
+    (license license:gpl2+)))
+
+(define-public gagit
+  (package
+    (name "gagit")
+    (version "5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://anongit.gentoo.org/git/proj/gagit.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hyz655wnh7kxs1b4hm0hwyn90vdpzc73b9hcrxsg703xybsp1as"))))
+    (build-system meson-build-system)
+    (native-inputs (list git-minimal/pinned))
+    (home-page "https://codeberg.org/gentoo/gagit")
+    (synopsis "AGit workflow tool")
+    (description
+     "GAGit is yet another AGit workflow tool, with the following goals.
+@itemize
+@item Automatically figure out the correct remote and target branch,
+accounting for different setups.
+@item Use the editor to provide the initial pull request description,
+respecting the pull request template.
+@item Set upstream for the branch to make PR updates easy.
+@end itemize")
     (license license:gpl2+)))
 
 (define git-cross-configure-flags
