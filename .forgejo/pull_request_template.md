@@ -1,10 +1,3 @@
----
-name: 'Pull Request'
-about: 'Pull request template'
-title: ''
-ref: ''
-labels:
----
 <!--
 Below is a checklist for package-related patches.
 
