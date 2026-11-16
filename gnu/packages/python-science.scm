@@ -5245,6 +5245,41 @@ and linear forms into vectors.")
 logic, also known as grey logic.")
     (license license:bsd-3)))
 
+(define-public python-scikit-hep-testdata
+  (package
+    (name "python-scikit-hep-testdata")
+    (version "0.6.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-hep/scikit-hep-testdata")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q431b8c9frbxhfjvls5zy58qd0vwg6cc8f8hghkk2d2nnjwr88x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Network access is required.
+      #~(list "--deselect=tests/test_local_files.py::test_data_path")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
+    (propagated-inputs (list python-pyyaml python-requests))
+    (home-page "https://github.com/scikit-hep/scikit-hep-testdata")
+    (synopsis "Example HEP files for testing and demonstrating")
+    (description
+     "This package is to provide example files (e.g, ROOT, LHE) for testing
+and developing packages against.  The sample of files is representative of
+typical files found \"in the wild\", augmented by files added for specific
+repository issues and tests.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
