@@ -48,7 +48,6 @@
   #:use-module (gnu packages mingw)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-build)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages)
@@ -120,7 +119,6 @@
     (native-inputs
      (list pkg-config
            python-minimal-wrapper
-           python-setuptools-bootstrap
            base-rust
            `(,base-rust "cargo")))))
 
@@ -548,7 +546,6 @@ ar = \"" (search-input-file inputs "bin/ar") "\"
     (native-inputs
      (list pkg-config
            python-minimal-wrapper
-           python-setuptools-bootstrap
            rust-bootstrap-1.90
            (list rust-bootstrap-1.90 "cargo")))
     (inputs
