@@ -276,6 +276,13 @@ Hurd-minimal package which are needed for both glibc and GCC.")
   (package
     (inherit gnumach-headers)
     (name "gnumach")
+    (source (origin
+              (inherit (package-source gnumach-headers))
+              (patches (append (origin-patches
+                                (package-source gnumach-headers))
+                               (search-patches
+                                "gnumach-dont-accept-ACC_CALL_GATE.patch")))))
+
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())

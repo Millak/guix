@@ -1,0 +1,28 @@
+From 4859d6ef2d5c36dc3de69b00395c6b031f2fe90d Mon Sep 17 00:00:00 2001
+From: Nathan Sapwell <nathan@dreamfast.solutions>
+Date: Sat, 14 Nov 2026 12:55:08 +0100
+Subject: [PATCH] i386_set_ldt: do not accept ACC_CALL_GATE
+
+This is not actually used, and the code was not checking the gate's target
+selector or offset, allowing userspace to plant a gate in its own LDT that
+selects KERNEL_CS (0x08) at an arbitrary offset, then lcall into it.
+---
+ i386/i386/user_ldt.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/i386/i386/user_ldt.c b/i386/i386/user_ldt.c
+index 4c89bd44..87bbeb4d 100644
+--- a/i386/i386/user_ldt.c
++++ b/i386/i386/user_ldt.c
+@@ -124,8 +124,6 @@ i386_set_ldt(
+ 		case ACC_P | ACC_PL_U | ACC_CODE_R:
+ 		case ACC_P | ACC_PL_U | ACC_CODE_C:
+ 		case ACC_P | ACC_PL_U | ACC_CODE_CR:
+-		case ACC_P | ACC_PL_U | ACC_CALL_GATE_16:
+-		case ACC_P | ACC_PL_U | ACC_CALL_GATE:
+ 		    break;
+ 		default:
+ 		    return KERN_INVALID_ARGUMENT;
+-- 
+2.55.0
+
