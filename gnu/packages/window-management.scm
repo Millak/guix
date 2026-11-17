@@ -1979,13 +1979,13 @@ tiled on several screens.")
 (define-public ghc-xmobar
   (package
     (name "ghc-xmobar")
-    (version "0.50")
+    (version "0.51.1")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
-                "026s0q718z89vzjgva19vg58dm1l016i67mzi0wbj7kgai89w909"))))
+                "030cp60jqbwbd7g2jcb336pvqzv13gsbqikjgx7qz9ynp2gajy4p"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmobar")))
     (native-inputs
@@ -2005,6 +2005,7 @@ tiled on several screens.")
            ghc-old-locale
            ghc-parsec-numbers
            ghc-regex-compat
+           ghc-regex-tdfa
            ghc-temporary
            ghc-timezone-olson
            ghc-timezone-series
@@ -2014,20 +2015,21 @@ tiled on several screens.")
            ghc-pango
            libxpm))
     (arguments
-     `(#:configure-flags (list "--flags=all_extensions")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-binaries
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively (string-append (assoc-ref outputs "out") "/bin"))))
-         (add-before 'build 'patch-test-shebang
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
-               (("/bin/bash") (which "bash")))))
-         (add-before 'build 'patch-cairo-path
-           (lambda _
-             (substitute* "src/Xmobar/X11/CairoSurface.hsc"
-               (("cairo/cairo-xlib.h") "cairo-xlib.h")))))))
+     (list
+      #:configure-flags #~(list "--flags=all_extensions")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-binaries
+            (lambda _
+              (delete-file-recursively (string-append #$output "/bin"))))
+          (add-before 'build 'patch-test-shebang
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
+                (("/bin/bash") (which "bash")))))
+          (add-before 'build 'patch-cairo-path
+            (lambda _
+              (substitute* "src/Xmobar/X11/CairoSurface.hsc"
+                (("cairo/cairo-xlib.h") "cairo-xlib.h")))))))
     (home-page "https://codeberg.org/xmobar/xmobar")
     (synopsis "Haskell library for minimalistic text based status bars")
     (description
