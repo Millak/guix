@@ -5482,7 +5482,7 @@ systems.")
 (define-public mjwm
   (package
     (name "mjwm")
-    (version "4.1.0")
+    (version "5.1.0")
     (source
      (origin
        (method git-fetch)
@@ -5491,7 +5491,7 @@ systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lgfp2xidhvmbj4zqvzz9g8zwbn6mz0pgacc57b43ha523vamsjq"))))
+        (base32 "1p8qyny3npr01vs04zj949cf5xcxmzgp3qkh9h6wpfkirc6gkp4x"))))
     (build-system gnu-build-system)
     (arguments
      (list
