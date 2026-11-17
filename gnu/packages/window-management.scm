@@ -1073,7 +1073,7 @@ include multiple bars and touch screen compatibility.")
 (define-public lambdock
   (package
     (name "lambdock")
-    (version "0.10.9")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -1082,7 +1082,7 @@ include multiple bars and touch screen compatibility.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0famfys0dlzgy95dxhfp70qpcyfqxyislqbbs3b0xi58977by2hz"))))
+        (base32 "1i3yn1xys180wv5s3063a89n6wfxkq1cjlc6n58fbxg12v85w8yq"))))
     (build-system meson-build-system)
     (native-inputs (list (list glib "bin")
                          gettext-minimal
