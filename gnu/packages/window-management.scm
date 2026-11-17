@@ -390,15 +390,15 @@ Specific Language}.")
                 (copy-recursively src tgt)))))))
     (native-inputs
      (list go-github-com-charmbracelet-bubbles
-	   go-github-com-charmbracelet-bubbletea
-	   go-github-com-charmbracelet-lipgloss
-	   go-github-com-charmbracelet-log
-	   go-github-com-godbus-dbus-v5
-	   go-github-com-spf13-cobra
-	   go-github-com-stretchr-testify
-	   go-github-com-wifx-gonetworkmanager-v2
-	   go-github-com-yaslama-go-wayland-wayland
-	   go-golang-org-x-exp
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-log
+           go-github-com-godbus-dbus-v5
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify
+           go-github-com-wifx-gonetworkmanager-v2
+           go-github-com-yaslama-go-wayland-wayland
+           go-golang-org-x-exp
            go-github-com-go-git-go-git-v6
            go-github-com-spf13-afero))
     (propagated-inputs
@@ -4202,7 +4202,7 @@ This allows wlopm to power down outputs when the system is idle.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.10.0")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4211,7 +4211,7 @@ This allows wlopm to power down outputs when the system is idle.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hv083k3gp1gl2gxi91f2xf21hcn33z68j6r5844hzi7g8wwmp9v"))))
+                "0p8pfgmgvgbld5nldljb6z804yvxhlc39f286k86r9v1hn8q1452"))))
     (build-system meson-build-system)
     (inputs (list basu cairo gdk-pixbuf pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
