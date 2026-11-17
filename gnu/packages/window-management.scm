@@ -2635,7 +2635,7 @@ desktop-switching keys with minimal latency.")
 (define-public spectrwm
   (package
     (name "spectrwm")
-    (version "3.6.0")
+    (version "3.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2646,7 +2646,7 @@ desktop-switching keys with minimal latency.")
                              (string-join (string-split version #\.) "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fh2r870djrxm3my2z6wigp0gswgh5gvfa9vxcyh7q488k7b0ljn"))))
+        (base32 "1b9mq70bcrx46z7mg65xcn37sbxi7b745b11bm6sq4lvm9adjjdd"))))
     (build-system gnu-build-system)
     (arguments
      (list
