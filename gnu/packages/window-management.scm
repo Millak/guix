@@ -5200,7 +5200,7 @@ start-up.")
 (define-public xnotify
   (package
     (name "xnotify")
-    (version "0.8.1")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5209,21 +5209,21 @@ start-up.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jxms4md2mwfjgm2pgg3vakpp33800jbn9hnl0j4jyfc9f1ckbsv"))))
+                "05x8c9cp6lr8qydgdfk8l3f8k7i1qd9wkv7acs8glk05064fdya5"))))
     (build-system gnu-build-system)
     (inputs
-     (list libx11 libxft libxinerama imlib2))
+     (list libx11 libxinerama libxft freetype imlib2))
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output)
-             (string-append "CFLAGS="
-                            "-I" (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))
-       #:tests? #f ;no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   (string-append "CFLAGS="
+                                  "-I" #$(this-package-input "freetype")
+                                  "/include/freetype2"))
+           #:tests? #f ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/phillbush/xnotify")
     (synopsis "Displays a notification on the screen")
     (description "XNotify receives a notification specification in stdin and
