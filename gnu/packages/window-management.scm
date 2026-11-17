@@ -4969,7 +4969,7 @@ modeline.  It can be displayed in the modeline with %B.")
 (define-public lemonbar
   (package
     (name "lemonbar")
-    (version "1.4")
+    (version "1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4978,7 +4978,7 @@ modeline.  It can be displayed in the modeline with %B.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sm1lxxf0y2n87nvc8mz6i6mzb32f4qab80ppb28ibrwfir6jsln"))))
+                "0mdnvbcsbcj39jw6kvraqg5gx0dw2z04ylpmpxirhc9696xn1f1q"))))
     (build-system gnu-build-system)
     (arguments
      (list
