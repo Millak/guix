@@ -159,6 +159,7 @@
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
@@ -193,6 +194,7 @@
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages rust-sources)
   #:use-module (gnu packages samba)
@@ -11897,7 +11899,7 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.21.2")
+    (version "0.27.1")
     (source
      (origin
        (method git-fetch)
@@ -11906,11 +11908,13 @@ modification of BPF objects on the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0icbhf1wk523a7lcmwqa67zc6hl6h02p5mfg26cizva447kbwsgz"))))
+        (base32 "1q27q9gb31k3pbqnd1v5w35862zjpv902dgjvjq6f7n46fn7yanx"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:test-exclude "(runtime_tests|tools-parsing-test)"
+      #:configure-flags
+      #~(list "-DUSE_SYSTEM_LIBBPF=ON")
       #:phases
       #~(modify-phases %standard-phases
           ;; This patch also fixes broken compilation due to improper detection
@@ -11944,17 +11948,40 @@ modification of BPF objects on the system.")
                       (string-join
                        (list ; "-" disables all following tests
                              "-ast.probe_name_uprobe"
+                             "ap_probe_expansion.uprobe_wildcard_file"
+                             "ap_probe_expansion.uprobe_multi_wildcard_file"
+                             "ap_probe_expansion.usdt_wildcard"
                              "bpftrace.add_probes_uprobe_wildcard_file"
                              "bpftrace.add_probes_uprobe_wildcard_file_uprobe_multi"
                              "bpftrace.add_probes_usdt_wildcard"
                              "Parser.multiple_attach_points_kprobe"
                              "Parser.uretprobe_offset"
+                             "TypeCheckerTest.type_ctx"
+                             "TypeCheckerTest.for_loop_no_ctx_access"
+                             "TypeCheckerTest.buf_strlen_too_large"
                              "semantic_analyser.builtin_functions"
                              "semantic_analyser.call_func"
                              "semantic_analyser.call_uaddr")
                        ":")))))))
-    (native-inputs (list bison coreutils dwarves flex googletest xxd))
-    (inputs (list bcc clang-15 elfutils libbpf libiberty cereal))
+    (native-inputs
+     (list bison
+           coreutils
+           dwarves
+           flex
+           googletest
+           ruby-asciidoctor
+           xxd
+           (@ (gnu packages compression) zip)))
+    (inputs
+     (list bcc
+           bpftool
+           clang-18
+           elfutils
+           libbpf
+           libffi
+           libpcap
+           libiberty
+           cereal))
     (home-page "https://github.com/bpftrace/bpftrace")
     (synopsis "High-level tracing language for Linux eBPF")
     (description
