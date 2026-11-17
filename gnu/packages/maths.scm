@@ -2521,20 +2521,19 @@ Interface to wrap the HDF5 library, which is implemented in C.")
         (base32 "0kq09w2mz8i735p3zfnsdqdvay0086ls0cb621ckfxq42pr3gkm4"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DBLOSC_INSTALL_DIR="
-                            (assoc-ref %build-inputs "c-blosc"))
-             (string-append "-DPLUGIN_INSTALL_PATH="
-                            (assoc-ref %outputs "out")
-                            "/hdf5/lib/plugin"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-build-blosc
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("set\\(BLOSC_INSTALL_DIR.*") "")
-               (("ExternalProject_Add\\(project_blosc") "message("))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DBLOSC_INSTALL_DIR="
+                             #$(this-package-input "c-blosc"))
+              (string-append "-DPLUGIN_INSTALL_PATH=" #$output
+                             "/hdf5/lib/plugin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-build-blosc
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set\\(BLOSC_INSTALL_DIR.*") "")
+                (("ExternalProject_Add\\(project_blosc") "message(")))))))
     (inputs
      (list c-blosc hdf5))
     (home-page "https://github.com/Blosc/hdf5-blosc")
