@@ -3333,12 +3333,15 @@ get involved, what can be translated, what mistakes you should avoid and
 what we can do to help you!
 
 Guix is a big project that has multiple components that can be translated.
-We used to coordinate the translation effort on a
+We coordinate the translation effort on a
 @uref{https://translate.codeberg.org/projects/guix/,Weblate instance}
 hosted by Codeberg.  However, like on a barely moderated wiki, we
 struggled with many erroneous contributions and machine translations.
-Currently, translations of Guix itself can only be contributed as pull
-requests.
+It is currently configured as invite-only. If you wish to help with the
+translation, please create a ticket on
+@uref{https://codeberg.org/guix/translations/issues/new,the guix/translations
+repository} and make yourself known. Alternatively, translations of Guix itself
+can also be contributed as pull requests on that repository.
 
 Some of the software packaged in Guix also contain translations.  We do not
 host a translation platform for them.  If you want to translate a package
@@ -3368,18 +3371,37 @@ Guix has five components hosted on
 
 @subsubheading General Directions
 
+Once you get an account, and it is approved for contributing on Weblate, you
+should be able to select a component from
+@uref{https://translate.codeberg.org/projects/guix/,the guix project},
+and select a language.  If your language does not appear in the list, please
+notify us by creating a new ticket on
+@uref{https://codeberg.org/guix/translations/issues/new,the guix/translations
+repository}.
+
 Like lots of other free software packages, Guix uses
 @uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations,
 with which translatable strings are extracted from the source code to so-called
 PO files.
 
 Even though PO files are text files, changes should not be made with a text
-editor but with PO editing software.  Translators can use any of various
+editor but with PO editing software.   Weblate integrates PO editing
+functionality.  Alternatively, translators can use any of the various
 free-software tools for filling in translations, of which
 @uref{https://poedit.net/,Poedit} is one example.  There is also a special
 @uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU
 Emacs.  Over time translators find out what software they are happy with and
 what features they need.
+
+When modifying a file outside of Weblate, it can be contributed either by
+@uref{https://docs.weblate.org/en/latest/user/files.html,uploading it to Weblate}
+or by submitting a pull request.
+
+
+On Weblate, you will find various links to the editor, that will show various
+subsets (or all) of the strings.  Have a look around and at the
+@uref{https://docs.weblate.org/en/latest/,documentation} to familiarize
+yourself with the platform.
 
 @subsubheading Translation Components
 
