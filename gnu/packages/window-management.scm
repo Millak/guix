@@ -5113,7 +5113,7 @@ manager.")
 (define-public xmenu
   (package
     (name "xmenu")
-    (version "4.5.5")
+    (version "4.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5122,21 +5122,22 @@ manager.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qgxkrv9jnnnf3px7zh0paf8xsr4bcpf0f2nq9zy012m214223hs"))))
+                "1dkkkgc26rhwkj1a5r7wnw6kdw4d9h3ynjsx94ri7sn7qklwna54"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxinerama libxft freetype imlib2))
     (arguments
-     `(#:tests? #f ;no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output)
-             (string-append "CFLAGS="
-                            "-I" (assoc-ref %build-inputs "freetype")
-                            "/include/freetype2"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f ;no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "CFLAGS="
+                             "-I" #$(this-package-input "freetype")
+                             "/include/freetype2"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (home-page "https://github.com/phillbush/xmenu")
     (synopsis "Menu utility for X")
     (description "@code{xmenu} receives a menu specification in stdin, shows
