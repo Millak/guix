@@ -3569,7 +3569,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3578,7 +3578,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yv3y6437xzp8dlr9g78bpqn0bx7sxlwkrcjgbxd0vqpy12z043z"))))
+        (base32 "011nbn92ss3ylvfrs52fyhdhmrmgahkf4zs1xvp262sjkr10ahq6"))))
     (build-system meson-build-system)
     (arguments
      (list
