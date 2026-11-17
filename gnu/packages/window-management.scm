@@ -478,7 +478,7 @@ environment.")
 (define-public gtklock
   (package
     (name "gtklock")
-    (version "4.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method git-fetch)
@@ -487,13 +487,13 @@ environment.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i6gjzk5ybvl006dvn30kzczbxr37fv4jqdyhk88pj00shk53wkv"))))
+        (base32 "0vn12jwh7xkch4f0ll0nwgzg84l1z2jphach5ahsj0ycz7z09jrs"))))
     (build-system meson-build-system)
     (inputs
      (list gtk+ gtk-session-lock linux-pam))
     (native-inputs
      (list pkg-config scdoc
-	   `(,glib "bin")))
+           `(,glib "bin")))
     (home-page "https://github.com/jovanlanik/gtklock")
     (synopsis "GTK-based lockscreen for Wayland")
     (description
