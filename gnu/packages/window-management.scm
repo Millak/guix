@@ -5315,7 +5315,7 @@ Well-tested and fuzzed.
 (define-public libucl
   (package
     (name "libucl")
-    (version "0.9.4")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -5324,7 +5324,7 @@ Well-tested and fuzzed.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "149iapbqa8xwcwx27q4ydi71bjdwvbnxmkwkxs9sz6saafs539cv"))))
+        (base32 "01qvy9zvyzbdj6cw5616la7pqbkwa0p1cgmb1q3qifswv7fv73k3"))))
     (native-inputs
      (list autoconf-2.72 automake pkg-config libtool))
     (build-system gnu-build-system)
