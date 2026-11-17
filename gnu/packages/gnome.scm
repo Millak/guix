@@ -9452,7 +9452,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "49.4")
+    (version "49.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9460,7 +9460,7 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "022vb4y0ri7ws6l1ghx63vxi9xhi6r0hfrsg257i230ly2i0qvwx"))
+                "0s00zxg4z3p02px6nxnhb0q6kn5lyhxbg86z2phrac7ibky541b4"))
               (patches
                (search-patches "gnome-shell-restore-desktop-file.patch"))))
     (outputs '("out" "debug"))
