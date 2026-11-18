@@ -35676,41 +35676,39 @@ This library aims to provide developers with more options.")
   (sbcl-package->clasp-package sbcl-zsort))
 
 (define-public sbcl-zstd
-  (let ((commit "134f058eee11512cf772a8d5b64364acf56a10b8")
-        (revision "1"))
-    (package
-      (name "sbcl-zstd")
-      (version (git-version "2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/glv/cl-zstd")
-               (commit commit)))
-         (file-name (git-file-name "cl-zstd" version))
-         (sha256
-          (base32 "1iqpi5v6fdm6xxc9l8zhk6kcgl8hgxiwk1ki2yx2j3j4kfvqv8j9"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-fiveam))
-      (inputs
-       (list sbcl-cffi
-             sbcl-cl-octet-streams
-             (list zstd "lib")))
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-paths
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "src/libzstd.lisp"
-                       (("libzstd\\.so")
-                        (search-input-file inputs "/lib/libzstd.so"))))))))
-      (synopsis "Common Lisp library for Zstandard (de)compression")
-      (description
-       "This Common Lisp library provides functions for Zstandard
+  (package
+    (name "sbcl-zstd")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/glv/cl-zstd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-zstd" version))
+       (sha256
+        (base32 "08h77q2ckzdapsv4h0fldhsvmndgzcxzrwrrbgdq8wkw08k1334n"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-fiveam))
+    (inputs
+     (list sbcl-cffi
+           sbcl-cl-octet-streams
+           (list zstd "lib")))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/libzstd.lisp"
+                     (("libzstd\\.so")
+                      (search-input-file inputs "/lib/libzstd.so"))))))))
+    (synopsis "Common Lisp library for Zstandard (de)compression")
+    (description
+     "This Common Lisp library provides functions for Zstandard
 compression/decompression using bindings to the libzstd C library.")
-      (home-page "https://codeberg.org/glv/cl-zstd")
-      (license license:gpl3+))))
+    (home-page "https://codeberg.org/glv/cl-zstd")
+    (license license:gpl3+)))
 
 (define-public cl-zstd
   (sbcl-package->cl-source-package sbcl-zstd))
