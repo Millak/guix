@@ -787,7 +787,7 @@ developed with the aim of being used with the Librem 5 phone.")
 (define-public komikku-servers
   (package
     (name "komikku-servers")
-    (version "51.0.1")
+    (version "51.4.0")
     (source
      (origin
        (method git-fetch)
@@ -797,7 +797,7 @@ developed with the aim of being used with the Librem 5 phone.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0l1zfqrzrldn8c5flsm9240d1d22li07vznb8bz32p4h9i68x24r"))))
+         "16a3agjdrsvsrv65j6f3gjbhx4fkj1ar0688qqm14skpzp1jxwcs"))))
     (build-system copy-build-system)
     (arguments
      (list
