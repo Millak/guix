@@ -4315,7 +4315,7 @@ connection.")))
            lld
            node
            python
-           rust-sysroot-for-wasm32-unknown-unknown))
+           (make-rust-sysroot "wasm32-unknown-unknown")))
     (inputs (cargo-inputs 'source-map-mappings-wasm-api))
     (home-page "https://github.com/mozilla/source-map")
     (synopsis "Generates and consumes source maps")

@@ -280,7 +280,7 @@ configuration-free.")
                (string-append #$output "/share/typst/packages/preview/cetz/"
                               #$version "/cetz-core")))))))
     (inputs (cargo-inputs 'cetz-core))
-    (native-inputs (list lld rust-sysroot-for-wasm32-unknown-unknown))
+    (native-inputs (list lld (make-rust-sysroot "wasm32-unknown-unknown")))
     (home-page "https://cetz-package.github.io")
     (synopsis "Library for drawing in Typst")
     (description "CeTZ is a library for drawing figures in Typst,
@@ -332,7 +332,7 @@ used by the actual CeTZ package.")
                (string-append #$output "/share/typst/packages/preview/linguify/"
                               #$version)))))))
     (inputs (cargo-inputs 'linguify-fluent))
-    (native-inputs (list lld rust-sysroot-for-wasm32-unknown-unknown))
+    (native-inputs (list lld (make-rust-sysroot "wasm32-unknown-unknown")))
     (home-page "https://typst.app/universe/package/linguify")
     (synopsis "Easily localize packages and templates")
     (description "Linguify is a Typst library for loading strings for different
