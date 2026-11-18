@@ -897,11 +897,11 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((commit "7e51748dad9dde20b8fd19809394123ab0ad4134")
+  (let ((commit "3496a9bb39f3bc9bba9e59b9bc59b217287c6d08")
         (revision "0"))
     (package
       (name "nginx-documentation")
-      (version (git-version "1.31.8" revision commit))
+      (version (git-version "1.31.9" revision commit))
       (source
        (origin (method git-fetch)
                (uri (git-reference
@@ -910,7 +910,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "14xg0bi1x0p2nmznk88a08pk1jc96ad21qr66cm0zijnwb8mrcfk"))))
+                 "19yl909cgd9p00za89zdkisc56dnh288qraxghvppxmgydrcx2wp"))))
       (build-system gnu-build-system)
       (arguments
        (list
