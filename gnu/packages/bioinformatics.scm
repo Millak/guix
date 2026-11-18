@@ -2856,40 +2856,31 @@ demultiplexing step.")
 (define-public python-doubletdetection
   (package
     (name "python-doubletdetection")
-    (version "4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "doubletdetection" version))
-              (sha256
-               (base32
-                "0v0a19014h4p6x8pyz1s78xn3q5w5166cysvg574z6vw79a3s9vp"))))
+    (version "4.3.0.post1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/JonathanShor/DoubletDetection")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xd9ainyzrj1pvk8r12dd8xriri63qf7l2nr6g5rh4i5s8gyyxyn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false ;there are none
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
-            (lambda _
-              ;; Patch to use the core poetry API.
-              (substitute* "pyproject.toml"
-                (("poetry.masonry.api")
-                 "poetry.core.masonry.api")))))))
+      ;; See: <https://github.com/taynaud/python-louvain/issues/23>.
+      #:tests? #f))
     (propagated-inputs
      (list python-anndata
-           python-ipywidgets
-           python-leidenalg
-           python-louvain-igraph
            python-matplotlib
            python-numpy
-           python-pandas
            python-phenograph
            python-scanpy
            python-scipy
            python-tqdm))
     (native-inputs
-     (list python-poetry-core
-           python-pytest))
+     (list python-hatchling))
     (home-page "https://github.com/JonathanShor/DoubletDetection")
     (synopsis
      "This is a package to detect doublets in single-cell RNA-seq count matrices")
