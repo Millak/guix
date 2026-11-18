@@ -12043,10 +12043,25 @@ visualization applications.  SimGear is developed by the FlightGear project
 and also provides the base for the FlightGear Flight Simulator.")
     (license license:lgpl2.0+)))
 
+(define %flightgear-version (package-version simgear))
+(define %flightgear-data-name (string-append "flightgear-data-"
+                                             %flightgear-version))
+
+(define flightgear-data
+  (origin
+    (method url-fetch)
+    (uri (string-append "https://mirrors.ibiblio.org/flightgear/ftp/release-"
+                        (version-major+minor %flightgear-version) "/"
+                        "FlightGear-" %flightgear-version "-data.txz"))
+    (file-name %flightgear-data-name)
+    (sha256
+     (base32
+      "0ypr92nj1m229gw3jmyn67jk8qfbqbh7hgzbalwimvpmrx8s87fy"))))
+
 (define-public flightgear
   (package
     (name "flightgear")
-    (version (package-version simgear))
+    (version %flightgear-version)
     (source
      (origin
        (method git-fetch)
@@ -12102,7 +12117,8 @@ and also provides the base for the FlightGear Flight Simulator.")
                      (mkdir-p share)
                      (with-directory-excursion share
                        (invoke "tar" "xf"
-                               #$(this-package-native-input "flightgear-data")
+                               #$(this-package-native-input
+                                   %flightgear-data-name)
                                "--strip-components=1")))))
                (add-after 'qt-wrap 'fg-root-wrap
                  (lambda _
@@ -12133,18 +12149,10 @@ and also provides the base for the FlightGear Flight Simulator.")
            sqlite
            zlib))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
-       ("flightgear-data"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://mirrors.ibiblio.org/flightgear/ftp/release-"
-                               (version-major+minor version) "/"
-                               "FlightGear-" version "-data.txz"))
-           (sha256
-            (base32
-             "0ypr92nj1m229gw3jmyn67jk8qfbqbh7hgzbalwimvpmrx8s87fy"))))))
+     (list cppunit
+           flightgear-data
+           pkg-config
+           qttools))
     (home-page "https://www.flightgear.org/")
     (synopsis "Flight simulator")
     (description "The goal of the FlightGear project is to create a
