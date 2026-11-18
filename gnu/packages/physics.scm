@@ -1092,29 +1092,24 @@ other symmetry-related operations on crystal structures.")
 (define-public python-seekpath
   (package
     (name "python-seekpath")
-    (version "2.1.0")
+    (version "2.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "seekpath" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/giovannipizzi/seekpath")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i2jhjc4ikd31v8wkxzfrvhwlv0dlzpkysf3lkafcql2c9wwbkii"))))
+        (base32 "1sn797h0gf6jzjhzq4mm8wyx0bp35m61c5pn7qipkgwz3lifz3fi"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests")))))))
     (propagated-inputs
      (list python-numpy
            python-scipy
            python-spglib))
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-flit-core
+           python-pytest))
     (home-page "https://github.com/giovannipizzi/seekpath")
     (synopsis "K-path finder for band structure calculations")
     (description
