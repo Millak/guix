@@ -1070,37 +1070,6 @@ sized bar with user-defined buttons activating shell commands.  Features
 include multiple bars and touch screen compatibility.")
     (license license:gpl3+)))
 
-(define-public lambdock
-  (package
-    (name "lambdock")
-    (version "0.13.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/jjba23/lambdock")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1i3yn1xys180wv5s3063a89n6wfxkq1cjlc6n58fbxg12v85w8yq"))))
-    (build-system meson-build-system)
-    (native-inputs (list (list glib "bin")
-                         gettext-minimal
-                         pkg-config))
-    (inputs (list gtk
-                  gtk4-layer-shell
-                  guile-3.0
-                  wlr-protocols))
-    (home-page "https://codeberg.org/jjba23/lambdock")
-    (synopsis "Wayland desktop dock customizable with GNU Guile Scheme")
-    (description
-     "Lambdock is a Wayland-native desktop dock built with GTK4 and
-@code{gtk4-layer-shell}.  It features dynamic window tracking using the Wayland
-foreign toplevel management protocol, customizable CSS theming, fluid slide-out
-auto-hiding, multi-monitor placement, and an embedded GNU Guile Scheme engine
-for live configuration, extensibility, and REPL interaction.")
-    (license license:gpl3+)))
-
 (define-public obconf
   (package
     (name "obconf")
