@@ -34343,12 +34343,12 @@ interactive loop.")
     (license license:gpl3+)))
 
 (define-public emacs-eros
-  (let ((commit "a9a92bdc6be0521a6a06eb464be55ed61946639c")
+  ;; No public release. Version string taken from `eros.el'.
+  (let ((commit "66ee90baa3162fea028f5101ddcc370f7d1d4fcf")
         (revision "0"))
     (package
       (name "emacs-eros")
-      ;; No tag or release, version taken from `eros.el'.
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -34357,12 +34357,10 @@ interactive loop.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "04nkqsvh8c988hc3ajigs206ad64204qdhhqzdvm3k7m7qiiwga8"))))
+          (base32 "0mxknd96p2hblzsvgw10jidx4kg6djgazm2yq3a2hdb1kz8yb8v3"))))
       (build-system emacs-build-system)
       (arguments
-       ;; No tests found in source
-       (list
-        #:tests? #f))
+       (list #:tests? #f))              ; No tests.
       (home-page "https://github.com/xiongtx/eros")
       (synopsis "Evaluation result overlays")
       (description "@code{eros} provides result overlays for evaluating Emacs
