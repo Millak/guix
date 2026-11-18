@@ -1316,34 +1316,6 @@ is not available for Guile 2.0.")
      (modify-inputs native-inputs
        (replace "guile" guile-2.2)))))
 
-(define-public guile-kracht
-  (package
-    (name "guile-kracht")
-    (version "0.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/jjba23/kracht.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zfb35h6s59971zx9mina7wd9dh5p4s1jl1dflpqwqyxm2x2qf8f"))))
-    (build-system guile-build-system)
-    (native-inputs (list guile-3.0))
-    (arguments
-     (list
-      #:source-directory "src"))
-    (home-page "https://codeberg.org/jjba23/kracht")
-    (synopsis
-     "Utility methods and functionalities for Guile Scheme programming")
-    (description
-     "Kracht provides helpful and convenient functionalities that can help you
-develop more comfortably in your Guile Scheme project.  You can see it as a
-batteries-included addition to the (already great) standard library,
-complementing it, and helping developers write cleaner code.")
-    (license license:lgpl3+)))
-
 (define-public guile-filesystem
   (package
     (name "guile-filesystem")
