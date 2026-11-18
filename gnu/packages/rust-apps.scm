@@ -2097,7 +2097,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
 (define-public hyperfine
   (package
     (name "hyperfine")
-    (version "1.21.0")
+    (version "2.0.0")
     (source
       (origin
         (method url-fetch)
@@ -2105,7 +2105,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "032dkpji8qhdb454rs5bh3x6chq4rvad738f4r8akn70880ndmwy"))))
+          "1i5k6a30yj8plmi0n1dgpaggpx3zpvc1z97sypjfybc89kvyd9dc"))))
     (build-system cargo-build-system)
     (arguments
      (list

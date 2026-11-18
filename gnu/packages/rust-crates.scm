@@ -26039,6 +26039,10 @@ fn main() {
   (crate-source "percent-encoding" "2.3.2"
                 "083jv1ai930azvawz2khv7w73xh8mnylk7i578cifndjn5y64kwv"))
 
+(define rust-perf-event-open-sys-6.0.0
+  (crate-source "perf-event-open-sys" "6.0.0"
+                "0iqk8pl4yzj1xdhz580vnxpvdy9mfb95sd8w1b427yjgg94d3y55"))
+
 (define rust-pest-2.8.0
   (crate-source "pest" "2.8.0"
                 "1dp741bxqiracvvwl66mfvlr29byvvph28n4c6ip136m652vg38r"))
@@ -69413,15 +69417,15 @@ fn main() {
                   rust-borsh-1.8.1
                   rust-borsh-derive-1.8.1
                   rust-bstr-1.13.1
-                  rust-bumpalo-3.20.3
-                  rust-bytes-1.12.1
+                  rust-bumpalo-3.20.4
+                  rust-bytes-1.12.2
                   rust-cfg-if-1.0.5
                   rust-cfg-aliases-0.2.2
                   rust-chacha20-0.10.2
-                  rust-clap-4.6.7
+                  rust-clap-4.6.8
                   rust-clap-builder-4.6.7
-                  rust-clap-complete-4.6.11
-                  rust-clap-lex-1.1.1
+                  rust-clap-complete-4.6.12
+                  rust-clap-lex-1.1.2
                   rust-colorchoice-1.0.5
                   rust-colored-3.1.1
                   rust-console-0.15.11
@@ -69432,13 +69436,14 @@ fn main() {
                   rust-difflib-0.4.0
                   rust-encode-unicode-1.0.0
                   rust-equivalent-1.0.3
-                  rust-errno-0.3.14
+                  rust-errno-0.3.15
                   rust-fastrand-2.5.0
                   rust-float-cmp-0.10.0
                   rust-getrandom-0.2.17
                   rust-getrandom-0.3.4
                   rust-getrandom-0.4.3
                   rust-hashbrown-0.17.1
+                  rust-humantime-2.4.0
                   rust-indexmap-2.14.2
                   rust-indicatif-0.17.4
                   rust-insta-1.49.0
@@ -69449,12 +69454,14 @@ fn main() {
                   rust-libc-0.2.191
                   rust-linux-raw-sys-0.12.1
                   rust-memchr-2.8.3
-                  rust-nix-0.31.3
+                  rust-nix-0.31.4
                   rust-normalize-line-endings-0.3.0
                   rust-num-traits-0.2.19
                   rust-number-prefix-0.4.0
                   rust-once-cell-1.21.4
                   rust-once-cell-polyfill-1.70.2
+                  rust-perf-event-open-sys-6.0.0
+                  rust-platform-info-2.2.1
                   rust-portable-atomic-1.15.0
                   rust-ppv-lite86-0.2.21
                   rust-predicates-3.1.4
@@ -69467,15 +69474,15 @@ fn main() {
                   rust-r-efi-6.0.0
                   rust-rand-0.8.8
                   rust-rand-0.9.5
-                  rust-rand-0.10.3
+                  rust-rand-0.10.4
                   rust-rand-chacha-0.3.1
                   rust-rand-chacha-0.9.0
                   rust-rand-core-0.6.4
                   rust-rand-core-0.9.5
                   rust-rand-core-0.10.1
-                  rust-regex-1.13.1
-                  rust-regex-automata-0.4.18
-                  rust-regex-syntax-0.8.11
+                  rust-regex-1.13.2
+                  rust-regex-automata-0.4.19
+                  rust-regex-syntax-0.8.12
                   rust-rust-decimal-1.43.0
                   rust-rustix-1.1.6
                   rust-rustversion-1.0.23
