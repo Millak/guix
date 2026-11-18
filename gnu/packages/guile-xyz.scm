@@ -7802,37 +7802,6 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
     (home-page "https://github.com/artyom-poptsov/guile-qr-code")
     (license (list license:gpl3+ license:expat))))
 
-(define-public guile-hygguile
-  (package
-    (name "guile-hygguile")
-    (version "2.7.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/jjba23/hygguile.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0r2rdbr4wlxi63din5z0ygsisy9kxhgnn0cpbdxzvsq47mwl2svn"))))
-    (build-system guile-build-system)
-    (native-inputs (list guile-3.0))
-    (arguments
-     (list
-      #:source-directory "src"))
-    (propagated-inputs (list guile-uuid))
-    (home-page "https://codeberg.org/jjba23/hygguile")
-    (synopsis "Web UI component library for Guile Scheme projects")
-    (description
-     "Hygguile is a library that allows you to create cozy web user-interfaces
-using Guile Scheme, by defining an expressive @acronym{DSL, domain-specific
-language}, and by leveraging the power of S-expressions, SXML and OliveCSS.
-
-The project aims to provide reusable, professional-looking and accessible
-web components, whose names resemble the HTML counterparts, thus
-easing the learning curve, and reducing the cognitive load.")
-    (license license:lgpl3+)))
-
 (define-public guile-quickcheck
   (package
     (name "guile-quickcheck")
