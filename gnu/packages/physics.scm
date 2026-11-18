@@ -1013,16 +1013,16 @@ the CRAB and GRAPE methods.")
 (define-public python-shiver
   (package
     (name "python-shiver")
-    (version "1.8.2")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/neutrons/Shiver")
-             (commit (string-append "v" version))))
+              (url "https://github.com/neutrons/Shiver")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05bxn1wqqylixzkk4is9nqkcsxfiix46s8m18db4c1zj7kkjawwv"))))
+        (base32 "0imhv34vnqix1bqsvxb0d6xlfq2nrfy2374zb3974y1rz2d835p4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1050,7 +1050,7 @@ enable-by-default = false"))
      (list python-configupdater
            python-pyoncatqt
            python-qtpy))
-    (home-page "https://github.com/neutrons/Shiver")
+    (home-page "https://neutrons.github.io/Shiver/")
     (synopsis "Spectroscopy histogram visualizer for neutron event reduction")
     (description
      "Shiver (Spectroscopy Histogram Visualizer for Event Reduction) is a
