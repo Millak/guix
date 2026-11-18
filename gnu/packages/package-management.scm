@@ -3290,7 +3290,7 @@ for packaging and deployment of cross-compiled Windows applications.")
     (native-inputs
      (list attr ; for tests
            bison
-           `(,glib "bin") ; for 'glib-mkenums'
+           (list glib "bin") ; for 'glib-mkenums'
            gobject-introspection
            pkg-config
            libxslt))
@@ -3299,7 +3299,7 @@ for packaging and deployment of cross-compiled Windows applications.")
            docbook-xml
            docbook-xsl
            e2fsprogs
-           fuse-2
+           fuse
            glib
            gpgme
            libarchive
