@@ -1,0 +1,58 @@
+From 1f7a2a36f78971ee9adccb279f8d805e3629569a Mon Sep 17 00:00:00 2001
+From: Alvin Hsu <aurtzy@gmail.com>
+Date: Tue, 17 Nov 2026 21:38:16 -0500
+Subject: [PATCH] gnome-desktop-thumbnail-script: Expose
+ GUIX_GDK_PIXBUF_MODULE_FILES in bwrap sandbox
+
+See <https://codeberg.org/guix/guix/issues/12410>.
+---
+ .../gnome-desktop-thumbnail-script.c          | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/libgnome-desktop/gnome-desktop-thumbnail-script.c b/libgnome-desktop/gnome-desktop-thumbnail-script.c
+index 0da8804d..b3bebd2d 100644
+--- a/libgnome-desktop/gnome-desktop-thumbnail-script.c
++++ b/libgnome-desktop/gnome-desktop-thumbnail-script.c
+@@ -689,6 +689,39 @@ add_bwrap (GPtrArray   *array,
+ 	    "--ro-bind-try", "/etc/ld.so.cache", "/etc/ld.so.cache",
+ 	    NULL);
+ 
++  /* Expose GUIX_GDK_PIXBUF_MODULE_FILES to sandbox. */
++  const gchar *module_files_env = g_getenv ("GUIX_GDK_PIXBUF_MODULE_FILES");
++
++  if (module_files_env) {
++    gchar **module_files = g_strsplit (module_files_env,
++                                       G_SEARCHPATH_SEPARATOR_S, 0);
++    for (int i = 0; module_files[i] != NULL; i++)
++      {
++        gchar *module_file_path = module_files[i];
++        if (!g_file_test(module_file_path, G_FILE_TEST_EXISTS))
++          {
++            continue;
++          }
++        else if (g_file_test(module_file_path, G_FILE_TEST_IS_SYMLINK))
++          {
++            g_autofree char *resolved_module_file_path =
++              realpath (module_file_path, NULL);
++            if (resolved_module_file_path) {
++              add_args (array,
++                        "--symlink", resolved_module_file_path, module_file_path,
++                        NULL);
++            }
++          }
++        else
++          {
++            add_args (array,
++                      "--ro-bind", module_file_path, module_file_path,
++                      NULL);
++          }
++      }
++    g_strfreev (module_files);
++  }
++
+   /* These directories might be symlinks into /usr/... */
+   for (i = 0; i < G_N_ELEMENTS (usrmerged_dirs); i++)
+     {
+-- 
+2.55.0
+

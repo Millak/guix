@@ -2101,7 +2101,10 @@ offline sources, providing a centralized place for managing your contacts.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0br33ma7l45nr8yp9bcjqgy9zrj57yy2fnkc0b0yh0rsdrd9kq10"))))
+         "0br33ma7l45nr8yp9bcjqgy9zrj57yy2fnkc0b0yh0rsdrd9kq10"))
+       (patches
+        (search-patches
+         "gnome-desktop-expose-GUIX_GDK_PIXBUF_MODULE_FILES.patch"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
