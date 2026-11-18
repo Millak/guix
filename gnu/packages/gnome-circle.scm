@@ -689,7 +689,7 @@ and a high score table.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "51.0.1")
+    (version "51.4.0")
     (source
      (origin
        (method git-fetch)
@@ -699,7 +699,7 @@ and a high score table.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0l1zfqrzrldn8c5flsm9240d1d22li07vznb8bz32p4h9i68x24r"))))
+         "16a3agjdrsvsrv65j6f3gjbhx4fkj1ar0688qqm14skpzp1jxwcs"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -746,6 +746,7 @@ and a high score table.")
            python
            python-beautifulsoup4
            python-brotli
+           python-colorlog
            python-colorthief
            ;; python-curl-cffi          ;not packaged yet in Guix
            python-dateparser
