@@ -1459,12 +1459,17 @@ exec -a \"$0\" \"~a\" \"$@\""
 
 (define make-rust-sysroot/implementation
   (mlambda (target base-rust)
+   (define (with-cross-gcc? target)
+     (or (target-linux? target)
+         (target-hurd? target)
+         (target-mingw? target)))
+   (when (with-cross-gcc? target)
     (unless (platform-rust-target (lookup-platform-by-target target))
       (raise
        (condition
         (&package-unsupported-target-error
          (package base-rust)
-         (target target)))))
+         (target target))))))
 
     (package
       (inherit base-rust)
@@ -1534,13 +1539,9 @@ exec -a \"$0\" \"~a\" \"$@\""
                              ":")))))
               (replace 'configure
                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let* ((out (assoc-ref outputs "out"))
-                         (target-cc
-                          (search-input-file
-                           inputs (string-append "/bin/" #$(cc-for-target target)))))
-                    (call-with-output-file "config.toml"
-                      (lambda (port)
-                        (display (string-append "
+                  (call-with-output-file "config.toml"
+                    (lambda (port)
+                      (display (string-append "
 [llvm]
 [build]
 optimized-compiler-builtins = false
@@ -1550,14 +1551,18 @@ docs = false
 python = \"" (which "python") "\"
 vendor = true
 submodules = false
-target = [\"" #$(platform-rust-target (lookup-platform-by-target target)) "\"]
+target = [\"" #$@(if (with-cross-gcc? target)
+                     #~(#$(platform-rust-target (lookup-platform-by-target target)))
+                     #~(#$target)) "\"]
 [install]
-prefix = \"" out "\"
+prefix = \"" (assoc-ref outputs "out") "\"
 sysconfdir = \"etc\"
 [rust]
 debug = false
 jemalloc = false
-default-linker = \"" target-cc "\"
+default-linker = \"" #$@(if (with-cross-gcc? target)
+                            #~(#$(cc-for-target target))
+                            #~("lld")) "\"
 channel = \"stable\"
 [target." #$(platform-rust-target (lookup-platform-by-system (%current-system))) "]
 # These are all native tools
@@ -1566,14 +1571,24 @@ linker = \"" (which "gcc") "\"
 cc = \"" (which "gcc") "\"
 cxx = \"" (which "g++") "\"
 ar = \"" (which "ar") "\"
-[target." #$(platform-rust-target (lookup-platform-by-target target)) "]
+[target." #$@(if (with-cross-gcc? target)
+                   #~(#$(platform-rust-target (lookup-platform-by-target target)))
+                   #~(#$target)) "]
 llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
-linker = \"" target-cc "\"
-cc = \"" target-cc "\"
-cxx = \"" (search-input-file inputs (string-append "/bin/" #$(cxx-for-target target))) "\"
-ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target target))) "\"
+linker = \"" #$@(if (with-cross-gcc? target)
+                    #~(#$(cc-for-target target))
+                    #~("lld")) "\"
+cc = \"" #$@(if (with-cross-gcc? target)
+                #~(#$(cc-for-target target))
+                #~("clang")) "\"
+cxx = \"" #$@(if (with-cross-gcc? target)
+                 #~(#$(cxx-for-target target))
+                 #~("clang++")) "\"
+ar = \"" #$@(if (with-cross-gcc? target)
+                #~(#$(ar-for-target target))
+                #~("llvm-ar")) "\"
 [dist]
-") port))))))
+") port)))))
               (replace 'build
                 ;; Phase overridden to build the necessary directories.
                 (lambda* (#:key parallel-build? #:allow-other-keys)
@@ -1603,17 +1618,22 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
                 #:with-winpthreads? #t)))
            (package-propagated-inputs base-rust)))
       (native-inputs
-       (modify-inputs native-inputs
-         ;; Remove the test inputs
-         (delete "gdb" "git-minimal" "procps")
-         (prepend (cross-gcc target
-                             #:libc (cross-libc target)))
-         (prepend (if (target-mingw? target)
-                      (make-mingw-w64
-                        (string-take target (string-index target #\-))
-                        #:with-winpthreads? #t)
-                      (cross-libc target)))
-         (prepend (cross-binutils target))))
+       (if (with-cross-gcc? target)
+           (modify-inputs native-inputs
+             ;; Remove the test inputs
+             (delete "gdb" "git-minimal" "procps")
+             (prepend (cross-gcc target
+                                 #:libc (cross-libc target)))
+             (prepend (if (target-mingw? target)
+                          (make-mingw-w64
+                            (string-take target (string-index target #\-))
+                            #:with-winpthreads? #t)
+                          (cross-libc target)))
+             (prepend (cross-binutils target)))
+           (modify-inputs native-inputs
+             (prepend clang-toolchain-21)
+             ;; Remove the test inputs
+             (delete "gdb" "git-minimal" "procps"))))
       (properties
        `((hidden? . #t) ,(package-properties base-rust))))))
 
