@@ -6,7 +6,7 @@
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2023 Gruruya <greytest@disroot.org>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,8 +45,8 @@
      (git-reference
       (url "https://github.com/nim-lang/atlas.git")
       ;; referenced in koch.nim
-      (commit "ff1f4289482dce94ba9f95b3b0ae16d16e21eb3d")))
-    (sha256 (base32 "09bmm8as7y0r5ds4c5nlp3ix6v3zah03k8bmaf1qil0r1fzwyjar"))))
+      (commit "fa19ace5c5d176d0e19f9b6ad08239ce2ceea676")))
+    (sha256 (base32 "0b7cgv1yg9hpixv6w4a7xyhcf23qjl91rd9wrwfhs0vvk3izsj6c"))))
 
 (define sat
   (origin
@@ -56,20 +56,20 @@
      (git-reference
       (url "https://github.com/nim-lang/sat.git")
       ;; referenced in koch.nim
-      (commit "e63eaea8baf00bed8bcd5a29ffd8823abb265b39")))
-    (sha256 (base32 "0wrd8lgn7ym6fl9jvgmyyyfn997lgn1hvx6vxmpijm070pmksr1m"))))
+      (commit "9d52513b3c68bfb929dbd687d4fb2836cfee6936")))
+    (sha256 (base32 "1f944w3w7imrnan88l5z4ff8s5ks00g4l7sg42img6bbh66hbnfb"))))
 
 (define-public nim
   (package
     (name "nim")
-    (version "2.2.10")
+    (version "2.4.2")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://nim-lang.org/download/"
                           name "-" version ".tar.xz"))
       (sha256
-       (base32 "1mfmx103z7cfk8m5ac945zk7hf0m8i3knkyc1gqvq1j203nvfmvr"))))
+       (base32 "04c25npx42wv4xpxcq0vvgl8vsfmnf0wk1b6s6lxninf3zdg92xj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f          ; TODO: Investigate tests failures.
@@ -120,36 +120,38 @@
                  (define sh (which "sh"))
                  (define sh-len (string-length sh))
 
-                 (define rx1 (make-regexp "^(.*NIM_CHAR data\\[)7(\\+1\\];.*)$" regexp/extended))
-                 ;; } TM__HZdw8BhppcTQo8DIK46LSg_5 = { 7 | NIM_STRLIT_FLAG, "/bin/sh" };
+                 (define rx1 (make-regexp "^(.*NIM_CHAR data\\[)(8|15)(\\];.*)$" regexp/extended))
+
+                 ;; } TM__HZdw8BhppcTQo8DIK46LSg_5 = {(7 | NIM_STRLIT_FLAG), "/bin/sh"};
+
                  (define rx2 (make-regexp
-                               (string-append "^(\\} )"
-                                               "([^[:space:]]+)"
-                                               "( = \\{ )"
-                                               "7"
-                                               "( [|] NIM_STRLIT_FLAG, )"
-                                               "\"/bin/sh\""
-                                               "(.*)$")
-                               regexp/extended))
+                              (string-append "^(\\} )"
+                                             "([^[:space:]]+)"
+                                             "( = \\{[(])"
+                                             "(7|14)"
+                                             "( [|] NIM_STRLIT_FLAG[)], )"
+                                             "\"(/system)?/bin/sh\""
+                                             "(.*)$")
+                              regexp/extended))
 
                  (define (fixup-1 matches out)
                    (format out "~a~a~a\n"
-                           ;;   NI cap; NIM_CHAR data[(string-length (which "sh"))+1];
-                           (match:substring matches 1)  ;; NI cap; NIM_CHAR data[
-                           sh-len                       ;; (string-length (which "sh")
-                           (match:substring matches 2)) ;; +1];
+                           ;;   NIM_CHAR data[(string-length (which "sh"))];
+                           (match:substring matches 1) ;; NIM_CHAR data[
+                           (+ 1 sh-len) ;; (string-length (which "sh")
+                           (match:substring matches 3)) ;; ];
                    #f)
 
                  (define (fixup-2 matches out)
                    (format out "~a~a~a~a~a~s~a\n"
                            ;; } TM__HZdw8BhppcTQo8DIK46LSg_5 = { (string-length (which "sh")) | NIM_STRLIT_FLAG, (which "sh") };
-                           (match:substring matches 1)  ;; }
-                           (match:substring matches 2)  ;; TM__HZdw8BhppcTQo8DIK46LSg_5
-                           (match:substring matches 3)  ;; = {
-                           sh-len                       ;; (string-length (which "sh"))
-                           (match:substring matches 4)  ;; | NIM_STRLIT_FLAG,
-                           sh                           ;; (which "sh")
-                           (match:substring matches 5)) ;; };
+                           (match:substring matches 1) ;; }
+                           (match:substring matches 2) ;; TM__HZdw8BhppcTQo8DIK46LSg_5
+                           (match:substring matches 3) ;; = {
+                           sh-len ;; (string-length (which "sh"))
+                           (match:substring matches 5) ;; | NIM_STRLIT_FLAG,
+                           sh                          ;; (which "sh")
+                           (match:substring matches 7)) ;; };
                    ;; return a reference to patch
                    (match:substring matches 2)) ;; TM__HZdw8BhppcTQo8DIK46LSg_5
 
@@ -173,16 +175,22 @@
                  (define (fixup-bin-sh-references in out)
                    (let loop ((line (read-line in))
                               (flagged #f))
-                     (let* ((pat (and (string? flagged)
-                                      (format #f "{7, (NimStrPayload*)&~a};" flagged)))
-                            (pat-len (if (string? pat) (string-length pat) 0)))
-                       (unless (eof-object? line)
-                         (if (and (string? pat) (string-suffix? pat line))
+                     (unless (eof-object? line)
+                       (let* ((pat (and (string? flagged)
+                                        (format #f "~a(7|14), ~a~a~a"
+                                                (regexp-quote "{")
+                                                (regexp-quote "((NimStrPayload*) (&")
+                                                flagged
+                                                (regexp-quote "))};"))))
+                              (res (and (string? flagged)
+                                        (string-match pat line))))
+                         (if (regexp-match? res)
                              (begin
                                (format out
-                                       "~a{~a, (NimStrPayload*)&~a};\n"
+                                       "~a{~a, ((NimStrPayload*) (&~a))};\n"
                                        (substring line 0
-                                                  (- (string-length line) pat-len))
+                                                  (- (string-length line)
+                                                     (string-length (match:substring res 0))))
                                        sh-len
                                        flagged)
                                (loop (read-line in) flagged))
