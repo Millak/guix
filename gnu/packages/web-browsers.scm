@@ -968,7 +968,7 @@ the memory-safe Nim programming language.")
 (define-public edbrowse
   (package
     (name "edbrowse")
-    (version "3.8.18")
+    (version "3.8.19")
     (source
      (origin
        (method git-fetch)
@@ -977,7 +977,7 @@ the memory-safe Nim programming language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04fly77d20h1g6i36rv3pca44vpi0adin8k3hfan57bxy9nx8iww"))))
+        (base32 "1a220zap2j7z8rsmxh2ysc3pd70i5yivi49v09k5m1p0j5wpj0yj"))))
     (build-system gnu-build-system)
     (inputs (list curl-ssh pcre2 quickjs-ng openssl readline unixodbc))
     (native-inputs (list perl pkg-config))
