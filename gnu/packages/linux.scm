@@ -3329,7 +3329,7 @@ alternative to the corresponding implementations from the GNU project.")
 (define-public dislocker
   (package
     (name "dislocker")
-    (version "0.7.3")
+    (version "0.7.4")
     (home-page "https://github.com/Aorimn/dislocker")
     (source (origin
               (method git-fetch)
@@ -3339,11 +3339,12 @@ alternative to the corresponding implementations from the GNU project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ak68s1v5dwh8y2dy5zjybmrh0pnqralmyqzis67y21m87g47h2k"))))
+                "12nhrf110nzizby116dng0rkpk246xg5dhkcdcnbzg23jbr82gzr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no test suite
-    (inputs (list fuse-2 mbedtls-lts))
+    (native-inputs (list pkg-config))
+    (inputs (list fuse mbedtls-3))
     (synopsis "FUSE driver to read/write Windows BitLocker drives")
     (description
      "This package provides means to to read BitLocker encrypted
