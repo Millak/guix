@@ -291,7 +291,7 @@ key, and private key are written to a new directory.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.6.5")
+    (version "2.7.2")
     (source
      (origin
        (method git-fetch)
@@ -300,7 +300,7 @@ key, and private key are written to a new directory.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pb4glbz8kz30kv36pm3m4qiyansvavjzm8jv66h7xrn8l2i61a4"))
+        (base32 "0vblpgplm4hszkxfvhifqh612zilmx4cqnyywmax89ifqdb600s2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -355,26 +355,34 @@ key, and private key are written to a new directory.")
               ;; Poetry way too strict requirements.
               (substitute* (list "cli/pyproject.toml"
                                  "desktop/pyproject.toml")
-                (("^wheel = .*")
+                ((".*wheel [<>=]?= .*")
                  "\n")
-                (("^pynacl = .*")
-                 (format #f "pynacl = \"^~a\"~%"
+                (("\"pynacl [<>=]?= [^\"]*")
+                 (format #f "\"pynacl == ~a"
                          #$(package-version
                             (this-package-input "python-pynacl"))))
-                (("^stem = .*")
-                 (format #f "stem = \"^~a\"~%"
+                (("\"stem [<>=]?= [^\"]*")
+                 (format #f "\"stem == ~a"
                          #$(package-version
                             (this-package-input "python-stem"))))
-                (("^qrcode = .*")
-                 (format #f "qrcode = \"^~a\"~%"
+                (("\"qrcode [<>=]?= [^\"]*")
+                 (format #f "\"qrcode == ~a"
                          #$(package-version
                             (this-package-input "python-qrcode"))))
-                (("^gevent = .*")
-                 (format #f "gevent = \"^~a\"~%"
+                (("\"gevent [<>=]?= [^\"]*")
+                 (format #f "\"gevent == ~a"
                          #$(package-version
                             (this-package-input "python-gevent"))))
-                (("^cffi = .*")
-                 (format #f "cffi = \"^~a\"~%"
+                (("\"werkzeug [<>=]?= [^\"]*")
+                 (format #f "\"werkzeug == ~a"
+                         #$(package-version
+                            (this-package-input "python-werkzeug"))))
+                (("\"setuptools [<>=]?= [^\"]*")
+                 (format #f "\"setuptools == ~a"
+                         #$(package-version
+                            (this-package-input "python-setuptools"))))
+                (("\"cffi [<>=]?= [^\"]*")
+                 (format #f "\"cffi == ~a"
                          #$(package-version
                             (this-package-input "python-cffi")))))))
           (add-after 'unpack 'bake-tor
@@ -414,8 +422,8 @@ OnionShare.")
             (add-after 'relax-requirements 'relax-more-requirements
               (lambda _
                 (substitute* "desktop/pyproject.toml"
-                  (("^PySide6 = .*")
-                   (format #f "PySide6 = \"^~a\"~%"
+                  (("PySide6 [<>=]?= [^\"]*")
+                   (format #f "PySide6 == ~a"
                            #$(package-version
                               (this-package-input "python-pyside-6")))))))
             (add-after 'unpack 'absolutize
