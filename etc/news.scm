@@ -38,6 +38,7 @@
 ;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
+;; Copyright © 2026 Luca Kredel <luca.kredel@web.de>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -45,6 +46,19 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "741ff81f59a17b4a89591aaafbf880d8f1ba96fa")
+        (title
+          (en "hyperfine updated to 2.0.0")
+          (de "hyperfine wurde auf 2.0.0 aktualisiert"))
+        (body
+          (en "This new major version of @code{hyperfine} contains breaking
+changes. See @url{https://github.com/sharkdp/hyperfine/releases/tag/v2.0.0} for
+details.")
+          (de "Die neue Hauptversion von @code{hyperfine} beinhaltet
+nicht-abwärtskomptible Änderungen.
+Siehe @url{https://github.com/sharkdp/hyperfine/releases/tag/v2.0.0} für
+              die Details")))
 
  (entry (commit "50976635a2cd3224975c27fe65ba57cf916f1312")
         (title
