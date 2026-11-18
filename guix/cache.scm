@@ -39,7 +39,7 @@
 (define (obsolete? date now ttl)
   "Return #t if DATE is obsolete compared to NOW + TTL seconds."
   (time>? (subtract-duration now (make-time time-duration 0 ttl))
-          (make-time time-monotonic 0 date)))
+          (make-time time-utc 0 date)))
 
 (define (delete-file* file)
   "Like 'delete-file', but does not raise an error when FILE does not exist."
@@ -61,7 +61,7 @@ relevant timestamp from the result of 'stat'."
 
 (define* (remove-expired-cache-entries entries
                                        #:key
-                                       (now (current-time time-monotonic))
+                                       (now (current-time time-utc))
                                        (entry-expiration
                                         (file-expiration-time 3600))
                                        (delete-entry delete-file*))
@@ -88,7 +88,7 @@ expiration time of that entry in seconds since the Epoch.  DELETE-ENTRY is a
 procedure that removes the entry passed as an argument.  Finally,
 CLEANUP-PERIOD denotes the minimum time between two cache cleanups."
   (define now
-    (current-time time-monotonic))
+    (current-time time-utc))
 
   (define expiry-file
     (string-append cache "/last-expiry-cleanup"))
