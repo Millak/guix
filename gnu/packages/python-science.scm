@@ -1714,13 +1714,16 @@ originally defined by the CLHEP project.")
 (define-public python-hist
   (package
     (name "python-hist")
-    (version "2.10.1")
+    (version "2.12.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hist" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-hep/hist")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bhv8bf7zizxf7nsps5hyfppjk1ry0z6pwrwhz44xmm6g6nfdj6y"))))
+        (base32 "1yc74vbz7wmhnq0ydd1nfpg1jr6q2b91h4i1k0bp76x8sp3bwqb5"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-boost-histogram
                              python-histoprint
