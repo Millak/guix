@@ -1637,64 +1637,9 @@ ar = \"" #$@(if (with-cross-gcc? target)
       (properties
        `((hidden? . #t) ,(package-properties base-rust))))))
 
-(define-public rust-sysroot-for-wasm32-unknown-unknown
-  (package
-    (inherit (make-rust-sysroot "i686-linux-gnu"))
-    (name "rust-sysroot-for-wasm32-unknown-unknown")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'set-env
-              (lambda _
-                (setenv "SHELL" (which "sh"))
-                (setenv "CONFIG_SHELL" (which "sh"))
-                (setenv "CC" (which "clang"))
-                ;; The Guix LLVM package installs only shared libraries.
-                (setenv "LLVM_LINK_SHARED" "1")))
-            (replace 'configure
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (call-with-output-file "config.toml"
-                    (lambda (port)
-                      (display (string-append "
-[llvm]
-[build]
-optimized-compiler-builtins = false
-cargo = \"" (search-input-file inputs "/bin/cargo") "\"
-rustc = \"" (search-input-file inputs "/bin/rustc") "\"
-docs = false
-python = \"" (which "python") "\"
-vendor = true
-submodules = false
-target = [\"wasm32-unknown-unknown\"]
-[install]
-prefix = \"" (assoc-ref outputs "out") "\"
-sysconfdir = \"etc\"
-[rust]
-debug = false
-jemalloc = false
-default-linker = \"lld\"
-channel = \"stable\"
-[target." #$(platform-rust-target (lookup-platform-by-system (%current-system))) "]
-# These are all native tools
-llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
-linker = \"" (which "gcc") "\"
-cc = \"" (which "gcc") "\"
-cxx = \"" (which "g++") "\"
-ar = \"" (which "ar") "\"
-[target.wasm32-unknown-unknown]
-llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
-linker = \"lld\"
-cc = \"clang\"
-cxx = \"clang++\"
-ar = \"ar\"
-[dist]
-") port)))))))))
-    ;; Use native-inputs of base rust.
-    (native-inputs
-     (modify-inputs (package-native-inputs rust)
-       ;; Remove the test inputs
-       (delete "gdb" "git-minimal" "procps")))))
+;; TODO: Remove when 2027/06 comes.
+(define-deprecated-package rust-sysroot-for-wasm32-unknown-unknown
+  (make-rust-sysroot "wasm32-unknown-unknown"))
 
 (define-public rust-analyzer
   (package
