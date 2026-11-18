@@ -1063,24 +1063,23 @@ installed.")
 (define-public python-spglib
   (package
     (name "python-spglib")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spglib" version))
        (sha256
-        (base32 "1sq8niay87n7hmby6hs628zzpc4apx6kp77cjvyi87hal0mxlvnn"))))
+        (base32 "13wywaqig0bsk9rcl61cjp40075rgvyjaxlkacrpjnan9d1j98hj"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numpy
-           python-typing-extensions))
+           python-typing-extensions))   ;Python version <3.13
     (native-inputs
-     (list cmake-minimal
-           python-pytest
+     (list python-pytest
            python-pyyaml
            python-scikit-build-core
            python-setuptools-scm))
-    (home-page "https://spglib.readthedocs.io/")
+    (home-page "https://spglib.readthedocs.io/en/latest/")
     (synopsis "Python bindings for spglib crystal symmetry library")
     (description
      "Spglib is a library for finding and handling crystal symmetries written
