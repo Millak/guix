@@ -594,17 +594,17 @@ GEXP)."
     (sha256 hash)))
 
 ;; The current "mainline" kernel.
-(define-public linux-libre-7.3-version "7.3.4")
+(define-public linux-libre-7.3-version "7.3.5")
 (define-public linux-libre-7.3-gnu-revision "gnu")
 (define deblob-scripts-7.3
   (linux-libre-deblob-scripts
    linux-libre-7.3-version
    linux-libre-7.3-gnu-revision
    (base32 "1cj5ksidgm573qq7wvzcaahg1avanlx07z1zz23gqzqf1mcvmk16")
-   (base32 "0ysiafa2qayf997i5lm1vbsyf4ar43xlb0k5akrf9zpdynwxwd6g")))
+   (base32 "0l057ik0agamkwrvdakszfk9kvnwnf78w7cig5q4g4fmf9pnb1xd")))
 (define-public linux-libre-7.3-pristine-source
   (let ((version linux-libre-7.3-version)
-        (hash (base32 "07zx81c5n6bzj29b1di3m9fbba4l96m1mds0y0grk3jy57w6s6xi")))
+        (hash (base32 "1409kzrpxs9baxffajhbaczdfygawk2ynqv8wndpn2sgsn1kyacg")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-7.3)))
