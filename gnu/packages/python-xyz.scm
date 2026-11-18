@@ -18829,7 +18829,7 @@ third-party code.")
 (define-public python-llfuse
   (package
     (name "python-llfuse")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -18838,7 +18838,7 @@ third-party code.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16wsrg1py4gvcxfgsfkll73lfq62psc0hcqvs73az7s4b1pvyy62"))))
+        (base32 "1whc8c9imkhg6qwfa9qs88bv3p0ksfsxnp4vhvcximm617xdhn9w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
