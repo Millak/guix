@@ -7248,6 +7248,28 @@ numerical simulations.  It stands wholly atop the labelled N-dimensional array
 library @code{xarray}.")
     (license license:expat)))
 
+(define-public python-zernike
+  (package
+    (name "python-zernike")
+    (version "0.0.33")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zernike" version))
+       (sha256
+        (base32 "0hr0x7z0r1np1bx1k7ak1xnxcm4178jr3aspw4r2k583wmvpxd8w"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-h5py python-numpy))
+    (home-page "https://github.com/jacopoantonello/zernike")
+    (synopsis "Python code for Zernike polynomials")
+    (description
+     "This package provides a Python code to handle complex- and real-valued
+Zernike polynomials, formly was part of
+@url{https://github.com/jacopoantonello/enzpy, enzpy}.")
+    (license license:asl2.0)))
+
 (define-public pyzo
   (package
     (name "pyzo")
