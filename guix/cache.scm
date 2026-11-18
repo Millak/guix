@@ -99,7 +99,7 @@ CLEANUP-PERIOD denotes the minimum time between two cache cleanups."
     ;; up the same cache.  'lock-file' might throw to 'system-error' or to
     ;; 'flock-error'; in either case, assume that we lost the race.
     (false-if-exception
-     (lock-file expiry-file "a+0" #:wait? #f)))
+     (lock-file expiry-file "a+0e" #:wait? #f)))
 
   (define last-expiry-date
     (if expiry-port
