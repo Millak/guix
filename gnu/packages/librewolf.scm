@@ -25,6 +25,7 @@
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Ashvith Shetty <ashvith@disroot.org>
 ;;; Copyright © 2025, 2026 Untrusem <mysticmoksh@riseup.net>
+;;; Copyright © 2026 Johannes Bartunek <contact@jbartunek.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -152,8 +153,7 @@
                (use-modules (guix build utils))
                (set-path-environment-variable
                 "PATH" '("bin")
-                (list #+python
-                      #+(canonical-package bash)
+                (list #+(canonical-package bash)
                       #+(canonical-package gnu-make)
                       #+(canonical-package coreutils)
                       #+(canonical-package findutils)
@@ -163,15 +163,6 @@
                       #+(canonical-package grep)
                       #+(canonical-package pigz)
                       #+(canonical-package tar)))
-               (set-path-environment-variable
-                "PYTHONPATH"
-                (list #+(format #f "lib/python~a/site-packages"
-                                (version-major+minor
-                                 (package-version python))))
-                '#+(cons python-jsonschema
-                         (map second
-                              (package-transitive-propagated-inputs
-                               python-jsonschema))))
 
                ;; Copy LibreWolf source into the build directory and make
                ;; everything writable.
@@ -181,24 +172,22 @@
                ;; Patch Makefile to use the upstream source instead of
                ;; downloading.
                (substitute* '("Makefile")
-                 (("^(ff_source_tarball *:= *).*" _ var)
+                 (("^(ff_source_tarball *= *).*" _ var)
                   (string-append var #+ff-src)))
 
-               ;; Neuter GPG signing of the tarball.
-               (substitute* '("Makefile")
-                 (("if [ -f pk.asc ].*") ""))
-
                ;; Stage locales.
-               (setenv "SKIP_FETCHING_LOCALES" "true")
-               (substitute* '("scripts/librewolf-patches.py")
-                 (("^    exec\\('mkdir -p lw'\\)")
-                  (string-append
-                   "    exec('mkdir -p lw')\n    exec(\"cp -r "
-                   #+l10n
-                   " ./lw/l10n && chmod -R +w ./lw/l10n\")")))
+               (substitute* '("scripts/patch.sh")
+                 (("^.*git clone.*$" all)
+                  (string-append "    cp -r "
+                                 #+l10n
+                                 " $tmpdir/l10n\n    chmod +w $tmpdir/l10n -R\n")))
+
+               ;; Fix shebang.
+               (substitute* '("scripts/patch.sh")
+                 (("#!/bin/sh") (string-append "#!" (which "bash"))))
 
                ;; Run the build script
-               (invoke "make" "all")
+               (invoke "make" "tarball")
                (copy-file (string-append "librewolf-" #$version
                                          ".source.tar.gz")
                           #$output)))))
