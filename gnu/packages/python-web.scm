@@ -7884,8 +7884,10 @@ other HTTP libraries.")
              (list"test_downloader.py::test_retrieve_some_content"
                   "test_downloader.py::test_retry"
                   "test_downloader.py::test_explicit_checksum"
+                  "test_downloader_multipart.py::test_multipart"
                   "test_downloader_multipart.py::test_multipart_with_error"
                   "test_main.py::test_run_cli_success"
+                  "test_utils.py::test_head_or_get"
                   ;; Network access is required.
                   "test_downloader.py::test_ftp"
                   "test_downloader.py::test_ftp_http"
