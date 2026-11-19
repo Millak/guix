@@ -3294,6 +3294,7 @@ XDG-Output for wlclock to work.")
            eudev
            libdisplay-info
            libinput-minimal
+           libliftoff
            libxkbcommon
            mesa
            pixman
