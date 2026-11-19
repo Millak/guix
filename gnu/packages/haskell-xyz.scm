@@ -4484,7 +4484,7 @@ basis for a nicer interface.")
         (base32 "0vdkfj4wjzigdpzgr5l001y9wkhwgl00mclr26gf93kps14fkymn"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "GLUT")))
-    (inputs (list ghc-statevar ghc-opengl ghc-openglraw ghc-random))
+    (inputs (list ghc-statevar ghc-opengl ghc-openglraw ghc-random glu))
     (arguments
      `(#:cabal-revision ("4"
                          "0xfm8l90llyyqj3aip0i87ykq936zfl3bc7sibgdng8dhi5xj7y3")))
@@ -18181,4 +18181,3 @@ providing boxed wrappers for @code{ByteArray} and
 ;;; of a merge conflict, place them above by existing packages with similar
 ;;; functionality or similar names.
 ;;;
-
