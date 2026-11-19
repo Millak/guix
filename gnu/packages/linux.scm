@@ -1863,34 +1863,25 @@ DFSDG}.")
               license:gpl3
               license:x11))))
 
-(define-public reform-debian-packages-for-6.18
+(define-public mnt-reform-patches-for-6.18
   (package
-    (name "reform-debian-packages")
-    (version "2023-07-10-525-g7e8a95c") ;from git describe
+    (name "mnt-reform-patches")
+    (version "6.18.64")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "7e8a95c7babd9e1f4b307b6d146e0846c65fc9b8")))
+             (url "https://codeberg.org/vagrantc/mnt-reform-patches.git")
+             (commit "40c9ccb7e25fbc0257d7d36091392a6a0e7f85d3")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g7lm7bfsjn6y77i1gk6wgpmghd36s3axqdqr1ahl9vhzw03cx0g"))))
+        (base32 "0f7kprzndpkv132q5bjkxrrwr19mr9wqyvjgi5hglx19sdz341m6"))))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
-      #~'(("linux/patches6.18/" "/patches6.18")
-          ("linux/" "/dts/amlogic"
-           #:include-regexp ("meson.*\\.dts$"))
-          ("linux/" "/dts/freescale"
-           #:include-regexp ("imx8.*\\.dts$"))
-          ("linux/" "/dts/freescale"
-           #:include-regexp ("fsl.*\\.dts$"))
-          ("linux/" "/dts/rockchip"
-           #:include-regexp ("rk3588.*\\.dts$"))
-          ("linux/config" "config"))))
-    (home-page "https://source.mnt.re/reform/reform-debian-packages")
+      #~'(("patches" ""))))
+    (home-page "https://codeberg.org/vagrantc/mnt-reform-patches")
     (synopsis
      "Linux kernel patches and device-trees used for MNT Reform systems")
     (description
@@ -2424,7 +2415,7 @@ dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform-next.dtb")))))))))))
                                           linux-libre-6.18-version)))))
     (package
       (inherit base)
-      (inputs (list reform-debian-packages-for-6.18))
+      (inputs (list mnt-reform-patches-for-6.18))
       (synopsis (string-append (package-synopsis base)
                                " for MNT/Reform systems"))
       (description (string-append (package-description base)
@@ -2439,148 +2430,103 @@ dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform-next.dtb")))))))))))
                               (invoke "patch" "-p1" "-i"
                                       (search-input-file inputs
                                                          (string-append
-                                                          "patches6.18/" patch))))
+                                                          "patches/" patch))))
                             (list
-                             "imx8mp-mnt-pocket-reform/2ghz/0001-imx8mp-2ghz-clk.patch"
-                             "imx8mp-mnt-pocket-reform/2ghz/0002-imx8mp-2ghz-opp.patch"
-                             "imx8mp-mnt-pocket-reform/audio/0000-revert-crashy-audiomix-pm-support.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0001-sdhci-add-no-sd-uhs-sdr104-devicetree-property.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0002-During-the-card-init-the-host-side-sometimes-may-nee.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0003-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
-                             "imx8mp-mnt-pocket-reform/pocket-panel/0001-v5-add-multi-display-panel-driver.patch"
-                             "imx8mp-mnt-pocket-reform/pocket-panel/0002-pocket-panel-fix-sleep-add-orientation.patch"
-                             "imx8mp-mnt-reform2/0001-sn65dsi86-use-hs-clock-of-samsung-dsim-host-directly.patch"
-                             "imx8mp-mnt-reform2/0002-lcdif-dont-exceed-desired-pixel-clock.patch"
-                             "imx8mq-mnt-reform2/0001-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
-                             "imx8mq-mnt-reform2/0001-nwl-dsi-fixup-mode-only-for-LCDIF-input-not-DCSS.patch"
-                             "imx8mq-mnt-reform2/0002-Revert-drm-bridge-nwl-dsi-Use-vsync-hsync-polarity-f.patch"
-                             "imx8mq-mnt-reform2/0003-lcdif-fix-pcie-interference.patch"
-                             "imx8mq-mnt-reform2/0004-mnt4002-imx-gpcv2-wake-smccc.patch.patch"
-                             "imx8mq-mnt-reform2/0005-pci-imx6-add-support-for-internal-refclk-imx8mq.patch"
-                             "imx8mq-mnt-reform2/0006-imx8mq-import-HDMI-driver-and-make-DCSS-compatible-w.patch"
-                             "ls1028a-mnt-reform2/0000-dtsi-add-hdptx.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0001-a311d-viu-fifo-lines-config.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0002-a311d-viu-fifo-lines-config-header.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0003-tlv320aic31xx-add-1228800hz-support.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0001-meson-g12b-bananapi-cm4-mnt-reform2.dts-fix-audio-an.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0001-Revert-drm-bridge-synopsys-dw-mipi-dsi-enable-EoTp-b.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0011-dw-mipi-dsi-phy-stop-wait-time.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0012-innolux-n125hce-gn1-timing-tweaks.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0013-meson-viu-hold-fifo-lines.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0014-meson-venc-sync.patch.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0015-meson-dw-mipi-dsi-sync-invert.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0016-sn65dsi86-burst-mode-support.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0018-sn65dsi86-never-turn-off.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0020-LOCAL-ALSA-Assign-internal-PCM-chmap-ELD-IEC958-kctl.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0021-HACK-of-partial-revert-of-fdt.c-changes.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0022-add-bt-and-eth-resets.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0023-sdio-pullups.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0024-sdio-improve-wifi-speed.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0030-WORKAROUND-meson-plane-disable-afbc-32x8.patch"
-                             "rk3588-mnt-reform2/0001-MERGED-drm-bridge-Pass-down-connector-to-drm-bridge-.patch"
-                             "rk3588-mnt-reform2/0024-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
-                             "rk3588-mnt-reform2/0025-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
-                             "rk3588-mnt-reform2/0026-clk-composite-replace-open-coded-abs_diff.patch"
-                             "rk3588-mnt-reform2/0030-mfd-rk8xx-Fix-shutdown-handler.patch"
-                             "rk3588-mnt-reform2/0031-dt-bindings-display-vop2-Add-VP-clock-resets.patch"
-                             "rk3588-mnt-reform2/0032-drm-rockchip-vop2-Add-clock-resets-support.patch"
-                             "rk3588-mnt-reform2/0033-arm64-dts-rockchip-Add-VOP-clock-resets-for-rk3588s.patch"
-                             "rk3588-mnt-reform2/0035-drm-rockchip-vop2-Add-core-reset-support.patch"
-                             "rk3588-mnt-reform2/0046-arm64-defconfig-Enable-Rockchip-RK3588-DisplayPort-C.patch"
-                             "rk3588-mnt-reform2/0055-phy-rockchip-usbdp-move-orientation-handling-further.patch"
-                             "rk3588-mnt-reform2/0056-phy-rockchip-usbdp-reset-USB3-and-reinit-on-orientat.patch"
-                             ;; "rk3588-mnt-reform2/0060-PCI-dw-rockchip-Rename-rockchip_pcie_get_ltssm-funct.patch"
-                             ;; "rk3588-mnt-reform2/0061-PCI-dw-rockchip-Support-get_ltssm-operation.patch"
-                             ;; "rk3588-mnt-reform2/0062-PCI-dw-rockchip-Move-devm_phy_get-out-of-phy_init.patch"
-                             ;; "rk3588-mnt-reform2/0063-PCI-dw-rockchip-Add-helper-function-for-enhanced-LTS.patch"
-                             ;; "rk3588-mnt-reform2/0064-PCI-dw-rockchip-Add-helper-function-for-controller-m.patch"
-                             ;; "rk3588-mnt-reform2/0065-PCI-dw-rockchip-Add-helper-function-for-DDL-indicato.patch"
-                             ;; "rk3588-mnt-reform2/0066-PCI-dw-rockchip-Add-pme_turn_off-support.patch"
-                             ;; "rk3588-mnt-reform2/0067-PCI-dw-rockchip-Add-system-PM-support.patch"
-                             "rk3588-mnt-reform2/0068-drm-bridge-dw-hdmi-qp-Add-CEC-support.patch"
-                             "rk3588-mnt-reform2/0069-drm-bridge-dw-hdmi-qp-Fixup-timer-base-setup.patch"
-                             "rk3588-mnt-reform2/0070-drm-rockchip-dw_hdmi_qp-Improve-error-handling-with-.patch"
-                             "rk3588-mnt-reform2/0071-drm-rockchip-dw_hdmi_qp-Provide-CEC-IRQ-in-dw_hdmi_q.patch"
-                             "rk3588-mnt-reform2/0072-drm-rockchip-dw_hdmi_qp-Provide-ref-clock-rate-in-dw.patch"
-                             "rk3588-mnt-reform2/0073-arm64-defconfig-Enable-DW-HDMI-QP-CEC-support.patch"
-                             "rk3588-mnt-reform2/0075-phy-hdmi-Add-HDMI-2.1-FRL-configuration-options.patch"
-                             "rk3588-mnt-reform2/0079-phy-rockchip-samsung-hdptx-Use-usleep_range-instead-.patch"
-                             "rk3588-mnt-reform2/0080-phy-rockchip-samsung-hdptx-Fix-coding-style-alignmen.patch"
-                             "rk3588-mnt-reform2/0081-phy-rockchip-samsung-hdptx-Consistently-use-rk_-hdpt.patch"
-                             "rk3588-mnt-reform2/0082-phy-rockchip-samsung-hdptx-Enable-lane-output-in-com.patch"
-                             "rk3588-mnt-reform2/0083-phy-rockchip-samsung-hdptx-Cleanup-_cmn_init_seq-lis.patch"
-                             "rk3588-mnt-reform2/0084-phy-rockchip-samsung-hdptx-Compute-clk-rate-from-PLL.patch"
-                             "rk3588-mnt-reform2/0085-phy-rockchip-samsung-hdptx-Drop-hw_rate-driver-data.patch"
-                             "rk3588-mnt-reform2/0086-phy-rockchip-samsung-hdptx-Switch-to-driver-specific.patch"
-                             "rk3588-mnt-reform2/0087-phy-rockchip-samsung-hdptx-Extend-rk_hdptx_phy_verif.patch"
-                             "rk3588-mnt-reform2/0088-phy-rockchip-samsung-hdptx-Add-HDMI-2.1-FRL-support.patch"
-                             "rk3588-mnt-reform2/0089-drm-rockchip-vop2-Check-bpc-before-switching-DCLK-so.patch"
-                             "rk3588-mnt-reform2/0090-drm-bridge-dw-hdmi-qp-Handle-platform-supported-form.patch"
-                             "rk3588-mnt-reform2/0091-drm-rockchip-dw_hdmi_qp-Switch-to-phy_configure.patch"
-                             "rk3588-mnt-reform2/0092-drm-rockchip-dw_hdmi_qp-Use-bit-macros-for-RK3576-re.patch"
-                             "rk3588-mnt-reform2/0093-drm-rockchip-dw_hdmi_qp-Add-high-color-depth-support.patch"
-                             "rk3588-mnt-reform2/0094-DEBUG-phy-rockchip-samsung-hdptx-Add-verbose-logging.patch"
-                             "rk3588-mnt-reform2/0095-WIP-SCRAMB-drm-bridge-Add-detect_ctx-hook.patch"
-                             "rk3588-mnt-reform2/0096-WIP-SCRAMB-drm-bridge-connector-Switch-from-detect-t.patch"
-                             "rk3588-mnt-reform2/0097-WIP-SCRAMB-drm-bridge-dw-hdmi-qp-Add-high-TMDS-clock.patch"
-                             "rk3588-mnt-reform2/0098-WIP-YUV420-drm-rockchip-vop2-Add-YUV420-output-forma.patch"
-                             "rk3588-mnt-reform2/0099-WIP-YUV420-drm-rockchip-dw_hdmi_qp-Add-YUV420-output.patch"
-                             "rk3588-mnt-reform2/0100-WIP-FRL-dt-bindings-display-rockchip-Add-tmds-enable.patch"
-                             "rk3588-mnt-reform2/0101-WIP-FRL-drm-rockchip-dw_hdmi_qp-Fixup-usage-of-enabl.patch"
-                             "rk3588-mnt-reform2/0103-WIP-FRL-arm64-dts-rockchip-Assign-ACLK_VOP-to-750-MH.patch"
-                             "rk3588-mnt-reform2/0104-WIP-FRL-drm-connector-hdmi-Handle-FRL-in-hdmi_clock_.patch"
-                             "rk3588-mnt-reform2/0105-WIP-FRL-drm-bridge-dw-hdmi-qp-Add-HDMI-2.1-FRL-suppo.patch"
-                             "rk3588-mnt-reform2/0106-WIP-FRL-drm-rockchip-dw_hdmi_qp-Add-HDMI-2.1-FRL-sup.patch"
-                             "rk3588-mnt-reform2/0107-WIP-FRL-drm-rockchip-vop2-Add-HDMI-2.1-FRL-support.patch"
-                             "rk3588-mnt-reform2/0108-dt-bindings-phy-rockchip-usbdp-add-improved-ports-sc.patch"
-                             "rk3588-mnt-reform2/0114-media-dt-bindings-video-interfaces-add-defines-for-s.patch"
-                             "rk3588-mnt-reform2/2001-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
-                             "rk3588-mnt-reform2/2003-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
-                             "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"
-                             "rk3588-mnt-reform2/7001-PCI-dw-rockchip-Disable-root-port-BARs.patch"))))
-              (add-after 'apply-reform-patches 'copy-reform-dts-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (for-each (lambda (dts)
-                              (copy-file (search-input-file inputs
-                                                            (string-append
-                                                             "/dts/" dts))
-                                         (string-append "arch/arm64/boot/dts/"
-                                          dts)))
-                            (list
-                             "amlogic/meson-g12b-bananapi-cm4-mnt-pocket-reform.dts"
-                             "freescale/fsl-ls1028a-mnt-reform2.dts"
-                             "freescale/imx8mp-mnt-pocket-reform.dts"
-                             "freescale/imx8mp-mnt-reform2.dts"
-                             "freescale/imx8mq-mnt-reform2-hdmi.dts"
-                             "rockchip/rk3588-mnt-desktop-reform.dts"
-                             "rockchip/rk3588-mnt-pocket-reform.dts"
-                             "rockchip/rk3588-mnt-reform-next.dts"
-                             "rockchip/rk3588-mnt-reform2.dts"
-                             "rockchip/rk3588-mnt-reform2-dsi.dts"
-                             ))))
-              (add-after 'apply-reform-patches 'adjust-makefiles-with-new-dtb
-                (lambda _
-                  (substitute* "arch/arm64/boot/dts/amlogic/Makefile"
-                    (("meson-g12b-bananapi-cm4-mnt-reform2.dtb")
-                     "meson-g12b-bananapi-cm4-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-mnt-pocket-reform.dtb"))
-                  (substitute* "arch/arm64/boot/dts/freescale/Makefile"
-                    (("fsl-ls1028a-rdb.dtb")
-                     "fsl-ls1028a-rdb.dtb
-dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-mnt-reform2.dtb"))
-                  (substitute* "arch/arm64/boot/dts/freescale/Makefile"
-                    (("imx8mq-mnt-reform2.dtb")
-                     "imx8mq-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mp-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mp-mnt-pocket-reform.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mq-mnt-reform2-hdmi.dtb"))
-                  (substitute* "arch/arm64/boot/dts/rockchip/Makefile"
-                    (("rk3588-mnt-reform2.dtb")
-                     "rk3588-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-desktop-reform.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
+                             "0001-imx8mp-2ghz-clk.patch"
+                             "0002-imx8mp-2ghz-opp.patch"
+                             "0003-revert-crashy-audiomix-pm-support.patch"
+                             "0004-sdhci-add-no-sd-uhs-sdr104-devicetree-property.patch"
+                             "0005-During-the-card-init-the-host-side-sometimes-may-nee.patch"
+                             "0006-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
+                             "0007-add-multi-display-panel-driver.patch"
+                             "0008-pocket-panel-sleep-fix-v3.patch"
+                             "0009-sn65dsi86-use-hs-clock-of-samsung-dsim-host-directly.patch"
+                             "0010-lcdif-dont-exceed-desired-pixel-clock.patch"
+                             "0011-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
+                             "0012-nwl-dsi-fixup-mode-only-for-LCDIF-input-not-DCSS.patch"
+                             "0013-Revert-drm-bridge-nwl-dsi-Use-vsync-hsync-polarity-f.patch"
+                             "0014-lcdif-fix-pcie-interference.patch"
+                             "0015-mnt4002-imx-gpcv2-wake-smccc.patch.patch"
+                             "0016-pci-imx6-add-support-for-internal-refclk-on-imx8mq.patch"
+                             "0017-imx8mq-import-HDMI-driver-and-make-DCSS-compatible-w.patch"
+                             "0018-dtsi-add-hdptx.patch"
+                             "0019-a311d-viu-fifo-lines-config.patch"
+                             "0020-a311d-viu-fifo-lines-config-header.patch"
+                             "0021-tlv320aic31xx-add-12.288MHz-mclk-support-and-fix-for.patch"
+                             "0022-Revert-drm-bridge-synopsys-dw-mipi-dsi-enable-EoTp-b.patch"
+                             "0023-meson-g12b-bananapi-cm4-mnt-reform2.dts-fix-audio-an.patch"
+                             "0024-dw-mipi-dsi-phy-stop-wait-time.patch"
+                             "0025-innolux-n125hce-gn1-timing-tweaks.patch"
+                             "0026-meson-viu-hold-fifo-lines.patch"
+                             "0027-meson-venc-sync.patch.patch"
+                             "0028-meson-dw-mipi-dsi-sync-invert.patch"
+                             "0029-sn65dsi86-burst-mode-support.patch"
+                             "0030-sn65dsi86-never-turn-off.patch"
+                             "0031-LOCAL-ALSA-Assign-internal-PCM-chmap-ELD-IEC958-kctl.patch"
+                             "0032-HACK-of-partial-revert-of-fdt.c-changes.patch"
+                             "0033-add-bt-and-eth-resets.patch"
+                             "0034-sdio-improve-wifi-speed.patch"
+                             "0035-sdio-improve-wifi-speed.patch"
+                             "0036-WORKAROUND-meson-plane-disable-afbc-32x8.patch"
+                             "0037-drm-bridge-Pass-down-connector-to-drm-bridge-detect-.patch"
+                             "0038-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
+                             "0039-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
+                             "0040-clk-composite-replace-open-coded-abs_diff.patch"
+                             "0041-mfd-rk8xx-Fix-shutdown-handler.patch"
+                             "0042-dt-bindings-display-vop2-Add-VP-clock-resets.patch"
+                             "0043-drm-rockchip-vop2-Add-clock-resets-support.patch"
+                             "0044-arm64-dts-rockchip-Add-VOP-clock-resets-for-rk3588s.patch"
+                             "0045-drm-rockchip-vop2-Add-core-reset-support.patch"
+                             "0046-arm64-defconfig-Enable-Rockchip-RK3588-DisplayPort-C.patch"
+                             "0047-phy-rockchip-usbdp-move-orientation-handling-further.patch"
+                             "0048-phy-rockchip-usbdp-reset-USB3-and-reinit-on-orientat.patch"
+                             "0057-drm-bridge-dw-hdmi-qp-Add-CEC-support.patch"
+                             "0058-drm-bridge-dw-hdmi-qp-Fixup-timer-base-setup.patch"
+                             "0059-drm-rockchip-dw_hdmi_qp-Improve-error-handling-with-.patch"
+                             "0060-drm-rockchip-dw_hdmi_qp-Provide-CEC-IRQ-in-dw_hdmi_q.patch"
+                             "0061-drm-rockchip-dw_hdmi_qp-Provide-ref-clock-rate-in-dw.patch"
+                             "0062-arm64-defconfig-Enable-DW-HDMI-QP-CEC-support.patch"
+                             "0063-phy-hdmi-Add-HDMI-2.1-FRL-configuration-options.patch"
+                             "0064-phy-rockchip-samsung-hdptx-Use-usleep_range-instead-.patch"
+                             "0065-phy-rockchip-samsung-hdptx-Fix-coding-style-alignmen.patch"
+                             "0066-phy-rockchip-samsung-hdptx-Consistently-use-rk_-hdpt.patch"
+                             "0067-phy-rockchip-samsung-hdptx-Enable-lane-output-in-com.patch"
+                             "0068-phy-rockchip-samsung-hdptx-Cleanup-_cmn_init_seq-lis.patch"
+                             "0069-phy-rockchip-samsung-hdptx-Compute-clk-rate-from-PLL.patch"
+                             "0070-phy-rockchip-samsung-hdptx-Drop-hw_rate-driver-data.patch"
+                             "0071-phy-rockchip-samsung-hdptx-Switch-to-driver-specific.patch"
+                             "0072-phy-rockchip-samsung-hdptx-Extend-rk_hdptx_phy_verif.patch"
+                             "0073-phy-rockchip-samsung-hdptx-Add-HDMI-2.1-FRL-support.patch"
+                             "0074-drm-rockchip-vop2-Check-bpc-before-switching-DCLK-so.patch"
+                             "0075-drm-bridge-dw-hdmi-qp-Handle-platform-supported-form.patch"
+                             "0076-drm-rockchip-dw_hdmi_qp-Switch-to-phy_configure.patch"
+                             "0077-drm-rockchip-dw_hdmi_qp-Use-bit-macros-for-RK3576-re.patch"
+                             "0078-drm-rockchip-dw_hdmi_qp-Add-high-color-depth-support.patch"
+                             "0079-phy-rockchip-samsung-hdptx-Add-verbose-logging.patch"
+                             "0080-drm-bridge-Add-detect_ctx-hook.patch"
+                             "0081-drm-bridge-connector-Switch-from-detect-to-detect_ct.patch"
+                             "0082-drm-bridge-dw-hdmi-qp-Add-high-TMDS-clock-ratio-and-.patch"
+                             "0083-drm-rockchip-vop2-Add-YUV420-output-format-support.patch"
+                             "0084-drm-rockchip-dw_hdmi_qp-Add-YUV420-output-format-sup.patch"
+                             "0085-dt-bindings-display-rockchip-Add-tmds-enable-gpios-p.patch"
+                             "0086-drm-rockchip-dw_hdmi_qp-Fixup-usage-of-enable_gpio-m.patch"
+                             "0087-arm64-dts-rockchip-Assign-ACLK_VOP-to-750-MHz-on-rk3.patch"
+                             "0088-drm-connector-hdmi-Handle-FRL-in-hdmi_clock_valid.patch"
+                             "0089-drm-bridge-dw-hdmi-qp-Add-HDMI-2.1-FRL-support.patch"
+                             "0090-drm-rockchip-dw_hdmi_qp-Add-HDMI-2.1-FRL-support.patch"
+                             "0091-drm-rockchip-vop2-Add-HDMI-2.1-FRL-support.patch"
+                             "0092-dt-bindings-phy-rockchip-usbdp-add-improved-ports-sc.patch"
+                             "0093-media-dt-bindings-video-interfaces-add-defines-for-s.patch"
+                             "0094-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
+                             "0095-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
+                             "0096-drm-rockchip-Set-dma-mask-to-64-bit.patch"
+                             "0097-PCI-dw-rockchip-Disable-root-port-BARs.patch"
+                             "0098-fsl-ls1028a-mnt-reform2.dts.patch"
+                             "0099-imx8mq-mnt-reform2-hdmi.dts.patch"
+                             "0100-imx8mp-mnt-.dts.patch"
+                             "0101-meson-g12b-bananapi-cm4-mnt-pocket-reform.dts.patch"
+                             "0102-rk3588-mnt-.dts.patch"
+                             "0103-rk3588-mnt-reform-next.dts.patch")))))))))))
 
 (define-public linux-libre-riscv64-generic
   (make-linux-libre* linux-libre-version
