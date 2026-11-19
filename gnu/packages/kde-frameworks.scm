@@ -3944,6 +3944,7 @@ KIO enabled infrastructure.")
                                        "|commandlauncherjob_servicetest"
                                        "|kiowidgets-kdirmodeltest"
                                        "|kiowidgets-kurifiltertest-colon-separator"
+                                       "|kiofilewidgets-kfilefiltercombotest"
                                        "|kiofilewidgets-kfilewidgettest"
                                        "|kiowidgets-kurifiltertest-space-separator"
                                        "|kioworker-httpheaderdispositiontest)")))))
