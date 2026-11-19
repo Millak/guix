@@ -1645,7 +1645,7 @@ Re-decorates windows on un-maximise.
 (define-public mate-screensaver
   (package
     (name "mate-screensaver")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method git-fetch)
@@ -1654,7 +1654,7 @@ Re-decorates windows on un-maximise.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k6g60c611v2bkam2f06acmj1wp9i507hqf2dpiycl4gbsy49bwa"))))
+        (base32 "0wvdn0j4jkg6l6312qgm6zna4zqk38l6zj7zn9rm21j1w9dvjfri"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
