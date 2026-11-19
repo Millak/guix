@@ -466,7 +466,9 @@ and many external plugins.")
   (package
     (name "python-pytest-guix")
     (version "0.0.1")
-    (source (local-file (search-auxiliary-file "python/pytest_guix.py")))
+    (source (local-file
+             (assume-source-relative-file-name
+              (search-auxiliary-file "python/pytest_guix.py"))))
     (build-system trivial-build-system)
     (arguments
      (list
