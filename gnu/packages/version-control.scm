@@ -1442,7 +1442,8 @@ other git-like projects such as @code{libgit2}.")
                (base32 "0jhm723bc9v18yanlqvmwn9kpmnvbcavnlhd4jcw0n082d7jl54h"))
               (patches
                (search-patches "libgit2-proxy-reconnection.patch"
-                               "libgit2-path-max.patch"))
+                               "libgit2-path-max.patch"
+                               "libgit2-fix-remote-fd-leak.patch"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -1453,7 +1454,6 @@ other git-like projects such as @code{libgit2}.")
                                "deps/pcre2"
                                "deps/winhttp"
                                "deps/zlib"))))))
-    (replacement libgit2-1.9/fixed)
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1496,15 +1496,6 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
-
-(define-public libgit2-1.9/fixed
-  (package
-    (inherit libgit2-1.9)
-    (source
-     (origin
-       (inherit (package-source libgit2-1.9))
-       (patches (append (origin-patches (package-source libgit2-1.9))
-                        (search-patches "libgit2-fix-remote-fd-leak.patch")))))))
 
 (define-public libgit2-1.8
   (package
