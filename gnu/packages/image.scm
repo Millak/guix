@@ -3032,6 +3032,16 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               "-DAVIF_BUILD_APPS=ON" "-DAVIF_BUILD_GDK_PIXBUF=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; The RgbColorTypeWithTrnsBeforePlte test of libavif 1.0.4 fails
+              ;; with libpng 1.6.59; disable that test.
+              ;; See also
+              ;; https://github.com/AOMediaCodec/libavif/pull/2635
+              ;; https://github.com/AOMediaCodec/libavif/pull/2637
+              (substitute* "tests/gtest/avifreadimagetest.cc"
+                (("EXPECT_EQ.image.*alphaPlane, nullptr" all)
+                 (string-append "// " all)))))
           (add-before 'configure 'patch-thumbnailer
             (lambda _
               (substitute* "contrib/gdk-pixbuf/avif.thumbnailer.in"
