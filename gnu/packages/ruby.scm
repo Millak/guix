@@ -92,7 +92,7 @@
 (define-public ruby-4.0
   (package
     (name "ruby")
-    (version "4.0.5")
+    (version "4.0.10")
     (source
      (origin
        (method url-fetch)
@@ -100,7 +100,7 @@
                            (version-major+minor version) "/ruby-" version
                            ".tar.xz"))
        (sha256
-        (base32 "1rcm13iib4ypmsclrh315r47pch4807ml6qbq5n6wwjcllg55iax"))))
+        (base32 "1f0az5firx22gypshicg6br9lnkjwyv4hsxbxi36ahrw02kgfdqm"))))
     (build-system gnu-build-system)
     (arguments
      (list
