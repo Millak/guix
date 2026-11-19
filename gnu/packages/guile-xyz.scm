@@ -3496,7 +3496,7 @@ wrap G-Golf applications when writing a Guix package.")))
 (define-public guile-wayland-scm-socket
   (package
     (name "guile-wayland-scm-socket")
-    (version "0.0.3")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3505,7 +3505,7 @@ wrap G-Golf applications when writing a Guix package.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xxran6690777d64i01ap3a76zjm3panfpplljpvsdzdxhbccbld"))))
+                "1rp7psj2dk47gljnb42fg2jzmdq2cnnsrh3bci9ch7l1d996nnxm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3556,10 +3556,10 @@ wrap G-Golf applications when writing a Guix package.")))
                 (install-file "socket.scm" share-dir))))
           (delete 'check)
           (delete 'install))))
-    (inputs (list gcc guile-3.0))
+    (inputs (list guile-3.0))
     (synopsis "C bindings for UNIX sockets in multi-scheme (Guile, Gauche,
 Chicken) Wayland library")
-    (description "Guile C bindings for UNIX sockets. Exposes simple
+    (description "Guile C bindings for UNIX sockets.  Exposes simple
 procedures: @code{process_fd}, @code{wl_recvmsg}, @code{wl_sendmsg},
 @code{init_socket}.
 Probably can be replaced with guile's built-ins: @code{fdes->ports},
@@ -3570,7 +3570,7 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
 (define-public guile-wayland-scm-shm
   (package
     (name "guile-wayland-scm-shm")
-    (version "0.0.3")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3579,7 +3579,7 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xxran6690777d64i01ap3a76zjm3panfpplljpvsdzdxhbccbld"))))
+                "1rp7psj2dk47gljnb42fg2jzmdq2cnnsrh3bci9ch7l1d996nnxm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3629,7 +3629,7 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
                 (install-file "shm.scm" share-dir))))
           (delete 'check)
           (delete 'install))))
-    (inputs (list gcc guile-3.0))
+    (inputs (list guile-3.0))
     (synopsis "C bindings for wayland shared memory (SHM) in multi-scheme
 (Guile, Gauche, Chicken) wayland library")
     (description "Guile C bindings for wayland shared memory (SHM). Exposes
@@ -3642,7 +3642,7 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
 (define-public guile-wayland-scm
   (package
     (name "guile-wayland-scm")
-    (version "0.0.3")
+    (version "0.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3651,11 +3651,10 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xxran6690777d64i01ap3a76zjm3panfpplljpvsdzdxhbccbld"))))
+                "1rp7psj2dk47gljnb42fg2jzmdq2cnnsrh3bci9ch7l1d996nnxm"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f ;; no tests yet
       #:modules `(((guix build guile-build-system)
                    #:select (target-guile-effective-version))
                   ,@%default-gnu-modules)
@@ -3678,7 +3677,9 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
               (rename-file "guile.Makefile" "Makefile")
               (setenv "GUILE_AUTO_COMPILE" "0")))
           (delete 'install)
-          (delete 'check)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "make" "-f" "test.Makefile" "test"))))
           (add-after 'build 'install
             (lambda* _
               (let* ((v (target-guile-effective-version))
@@ -3701,10 +3702,20 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
               (let* ((share (string-append #$output "/share"))
                      (info (string-append share "/info/")))
                 (mkdir-p info)
-                (invoke "makeinfo" "wayland-scm.texi" "-o" info)))))))
-    (native-inputs (list guile-3.0 pkg-config texinfo autoconf automake))
+                (invoke "makeinfo" "wayland-scm.texi" "-o" info))))
+          (add-after 'install-info-documentation 'install-scanner
+            (lambda* _
+              ;; Upstream installs scanner.scm as 'wayland-scm-scanner' with
+              ;; a '#!/usr/bin/guile' shebang; patch it to the store's Guile.
+              (invoke "make" "install-scanner"
+                      (string-append "DESTDIR=" #$output))
+              (patch-shebang
+               (string-append #$output "/bin/wayland-scm-scanner")))))))
+    (native-inputs (list guile-3.0-latest pkg-config texinfo autoconf automake
+                        weston)) ;for tests
     (inputs (list wayland wayland-protocols))
-    (propagated-inputs (list guile-wayland-scm-socket guile-wayland-scm-shm))
+    (propagated-inputs (list guile-wayland-scm-socket guile-wayland-scm-shm
+                             guile-ares-rs))
     (synopsis "Mostly R7RS-compliant Guile Scheme client bindings for Wayland")
     (description "This package provides mostly R7RS-compliant Guile Scheme
 client bindings for Wayland.")
