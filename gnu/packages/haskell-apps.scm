@@ -187,36 +187,21 @@ pre-processors.  Additional features include: a plain-text mode; an option to
 unlit literate code files; and an option to turn off macro-expansion.")
     (license (list license:lgpl2.1+ license:gpl3+))))
 
-;; Darcs has no https support:
-;; http://darcs.net/manual/Configuring_darcs.html#SECTION00440070000000000000
-;; and results of search engines will show that if the protocol is http, https
-;; is never mentioned.
 (define-public darcs
   (package
     (name "darcs")
-    (version "2.16.5")
+    (version "2.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "darcs" version))
        (sha256
         (base32
-         "0ar4markr71l9hzrbgcz4q37cf2rf3936i6qi8p827p36v96qg6n"))
-       (modules '((guix build utils)))
-       ;; Remove time-dependent code for reproducibility.
-       (snippet
-        '(begin
-           (substitute* "darcs/darcs.hs"
-             (("__DATE__") "\"1970-01-01\"")
-             (("__TIME__") "\"00:00:00\""))
-           #t))))
+         "1asiz5kmisym0djjc5228hbj4wdfbrna4cpm4hc1j4z3i4lnj473"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "darcs")))
     (arguments
      `(#:tests? #f ; TODO: Needs QuickCheck ==2.13.*, and more…
-       #:configure-flags '("-fpkgconfig" "-fcurl" "-flibiconv" "-fthreaded"
-                           "-fnetwork-uri" "-fhttp" "--flag=executable"
-                           "--flag=library")
        #:haddock? #f
        #:phases
        (modify-phases %standard-phases
@@ -228,8 +213,16 @@ unlit literate code files; and an option to turn off macro-expansion.")
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "darcs.cabal"
-               (("(attoparsec|base|bytestring|constraints|cryptonite|hashable|memory|regex-tdfa|time)\\s+[^,]+" all dep)
+               (((string-append
+                  "(Cabal|attoparsec|base|bytestring|constraints|cryptonite"
+                  "|filepath|hashable|memory|regex-tdfa|time)\\s+[^,\n]+")
+                 all dep)
                 dep))))
+         (add-after 'update-constraints 'patch-setup-hs
+           (lambda _
+             (substitute* "Setup.hs"
+               (("LocalBuildInfo\\(..\\), absoluteInstallDirs")
+                "LocalBuildInfo(..), absoluteInstallDirs, buildDir"))))
          (add-after 'register 'remove-libraries
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
@@ -240,6 +233,7 @@ unlit literate code files; and an option to turn off macro-expansion.")
                   ghc-html
                   ghc-memory
                   ghc-cryptonite
+                  ghc-safe
                   ghc-base16-bytestring
                   ghc-utf8-string
                   ghc-vector
@@ -260,6 +254,11 @@ unlit literate code files; and an option to turn off macro-expansion.")
                   ghc-conduit
                   ghc-http-conduit
                   ghc-http-types
+                  ghc-terminal-size
+                  ghc-data-default
+                  ghc-crypton-connection
+                  ghc-http-client-tls
+                  ghc-tls
                   curl))
     (native-inputs (list ghc-cmdargs
                          ghc-findbin
@@ -275,7 +274,7 @@ unlit literate code files; and an option to turn off macro-expansion.")
                          ghc-system-fileio
                          ghc-transformers-base
                          pkg-config))
-    (home-page "http://darcs.net")
+    (home-page "https://darcs.net/")
     (synopsis "Distributed Revision Control System")
     (description
      "Darcs is a revision control system.  It is:
@@ -289,7 +288,7 @@ You can choose to record one change in a file, while ignoring another.  As you u
 from upstream, you can review each patch name, even the full diff for interesting
 patches.
 @item Smart: Originally developed by physicist David Roundy, darcs is based on a
-unique algebra of patches called @url{http://darcs.net/Theory,Patchtheory}.
+unique algebra of patches called @url{https://darcs.net/Theory,Patchtheory}.
 @end enumerate")
     (license license:gpl2)))
 
