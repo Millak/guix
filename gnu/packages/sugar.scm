@@ -1198,7 +1198,7 @@ hesitate to feast on the goat.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ahmv6ynand6xww4w2p2654hmm4k2kmsdjb73xlwsa4b5ss224av"))))
+          (base32 "132jvjgz5aiwaqs7rvw6p6r76az9796h5mz542m56sig2h9bl8am"))))
       (build-system pyproject-build-system)
       (arguments
        (list
