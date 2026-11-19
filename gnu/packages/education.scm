@@ -384,16 +384,22 @@ not have any other specialized device.")
 (define-public openboard
   (package
     (name "openboard")
-    (version "1.7.7")
+    ;; 1.7.7 (2026-03-30); to support Poppler 26+, it's from dev branch, see
+    ;; <https://github.com/OpenBoard-org/OpenBoard/pull/1474>.
+    (properties '((commit . "fc9a812e946589a8af6f845c12e36d01062d525e")
+                  (revision . "0")))
+    (version (git-version "1.7.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/OpenBoard-org/OpenBoard")
-             (commit (string-append "v" version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i27h84p77pl1chw791fjs3vyzsjvsqc9ky2mbw7g8xpzxz1nd9j"))))
+        (base32 "0k7kiiagh87q528pd268xyra2k20a115qay7fx40dlxanv5ki8ii"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -425,6 +431,7 @@ not have any other specialized device.")
            libx264
            openssl
            opus
+           pipewire
            poppler
            qt5compat
            qtdeclarative
