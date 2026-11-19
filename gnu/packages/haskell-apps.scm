@@ -964,14 +964,18 @@ Haskell.")
 (define-public raincat
   (package
     (name "raincat")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (hackage-uri "Raincat" version))
+       ;; There is no hackage release for 1.2.2.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/styx/Raincat.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "10y9zi22m6hf13c9h8zd9vg7mljpwbw0r3djb6r80bna701fdf6c"))))
+         "0znnpgxi0np9rcdxaz6zg2h69x9zk4zq8vb56127c763bjnmqy10"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "Raincat")))
     (arguments
