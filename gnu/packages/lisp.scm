@@ -1099,7 +1099,7 @@ libraries, and other management tasks for Janet projects.")
 (define-public janet-spork
   (package
     (name "janet-spork")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1112,7 +1112,7 @@ libraries, and other management tasks for Janet projects.")
                    '("deps/miniz" "deps/stb")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c9f54wl8g7zazrqk5f6nhp9lp38pymkxmcipagrip915i8ks0v8"))))
+        (base32 "0n5swrmgpkz30kygn4dm1v5z3c7nqz6spcr1kd7ygcfyqp61v90z"))))
     (build-system gnu-build-system)
     (arguments
      (list
