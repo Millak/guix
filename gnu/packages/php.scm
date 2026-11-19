@@ -69,14 +69,14 @@
 (define-public php-8.5
   (package
     (name "php")
-    (version "8.5.12")
+    (version "8.5.13")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "028j93njkvj5hdks1pb2r1b1axkbcjm78w9mw6nm91jq5ax2xg08"))
+        (base32 "0pvqbfzwfgndp5i3ia2r77ab7s2ql12fq5lris0n2c0cmyn04xk0"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -318,7 +318,9 @@
                  ;; this test seems to be unreliable/flaky
                  "sapi/cli/tests/php_cli_server_pdeathsig.phpt"
                  ;; This test fails on most architectures.
-                 "sapi/cli/tests/upload_2G.phpt"))
+                 "sapi/cli/tests/upload_2G.phpt"
+                 ;; Reported upstream <https://github.com/php/php-src/issues/24752>
+                 "ext/standard/tests/ini_info/php_ini_loaded_file.phpt"))
 
               ;; Accommodate two extra openssl errors flanking the expected one:
               ;; random number generator:RAND_{load,write}_file:Cannot open file
