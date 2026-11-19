@@ -4308,25 +4308,25 @@ colorized view to stdout.")
 (define-public tokei
   (package
     (name "tokei")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokei" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15v7ha13w4zrr2a6vlrj641qcrczvyjhvnqf147g64n3q1spipp4"))))
+        (base32 "0b3m7wy89kl6676zhzipyv6nf36fjpmqap7rcxl1dgmvb3cxiqnf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       '("--"
-         ;; Tests directory not included in release.
-         "--skip=language::language_type::tests::lf_embedded_language_is_counted"
-         "--skip=language::language_type::tests::jupyter_notebook_has_correct_totals")
+     (list
+       #:cargo-test-flags
+       ''("--"
+          ;; Tests directory not included in release.
+          "--skip=language::language_type::tests::lf_embedded_language_is_counted"
+          "--skip=language::language_type::tests::jupyter_notebook_has_correct_totals")
        #:install-source? #f))
     (native-inputs (list pkg-config))
-    (inputs (cons* libgit2-1.8 openssl zlib
-                   (cargo-inputs 'tokei)))
+    (inputs (cons* libgit2-1.8 zlib (cargo-inputs 'tokei)))
     (home-page "https://github.com/XAMPPRocky/tokei")
     (synopsis "Count code, quickly")
     (description
