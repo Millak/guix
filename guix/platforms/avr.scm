@@ -25,4 +25,5 @@
   (platform
    (target "avr")
    (system #f)
+   (rust-target "avr-none")
    (glibc-dynamic-linker #f)))
