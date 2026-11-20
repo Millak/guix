@@ -1,0 +1,25 @@
+From 7d16e541ddd903c14cac18732b38baa4a6925559 Mon Sep 17 00:00:00 2001
+From: HeoHeo <h0h6h2h5@gmail.com>
+Date: Tue, 28 Oct 2025 05:51:57 +0900
+Subject: [PATCH] Backport PR #62832: BUG: Recognize 2-tuple state without
+ attrs dict
+
+---
+ pandas/_libs/arrays.pyx | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/pandas/_libs/arrays.pyx b/pandas/_libs/arrays.pyx
+index 2932f3ff56396..6af01a7f6e6ae 100644
+--- a/pandas/_libs/arrays.pyx
++++ b/pandas/_libs/arrays.pyx
+@@ -100,6 +100,10 @@ cdef class NDArrayBacked:
+                 if len(state) == 1 and isinstance(state[0], dict):
+                     self.__setstate__(state[0])
+                     return
++                elif len(state) == 2:
++                    # GH#62820: Handle missing attrs dict during auto-unpickling
++                    self.__setstate__((*state, {}))
++                    return
+                 raise NotImplementedError(state)  # pragma: no cover
+ 
+             data, dtype = state[:2]

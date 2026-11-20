@@ -3159,7 +3159,8 @@ doing practical, real world data analysis in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0qf4frgj31kd9i544n8v03a0bv9mgml3f7n9n1rik187q3r8ygfg"))
-       (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"))))
+       (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"
+                                "python-pandas-2-backport-63046.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
