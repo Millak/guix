@@ -736,7 +736,7 @@ Interactive Weather Information Network (IWIN).
 (define-public mate-indicator-applet
   (package
     (name "mate-indicator-applet")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method git-fetch)
@@ -745,7 +745,7 @@ Interactive Weather Information Network (IWIN).
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sm9f1xxggal755qcjls5pw5sv89kmvdqmdn2a81jdq275aff970"))))
+        (base32 "1m24plnib5xlashg8nkm9pai62mhajfmxyai313hdv0wwn4253ll"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs (list pkg-config
                          autoconf
