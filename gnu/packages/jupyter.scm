@@ -1642,7 +1642,7 @@ collaborative shared models.")
 (define-public python-jupyter-ydoc
   (package
     (name "python-jupyter-ydoc")
-    (version "3.4.1")
+    (version "4.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1651,7 +1651,7 @@ collaborative shared models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04k8dp4gklhnjwhkv5m3sxmlm2w229fn648v4rq2a7r2aqz14mhy"))))
+        (base32 "04v51xp2y4mb8b644ls0j5mxzyinkxg6n0961mi59hqi6gfzxfxv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
