@@ -3291,7 +3291,7 @@ offers tools to enable you to read and write to and from
 (define-public ruby-fakefs
   (package
     (name "ruby-fakefs")
-    (version "2.8.0")
+    (version "3.2.1")
     (home-page "https://github.com/fakefs/fakefs")
     (source (origin
               ;; The Rubygems release does not contain tests.
@@ -3302,7 +3302,7 @@ offers tools to enable you to read and write to and from
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a3vq6cllml279j77hxipmbln31pjw6di3zdgpzqvhqgazv55v10"))))
+                "1rnbl0skz5x71cjhpayj8gzj2kahplq04l222xxnap37p3yb9lzj"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3311,14 +3311,18 @@ offers tools to enable you to read and write to and from
                       (substitute* "fakefs.gemspec"
                         (("`git ls-files lib README.md LICENSE`")
                          "`find lib README.md LICENSE -type f | sort`"))))
-                  (add-before 'check 'remove-version-constraints
+                  (add-before 'check 'drop-unnecessary-gems
                     (lambda _
-                      ;; Drop hard version requirements for test dependencies.
-                      (substitute* "fakefs.gemspec"
-                        (("(.*add_development_dependency .*), .*" _ dep)
-                         (string-append dep "\n"))))))))
+                      (substitute* "Rakefile"
+                        (("require 'bundler/setup'") "")
+                        (("require 'bump/tasks'") "")
+                        (("require 'rubocop/rake_task'") "")
+                        (("RuboCop.*") "")
+                        (("namespace :bump") "proc"))
+                      (substitute* "test/test_helper.rb"
+                        (("require 'bundler/setup'") "")))))))
     (native-inputs
-     (list ruby-bump ruby-maxitest ruby-pry ruby-rubocop ruby-rspec))
+     (list ruby-csv ruby-maxitest ruby-pry ruby-rspec))
     (synopsis "Fake file system for Ruby")
     (description
      "This package provides a fake file system for use in test suites.  It
