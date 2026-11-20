@@ -3890,7 +3890,7 @@ compository, supporting the following features:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -3899,7 +3899,7 @@ compository, supporting the following features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ify8zywlq6zrmbzp293q72pnzy3czkvrb4zia2xnsvsmy04mmp3"))))
+        (base32 "1ilqic487kcxx8bx92hxr03vnwgw7l2nhvn1nx9dnmxfg935lw4q"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "--wrap-mode=nodownload")
@@ -3920,7 +3920,8 @@ compository, supporting the following features:
                    (wrap-program (string-append #$output "/bin/waybar")
                     `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
                       (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))))))))
-    (inputs (list date
+    (inputs (list bash-minimal
+                  date
                   fmt
                   gtk-layer-shell
                   gtkmm-3
