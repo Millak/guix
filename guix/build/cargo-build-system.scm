@@ -249,9 +249,11 @@ libraries or executables."
       (display (string-append "\
 [target." (getenv "CARGO_BUILD_TARGET") "]
 "
+;; Keep this synced with the list in make-rust-sysroot/implementation.
 (if (or (string-contains target "linux")    ; (target-linux?)
         (string-suffix? "-gnu" target)      ; (target-hurd?)
-        (string-suffix? "-mingw32" target)) ; (target-mingw?)
+        (string-suffix? "-mingw32" target)  ; (target-mingw?)
+        (string=? target "avr"))            ; (target-avr?)
     (string-append "linker = '" target "-gcc'")
     "linker = 'lld'")
 "\n
