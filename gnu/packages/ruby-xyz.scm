@@ -3263,6 +3263,31 @@ a Ruby object.")
     (home-page "https://github.com/rails/execjs")
     (license license:expat)))
 
+(define-public ruby-csv
+  (package
+    (name "ruby-csv")
+    (version "3.3.7")
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/csv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ixxyd5nfr9835sf95acb6c39zpsfnffd725lw599wsdlp2y6npa"))))
+    (build-system ruby-build-system)
+    (synopsis "CSV library for Ruby")
+    (description
+     "This Ruby gem provides a complete interface to CSV files and data.  It
+offers tools to enable you to read and write to and from
+@code{String}s or @code{IO} objects, as needed.")
+    (home-page "https://github.com/ruby/csv")
+    ;; Potentially dual licensed also under license:ruby:
+    ;; https://github.com/ruby/csv/blob/f77f87105cab9a95f752fa3ef3bcabda96a18939/csv.gemspec#L19
+    ;; but the README.md only mentions bsd-2.
+    (license (list license:bsd-2))))
+
 (define-public ruby-fakefs
   (package
     (name "ruby-fakefs")
