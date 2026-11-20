@@ -12414,7 +12414,7 @@ player adaptability for character progression.")
 (define-public hurrycurry
   (package
     (name "hurrycurry")
-    (version "3.1.1-1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12423,7 +12423,7 @@ player adaptability for character progression.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qdj94cplw7xqjppdgcqk4nfs7dzkk0l4rgq61b27pa92flvgi2v"))))
+                "08dm1bbjdhjk3g2xshhr0lhmrxjvrwp1m4rh7f0iqgqzfgh8z9df"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -12469,12 +12469,6 @@ player adaptability for character progression.")
               (cargo-phase 'check-for-pregenerated-files))
             (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
               (cargo-phase 'patch-cargo-checksums))
-            (add-before 'install 'create-client-bin-directory
-              (lambda* (#:key outputs #:allow-other-keys)
-                ;; XXX: This mkdir-p is needed because of
-                ;; <https://codeberg.org/hurrycurry/hurrycurry/pulls/665>.
-                ;; Remove this phase when this gets merged into a release.
-                (mkdir-p (string-append (assoc-ref outputs "client") "/bin"))))
             (replace 'install
               (lambda* (#:key make-flags outputs #:allow-other-keys)
                 (for-each
