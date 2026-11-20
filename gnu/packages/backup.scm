@@ -604,7 +604,7 @@ rsnapshot uses hard links to deduplicate identical files.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method git-fetch)
@@ -613,14 +613,14 @@ rsnapshot uses hard links to deduplicate identical files.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bk302lbjjz1y8dg78wqqys80bm7mzkj5yf6wgyqdwvbqpsnpim4"))))
+        (base32 "1kjsq0g4wrg1gissn2g0capr6hm0rm9aqa0cbr2cjbsrfgx4ahcf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:modules '((srfi srfi-26)        ; for cut
                   (guix build utils)
                   (guix build pyproject-build-system))
-      ;; tests: 1318 passed, 293 skipped
+      ;; tests: 1367 passed, 321 skipped
       #:test-flags
       #~(list "--benchmark-skip"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
