@@ -140,7 +140,13 @@
                      (("exit 99") "exit 77"))))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:tests?
+           ;; GRUB's tests run on QEMU, which only gets added to the
+           ;; native-inputs on supported systems.  It doesn't exist
+           ;; on the Hurd, for example.
+           (->bool (and (not (%current-target-system))
+                        (this-package-native-input "qemu-minimal")))
+           #:configure-flags
            ;; Counterintuitively, this *disables* a spurious Python dependency by
            ;; calling the ‘true’ binary instead.  Python is only needed during
            ;; bootstrapping (for genptl.py), not when building from a release.
