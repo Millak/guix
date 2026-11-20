@@ -616,7 +616,7 @@ MATE desktop environment.")
 (define-public mate-menus
   (package
     (name "mate-menus")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method git-fetch)
@@ -625,7 +625,7 @@ MATE desktop environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nfmgjwggs31c79r9223cr5w1gfqrln36qqvhfjdfsbfb421m3fz"))))
+        (base32 "17pyrp8v9vfwh9r20a4jccxmcw68kj76v9fjr0kcqxhpzc63s1qq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
