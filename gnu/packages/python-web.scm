@@ -8562,7 +8562,7 @@ Amazon S3 compatible object storage server.")
 (define-public python-pycrdt
   (package
     (name "python-pycrdt")
-    (version "0.13.0")
+    (version "0.14.13")
     (source
      (origin
        (method git-fetch)
@@ -8571,7 +8571,7 @@ Amazon S3 compatible object storage server.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18mnjbxdlra1w3jl42bf1jb25z9j3inh6s61qighqrvnylgxvxc1"))))
+        (base32 "00a7cind32b831qlyzm566ihalvcymfa0gij7dhm998ixvx9spj2"))))
     (build-system pyproject-build-system)
     (arguments
      (list

@@ -943,6 +943,10 @@
   (crate-source "arc-swap" "1.9.3"
                 "0vmfc2wjnn7gyjfawvnq6a5pxsbiq1rbzzmra0p6969vv6rn429q"))
 
+(define rust-arc-swap-1.9.5
+  (crate-source "arc-swap" "1.9.5"
+                "199jy040f53mq2a2mr13i2l8vjqa68yv781p7pl6v7r0a5fjp8l4"))
+
 (define rust-archery-1.2.2
   (crate-source "archery" "1.2.2"
                 "07a4wn09ad1q7qi1bfdv03hl4668jaxm63rd6jxqgfzykpwsbq3h"))
@@ -27931,6 +27935,10 @@ fn main() {
                 "0m8n3wcwiz33mghwxjkny4b6ji1g1rc16zpx46svjwvv4vx1h3bh"
                 #:snippet '(delete-file-recursively "branding")))
 
+(define rust-pyo3-0.30.1
+  (crate-source "pyo3" "0.30.1"
+                "1r0d5vj3cq0v049876j92qs535ydpxsvj6mqhwa0vfqmi8xs3712"))
+
 (define rust-pyo3-async-runtimes-0.24.0
   (crate-source "pyo3-async-runtimes" "0.24.0"
                 "1gzq3mdd679mpy0jmzx3clxpd68cbzbdm041sd81zm7r8bf862yx"))
@@ -28011,6 +28019,10 @@ fn main() {
   (crate-source "pyo3-build-config" "0.29.3"
                 "1nws96j6j37mja0fq8jfhnv6x77mwawxyfgyf47b2swgs32c0gvv"))
 
+(define rust-pyo3-build-config-0.30.1
+  (crate-source "pyo3-build-config" "0.30.1"
+                "0027wbdfv0i29j8sfbvsz905rjk1jm16l0l8hyd5ivnidlmhw4vh"))
+
 (define rust-pyo3-ffi-0.18.3
   (crate-source "pyo3-ffi" "0.18.3"
                 "0p7n9zs9ifrzcnna0lwyhwscyhw45q4x288x5bm1c6c26x9pqkgx"))
@@ -28074,6 +28086,10 @@ fn main() {
 (define rust-pyo3-ffi-0.29.3
   (crate-source "pyo3-ffi" "0.29.3"
                 "0c43d7564azpkhz13sv70pil7wd2qaq7p5yghrqav6pjkphvih6z"))
+
+(define rust-pyo3-ffi-0.30.1
+  (crate-source "pyo3-ffi" "0.30.1"
+                "1i6i0hm3qb2z1wb5zgb19wy9fnl4vbxybrsc5lhnsa2walygfzsy"))
 
 (define rust-pyo3-introspection-0.28.3
   (crate-source "pyo3-introspection" "0.28.3"
@@ -28151,6 +28167,10 @@ fn main() {
   (crate-source "pyo3-macros" "0.29.3"
                 "1ilxni4r14kb08qlr92kqncj82qshmj861zdlpx3m9gbnnjfh031"))
 
+(define rust-pyo3-macros-0.30.1
+  (crate-source "pyo3-macros" "0.30.1"
+                "0q0vd5d3q08xq5a42y246j9rki53vl9zffdnwc3q5fy7c9c2wvf4"))
+
 (define rust-pyo3-macros-backend-0.18.3
   (crate-source "pyo3-macros-backend" "0.18.3"
                 "062rxf7cj1dn82yiaws3dmxw5qq9ssccq92jgdc210y4lh4gznlp"))
@@ -28214,6 +28234,10 @@ fn main() {
 (define rust-pyo3-macros-backend-0.29.3
   (crate-source "pyo3-macros-backend" "0.29.3"
                 "1cxxn73jgwp68cpxfifp515a4n38v16gy9vigdr5laz82rx8fhv1"))
+
+(define rust-pyo3-macros-backend-0.30.1
+  (crate-source "pyo3-macros-backend" "0.30.1"
+                "16svl8w0gabsx43fxbdz1r209lgwl9y57lajxwm2mrradw39zf1q"))
 
 (define rust-pyproject-toml-0.13.6
   (crate-source "pyproject-toml" "0.13.6"
@@ -42951,6 +42975,10 @@ fn main() {
 (define rust-yrs-0.26.0
   (crate-source "yrs" "0.26.0"
                 "1pslgpbdnz4czzhxc96gihg1pjplr23fymwdqphlg6czhqnjylc9"))
+
+(define rust-yrs-0.28.2
+  (crate-source "yrs" "0.28.2"
+                "1lq492a3ahprn37sbin2b5wz0wdlmdvpil0qc637pcy62kg03lk6"))
 
 (define rust-yubico-ng-0.15.0
   (crate-source "yubico_ng" "0.15.0"
@@ -87521,62 +87549,60 @@ fn main() {
                rust-zerocopy-derive-0.8.48
                rust-zmij-1.0.21))
  (pycrdt =>
-         (list rust-arc-swap-1.9.1
-               rust-async-lock-3.4.2
-               rust-async-trait-0.1.89
-               rust-bitflags-2.11.1
-               rust-bumpalo-3.20.2
-               rust-cfg-if-1.0.4
-               rust-concurrent-queue-2.5.0
-               rust-crossbeam-utils-0.8.21
-               rust-dashmap-6.1.0
-               rust-event-listener-5.4.1
+         (list rust-arc-swap-1.9.5
+               rust-async-lock-3.5.0
+               rust-async-trait-0.1.92
+               rust-bitflags-2.13.2
+               rust-bumpalo-3.20.4
+               rust-cfg-if-1.0.5
+               rust-crossbeam-utils-0.8.23
+               rust-dashmap-6.2.1
+               rust-event-listener-5.4.2
                rust-event-listener-strategy-0.5.4
-               rust-fastrand-2.4.1
-               rust-getrandom-0.3.4
+               rust-fastrand-2.5.0
+               rust-futures-task-0.3.34
+               rust-getrandom-0.4.3
                rust-hashbrown-0.14.5
                rust-heck-0.5.0
-               rust-itoa-1.0.18
-               rust-js-sys-0.3.97
-               rust-libc-0.2.186
+               rust-itoa-1.0.19
+               rust-js-sys-0.3.107
+               rust-libc-0.2.191
                rust-lock-api-0.4.14
-               rust-memchr-2.8.0
+               rust-memchr-2.8.3
                rust-once-cell-1.21.4
                rust-parking-2.2.1
                rust-parking-lot-core-0.9.12
-               rust-pin-project-lite-0.2.17
-               rust-portable-atomic-1.13.1
-               rust-proc-macro2-1.0.106
-               rust-pyo3-0.28.3
-               rust-pyo3-build-config-0.28.3
-               rust-pyo3-ffi-0.28.3
-               rust-pyo3-macros-0.28.3
-               rust-pyo3-macros-backend-0.28.3
-               rust-quote-1.0.45
-               rust-r-efi-5.3.0
+               rust-pin-project-lite-0.2.18
+               rust-portable-atomic-1.15.0
+               rust-proc-macro2-1.0.107
+               rust-pyo3-0.30.1
+               rust-pyo3-build-config-0.30.1
+               rust-pyo3-ffi-0.30.1
+               rust-pyo3-macros-0.30.1
+               rust-pyo3-macros-backend-0.30.1
+               rust-quote-1.0.47
+               rust-r-efi-6.0.0
                rust-redox-syscall-0.5.18
-               rust-rustversion-1.0.22
+               rust-rustversion-1.0.23
                rust-scopeguard-1.2.0
-               rust-serde-1.0.228
-               rust-serde-core-1.0.228
-               rust-serde-derive-1.0.228
-               rust-serde-json-1.0.149
+               rust-serde-1.0.229
+               rust-serde-core-1.0.229
+               rust-serde-derive-1.0.229
+               rust-serde-json-1.0.154
                rust-smallstr-0.3.1
-               rust-smallvec-1.15.1
-               rust-syn-2.0.117
-               rust-target-lexicon-0.13.5
-               rust-thiserror-2.0.18
-               rust-thiserror-impl-2.0.18
-               rust-unicode-ident-1.0.24
-               rust-wasip2-1.0.3+wasi-0.2.9
-               rust-wasm-bindgen-0.2.120
-               rust-wasm-bindgen-macro-0.2.120
-               rust-wasm-bindgen-macro-support-0.2.120
-               rust-wasm-bindgen-shared-0.2.120
+               rust-smallvec-1.16.6
+               rust-syn-3.0.10
+               rust-target-lexicon-0.13.6
+               rust-thiserror-2.0.21
+               rust-thiserror-impl-2.0.21
+               rust-unicode-ident-1.0.27
+               rust-wasm-bindgen-0.2.130
+               rust-wasm-bindgen-macro-0.2.130
+               rust-wasm-bindgen-macro-support-0.2.130
+               rust-wasm-bindgen-shared-0.2.130
                rust-windows-link-0.2.1
-               rust-wit-bindgen-0.57.1
-               rust-yrs-0.26.0
-               rust-zmij-1.0.21))
+               rust-yrs-0.28.2
+               rust-zmij-1.0.23))
  (python-angr =>
               (list rust-addr2line-0.24.2
                     rust-adler2-2.0.1
