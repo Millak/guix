@@ -627,21 +627,6 @@ GEXP)."
                             (%upstream-linux-source version hash)
                             deblob-scripts-7.2)))
 
-(define-public linux-libre-7.1-version "7.1.13")
-(define-public linux-libre-7.1-gnu-revision "gnu")
-(define deblob-scripts-7.1
-  (linux-libre-deblob-scripts
-   linux-libre-7.1-version
-   linux-libre-7.1-gnu-revision
-   (base32 "0a14ymlj6ahfd5ch78hk9nx47ihglndq1h9hi9a4r9di469s5f8v")
-   (base32 "0ab66phhdwhhhvhywiylhlsmqvw8ny4xyi7ap7xzzkqc7im8w1j9")))
-(define-public linux-libre-7.1-pristine-source
-  (let ((version linux-libre-7.1-version)
-        (hash (base32 "1mqshj3ldn0md1c0am35skznnq5vmz3fvrr0cqmwwp6bzpx9akb1")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-7.1)))
-
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
@@ -758,13 +743,6 @@ GEXP)."
 
 (define-public linux-libre-7.2-source
   (source-with-patches linux-libre-7.2-pristine-source
-                       (append
-                        (list %linux-libre-arm-export-__sync_icache_dcache-patch)
-                        (search-patches "linux-shmem-hurd-xattr.patch"
-                                        "linux-libre-fix-arm64-bin-sh.patch"))))
-
-(define-public linux-libre-7.1-source
-  (source-with-patches linux-libre-7.1-pristine-source
                        (append
                         (list %linux-libre-arm-export-__sync_icache_dcache-patch)
                         (search-patches "linux-shmem-hurd-xattr.patch"
@@ -937,11 +915,6 @@ GEXP)."
   (make-linux-libre-headers* linux-libre-7.2-version
                              linux-libre-7.2-gnu-revision
                              linux-libre-7.2-source))
-
-(define-public linux-libre-headers-7.1
-  (make-linux-libre-headers* linux-libre-7.1-version
-                             linux-libre-7.1-gnu-revision
-                             linux-libre-7.1-source))
 
 (define-public linux-libre-headers-6.18
   (make-linux-libre-headers* linux-libre-6.18-version
@@ -1546,14 +1519,6 @@ DFSDG}.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-7.1
-  (make-linux-libre* linux-libre-7.1-version
-                     linux-libre-7.1-gnu-revision
-                     linux-libre-7.1-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
 (define-public linux-libre-6.18
   (make-linux-libre* linux-libre-6.18-version
                      linux-libre-6.18-gnu-revision
@@ -1803,52 +1768,6 @@ DFSDG}.")
       #:install-plan
       #~'(("patches" ""))))
     (home-page "https://codeberg.org/vagrantc/mnt-reform-patches")
-    (synopsis
-     "Linux kernel patches and device-trees used for MNT Reform systems")
-    (description
-     "Linux kernel patches and device-trees used for the MNT Reform systems")
-    (license (list
-              (license:fsf-free "file://filter-output"
-                                "https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html")
-              license:bsd-2
-              license:expat
-              license:gpl2
-              license:gpl2+
-              license:gpl3
-              license:x11))))
-
-(define-public reform-debian-packages-for-7.1
-  (package
-    (name "reform-debian-packages")
-    (version "2023-07-10-688-gc3e9ed6") ;from git describe
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "c3e9ed6f2dc3b18221dcbfe251d5724f6be83d09")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "138a9jz882mia71gvvhhhhza1kb9vwp1xrmh6r9aj16qqfbzhspj"))))
-    (build-system copy-build-system)
-    (arguments
-     (list
-      #:install-plan
-      #~'(("linux/patches7.1/" "/patches7.1")
-          ("linux/" "/dts/amlogic"
-           #:include-regexp ("meson.*\\.dts$"))
-          ("linux/" "/dts/freescale"
-           #:include-regexp ("imx8.*\\.dts$"))
-          ("linux/" "/dts/freescale"
-           #:include-regexp ("fsl.*\\.dts$"))
-          ("linux/" "/dts/rockchip"
-           #:include-regexp ("rk3588.*\\.dts$"))
-          ("linux/" "/dts/qcom"
-           #:include-regexp ("qcs.*\\.dts$"))
-          ("linux/" "/dts/qcom"
-           #:include-regexp ("qcs.*\\.dtsi$"))
-          ("linux/config" "config"))))
-    (home-page "https://source.mnt.re/reform/reform-debian-packages")
     (synopsis
      "Linux kernel patches and device-trees used for MNT Reform systems")
     (description
@@ -2230,174 +2149,6 @@ DFSDG}.")
                              "0108-imx8mp-revert-pixel-clock-speed-change-for-media_dis.patch")))))))))))
 
 (define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-7.3)
-
-(define-public linux-libre-arm64-mnt-reform-7.1
-  ;; Kernel for use on the MNT/Reform systems
-  ;; https://mntre.com/reform.html
-  (let ((base (make-linux-libre* linux-libre-7.1-version
-                                 linux-libre-7.1-gnu-revision
-                                 linux-libre-7.1-source
-                                 '("aarch64-linux")
-                                 #:extra-version "arm64-mnt-reform"
-                                 #:extra-options
-                                 ;; https://source.mnt.re/reform/reform-debian-packages/-/blob/main/linux/config
-                                 (append (mnt-reform-kernel-options
-                                          linux-libre-7.1-version)
-                                         (default-extra-linux-options
-                                          linux-libre-7.1-version)))))
-    (package
-      (inherit base)
-      (inputs (list reform-debian-packages-for-7.1))
-      (synopsis (string-append (package-synopsis base)
-                               " for MNT/Reform systems"))
-      (description (string-append (package-description base)
-                    "  Configuration options and patches have been applied for use with MNT/Reform systems."))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'apply-reform-patches
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (for-each (lambda (patch)
-                              (invoke "patch" "-p1" "-i"
-                                      (search-input-file inputs
-                                                         (string-append
-                                                          "patches7.1/" patch))))
-                            (list
-                             "imx8mp-mnt-pocket-reform/2ghz/0001-imx8mp-2ghz-clk.patch"
-                             "imx8mp-mnt-pocket-reform/2ghz/0002-imx8mp-2ghz-opp.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0001-sdhci-add-no-sd-uhs-sdr104-devicetree-property.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0002-During-the-card-init-the-host-side-sometimes-may-nee.patch"
-                             "imx8mp-mnt-pocket-reform/mmc-sdio/0003-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
-                             "imx8mp-mnt-pocket-reform/pocket-panel/0001-v5-add-multi-display-panel-driver.patch"
-                             "imx8mp-mnt-reform2/0001-sn65dsi86-use-hs-clock-of-samsung-dsim-host-directly.patch"
-                             "imx8mp-mnt-reform2/0002-lcdif-dont-exceed-desired-pixel-clock.patch"
-                             "imx8mq-mnt-reform2/0001-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
-                             "imx8mq-mnt-reform2/0001-nwl-dsi-fixup-mode-only-for-LCDIF-input-not-DCSS.patch"
-                             "imx8mq-mnt-reform2/0002-Revert-drm-bridge-nwl-dsi-Use-vsync-hsync-polarity-f.patch"
-                             "imx8mq-mnt-reform2/0003-lcdif-fix-pcie-interference.patch"
-                             "imx8mq-mnt-reform2/0004-mnt4002-imx-gpcv2-wake-smccc.patch.patch"
-                             "imx8mq-mnt-reform2/0005-pci-imx6-add-support-for-internal-refclk-imx8mq.patch"
-                             "imx8mq-mnt-reform2/0006-imx8mq-import-HDMI-driver-and-make-DCSS-compatible-w.patch"
-                             "ls1028a-mnt-reform2/0000-dtsi-add-hdptx.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0001-a311d-viu-fifo-lines-config.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0002-a311d-viu-fifo-lines-config-header.patch"
-                             "meson-g12b-bananapi-cm4-mnt-pocket-reform/0003-tlv320aic31xx-add-1228800hz-support.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0001-Revert-drm-bridge-synopsys-dw-mipi-dsi-enable-EoTp-b.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0001-meson-g12b-bananapi-cm4-mnt-reform2.dts-fix-audio-an.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0011-dw-mipi-dsi-phy-stop-wait-time.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0012-innolux-n125hce-gn1-timing-tweaks.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0013-meson-viu-hold-fifo-lines.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0014-meson-venc-sync.patch.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0015-meson-dw-mipi-dsi-sync-invert.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0016-sn65dsi86-burst-mode-support.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0018-sn65dsi86-never-turn-off.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0020-LOCAL-ALSA-Assign-internal-PCM-chmap-ELD-IEC958-kctl.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0021-HACK-of-partial-revert-of-fdt.c-changes.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0022-add-bt-and-eth-resets.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0023-sdio-pullups.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0024-sdio-improve-wifi-speed.patch"
-                             "meson-g12b-bananapi-cm4-mnt-reform2/0030-WORKAROUND-meson-plane-disable-afbc-32x8.patch"
-                             "qcom-mnt-reform2/3001-casey-aux-bridge-defer.patch"
-                             "qcom-mnt-reform2/3003-casey-lpass-sc7280-audio-hacks.patch"
-                             "qcom-mnt-reform2/4000-qcom-pci-d3cold.patch"
-                             "qcom-mnt-reform2/4001-qcom-pci-d3cold-2.patch"
-                             "qcom-mnt-reform2/4002-qcom-pci-get-ltssm.patch"
-                             "qcom-mnt-reform2/4003-qcom-pci-power-down-phy-via-parf.patch"
-                             "qcom-mnt-reform2/4004-qcom-pci-add-d3cold.patch"
-                             "qcom-mnt-reform2/5000-tlv320aic31xx-mclk-fallback.patch"
-                             "qcom-mnt-reform2/5010-asoc_qcom_qdsp6_q6prm_add_the_missing_mclk_clock_ids.patch"
-                             "qcom-mnt-reform2/5011-sc8280xp-add-support-for-I2S-clocks.patch"
-                             "rk3588-mnt-reform2/0024-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
-                             "rk3588-mnt-reform2/0025-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
-                             "rk3588-mnt-reform2/0026-clk-composite-replace-open-coded-abs_diff.patch"
-                             "rk3588-mnt-reform2/0029-PCI-dw-rockchip-Restore-vpcie3v3-regulator-handle.patch"
-                             "rk3588-mnt-reform2/0030-mfd-rk8xx-Fix-shutdown-handler.patch"
-                             "rk3588-mnt-reform2/0031-dt-bindings-display-vop2-Add-VP-clock-resets.patch"
-                             "rk3588-mnt-reform2/0032-drm-rockchip-vop2-Add-clock-resets-support.patch"
-                             "rk3588-mnt-reform2/0033-arm64-dts-rockchip-Add-VOP-clock-resets-for-rk3588s.patch"
-                             "rk3588-mnt-reform2/0035-drm-rockchip-vop2-Add-core-reset-support.patch"
-                             "rk3588-mnt-reform2/0062-PCI-dw-rockchip-Move-devm_phy_get-out-of-phy_init.patch"
-                             "rk3588-mnt-reform2/0063-PCI-dw-rockchip-Add-helper-function-for-enhanced-LTS.patch"
-                             "rk3588-mnt-reform2/0064-PCI-dw-rockchip-Add-helper-function-for-controller-m.patch"
-                             "rk3588-mnt-reform2/0065-PCI-dw-rockchip-Add-helper-function-for-DDL-indicato.patch"
-                             "rk3588-mnt-reform2/0066-PCI-dw-rockchip-Add-pme_turn_off-support.patch"
-                             "rk3588-mnt-reform2/0067-PCI-dw-rockchip-Add-system-PM-support.patch"
-                             "rk3588-mnt-reform2/0078-PCI-dw-rockchip-Fix-LTSSM-set-functions.patch"
-                             "rk3588-mnt-reform2/0079-RFC-PCI-dw-rockchip-port-some-suspend-code-from-vend.patch"
-                             "rk3588-mnt-reform2/0089-DEBUG-phy-rockchip-samsung-hdptx-Add-verbose-logging.patch"
-                             "rk3588-mnt-reform2/0092-drm-rockchip-dw_hdmi_qp-Restrict-HPD-event-to-the-af.patch"
-                             "rk3588-mnt-reform2/0094-drm-bridge-connector-Use-cached-connector-status-in-.patch"
-                             "rk3588-mnt-reform2/0095-drm-bridge-Add-detect_ctx-hook-and-drm_bridge_detect.patch"
-                             "rk3588-mnt-reform2/0096-drm-bridge-connector-Switch-to-.detect_ctx-for-conne.patch"
-                             "rk3588-mnt-reform2/0097-drm-bridge-dw-hdmi-qp-Add-HDMI-2.0-SCDC-scrambling-a.patch"
-                             "rk3588-mnt-reform2/0108-dt-bindings-phy-rockchip-usbdp-add-improved-ports-sc.patch"
-                             "rk3588-mnt-reform2/2001-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
-                             "rk3588-mnt-reform2/2003-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
-                             "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"
-                             "rk3588-mnt-reform2/6000-loosen-mnt-reform2-edp-panel-timing.patch"
-                             "rk3588-mnt-reform2/7000-mnt-analogix-dp-changes-for-usb-c-alt-mode.patch"
-                             "sc/1000-mnt-sc-driver.patch"))))
-              (add-after 'apply-reform-patches 'copy-reform-dts-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (for-each (lambda (dts)
-                              (copy-file (search-input-file inputs
-                                                            (string-append
-                                                             "/dts/" dts))
-                                         (string-append "arch/arm64/boot/dts/"
-                                          dts)))
-                            (list
-                             "amlogic/meson-g12b-bananapi-cm4-mnt-pocket-reform.dts"
-                             "freescale/fsl-ls1028a-mnt-reform2.dts"
-                             "freescale/imx8mp-mnt-pocket-reform.dts"
-                             "freescale/imx8mp-mnt-reform2.dts"
-                             "freescale/imx8mq-mnt-reform2-hdmi.dts"
-                             "rockchip/rk3588-mnt-station.dts"
-                             "rockchip/rk3588-mnt-pocket-reform.dts"
-                             "rockchip/rk3588-mnt-reform-next.dts"
-                             "rockchip/rk3588-mnt-reform2.dts"
-                             "rockchip/rk3588-mnt-reform2-dsi.dts"
-                             "qcom/qcs6490-mnt-quasar.dtsi"
-                             "qcom/qcs6490-mnt-reform2.dts"
-                             "qcom/qcs6490-mnt-pocket-reform.dts"
-                             "qcom/qcs6490-mnt-reform-next.dts"
-                             "qcom/qcs8550-mnt-reform2.dts"
-                             "qcom/qcs8550-mnt-pocket-reform.dts"
-                             "qcom/qcs8550-mnt-reform-next.dts"))))
-              (add-after 'apply-reform-patches 'adjust-makefiles-with-new-dtb
-                (lambda _
-                  (substitute* "arch/arm64/boot/dts/amlogic/Makefile"
-                    (("meson-g12b-bananapi-cm4-mnt-reform2.dtb")
-                     "meson-g12b-bananapi-cm4-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-mnt-pocket-reform.dtb"))
-                  (substitute* "arch/arm64/boot/dts/freescale/Makefile"
-                    (("fsl-ls1028a-rdb.dtb")
-                     "fsl-ls1028a-rdb.dtb
-dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-mnt-reform2.dtb"))
-                  (substitute* "arch/arm64/boot/dts/freescale/Makefile"
-                    (("imx8mq-mnt-reform2.dtb")
-                     "imx8mq-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mp-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mp-mnt-pocket-reform.dtb
-dtb-$(CONFIG_ARCH_MXC) += imx8mq-mnt-reform2-hdmi.dtb"))
-                  (substitute* "arch/arm64/boot/dts/rockchip/Makefile"
-                    (("rk3588-mnt-reform2.dtb")
-                     "rk3588-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-station.dts
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
-dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb"))
-                  (substitute* "arch/arm64/boot/dts/qcom/Makefile"
-                    (("= qcs6490-rb3gen2-vision-mezzanine.dtb")
-                     "= qcs6490-rb3gen2-vision-mezzanine.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs6490-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs6490-mnt-pocket-reform.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs6490-mnt-reform-next.dtb")
-                    (("qcs8550-aim300-aiot.dtb")
-                     "qcs8550-aim300-aiot.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform2.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-pocket-reform.dtb
-dtb-$(CONFIG_ARCH_QCOM) += qcs8550-mnt-reform-next.dtb")))))))))))
 
 (define-public linux-libre-arm64-mnt-reform-6.18
   ;; Kernel for use on the MNT/Reform systems
