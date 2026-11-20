@@ -1420,7 +1420,7 @@ depend on language-specific pre- or post-processing.")
 (define-public stable-diffusion-cpp
   (package
     (name "stable-diffusion-cpp")
-    (version "827-97d2990")
+    (version "1106-532d2c1")
     (source
      (origin
        (method git-fetch)
@@ -1431,19 +1431,18 @@ depend on language-specific pre- or post-processing.")
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p9b8jvqsxd0dn8ccn0zhxs9nwqx3l20qbp9ybg2dirpja4i0xfm"))))
+        (base32 "02wi77hgbg6qn7scjiqv887f44wxrzcj4nad67d746gbqd4cd5qg"))))
     (build-system cmake-build-system)
+    (native-inputs (list shaderc spirv-headers vulkan-headers))
+    (inputs (list vulkan-loader))
     (arguments
      (list
       #:tests? #f                       ;no tests
       ;; see docs/build.md
       #:configure-flags
-      #~(list "-DSD_BUILD_SHARED_LIBS=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-CXXFLAGS
-            (lambda _
-              (setenv "CXXFLAGS" "-DGGML_MAX_NAME=128"))))))
+      #~(list "-DGGML_MAX_NAME=160"
+              "-DSD_BUILD_SHARED_LIBS=ON"
+              "-DSD_VULKAN=ON")))
     (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
     (home-page "https://github.com/leejet/stable-diffusion.cpp")
     (synopsis "Diffusion model inference in pure C/C++")
