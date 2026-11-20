@@ -1462,7 +1462,8 @@ exec -a \"$0\" \"~a\" \"$@\""
    (define (with-cross-gcc? target)
      (or (target-linux? target)
          (target-hurd? target)
-         (target-mingw? target)))
+         (target-mingw? target)
+         (target-avr? target)))
    (when (with-cross-gcc? target)
     (unless (platform-rust-target (lookup-platform-by-target target))
       (raise
