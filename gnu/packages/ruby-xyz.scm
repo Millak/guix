@@ -6835,7 +6835,6 @@ both CSS3 selector and XPath 1.0 support.")
     (build-system ruby-build-system)
     (arguments
      (list
-      #:ruby ruby-3.3
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
@@ -6843,7 +6842,13 @@ both CSS3 selector and XPath 1.0 support.")
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "Rakefile"
                 (("git ls-files")
-                 "find . -type f")))))))
+                 "find . -type f"))))
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              ;; Incompatible with Ruby 3.4+.
+              (substitute* "spec/method_source/code_helpers_spec.rb"
+                ((".*issue = %W/.*") "")
+                ((".*method\\(1.*") "")))))))
     (native-inputs (list ruby-rspec))
     (synopsis "Retrieve the source code for Ruby methods")
     (description
