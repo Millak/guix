@@ -5045,7 +5045,7 @@ support, for easier unicode usage.")))))
 (define-public xclickroot
   (package
     (name "xclickroot")
-    (version "1.3")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5054,18 +5054,18 @@ support, for easier unicode usage.")))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wnsfxvh4v02r2jjyh2n6jfkbj2dna2hlm6anl4b36lwji749k2k"))))
+                "1yllf4nqmi9lds9m495adni45lbka6bz6qysyrphg0pjx2dd1q2s"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11))
     (arguments
-     `(#:tests? #f ;no test suite
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:tests? #f ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/phillbush/xclickroot")
     (synopsis "Run a command when a mouse button is pressed on the root window")
     (description "@code{xclickroot} runs a command every time a given mouse
