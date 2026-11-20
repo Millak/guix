@@ -1183,7 +1183,7 @@ implementations.")
 (define-public papersway
   (package
     (name "papersway")
-    (version "2.000")
+    (version "3.003")
     (source
      (origin
        (method url-fetch)
@@ -1191,7 +1191,7 @@ implementations.")
              "mirror://cpan/authors/id/S/SP/SPWHITTON/App-papersway-" version
              ".tar.gz"))
        (sha256
-        (base32 "0mphgyi6gq98g4n0jq5qwf66qi76rbrwgipmqqfzsakc3rzbsivh"))))
+        (base32 "0d0gm06rhd5qhkp32iw46qvz2pcc20cra1rbja896msplmyf4drp"))))
     (build-system perl-build-system)
     (arguments
      (list #:phases
@@ -1205,7 +1205,7 @@ implementations.")
                           (,(getenv "PERL5LIB")
                            ,(string-append #$output "/lib/perl5/site_perl")))))
                     '("papersway" "papersway-msg")))))))
-    (inputs (list perl-anyevent perl-anyevent-i3 perl-json))
+    (inputs (list bash-minimal perl-anyevent perl-anyevent-i3 perl-json))
     (home-page "https://spwhitton.name/tech/code/papersway/")
     (synopsis
      "Scrollable tiling window management for Sway and i3 window manager")
