@@ -479,7 +479,8 @@ APNG patch provides APNG support to libpng.")
             (uri (string-append "mirror://sourceforge/pmt/pngcrush/"
                                 version "/pngcrush-" version "-nolib.tar.xz"))
             (sha256 (base32
-                     "0l43c59d6v9l0g07z3q3ywhb8xb3vz74llv3mna0izk9bj6aqkiv"))))
+                     "0l43c59d6v9l0g07z3q3ywhb8xb3vz74llv3mna0izk9bj6aqkiv"))
+            (patches (search-patches "pngcrush-add-adler32-check.patch"))))
    (build-system gnu-build-system)
    (arguments
     '(#:tests? #f ; no check target
