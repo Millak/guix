@@ -1507,7 +1507,7 @@ tools in a live programming environment.")
 (define-public noctalia-shell
   (package
     (name "noctalia-shell")
-    (version "5.5.0")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1516,7 +1516,7 @@ tools in a live programming environment.")
               (commit (string-append "v" version))))
        (file-name (git-file-name "noctalia" version))
        (sha256
-        (base32 "0zr1fhvf6znv741gqcjdcaq59yfdla1fdnbhwvzshds5wfzzjm14"))
+        (base32 "0phqv5i0xxx4w1jz8dm6hzi3p2cdq4h6sl3c80hvncykzmsph6yw"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1553,9 +1553,9 @@ tools in a live programming environment.")
               (setenv "TMPDIR" "/tmp")))
           (add-before 'check 'set-test-assets-directory
             (lambda _
-              (setenv "NOCTALIA_ASSETS_DIR" "../source/assets")
+              (setenv "NOCTALIA_APP_ASSETS_DIR" "../source/assets")
               ;; Copy /lib/assets over to /assets so that they come under
-              ;; NOCATALIA_ASSETS_DIR and be available to tests. Otherwise
+              ;; NOCATALIA_APP_ASSETS_DIR and be available to tests. Otherwise
               ;; quite a few tests will fail. The next update will add a new
               ;; env var that will allow setting the path to /lib/assets
               ;; separately, and this will be removed
@@ -1605,8 +1605,7 @@ tools in a live programming environment.")
                     ,runtime-path))))))))
     (native-inputs
      (list dbus                         ;run D-Bus integration test
-           pkg-config                   ;locate build dependencies
-           tzdata-for-tests))
+           pkg-config))                 ;locate build dependencies
     (inputs
      (list
       bash-minimal                          ;for wrapper and shell commands
