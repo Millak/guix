@@ -703,7 +703,7 @@ information is missing, return the empty list (for channels) and possibly
            (mkdir "/var/run" #o755)
            (chmod "/var/run" #o755)
            (mkdir "/run" #o755)
-           (chmod "/var/run" #o755))))))
+           (chmod "/run" #o755))))))
 
 (define cleanup-service-type
   ;; Service that cleans things up in /tmp and similar.
