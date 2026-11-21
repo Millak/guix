@@ -1605,7 +1605,8 @@ tools in a live programming environment.")
                     ,runtime-path))))))))
     (native-inputs
      (list dbus                         ;run D-Bus integration test
-           pkg-config))                 ;locate build dependencies
+           pkg-config                   ;locate build dependencies
+           tzdata-for-tests))
     (inputs
      (list
       bash-minimal                          ;for wrapper and shell commands
