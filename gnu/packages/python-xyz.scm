@@ -10532,10 +10532,19 @@ for Python.")
        (sha256
         (base32 "01ds59a1cync34xq7s0q6f50k9nvn2n80zh62qa2a8vnr7fz5nlv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (if (target-hurd?)
+         ;; python-trio is not supported on the Hurd, and these two test
+         ;; files import it.
+         (list #:test-flags
+               #~(list "--ignore=tests/test_async.py"
+                       "--ignore=tests/test_async_filters.py"))
+         '()))
     (native-inputs
-     (list python-flit-core
-           python-pytest
-           python-trio))
+     (append (list python-flit-core python-pytest)
+             (if (target-hurd?)
+                 '()
+                 (list python-trio))))
     (propagated-inputs
      (list python-markupsafe))
     (home-page "https://jinja.palletsprojects.com/")
