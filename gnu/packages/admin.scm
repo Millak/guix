@@ -7034,7 +7034,8 @@ stored in an SQL database.")
 @command{neofetch}, @command{fastfetch}, etc.  It is lightweight and
 has a focus on performance.  It can be used as a greeter by starting
 it from @file{~/.bashrc} for example.")
-    (license license:agpl3+)))
+    (properties '((tunable? . #t)))
+    (license license:gpl3+)))
 
 (define-public zeptofetch
   (package
