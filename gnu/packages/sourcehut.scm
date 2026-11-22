@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages python-build)
@@ -82,7 +84,7 @@
 (define-public python-builds-sr-ht
   (package
     (name "python-builds-sr-ht")
-    (version "0.105.4")
+    (version "0.105.7")
     (source
      (origin
        (method git-fetch)
@@ -91,16 +93,24 @@
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vgg5j5sms9czpdjaw1rs70rbqngx4090csx43nf53i5w4akr4j6"))))
+        (base32 "1kn84pp82wnz0bb2m1nhqxrv7labwq9k6zci7ziwq4qij3mlxsz5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                   ;there are none
     (propagated-inputs
-     (list python-bleach
+     (list python-ansi2html
            python-core-sr-ht
-           python-markdown
+           python-cryptography
+           python-flask
+           python-httpx
+           python-humanize
+           python-lxml
+           python-markupsafe
+           python-prometheus-client
+           python-pydantic
            python-pyyaml
-           python-redis))
+           python-requests
+           python-sqlalchemy))
     (native-inputs
      (list python-setuptools python-setuptools-scm))
     (home-page "https://git.sr.ht/~sircmpwn/builds.sr.ht")
