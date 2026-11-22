@@ -113,7 +113,7 @@ integration} build service.")
 (define-public python-hub-sr-ht
   (package
     (name "python-hub-sr-ht")
-    (version "0.32.2")
+    (version "0.33.4")
     (source
      (origin
        (method git-fetch)
@@ -122,7 +122,7 @@ integration} build service.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wpd0bl9jc0p9cdggrpznx7axsx0rmirdl3k13s010x9zmdqff8z"))))
+        (base32 "0b1vr6j4q73nxaiazbamx8y495dcyxkilh2383n7visd3h5anlh5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                   ;there are none
