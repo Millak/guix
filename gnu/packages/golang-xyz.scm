@@ -23165,6 +23165,30 @@ primary goal is to format command-line output, but of course word wrapping is
 a generally useful thing to do.")
     (license license:expat)))
 
+(define-public go-github-com-mitchellh-iochan
+  (package
+    (name "go-github-com-mitchellh-iochan")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mitchellh/iochan")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058n9bbf536f2nw3pbs7pysrg9cqvgkb28z2zf5wjyrzrknyk53g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mitchellh/iochan"))
+    (home-page "https://github.com/mitchellh/iochan")
+    (synopsis "Go library for turning io.Reader into channels")
+    (description
+     "@code{iochan} is a Go library for treating @code{io.Reader} like
+channels.")
+    (license license:expat)))
+
 ;; XXX: This package is in maintenance mode: "This repository has been
 ;; archived by the owner on Jul 22, 2024. It is now read-only."
 (define-public go-github-com-mitchellh-mapstructure
