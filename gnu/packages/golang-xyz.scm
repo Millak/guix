@@ -13540,6 +13540,37 @@ error return.")
 of @url{https://pkg.go.dev/golang.org/x/xerrors}")
     (license license:bsd-3)))
 
+(define-public go-github-com-go-faster-jx
+  (package
+    (name "go-github-com-go-faster-jx")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-faster/jx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rrva54rkwi2nwvy83qnnw17bjqa6j9k2izmhn9p2a16ql36z6bk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-skip" "TestEncoderStreamingCheck")
+      #:import-path "github.com/go-faster/jx"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-faster-errors
+           go-github-com-segmentio-asm
+           go-golang-org-x-exp))
+    (home-page "https://github.com/go-faster/jx")
+    (synopsis "Faster JSON encoding and decoding")
+    (description
+     "Package jx implements @url{https://rfc-editor.org/rfc/rfc7159.html,RFC
+7159} json encoding and decoding.")
+    (license license:expat)))
+
 (define-public go-github-com-go-git-go-billy-v5
   (package
     (name "go-github-com-go-git-go-billy-v5")
