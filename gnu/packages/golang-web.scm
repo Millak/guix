@@ -8834,6 +8834,31 @@ objects and arrays.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-go-ldap-ldif
+  (package
+    (name "go-github-com-go-ldap-ldif")
+    (version "0.0.0-20260814080914-716cb106d6e4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-ldap/ldif")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p7p7skq3qh8j31cjpygq27qk2janrf51x2ybqw7yr9yljbqf2g5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-ldap/ldif"))
+    (propagated-inputs (list go-github-com-go-ldap-ldap-v3))
+    (home-page "https://github.com/go-ldap/ldif")
+    (synopsis "Utilities for working with ldif data")
+    (description
+     "Go utility package for working with ldif data that implements most of
+RFC 2849.")
+    (license license:expat)))
+
 (define-public go-github-com-go-openapi-analysis
   (package
     (name "go-github-com-go-openapi-analysis")
