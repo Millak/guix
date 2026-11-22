@@ -287,6 +287,11 @@
 
                   #:user #$user
                   #:group #$group
+
+                  ;; Raise the limit on open file descriptor so 'cuirass web'
+                  ;; can cope with peaks in client connections.
+                  #:resource-limits '((nofile 4096 4096))
+
                   #:log-file #$web-log-file))
         (stop #~(make-kill-destructor)))
       ,@(if remote-server
