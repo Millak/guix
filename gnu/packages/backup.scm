@@ -1307,7 +1307,7 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "2.1.5")
+    (version "2.1.7")
     (source
      (origin
        (method git-fetch)
@@ -1317,11 +1317,14 @@ compression parameters used by Gzip.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17i15ysg0wbcnfvki8wz2z9gx3zx99czv3czjh83y2m1xppvqbl5"))))
+         "0rvcjzv3x2scbl462958p3iviwvxqchx2hjlikrmrgwzwv7q4gyc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2609 passed
+      ;; tests: 2786 passed
+      #:test-flags
+      ;; AttributeError: 'MockClass' object has no attribute 'is_attached'
+      #~(list "-k" "not test_archive_path_loaded_publish_records_")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
@@ -1340,14 +1343,19 @@ compression parameters used by Gzip.")
     (native-inputs
      (list python-flexmock
            python-pytest
+           python-pytest-asyncio
            python-pytest-timeout
            python-setuptools))
     (inputs
      (list borg
            python-apprise
+           python-binaryornot
            python-jsonschema
+           python-packaging
+           python-psutil
            python-requests
-           python-ruamel.yaml))
+           python-ruamel.yaml
+           python-textual))
     (home-page "https://torsion.org/borgmatic/")
     (synopsis "Simple, configuration-driven backup software")
     (description
