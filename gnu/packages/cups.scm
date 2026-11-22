@@ -1067,10 +1067,12 @@ language.")
                  (for-each (cut invoke "gzip" "-9" <>)
                            (find-files ppd "\\.ppd$"))))))
          #:tests? #f))                  ; no test suite
+      (native-inputs
+       (list cups-minimal
+             jbigkit
+             zlib))
       (inputs
-       `(("cups" ,cups-minimal)
-         ("jbigkit" ,jbigkit)
-         ("zlib" ,zlib)))
+       (list cups-minimal))
       (synopsis "QPDL (SPL2) printer driver")
       (description
        "SpliX is a set of CUPS drivers for printers that speak @acronym{QPDL,
