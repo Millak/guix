@@ -1996,6 +1996,30 @@ fragments of HTML and compose them to create screens, pages, documents, or
 apps.")
     (license license:expat)))
 
+(define-public go-github-com-ajg-form
+  (package
+    (name "go-github-com-ajg-form")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ajg/form")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02xyc2pjdyr94bg2xq3b07i9n8wy953045h5xbv13a0xa4g1khw9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ajg/form"))
+    (home-page "https://github.com/ajg/form")
+    (synopsis "Form Encoding & Decoding package for Go")
+    (description
+     "@code{form} is a Go library for encoding and decoding
+@code{application/x-www-form-urlencoded} data.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-aki237-nscjar
   (package
     (name "go-github-com-aki237-nscjar")
