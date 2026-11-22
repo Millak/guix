@@ -1,0 +1,38 @@
+From 91584bfc79f038e29d25b312854af97a807e894b Mon Sep 17 00:00:00 2001
+Message-ID: <91584bfc79f038e29d25b312854af97a807e894b.1795369018.git.csantosb@disroot.org>
+From: Cayetano Santos <csantosb@disroot.org>
+Date: Sun, 22 Nov 2026 18:36:50 +0100
+Subject: [PATCH] toto
+
+---
+ CMakeLists.txt | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8558e2e..94a3e8d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -133,13 +133,13 @@ configure_file(data/hwdata.hpp.in hwdata.hpp @ONLY)
+ # tests
+ add_custom_target(tests)
+ 
+-add_executable(simpleWindow "tests/SimpleWindow.cpp")
+-target_link_libraries(simpleWindow PRIVATE PkgConfig::deps aquamarine)
+-add_test(
+-  NAME "simpleWindow"
+-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
+-  COMMAND simpleWindow "simpleWindow")
+-add_dependencies(tests simpleWindow)
++# add_executable(simpleWindow "tests/SimpleWindow.cpp")
++# target_link_libraries(simpleWindow PRIVATE PkgConfig::deps aquamarine)
++# add_test(
++#   NAME "simpleWindow"
++#   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
++#   COMMAND simpleWindow "simpleWindow")
++# add_dependencies(tests simpleWindow)
+ 
+ add_executable(attachments "tests/Attachments.cpp")
+ target_link_libraries(attachments PRIVATE PkgConfig::deps aquamarine)
+--
+2.55.0
+

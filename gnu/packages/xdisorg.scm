@@ -298,7 +298,7 @@ command line, without displaying a keyboard at all.")
 (define-public aquamarine
   (package
     (name "aquamarine")
-    (version "0.12.1")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -307,11 +307,18 @@ command line, without displaying a keyboard at all.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13qq2yzsbpslch3wj19yxhcwdxpqp5knlmyvab8g3l37n8sh8i3i"))))
+                "03hp1asx3a5xnfz8v2cbblly4gxjsanma7bby9c0bgrd6y4jkizx"))
+              ;; Disable "SimpleWindow" test, which fails with:
+              ;; "Wayland backend cannot start: wl_display_connect failed"
+              (patches (search-patches "aquamarine.patch"))))
     (build-system cmake-build-system)
     (arguments
-     (list ;; TODO: Figure out what's expected in the test environment.
-           #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-xdg
+            (lambda _
+              (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
     (native-inputs
      (list gcc-15 hyprwayland-scanner pkg-config))
     (inputs
