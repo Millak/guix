@@ -8605,6 +8605,31 @@ decompose request handling into many smaller layers.")
 as defined by @url{http://www.w3.org/TR/cors/}.")
     (license license:expat)))
 
+(define-public go-github-com-go-chi-render
+  (package
+    (name "go-github-com-go-chi-render")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-chi/render")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ncbmwaijnrp5pphgd80qyb8z5z1s7l0zb5zcgvg4mn8rh5fhy86"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-chi/render"))
+    (propagated-inputs (list go-github-com-ajg-form))
+    (home-page "https://github.com/go-chi/render")
+    (synopsis "HTTP request/response payload management library for Go")
+    (description
+     "@code{render} is a Go package for managing HTTP request and response
+payloads.")
+    (license license:expat)))
+
 (define-public go-github-com-go-fed-httpsig
   (package
     (name "go-github-com-go-fed-httpsig")
