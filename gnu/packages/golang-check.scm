@@ -29,6 +29,7 @@
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4353,6 +4354,39 @@ Go 1.7+ @url{https://blog.golang.org/subtests, subtests}.")
      "This package takes the results from multiple
 @code{go test -coverprofile} runs and merges them into one profile.")
     (license license:bsd-2)))
+
+(define-public go-github-com-shoenig-test
+  (package
+    (name "go-github-com-shoenig-test")
+    (version "1.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shoenig/test")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15fyk54c4ydk93yacmaxdkb82siqjq3kvyyji5vzbqcpy0alkazv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shoenig/test"
+      #:test-flags
+      #~(list "-vet=off" "-skip" "TestSkip_CgroupsVersion")
+      #:phases
+      #~(modify-phases %standard-phases
+                (add-before 'build 'go-generate
+                  (lambda* (#:key import-path #:allow-other-keys)
+                    (with-directory-excursion (string-append "src/" import-path)
+                      (invoke "go" "generate" "-v" "-n" "./...")))))))
+    (propagated-inputs (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/shoenig/test")
+    (synopsis "Generics-oriented testing assertions library for Go")
+    (description
+     "A modern Go library providing generics-oriented assertions
+and testing utilities.")
+    (license license:mpl2.0)))
 
 (define-public go-github-com-sivchari-containedctx
   (package
