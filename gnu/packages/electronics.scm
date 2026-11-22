@@ -535,7 +535,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
 (define-public ciel
   (package
     (name "ciel")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -544,7 +544,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a9jx9vfpidiwfg6hnnv6r4znbng8fkqswr53ji0gvl075i8sir0"))))
+        (base32 "13gsy61h3hm4isdq9r2nhhpp7h1w2sncp69lpkrdxwcgj6fj1vgn"))))
     (arguments
      (list
       ;; No unit tests, there are some integration tests, see:
@@ -566,7 +566,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
            git-minimal/pinned))
     (propagated-inputs
      (list python-click
-           python-httpx
+           python-httpx2
            python-pcpp
            python-pyyaml
            python-rich
