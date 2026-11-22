@@ -11003,6 +11003,31 @@ help message which may simplify crating CLI applications, it's Golang
 implementation of http://docopt.org/.")
       (license license:expat))))
 
+(define-public go-github-com-dolmen-go-kittyimg
+  (package
+    (name "go-github-com-dolmen-go-kittyimg")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dolmen-go/kittyimg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vv4lqp4jyzjf5fmsk579xxcgblv9m0fjsmqxsiv9dc351dkfvqg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dolmen-go/kittyimg"))
+    (propagated-inputs (list go-golang-org-x-term))
+    (home-page "https://github.com/dolmen-go/kittyimg")
+    (synopsis "Go library to display images in terminal emulators")
+    (description
+     "Go library that allows displaying images in terminal emulators
+implementing kitty's terminal graphics protocol.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-dop251-base64dec
   (package
     (name "go-github-com-dop251-base64dec")

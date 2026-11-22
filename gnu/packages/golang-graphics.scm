@@ -2,6 +2,7 @@
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;; Copyright © 2026 moksh <mysticmoksh@riseup.net>
+;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
