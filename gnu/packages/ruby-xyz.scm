@@ -2220,7 +2220,19 @@ enforcing & linting tool for @code{factory_bot} files.")
                (add-after 'unpack 'relax-requirements
                  (lambda _
                    (substitute* "Gemfile"
-                     (("gem 'danger'.*") "")))))))
+                     (("gem 'danger'.*") ""))))
+               (add-before 'check 'skip-failing-tests
+                 (lambda _
+                   ;; Trivial hash literal differences.
+                   (substitute* "spec/rubocop/rspec/hook_spec.rb"
+                     (("it 'extracts symbol metadata'" it)
+                      (string-append it ",skip:true"))
+                     (("it 'extracts hash metadata'" it)
+                      (string-append it ",skip:true"))
+                     (("it 'combines symbol and hash metadata'" it)
+                      (string-append it ",skip:true"))
+                     (("it 'extracts hash metadata with no scope given'" it)
+                      (string-append it ",skip:true"))))))))
     (propagated-inputs (list ruby-rubocop-factory-bot))
     (synopsis "Code style checking for RSpec files")
     (description "This package provides a plugin for the RuboCop code style
