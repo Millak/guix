@@ -2061,14 +2061,13 @@ Haskell, no knowledge of the language is required to install and use it.")
 (define-public yeganesh
   (package
     (name "yeganesh")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
-
        (method url-fetch)
        (uri (string-append "http://dmwit.com/yeganesh/yeganesh-" version ".tar.gz"))
        (sha256
-        (base32 "04djfyjab3c5y9z9x8zd0xcx0jyy35zq7cl9ddr4ppf6k5ky6iky"))))
+        (base32 "1bgw5v1g5n06jj0lyxpf48mdpaa2s49g0lbagf3jf9q01rb92bvf"))))
     (build-system haskell-build-system)
     (inputs
      (list ghc-strict ghc-xdg-basedir))
