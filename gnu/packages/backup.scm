@@ -1446,17 +1446,16 @@ including virtual machine images).")
 (define-public vorta
   (package
     (name "vorta")
-    (version "0.11.3")
-    ;; The test folder is not included in the PyPI archive.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/borgbase/vorta")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0505id65lbbqj42lp4cvbw1q6v9qjhsnldr72ssv1kyir672j2pr"))))
+    (version "0.11.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/borgbase/vorta")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c9vnh791n1skz6a834nc6hn6rfki505h9hlcvifpjq6zy77ixgf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
