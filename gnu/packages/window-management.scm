@@ -715,7 +715,7 @@ its looks.")
 (define-public hyprmag
   (package
     (name "hyprmag")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -724,7 +724,7 @@ its looks.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00rc5xmddcg5iwganhwr8nyi7falh6jg324ip2r2yidmkpnsqj60"))))
+        (base32 "1m9wznhzfps29gfs97a0cmc6axgq498q14qwl6bpsg4ww10k2xi0"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
