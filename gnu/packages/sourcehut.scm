@@ -194,7 +194,7 @@ services.")
 (define-public python-todo-sr-ht
   (package
     (name "python-todo-sr-ht")
-    (version "0.85.3")
+    (version "0.85.7")
     (source
      (origin
        (method git-fetch)
@@ -203,7 +203,7 @@ services.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3ls24njl0gh21ni08m0g0j9cv0l0clab9dip7dkmg3vczyn70c"))))
+        (base32 "05hiv4yk06w6jwndq75864lkcjqanwfcb0gayf7f288288xrs076"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false))                   ;there are none
