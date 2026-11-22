@@ -451,7 +451,7 @@ software, with support for multiple texts and languages.")
 (define-public xiphos
   (package
     (name "xiphos")
-    (version "4.4.0")
+    (version "4.5.0")
     (source
      (origin
        (method git-fetch)
@@ -459,7 +459,7 @@ software, with support for multiple texts and languages.")
              (url "https://github.com/crosswire/xiphos")
              (commit version)))
        (sha256
-        (base32 "1xcbf5w09hiz50a981dsmnlyg0ag15w1isazcmqk3zd7hjay3ikj"))
+        (base32 "0qdbxqlribpdm6246lnm2rjir8788a0gg53s75achnaw6751v4f9"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs (list appstream
