@@ -35743,7 +35743,7 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
-    (version "3.4.2")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -35752,7 +35752,7 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vnsk33ql77ix6wpw4sid0xfyskhgv9p4ifpaqynqsv2g2jnss6y"))))
+        (base32 "1qfqcyg2fhj6xim1i4b94xlvn13mjlfsip9d6579di4xhmcjs48y"))))
     (build-system pyproject-build-system)
     (arguments
      (list

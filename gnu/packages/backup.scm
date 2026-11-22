@@ -718,6 +718,8 @@ rsnapshot uses hard links to deduplicate identical files.")
            python-msgpack
            ;; FUSE 3 isn't working well, so we stick with FUSE 2 for now:
            ;; <https://issues.guix.gnu.org/53407>
+           ;; XXX: The issue was not touched since 2021-01-21, maybe try to
+           ;; build with python-pyfuse3.
            python-llfuse
            python-packaging
            xxhash
