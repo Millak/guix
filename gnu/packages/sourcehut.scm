@@ -139,7 +139,7 @@ integration} build service.")
 (define-public python-lists-sr-ht
   (package
     (name "python-lists-sr-ht")
-    (version "0.71.4")
+    (version "0.72.5")
     (source
      (origin
        (method git-fetch)
@@ -148,12 +148,23 @@ integration} build service.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c0hvf2gl05yjf5zaj74b5y8n3y7km6zgffzh7r6y8vjnwhmw995"))))
+        (base32 "0fixm5mnbr72d1qjxqjfvj0fmbyiv6hffc62jbbgvzf7m4fwnxby"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))                   ;there are none
     (propagated-inputs
-     (list python-core-sr-ht python-pygit2))
+     (list python-flask
+           python-httpx
+           python-jinja2
+           python-markupsafe
+           python-nh3
+           python-pydantic
+           python-pydantic
+           python-pygit2
+           python-pygit2
+           python-requests
+           python-sqlalchemy
+           python-core-sr-ht))
     (native-inputs
      (list python-setuptools python-setuptools-scm))
     (home-page "https://git.sr.ht/~sircmpwn/lists.sr.ht")
