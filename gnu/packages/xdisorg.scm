@@ -77,6 +77,7 @@
 ;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2316,7 +2317,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "2.0.0")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/davatorium/rofi/"
@@ -2324,7 +2325,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "13cd39973aahijhcgayq6345snw08sqjk8yf6la9mvw9y4kywmba"))))
+                "1whwmbv3d518p7z6nd1vlpv4qh16r0ldc5136n4s34ksrg7pfmsg"))))
     (build-system meson-build-system)
     (native-inputs
      (list bison
