@@ -4215,7 +4215,7 @@ GPU-accelerated screen locking utility.")
 (define-public hyprpaper
   (package
    (name "hyprpaper")
-   (version "0.8.4")
+   (version "0.8.5")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -4224,7 +4224,7 @@ GPU-accelerated screen locking utility.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1dki39irswyz0p21l6rpin5br35nrx2m7gbhqgry3d2pvrp9d1zz"))))
+              "0ckgkmkrmylrg61lrzdxm7y75b5z8b6idqw39bw8f6jqfqcdkxwn"))))
    (build-system cmake-build-system)
    (arguments '(#:tests? #f)) ;; no test
    (native-inputs (list gcc-15 pkg-config))
@@ -4243,7 +4243,7 @@ GPU-accelerated screen locking utility.")
           pango
           wayland
           wayland-protocols))
-   (home-page "https://hyprland.org/")
+   (home-page "https://hypr.land")
    (synopsis "Wallpaper utility for Hyprland")
    (description
     "Hyprpaper is a blazing fast wallpaper utility for Hyprland with the ability to
