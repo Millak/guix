@@ -819,27 +819,26 @@ X11 (yet).")
     (name "xdotool")
     (version "3.20211022.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-              "https://github.com/jordansissel/xdotool/releases/download/v"
-              version "/xdotool-" version ".tar.gz"))
-        (sha256
-          (base32
-           "1nlsbwsdsgys607f00sc8xgb7l7cdzsb14avsg5fly3dvv7zmw4n"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jordansissel/xdotool")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nbpy140kqvp3ksjh4xywqf58r7vplfm2qgcqd2j6lgdf649ln2w"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; Test suite requires a lot of black magic
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys #:rest args)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/lib"))
-               (setenv "PREFIX" out)
-               (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
-               (setenv "CC" "gcc")
-               #t))))))
+     (list
+      #:tests? #f ; Test suite requires a lot of black magic
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (mkdir-p (string-append #$output "/lib"))
+              (setenv "PREFIX" #$output)
+              (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output "/lib"))
+              (setenv "CC" "gcc"))))))
     (native-inputs (list perl)) ; for pod2man
     (inputs (list libx11
                   libxext
