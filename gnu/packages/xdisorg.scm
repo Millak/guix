@@ -4127,7 +4127,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public hyprsunset
   (package
     (name "hyprsunset")
-    (version "0.3.3")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -4136,7 +4136,7 @@ This package is the fork of hsetroot by Hyriand.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k2gzbin4k18n81a0jpj8gbfphnib6kz4bbhbyhygb4p607sfkk2"))))
+        (base32 "1zldly2sizmy8y1g3rz2bpj8yggj3dw0w769py4xg7zsjy5xa6ij"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;No tests.
