@@ -27,6 +27,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages jupyter)
@@ -37,6 +38,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages qt))
 
 (define-public python-orange-canvas-core
@@ -148,7 +150,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
 (define-public orange
   (package
     (name "orange")
-    (version "3.40.0")
+    (version "3.41.0")
     (source
      (origin
        (method git-fetch)
@@ -157,7 +159,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kr3lsaqac73amwq841xhvgm63c4n58b28yqcv7pcgqswsl0dr00"))))
+        (base32 "0x5gayvpmjzjfr1pm63qvk854mnwxd7rqdzkwwfzyl097afpv3sp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -192,7 +194,6 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-trubar))
     (inputs
      (list bash-minimal ;for wrap
-           python-anyqt
            python-baycomp
            python-bottleneck
            python-chardet
@@ -201,28 +202,33 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-keyring
            python-keyrings-alt
            python-louvain
-           python-matplotlib
            python-networkx
-           python-numpy-1
+           python-numpy
            python-openpyxl
            python-opentsne
-           python-orange-canvas-core
-           python-orange-widget-base
            python-packaging
-           python-pandas-2
-           python-pygments
-           python-pyqt-6
-           python-pyqtgraph
-           python-pyqtwebengine-6
+           python-pandas
            python-pyyaml
-           python-qtconsole
            python-requests
            python-scikit-learn
            python-scipy
            python-serverfiles
+           python-tzdata
            python-xgboost
            python-xlrd
            python-xlsxwriter
+           ;; [optional] gui, pyqt, sql
+           python-anyqt
+           python-matplotlib
+           python-orange-canvas-core
+           python-orange-widget-base
+           python-psycopg2
+           python-pygments
+           ;; python-pymssql     ;not packaged yet in Guix
+           python-pyqt-6
+           python-pyqtgraph
+           python-pyqtwebengine-6
+           python-qtconsole
            qtbase
            qtsvg
            qtwayland
