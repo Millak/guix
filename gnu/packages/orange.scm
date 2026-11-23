@@ -101,13 +101,13 @@ data-mining application.")
 (define-public python-orange-widget-base
   (package
     (name "python-orange-widget-base")
-    (version "4.28.0")
+    (version "4.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange_widget_base" version))
        (sha256
-        (base32 "0v578r7hav3kd2wqyj17zd4g5wdg7qrf1a1sglrkr4gqlhq7swrr"))))
+        (base32 "0njvk7ppmz2lfny373a8v574s8k3mxxqaaihwi3i78h42iq8mgcv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -131,8 +131,7 @@ data-mining application.")
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-trubar
-           python-wheel))
+           python-trubar))
     (propagated-inputs
      (list python-anyqt
            python-matplotlib
