@@ -817,7 +817,7 @@ X11 (yet).")
 (define-public xdotool
   (package
     (name "xdotool")
-    (version "3.20211022.1")
+    (version "4.20260303.1")
     (source
      (origin
        (method git-fetch)
@@ -826,7 +826,7 @@ X11 (yet).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nbpy140kqvp3ksjh4xywqf58r7vplfm2qgcqd2j6lgdf649ln2w"))))
+        (base32 "1wmf2jxq64ag5pci9xvaqlgm6gr63629kllw7s85l3riyyx9j03j"))))
     (build-system gnu-build-system)
     (arguments
      (list
