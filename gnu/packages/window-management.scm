@@ -4108,20 +4108,20 @@ the config file that wayfire reads to update option values.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~emersion/wlr-randr")
+             (url "https://gitlab.freedesktop.org/emersion/wlr-randr.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kl5awwclmlfcxfz0jp8gzpg2vffsl9chfilysfsv1mq11a96ifs"))))
+        (base32 "1yy348zwm5xa6s2kik1zcj36908392xjbanl85y78mh8injqcwwl"))))
     (build-system meson-build-system)
     (inputs (list wayland))
-    (native-inputs (list pkg-config))
-    (home-page "https://sr.ht/~emersion/wlr-randr")
+    (native-inputs (list pkg-config scdoc))
+    (home-page "https://gitlab.freedesktop.org/emersion/wlr-randr")
     (synopsis "Utility to manage Wayland compositor outputs")
     (description "wlr-randr is a utility to manage outputs of a Wayland compositor.")
     (license license:expat))) ; MIT license
