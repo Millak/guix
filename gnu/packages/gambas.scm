@@ -55,7 +55,7 @@
 (define-public gambas
   (package
     (name "gambas")
-    (version "3.21.6")
+    (version "3.22.2")
     (source
      (origin
        (method git-fetch)
@@ -64,7 +64,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0490z2np79wqn10f422c3bmfh67492bhci44cfz80k766mbclc0w"))))
+        (base32 "08l73i8blnrdacivwdqxb735qfc06vxhcjfh3ssv5kdshdmnlckf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -105,6 +105,13 @@
                         "/lib"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dependencies
+            (lambda _
+              ;; Fix missing Qt6PrintSupport dependency for gb.qt6.webview.
+              ;; Upstream issue: <https://gitlab.com/gambas/gambas/-/merge_requests/440>
+              (substitute* "gb.qt6/configure.ac"
+                (("Qt6WebEngineWidgets")
+                 "Qt6WebEngineWidgets Qt6PrintSupport"))))
           (add-after 'unpack 'qualify-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "main/gbc/gbc.c"
