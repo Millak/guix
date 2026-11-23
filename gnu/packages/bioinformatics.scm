@@ -8363,6 +8363,7 @@ comment or quality sections.")
      "@acronym{GEMMA, Genome-wide Efficient Mixed Model Association} provides a
 standard linear mixed model resolver with application in @acronym{GWAS,
 genome-wide association studies}.")
+    (supported-systems %64bit-supported-systems)
     (license license:gpl3)))
 
 (define-public hisat
