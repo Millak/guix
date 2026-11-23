@@ -4068,7 +4068,7 @@ autostarter compliant with the XDG autostart specification.")
 (define-public hsetroot
   (package
     (name "hsetroot")
-    (version "1.0.5")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (file-name (git-file-name name version))
@@ -4077,7 +4077,7 @@ autostarter compliant with the XDG autostart specification.")
                     (commit version)))
               (sha256
                (base32
-                "1jbk5hlxm48zmjzkaq5946s58rqwg1v1ds2sdyd2ba029hmvr722"))))
+                "01hnvsdp34ainvwy59vgj6z31bcr3viwi3ga341mfvgr31vc99zr"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4091,7 +4091,7 @@ autostarter compliant with the XDG autostart specification.")
             (lambda _
               (mkdir-p (string-append #$output "/bin")))))))
     (inputs
-     (list libx11 imlib2 libxinerama))
+     (list libx11 imlib2 libxinerama libxrandr))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/himdel/hsetroot")
