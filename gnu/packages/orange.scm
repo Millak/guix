@@ -163,18 +163,48 @@ GUI based workflow.  It is primarily used in the Orange framework.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: Figure out how to enable/fix tests: ImportError: cannot import
-      ;; name '_variable' from partially initialized module 'Orange.data'
-      #:tests? #f
+      ;; tests: Ran 5971 tests; 710  skipped, 1 expected failures
       #:test-backend #~'unittest
       #:test-flags #~(list "-v" "Orange.tests" "Orange.widgets.tests")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute*
+                  (list "Orange/tests/test_url_reader.py"
+                        "Orange/misc/tests/test_server_embedder.py"
+                        "Orange/widgets/unsupervised/tests/test_owkmeans.py")
+                (((string-join
+                   ;; Network tests.
+                   (list "test_base_url_with_query"
+                         "test_basic_file"
+                         "test_url_with_fragment"
+                         "test_zipped"
+                         "test_callbac"
+                         "test_connection_error"
+                         "test_different_models_caches"
+                         "test_encode_data_instance"
+                         "test_on_json_wrong_key_response"
+                         "test_on_non_json_response"
+                         "test_other_errors"
+                         "test_persistent_caching"
+                         "test_read_error"
+                         "test_responses"
+                         "test_responses_empty"
+                         "test_retries"
+                         "test_too_many_examples_for_one_batch"
+                         ;; AssertionError: Lists differ <...>
+                         ;; -  np.float64(0.10179851067061697),
+                         ;; +  0.10908461268784905,
+                         "test_optimization_fails")
+                   "|") m)
+                 (string-append "__off_" m)))))
           (add-before 'check 'pre-check
-            ;; Tests need a writable home.
             (lambda _
               (setenv "HOME" "/tmp")
-              (setenv "QT_QPA_PLATFORM" "offscreen")))
+              (setenv "QT_API" "PyQt6")
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (delete-file-recursively "Orange")))
           (add-after 'wrap 'wrap-executable
             ;; Ensure that icons are found at runtime.
             (lambda _
