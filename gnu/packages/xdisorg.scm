@@ -4433,7 +4433,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
 (define-public wvkbd
   (package
     (name "wvkbd")
-    (version "0.18")
+    (version "0.21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4442,7 +4442,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03c1rvkg8vb3gvm3acqq97hijr6pidsga6f5n5w41wcz0qy5pxj5"))))
+                "04gzm4qwqw36i8cakg6v4015zpysh8wvk038k8b3q6b41yiklpx3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests
