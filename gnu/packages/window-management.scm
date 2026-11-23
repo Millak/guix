@@ -1567,6 +1567,7 @@ tools in a live programming environment.")
                             "bin/grep"         ;theme hook text processing
                             "bin/pgrep"        ;theme hook process detection
                             "bin/sed"          ;theme hook text processing
+                            "bin/wl-mirror"    ;display mirroring
                             "bin/wlr-randr"    ;fallback display power control
                             "bin/xdg-open")))) ;open links and OAuth pages.
                 (wrap-program (string-append #$output "/bin/noctalia")
@@ -1626,6 +1627,7 @@ tools in a live programming environment.")
       wayland                               ;Wayland client library and scanner
       wayland-protocols                     ;Wayland protocol definitions
       wireplumber-minimal                   ;WirePlumber client library
+      wl-mirror                             ;display mirroring
       wlr-randr                             ;fallback display power control
       xdg-utils))                           ;Open links and OAuth pages.
     (home-page "https://github.com/noctalia-dev/noctalia")
