@@ -42,17 +42,17 @@
 (define-public python-orange-canvas-core
   (package
     (name "python-orange-canvas-core")
-    (version "0.2.9")
+    (version "0.2.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange_canvas_core" version))
        (sha256
-        (base32 "09yvri7jh7wl53v9m2qybn0ldznlqag5nryqkcvr6qp33bd4h48n"))))
+        (base32 "1c6xq4bl524p2n0p74iw35nwwfwnlhigvcqyqr9kbn4n4w7831ad"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 227 passed, 4 skipped, 13 deselected, 15 warnings
+      ;; tests: 242 passed, 4 skipped, 2 deselected, 24 warnings
       #:test-flags
       #~(list "-k" (string-join
                     ;; There is no CanvasIcon.png icon file.
