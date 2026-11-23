@@ -1164,7 +1164,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.12.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1174,7 +1174,7 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "080wh1rb11xzzmwpmb0qxn7zhabkgqaklg4395dzf4p9p3wlf5hk"))))
+        (base32 "17zzxpp23n2wh1514klnfwrfa2gr9rz4ixkv4grc3c1qbnkfh6xk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf autoconf-archive automake pkg-config))
@@ -1186,7 +1186,8 @@ move windows, switch between desktops, etc.).")
            libxcomposite
            libxext
            libxfixes
-           libxinerama))
+           libxinerama
+           libxrandr))
     (home-page "https://github.com/resurrecting-open-source-projects/scrot")
     (synopsis "Command-line screen capture utility for X Window System")
     (description
