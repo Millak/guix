@@ -4069,34 +4069,32 @@ autostarter compliant with the XDG autostart specification.")
   (package
     (name "hsetroot")
     (version "1.0.5")
-    (home-page "https://github.com/himdel/hsetroot")
     (source (origin
               (method git-fetch)
               (file-name (git-file-name name version))
               (uri (git-reference
-                    (url home-page)
+                     (url "https://github.com/himdel/hsetroot")
                     (commit version)))
               (sha256
                (base32
                 "1jbk5hlxm48zmjzkaq5946s58rqwg1v1ds2sdyd2ba029hmvr722"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags
-       (list
-        ,(string-append "CC=" (cc-for-target))
-        (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'install 'mkdir-install-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/bin"))))))))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'install 'mkdir-install-path
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
     (inputs
      (list libx11 imlib2 libxinerama))
     (native-inputs
      (list pkg-config))
+    (home-page "https://github.com/himdel/hsetroot")
     (synopsis "Imlib2-based wallpaper changer")
     (description
      "The @command{hsetroot} command composes wallpapers for X.
