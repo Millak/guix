@@ -8057,7 +8057,7 @@ provides API for reading and writing INI data.")
 (define-public guile-toml
   (package
     (name "guile-toml")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -8066,7 +8066,7 @@ provides API for reading and writing INI data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nyxj9gz0v5n2whi5wikidz5d5a7hf181vwnlr0v1l67xvxhxv1d"))))
+        (base32 "0kk3nh22awvhhpknr9k4mnl8ix0ps2x5zf9pvs97qa5jnl9gzm6n"))))
     (build-system guile-build-system)
     (arguments
      (list
