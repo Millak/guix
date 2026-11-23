@@ -239,7 +239,7 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "3.15.21")
+    (version "3.15.29")
     (source
      (origin
        (method git-fetch)
@@ -248,7 +248,7 @@ it.")
           (url "https://github.com/trealla-prolog/trealla")
           (commit (string-append "v" version))))
        (sha256
-        (base32 "1dvywb8rdxbam4y61550wqi55a8zdvkd8rd0y5ppb1b0wbz3kz5p"))
+        (base32 "1z7h138bfc0i0c863pgn481p3002mrxqi440zfqlvly12vk0if9a"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -278,6 +278,9 @@ it.")
                  (string-append "v" #$version)))))
           (add-after 'unpack 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/issues/test1186c.pl"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))
               (substitute* "library/curl.pl"
                 (("libcurl\\.so")
                  (search-input-file inputs "lib/libcurl.so")))
