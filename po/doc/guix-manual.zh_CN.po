@@ -30,16 +30,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.0.1-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-11 03:18+0000\n"
-"PO-Revision-Date: 2026-07-18 12:09+0000\n"
-"Last-Translator: Eugene_Cheng <eugene_cheng@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-11-21 05:00+0000\n"
+"PO-Revision-Date: 2026-11-17 12:25+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-manual/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.10.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -196,25 +196,25 @@ msgid "@url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,"
 msgstr "@url{https://gnu.org/software/guile/, GNU Guile}，版本 3.0.x，"
 
 msgid "version 3.0.9 or later;"
-msgstr "版本 3.0.9 或更新；"
+msgstr "版本 3.0.9 或更新版本;"
 
 msgid "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, version"
 msgstr "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}，版本"
 
 msgid "0.1.0 or later;"
-msgstr "0.1.0 或更新；"
+msgstr "0.1.0 或更新版本;"
 
-msgid "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS until version 3.7.8 included.};"
-msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS}（@pxref{Guile Preparations, 如何为 Guile 安装 GnuTLS 绑定, gnutls-guile, GnuTLS-Guile}）@footnote{关于 @uref{https://gnutls.org/, GnuTLS} 的 Guile 绑定作为 GnuTLS 直到（含）版本 3.7.8 的一部分分发。}；"
+msgid "@uref{https://codeberg.org/guile-gnutls/guile-gnutls, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS until version 3.7.8 included.};"
+msgstr "@uref{https://codeberg.org/guile-gnutls/guile-gnutls, Guile-GnuTLS} （@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile}）@footnote{@uref{https://gnutls.org/, GnuTLS} 的 Guile 绑定项曾作为 GnuTLS 的一部分分发，这一情况持续到 3.7.8 版本（含）为止。}；"
 
 msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
-msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, 版本 0.1.0 或更新；"
+msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, 版本 0.1.0 或更新版本;"
 
 msgid "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
 msgstr "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
 
 msgid "version 0.1.0 or later;"
-msgstr "版本 0.1.0 或更新；"
+msgstr "版本 0.1.0 或更新版本;"
 
 msgid "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};"
 msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib}；"
@@ -222,20 +222,14 @@ msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib}�
 msgid "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 
-msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
-msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}，版本 0.10.0 或更新；"
+msgid "@uref{https://codeberg.org/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
+msgstr "@uref{https://codeberg.org/guile-git/guile-git, Guile-Git}，版本 0.10.0 或更新；"
 
 msgid "@uref{https://git-scm.com, Git} (yes, both!);"
-msgstr "@uref{https://git-scm.com, Git}（是的，两个都是！）；"
-
-msgid "@uref{https://github.com/aconchillo/guile-json, Guile-JSON}"
-msgstr "@uref{https://github.com/aconchillo/guile-json, Guile-JSON}"
+msgstr "@uref{https://git-scm.com, Git}（是的，两个都要！）；"
 
 msgid "4.3.0 or later;"
-msgstr "4.3.0 或更新；"
-
-msgid "@url{https://www.gnu.org/software/make/, GNU Make}."
-msgstr "@url{https://www.gnu.org/software/make/, GNU Make}."
+msgstr "4.3.0 或更新版本;"
 
 msgid "The following dependencies are optional:"
 msgstr "这些依赖是可选的："
@@ -244,7 +238,7 @@ msgid "Support for build offloading (@pxref{Daemon Offload Setup}) and @command{
 msgstr "对构建下发（@pxref{Daemon Offload Setup}）和 @command{guix copy} （@pxref{Invoking guix copy}）的支持依赖于 @uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH}，版本 0.13.0 或更新。"
 
 msgid "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}, for zstd compression and decompression in @command{guix publish} and for substitutes (@pxref{Invoking guix publish})."
-msgstr "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}，用于在 @command{guix publish} 中进行 zstd 压缩和解压缩，以及用于 substitutes (@pxref{Invoking guix publish})."
+msgstr "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}，用于在 @command{guix publish} 中进行 zstd 压缩和解压缩，以及用于替代品（@pxref{Invoking guix publish}）."
 
 msgid "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for the @code{crate} importer (@pxref{Invoking guix import})."
 msgstr "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} 用于 @code{crate} 导入器（@pxref{Invoking guix import}）。"
@@ -258,9 +252,6 @@ msgstr "当 @url{http://www.bzip.org, libbz2} 可用时，@command{guix-daemon} 
 msgid "Unless @option{--disable-daemon} was passed to @command{configure}, the following packages are also needed:"
 msgstr "除非 @option{--disable-daemon} 被传给 @command{configure}，以下软件包也被需要："
 
-msgid "@url{https://gnupg.org/, GNU libgcrypt};"
-msgstr "@url{https://gnupg.org/, GNU libgcrypt};"
-
 msgid "@url{https://sqlite.org, SQLite 3};"
 msgstr "@url{https://sqlite.org, SQLite 3};"
 
@@ -270,28 +261,14 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++}，带有支持对于"
 msgid "C++11 standard."
 msgstr "C++11 标准。"
 
-msgid ""
-"git clone https://git.guix.gnu.org/guix.git\n"
-"cd guix\n"
-msgstr ""
-"git clone https://git.guix.gnu.org/guix.git\n"
-"cd guix\n"
+msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository@footnote{ Guix uses @code{master} as the default branch name. A proposal in 2025 to change the default branch name to @code{main} did not reach consensus.  See @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/003-rename-default-branch.md, Guix Consensus Document 003}.}:"
+msgstr "如果你想折腾 Guix 本身，建议使用 Git 仓库@footnote{ Guix 使用 @code{master} 作为默认分支。2025年时，将默认分支名改为 @code{main} 的提议并未达到共识。参见@uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/003-rename-default-branch.md, Guix Consensus Document 003}。}里最新的版本："
 
 msgid "authentication, of a Guix checkout"
 msgstr "Guix 签出的身份认证"
 
 msgid "How do you ensure that you obtained a genuine copy of the repository? To do that, run @command{guix git authenticate}, passing it the commit and OpenPGP fingerprint of the @dfn{channel introduction} (@pxref{Invoking guix git authenticate}):"
 msgstr "如何确保已获得存储库的真实副本？为此请运行 @command{guix git authenticate}，将 @dfn{channel introduction}（@pxref{Invoking guix git authenticate}）的提交和 OpenPGP 指纹传给它："
-
-msgid ""
-"guix git authenticate -k origin/keyring \\\n"
-"   9edb3f66fd807b096b48283debdcddccfea34bad \\\n"
-"  \"BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA\"\n"
-msgstr ""
-"guix git authenticate \\\n"
-"  -k origin/keyring \\\n"
-"  9edb3f66fd807b096b48283debdcddccfea34bad \\\n"
-"  \"BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA\"\n"
 
 msgid "This command completes with exit code zero on success; it prints an error message and exits with a non-zero code otherwise."
 msgstr "此命令完成后，若成功则退出代码为零；否则打印一条错误消息，以非零代码退出。"
@@ -318,9 +295,6 @@ msgstr ""
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "如果在从检出中构建 Guix 时无法使用 Guix，则除了安装说明中提到的 软件包（@pxref{Requirements}）外，以下是所需的软件包。"
 
-msgid "@url{https://gnu.org/software/autoconf/, GNU Autoconf};"
-msgstr "@url{https://gnu.org/software/autoconf/, GNU Autoconf};"
-
 msgid "@url{https://gnu.org/software/automake/, GNU Automake};"
 msgstr "@url{https://gnu.org/software/automake/, GNU Automake};"
 
@@ -338,9 +312,6 @@ msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man（可选）}�
 
 msgid "On Guix, other development tools, like @code{strace}, can be included by giving them as extra arguments to @command{guix shell}:"
 msgstr "在 Guix 上，其它的开发工具，如 @code{strace}， 可以将它们作为额外的参数包含到 @command{guix shell} 中。"
-
-msgid "guix shell --pure -D guix strace\n"
-msgstr "guix shell --pure -D guix  strace\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "在这里你可以使用 Autoconf 和 Automake 生成构建系统的基础设施："
@@ -366,14 +337,8 @@ msgstr "更多信息请参考 @xref{Macro Search Path,,, automake, The GNU Autom
 msgid "state directory"
 msgstr "state 目录"
 
-msgid "localstatedir"
-msgstr "localstatedir"
-
 msgid "system configuration directory"
 msgstr "系统配置目录"
-
-msgid "sysconfdir"
-msgstr "sysconfdir"
 
 msgid "Then, run:"
 msgstr "然后，运行："
@@ -478,6 +443,9 @@ msgstr "所有测试都应通过或被跳过，并且这也会设置好测试存
 msgid "-CPW"
 msgstr "-CPW"
 
+msgid "Some tests are skipped for other reasons, for example because they are only applicable for a specific system."
+msgstr "有些测试因别的原因被跳过，比如它们只在可应用在某些特定系统上。"
+
 msgid "Test cases can run in parallel: you can use the @code{-j} option of GNU@tie{}make to speed things up.  The first run may take a few minutes on a recent machine; subsequent runs will be faster because the store that is created for test purposes will already have various things in cache."
 msgstr "测试用例可以并行运行：你可以用 GNU@tie{}make 的 @code{-j} 参数来加速运行。在一台较新的机器上第一次运行可能会花几分钟，后续的运行会更快，因为为测试创建的仓库已经包含了各种缓存。"
 
@@ -511,6 +479,9 @@ msgstr "当与 @option{--brief=no} 结合使用时，可以使用 @option{--show
 
 msgid "make check SCM_LOG_DRIVER_FLAGS=\"--brief=no --show-duration=yes\"\n"
 msgstr "make check SCM_LOG_DRIVER_FLAGS=\"--brief=no --show-duration=yes\"\n"
+
+msgid "@xref{Parallel Test Harness,,,automake,GNU Automake} for more information about the Automake Parallel Test Harness."
+msgstr "有关 Automake 并行测试工具的更多信息，请 @xref{Parallel Test Harness,,,automake,GNU Automake}。"
 
 msgid "Upon failure, please see if there already exists an issue which describes your problem on @uref{https://codeberg.org/guix/guix/issues, Codeberg}, else create a new one and attach the @file{test-suite.log} file.  Please specify the Guix version being used as well as version numbers of the dependencies (@pxref{Requirements}) in your message by running @code{./pre-inst-env guix describe}."
 msgstr "遇到错误时，请先在@uref{https://codeberg.org/guix/guix/issues, Codeberg}上检索是否已有描述相同问题的issue；若无，请新建issue并附带 @file{test-suite.log} 文件。提交时，请运行@code{./pre-inst-env guix describe}并在消息里注明所使用的 Guix 的版本信息和依赖（@pxref{Requirements}）的版本信息。"
@@ -571,9 +542,6 @@ msgstr ""
 
 msgid ";;; (\"x86_64-linux\")\n"
 msgstr ";;; (\"x86_64-linux\")\n"
-
-msgid "REPL"
-msgstr "REPL"
 
 msgid "read-eval-print loop"
 msgstr "读取 - 估值 - 打印（read-eval-print）循环"
@@ -650,11 +618,20 @@ msgstr "Guix 的所有配置和开发工作均以 Scheme 语言完成。与所�
 msgid "syntax highlighting, so that keywords are visually distinguishable."
 msgstr "语法高亮，使关键词在视觉上易于区分。"
 
+msgid "The following optional features can make your life easier:"
+msgstr "下面这些可选措施可以让你的生活更轻松："
+
 msgid "Guile Studio"
 msgstr "Guile Studio"
 
+msgid "First step in your transition to Emacs."
+msgstr "您过渡到 Emacs 的第一步。"
+
 msgid "Vim and NeoVim"
 msgstr "Vim 和 NeoVim"
+
+msgid "Just like for Guile hacking (@pxref{Using Guile in Emacs,,, guile, Guile Reference Manual}), Emacs works best when empowered by the wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:"
+msgstr "正如折腾 Guile 时一样（@pxref{Using Guile in Emacs,,, guile, Guile Reference Manual}），Emacs 在得到神奇的 @url{https://nongnu.org/geiser/, Geiser} 加持时，就能发挥出最佳效果。为此运行："
 
 msgid "Geiser allows for interactive and incremental development from within Emacs: code compilation and evaluation from within buffers, access to on-line documentation (docstrings), context-sensitive completion, @kbd{M-.} to jump to an object definition, a REPL to try out your code, and more (@pxref{Introduction,,, geiser, Geiser User Manual}).  If you allow Emacs to load the @file{.dir-locals.el} file at the root of the project checkout, it will cause Geiser to automatically add the local Guix sources to the Guile load path."
 msgstr "Geiser 允许在 Emacs 里进行交互增量式的开发：buffer 里的代码编译和执行，即时文档 获取 (docstrings)，根据上下文补全，@kbd{M-.} 跳转到对象定义，用来尝试代码的 REPL，及更多（@pxref{Introduction,,, geiser, Geiser User Manual}）。如果你允许 Emacs 在项目根目录加载@file{.dir-locals.el}中的文件，Geiser 将会自动将项目根目录下的 guix 资源添加到 Guile 加载路径中。"
@@ -738,6 +715,9 @@ msgstr ""
 
 msgid "You can check if your copyright is up to date by evaluating @code{M-x copyright-update}.  If you want to do it automatically after each buffer save then add @code{(add-hook 'after-save-hook 'copyright-update)} in Emacs."
 msgstr "你可以通过执行 @code{M-x copyright-update} 检查版权信息是否已更新。若你想要在每次缓存区保存后自动做这件事，就在 Emacs 中添加 @code{(add-hook 'after-save-hook 'copyright-update)}."
+
+msgid "Emacs has a nice minor mode called @code{bug-reference}, which can be used to follow link to issues and pull requests such as @samp{#1234} or @samp{guix/guix#1234} (@pxref{Bug Reference,,, emacs, The GNU Emacs Manual}).  To set it up, enable it in the relevant modes:"
+msgstr "Emacs 有一个很好用的次要模式，叫作 @code{bug-reference}，它可以用来跟踪指向 issue 和 pull request 的链接，例如 @samp{#1234} 或 @samp{guix/guix#1234}（@pxref{Bug Reference,,, emacs, The GNU Emacs Manual}）。为此需在相关的模式中启用它："
 
 msgid "Guile Studio is a pre-configured Emacs with mostly everything you need to start hacking in Guile. If you are not familiar with Emacs it makes the transition easier for you."
 msgstr "Guile Studio 是预配置的 Emacs 环境，已集成 Guile 开发所需的主要组件。即便您不熟悉 Emacs，亦可助您轻松过渡开发实践。"
@@ -1090,9 +1070,6 @@ msgstr "./pre-inst-env guile -c '(use-modules (gnu packages gnew))'\n"
 msgid "Once your package builds correctly, please send us a patch (@pxref{Submitting Patches}).  Well, if you need help, we will be happy to help you too.  Once the patch is committed in the Guix repository, the new package automatically gets built on the supported platforms by @url{https://@value{SUBSTITUTE-SERVER-1}, our continuous integration system}."
 msgstr "一旦你的软件包可以正确构建，请给我们发送补丁 (@pxref{Submitting Patches})。当然，如果你需要帮助，我们也会很乐意帮助你。一旦补丁被提交到 Guix 仓库里，这个新的软件包会由@url{https://@value{SUBSTITUTE-SERVER-1}, our continuous integration system}自动地在支持的平台上构建。"
 
-msgid "substituter"
-msgstr "substitutes"
-
 msgid "Software Freedom"
 msgstr "软件自由"
 
@@ -1179,6 +1156,9 @@ msgstr "此外，GNU 发行版遵循@url{https://www.gnu.org/distros/free-system
 
 msgid "Some otherwise free upstream package sources contain a small and optional subset that violates the above guidelines, for instance because this subset is itself non-free code.  When that happens, the offending items are removed with appropriate patches or code snippets in the @code{origin} form of the package (@pxref{Defining Packages}).  This way, @code{guix build --source} returns the ``freed'' source rather than the unmodified upstream source."
 msgstr "某些上游的软件包源代码包含一小部分违反上述准则的可选的子集，比如这个子集本身就是非自由代码。这时，这些讨厌的代码需要用合适的补丁或者软件包定义（@pxref{Defining Packages}）里的@code{origin}里的代码片段移除。这样，@code{guix build --source}就可以返回自由的源代码而不是未经修改的上游源代码。"
+
+msgid "bundling"
+msgstr "构建"
 
 msgid "package name"
 msgstr "软件包名字"
@@ -1349,9 +1329,6 @@ msgstr "描述应该在 5 至 10 句话之间。使用完整的句子，并且�
 msgid "Texinfo markup, in package descriptions"
 msgstr "软件包描述里的 Texinfo 标记"
 
-msgid "Synopses and descriptions are translated by volunteers @uref{https://translate.codeberg.org/projects/guix/packages, at Weblate} so that as many users as possible can read them in their native language.  User interfaces search them and display them in the language specified by the current locale."
-msgstr "简介和描述@uref{https://translate.codeberg.org/projects/guix/packages, 由 Weblate}项目的志愿者翻译，从而使尽可能多的用户可以用母语阅读。用户界面用当前区域设置的语言搜索和展示这些信息。"
-
 msgid "To allow @command{xgettext} to extract them as translatable strings, synopses and descriptions @emph{must be literal strings}.  This means that you cannot use @code{string-append} or @code{format} to construct these strings:"
 msgstr "为了让@command{xgettext}可以把它们提取成待翻译的字符串，简介和描述@emph{必须是文字字符串}。这意味着你不能使用@code{string-append}或@code{format}来合成字符串："
 
@@ -1410,9 +1387,6 @@ msgstr "emacs，打包"
 msgid "elisp, packaging"
 msgstr "elisp，打包"
 
-msgid "Emacs packages should preferably use the Emacs build system (@pxref{emacs-build-system}), for uniformity and the benefits provided by its build phases, such as the auto-generation of the autoloads file and the byte compilation of the sources.  Because there is no standardized way to run a test suite for Emacs packages, tests are disabled by default.  When a test suite is available, it should be enabled by setting the @code{#:tests?} argument to @code{#true}.  By default, the command to run the test is @command{make check}, but any command can be specified via the @code{#:test-command} argument.  The @code{#:test-command} argument expects a list containing a command and its arguments, to be invoked during the @code{check} phase."
-msgstr "为统一化以及享受构建阶段的方便，比如自动生成 autoloads 文件、字节编译源文件，Emacs 包应该选择 Emacs 构建系统（@pxref{emacs-build-system}）。由于没有标准化的方法运行 Emacs 包的测试用例，测试默认是禁用的。当一个测试用例可用时，可以通过设置 @code{#:tests?} 参数为 @code{#true} 启用。默认条件下，运行测试的命令是 @command{make check}，不过其它的命令也可以用 @code{#:test-command} 参数指定。参数 @code{#:test-command} 应当由包含命令和命令参数的列表，并在 @code{check} 阶段调用。"
-
 msgid "The Elisp dependencies of Emacs packages are typically provided as @code{propagated-inputs} when required at run time.  As for other packages, build or test dependencies should be specified as @code{native-inputs}."
 msgstr "Emacs 包的 Elisp 依赖项通常在运行时需要时作为 @code{propagated-inputs} 提供。对于其他包，构建或测试依赖项应指定为@code{native-inputs}。"
 
@@ -1424,9 +1398,6 @@ msgstr "#:include (cons \"^snippets/\" %default-include)\n"
 
 msgid "When encountering problems, it is wise to check for the presence of the @code{Package-Requires} extension header in the package main source file, and whether any dependencies and their versions listed therein are satisfied."
 msgstr "当遇到问题时，明智的做法是检查包主要源文件中是否存在 @code{Package-Requires} 扩展标头，以及是否满足其中列出的任何依赖项及其版本。"
-
-msgid "python"
-msgstr "python"
 
 msgid "Specifying Dependencies"
 msgstr "指定依赖"
@@ -1446,14 +1417,8 @@ msgstr "任何不属于上述类别的包都要被加进@code{inputs}，如，�
 msgid "If a Python package has optional dependencies (@code{extras_require}), it is up to you to decide whether to add them or not, based on their usefulness/overhead ratio (@pxref{Submitting Patches, @command{guix size}})."
 msgstr "如果一个 Python 软件包由可选的依赖（@code{extras_require}），由你根据它们的性价比（用处/负担）决定是否添加它们（@pxref{Submitting Patches, @command{guix size}})."
 
-msgid "perl"
-msgstr "perl"
-
 msgid "Perl programs standing for themselves are named as any other package, using the lowercase upstream name.  For Perl packages containing a single class, we use the lowercase class name, replace all occurrences of @code{::} by dashes and prepend the prefix @code{perl-}.  So the class @code{XML::Parser} becomes @code{perl-xml-parser}.  Modules containing several classes keep their lowercase upstream name and are also prepended by @code{perl-}.  Such modules tend to have the word @code{perl} somewhere in their name, which gets dropped in favor of the prefix.  For instance, @code{libwww-perl} becomes @code{perl-libwww}."
 msgstr "Perl 程序和其它软件包的命名规则类似，用小写的上游名字命名。对于仅包含一个类的Perl 包，我们使用小写的类名，把所有的@code{::}替换成破折号，并且添加@code{perl-}前缀。所以类@code{XML::Parser}变成@code{perl-xml-parser}。包含多个类的模块保留它们上游的名字，并且添加@code{perl-}前缀。这类模块的名字通常含有@code{perl}，这个单词需要被删掉。例如，@code{libwww-perl}变成@code{perl-libwww}."
-
-msgid "java"
-msgstr "java"
 
 msgid "Java programs standing for themselves are named as any other package, using the lowercase upstream name."
 msgstr "Java 程序和其它软件包的命名规则类似，用小写的上游名字命名。"
@@ -1464,8 +1429,8 @@ msgstr "为了避免和其它编程语言混淆和命名冲突，Java 软件包�
 msgid "For Java packages containing a single class or a small class hierarchy, we use the lowercase class name, replace all occurrences of @code{.} by dashes and prepend the prefix @code{java-}.  So the class @code{apache.commons.cli} becomes package @code{java-apache-commons-cli}."
 msgstr "对于仅包含一个或很少几个类的 Java 软件包，我们使用小写的类名，把所有的@code{.}替换成破折号，并且添加@code{java-}前缀。因此，类@code{apache.commons.cli}打包后的名字是@code{java-apache-commons-cli}。"
 
-msgid "rust"
-msgstr "rust"
+msgid "Warning"
+msgstr "警告"
 
 msgid "fonts"
 msgstr "字体"
@@ -1579,9 +1544,6 @@ msgstr ""
 "guix build --system=armhf-linux --rounds=2 hello\n"
 "guix build --system=aarch64-linux --rounds=2 hello\n"
 
-msgid "bundling"
-msgstr "构建"
-
 msgid "Make sure the package does not use bundled copies of software already available as separate packages."
 msgstr "请确保软件包里不捆绑出现已经被打过包的软件的副本。"
 
@@ -1675,8 +1637,14 @@ msgstr "./etc/teams.scm codeowners > CODEOWNERS\n"
 msgid "./etc/teams.scm sync-codeberg-teams @var{token}\n"
 msgstr "./etc/teams.scm sync-codeberg-teams @var{token}\n"
 
+msgid "Find three committers who would vouch for you.  Each of them should email a statement to @email{guix-maintainers@@gnu.org} (a private alias for the collective of maintainers), signed with their OpenPGP key."
+msgstr "找到三位愿意为您担保的提交者。他们每个人都应向 @email{guix-maintainers@@gnu.org}（维护者集体的私人别名）发送一份用他们 OpenPGP 密钥签名的声明。"
+
 msgid "digest-algo sha512\n"
 msgstr "digest-algo sha512\n"
+
+msgid "Important"
+msgstr "注意"
 
 msgid "All commits that are pushed to the central repository on Codeberg must be signed with an OpenPGP key, and the public key should be uploaded to your user account on Codeberg and to public key servers, such as @code{keys.openpgp.org}.  To configure Git to automatically sign commits, run:"
 msgstr "所有推送到 Codeberg 中央存储库的提交必须使用 OpenPGP 密钥签名，并且公钥应上传到您在 Codeberg 的用户帐户和公共密钥服务器，例如 @code{keys.openpgp.org}。要配置 Git 自动签署提交，请运行："
@@ -1712,12 +1680,6 @@ msgstr "为了防止意外将 @code{guix} 包更新到其他人无法引用的�
 
 msgid "Services"
 msgstr "服务"
-
-msgid "documentation"
-msgstr "documentation"
-
-msgid "i18n"
-msgstr "i18n"
 
 msgid "On Weblate, you will find various links to the editor, that will show various subsets (or all) of the strings.  Have a look around and at the @uref{https://docs.weblate.org/en/latest/,documentation} to familiarize yourself with the platform."
 msgstr ""
@@ -1857,6 +1819,9 @@ msgstr ""
 
 msgid "This manual is also available in Simplified Chinese (@pxref{Top,,, guix.zh_CN, GNU Guix参考手册}), French (@pxref{Top,,, guix.fr, Manuel de référence de GNU Guix}), German (@pxref{Top,,, guix.de, Referenzhandbuch zu GNU Guix}), Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}), Italian (@pxref{Top,,, guix.it, Manuale di riferimento di GNU Guix}), Brazilian Portuguese (@pxref{Top,,, guix.pt_BR, Manual de referência do GNU Guix}), and Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you would like to translate it in your native language, consider joining @uref{https://translate.codeberg.org/projects/guix/documentation-manual, Weblate} (@pxref{Translating Guix})."
 msgstr "这个用户手册还提供英语版（@pxref{Top,,, guix, GNU Guix Reference Manual}）、法语版（@pxref{Top,,, guix.fr, Manuel de référence de GNU Guix}）、德语版（@pxref{Top,,, guix.de, Referenzhandbuch zu GNU Guix}）、西班牙语版（@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}）、意大利语版（@pxref{Top,,, guix.it, Manuale di riferimento di GNU Guix}）、巴西葡萄牙语版（@pxref{Top,,, guix.pt_BR, Manual de referência do GNU Guix}）与俄语版（@pxref{Top,,, guix.ru, Руководство GNU Guix}）。如果你想把它翻译成你的母语，请考虑加入 @uref{https://translate.codeberg.org/projects/guix/documentation-manual, Weblate}（@pxref{Translating Guix}）。"
+
+msgid "Introduction"
+msgstr "简介"
 
 msgid "What is Guix about?"
 msgstr "Guix 是关于什么的？"
@@ -2113,9 +2078,6 @@ msgstr "调用 guix package"
 msgid "Package installation, removal, etc."
 msgstr "软件包安装，移除等。"
 
-msgid "Substitutes"
-msgstr "替代品"
-
 msgid "Downloading pre-built binaries."
 msgstr "下载构建好的二进制文件。"
 
@@ -2160,6 +2122,9 @@ msgstr "调用 guix archive"
 
 msgid "Exporting and importing store files."
 msgstr "导出和导入仓库文件。"
+
+msgid "Official Substitute Servers"
+msgstr "官方 substitute 服务器"
 
 msgid "One particular source of substitutes."
 msgstr "substitute 的一个特殊来源。"
@@ -2662,9 +2627,6 @@ msgstr "电源管理服务"
 msgid "Audio Services"
 msgstr "音频服务"
 
-msgid "The MPD."
-msgstr "MPD。"
-
 msgid "Virtualization Services"
 msgstr "虚拟化服务"
 
@@ -2785,9 +2747,6 @@ msgstr "隔离"
 msgid "Under the hood, Guix implements the @dfn{functional package management} discipline pioneered by Nix (@pxref{Acknowledgments}).  In Guix, the package build and installation process is seen as a @emph{function}, in the mathematical sense.  That function takes inputs, such as build scripts, a compiler, and libraries, and returns an installed package.  As a pure function, its result depends solely on its inputs---for instance, it cannot refer to software or scripts that were not explicitly passed as inputs.  A build function always produces the same result when passed a given set of inputs.  It cannot alter the environment of the running system in any way; for instance, it cannot create, modify, or delete files outside of its build and installation directories.  This is achieved by running build processes in isolated environments (or @dfn{containers}), where only their explicit inputs are visible."
 msgstr "在底层，Guix 实现了由 Nix（@pxref{Acknowledgments}）开创的@dfn{函数式包管理器}。在 Guix 里，软件包构建和安装过程被视为数学意义上的@emph{函数}。函数获取输入，如构建脚本、编译器和库，并且返回一个安装好的软件包。作为一个纯函数，它的结果只取决于它的输入－－例如，它不能引用没有作为显式输入传入的软件和脚本。当传入特定的输入时，一个构建函数总是得到相同的结果。它不能以任何方式修改运行系统的环境，例如，它不能创建，修改，或删除构建和安装环境之外的文件夹。这是通过在隔离的环境（@dfn{容器}）里运行构建进程实现的，在这个环境里只能访问到显式的输入。"
 
-msgid "store"
-msgstr "store"
-
 msgid "The result of package build functions is @dfn{cached} in the file system, in a special directory called @dfn{the store} (@pxref{The Store}).  Each package is installed in a directory of its own in the store---by default under @file{/gnu/store}.  The directory name contains a hash of all the inputs used to build that package; thus, changing an input yields a different directory name."
 msgstr "软件包构建函数的结果被@dfn{缓存}在文件系统里的一个叫做@dfn{仓库}（@pxref{The Store}）的特殊文件夹内。每个软件包都被安装在仓库（默认在@file{/gnu/store}）里的一个独立的文件夹内。这个文件夹的名字含有用于构建这个软件包的所有输入的hash，所以，修改输入会得到一个不同的文件夹名。"
 
@@ -2870,7 +2829,7 @@ msgid "directories related to foreign distro"
 msgstr "和 foreign distro 相关的文件夹"
 
 msgid "When installed on a foreign distro, GNU@tie{}Guix complements the available tools without interference.  Its data lives exclusively in two directories, usually @file{/gnu/store} and @file{/var/guix}; other files on your system, such as @file{/etc}, are left untouched."
-msgstr "在 foreign distro 上安装时，GNU@tie{}Guix 可以在不引起冲突的前提下补充现有的工具。它的数据只存放在两个文件夹里，通常是@file{/gnu/store}和@file{/var/guix}；系统上的其它文件，如@file{/etc}，不会被修改。"
+msgstr "在外部发行版上安装时，GNU@tie{}Guix 可以在不引起冲突的前提下补充现有的工具。它的数据只存放在两个文件夹里，通常是@file{/gnu/store}和@file{/var/guix}；系统上的其它文件，如@file{/etc}，不会被修改。"
 
 msgid "Once installed, Guix can be updated by running @command{guix pull} (@pxref{Invoking guix pull})."
 msgstr "一旦安装好了，可以通过运行@command{guix pull}升级 Guix（@pxref{Invoking guix pull})."
@@ -2881,11 +2840,38 @@ msgstr "用二进制文件安装 Guix"
 msgid "installer script"
 msgstr "安装脚本"
 
+msgid "This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies.  This is often quicker than installing from source, described later (@pxref{Building from Git})."
+msgstr "本节会介绍如何从自包含（即自带 Guix 及其全部依赖项的二进制文件）的 tarball 安装 Guix。这种方式通常比后文所述的从源码安装（@pxref{Building from Git}）更快。"
+
+msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
+msgstr "Shell 脚本 @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} 可自动完成二进制安装过程。使用 @file{guix-install.sh} 需要 Bash、GnuPG、GNU@tie{}tar、wget 和 Xz。在检测到 systemd 的系统上，还需要 @code{uidmap} 软件包中的 @command{newgidmap} 工具。"
+
+msgid "To install Guix on top of your GNU/Linux system, run the following commands as root:"
+msgstr "以 root 身份执行如下命令以在你的 GNU/Linux 系统上安装 Guix："
+
+msgid "When you're done installing Guix, @pxref{Application Setup} for extra configuration you might need, and @ref{Getting Started} for your first steps!"
+msgstr "安装 Guix 完成后，请 @pxref{Application Setup} 以获取您可能需要的额外配置，以及从 @ref{Getting Started} 迈出您的第一步！"
+
+msgid "The script goes through the following steps:"
+msgstr "该脚本包含了以下步骤："
+
+msgid "Downloading the binary tarball from @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} (where @code{x86_64-linux} can be replaced with @code{i686-linux} for an @code{i686} (32-bits) machine already running the kernel Linux, and so on---@pxref{GNU Distribution}) and extracting it."
+msgstr "下载二进制安装包 @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} （其中 @code{x86_64-linux} 可修改为 @code{i686-linux} 以适用于 @code{i686} （32-bits）机器，以此类推——@pxref{GNU Distribution}）并解压它。"
+
 msgid "Setting up the build daemon (@pxref{Setting Up the Daemon})."
 msgstr "设置后台进程（@pxref{Setting Up the Daemon}）。"
 
-msgid "substitutes, authorization thereof"
-msgstr "substitutes，对其授权"
+msgid "Making the @command{guix} command available to non-root users."
+msgstr "使非 root 用户可以使用 @command{guix} 命令。"
+
+msgid "Configuring substitute servers (@pxref{Official Substitute Servers})."
+msgstr "配置 substitute 服务器（@pxref{Official Substitute Servers}）。"
+
+msgid "By default, @file{guix-install.sh} will configure Guix to download pre-built package binaries, called @dfn{substitutes} (@pxref{Substitutes}), from the project's build farms.  If you choose not to permit this, Guix will build @emph{everything} from source, making each installation and upgrade very expensive.  @xref{On Trusting Binaries} for a discussion of why you may want to build packages from source."
+msgstr "默认情况下，@file{guix-install.sh} 会配置 Guix 去项目的构建农场下载预先构建好的软件包二进制文件，这类文件被称为 @dfn{substitutes} （ @pxref{Substitutes}）。如果您选择不允许这样做，Guix 将从源代码构建 @emph{所有} 内容，使每次安装和升级都代价极高。 @xref{On Trusting Binaries}，其中讨论了为什么你可能希望从源代码构建软件包。"
+
+msgid "To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{SUBSTITUTE-SERVER-2}} or a mirror, you must authorize them.  For example,"
+msgstr "为了使用来自 @code{@value{SUBSTITUTE-SERVER-1}}、 @code{@value{SUBSTITUTE-SERVER-2}} 或者镜像网站的 substitutes，你需要向其授权，比如："
 
 msgid "The binary installation tarball can be (re)produced and verified simply by running the following command in the Guix source tree:"
 msgstr "二进制安装包可以通过在 Guix 源代码树里运行下面这些命令来重现和验证："
@@ -2904,10 +2890,22 @@ msgstr ""
 "  --profile-name=current-guix guix\n"
 
 msgid "@xref{Invoking guix pack}, for more info on this handy tool."
-msgstr "@xref{Invoking guix pack}，了解这个方便的工具。"
+msgstr "@xref{Invoking guix pack} 来了解这个方便的工具。"
+
+msgid "uninstalling Guix"
+msgstr "卸载 Guix"
+
+msgid "Should you eventually want to uninstall Guix, run the same script with the @option{--uninstall} flag:"
+msgstr "如果你以后想卸载 Guix，运行同一个脚本并加上 @code{--uninstall} 选项："
 
 msgid "./guix-install.sh --uninstall\n"
 msgstr "./guix-install.sh --uninstall\n"
+
+msgid "With @option{--uninstall}, the script irreversibly deletes all the Guix files, configuration, and services."
+msgstr "使用 @option{--uninstall}，该脚本将不可逆转地删除所有 Guix 文件、配置和服务。"
+
+msgid "Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @command{guix pull}."
+msgstr "一些 GNU/Linux 发行版，如 openSUSE、Alpine 和 NixOS 通过自己的包管理器提供 Guix。其版本可能早于 @value{VERSION}，但您可以在之后通过运行 @command{guix pull} 来更新它。"
 
 msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
 msgstr "我们建议安装 Guix 的系统管理员，无论是通过安装脚本还是通过其外部发行版的本地包管理器，定期阅读和遵循安全通知，如@command{guix pull}所示。"
@@ -2986,9 +2984,6 @@ msgstr ""
 "          -c \"Guix daemon privilege separation user\" \\\n"
 "          --system guix-daemon\n"
 
-msgid "Warning"
-msgstr "警告"
-
 msgid ""
 "groupadd --system guix-daemon\n"
 "useradd -g guix-daemon -G guix-daemon,kvm               \\\n"
@@ -3046,9 +3041,6 @@ msgid ""
 msgstr ""
 "grep User=guix-daemon \\\n"
 "  /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-daemon.service\n"
-
-msgid "chroot"
-msgstr "chroot"
 
 msgid "a minimal @code{/dev} directory, created mostly independently from the host @code{/dev}@footnote{``Mostly'', because while the set of files that appear in the chroot's @code{/dev} is fixed, most of these files can only be created if the host has them.};"
 msgstr "一个和主机@code{/dev}独立的@footnote{大致这样，因为虽然 chroot 环境里的@code{/dev}包含的文件是固定的，大部分这些文件只有在主机有对应的文件时才能创建。}，最小的@code{/dev}文件夹；"
@@ -3327,9 +3319,6 @@ msgstr "这会从@var{用户组}里选取用户，以运行构建进程（@pxref
 msgid "--no-substitutes"
 msgstr "--no-substitutes"
 
-msgid "substitutes"
-msgstr "substitutes"
-
 msgid "Do not use substitutes for build products.  That is, always build things locally instead of allowing downloads of pre-built binaries (@pxref{Substitutes})."
 msgstr "不要为构建商品使用 substitute。即，总是在本地构建，而不是下载预构建的二进制文件（@pxref{Substitutes}）。"
 
@@ -3519,6 +3508,9 @@ msgstr "sudo -i guix pull\n"
 
 msgid "systemctl restart guix-daemon.service\n"
 msgstr "systemctl restart guix-daemon.service\n"
+
+msgid "Then change @emph{/usr/bin/guix-daemon} into @emph{/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon} and save the changes."
+msgstr "再将@emph{/usr/bin/guix-daemon} 修改为 @emph{/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon} 并保存变更。"
 
 msgid "This section explains how to install Guix System on a machine.  Guix, as a package manager, can also be installed on top of a running GNU/Linux system, @pxref{Installation}."
 msgstr "本节介绍如何在机器上安装 Guix 系统。作为软件包管理器，Guix 也可以安装在运行中的 GNU/Linux 系统之上，@pxref{Installation}。"
@@ -3730,9 +3722,6 @@ msgstr "无线连接"
 msgid "wireless"
 msgstr "无线"
 
-msgid "WiFi"
-msgstr "WiFi"
-
 msgid "To configure wireless networking, you can create a configuration file for the @command{wpa_supplicant} configuration tool (its location is not important) using one of the available text editors such as @command{nano}:"
 msgstr "要配置无线网络，您可以使用可用的文本编辑器（如 @command{nano}）为 @command{wpa_supplicant} 配置工具创建一个配置文件（其位置不重要）："
 
@@ -3764,14 +3753,8 @@ msgstr "wpa_supplicant -c wpa_supplicant.conf -i @var{接口名} -B\n"
 msgid "Run @command{man wpa_supplicant} for more information."
 msgstr "运行 @command{man wpa_supplicant} 以获取更多信息。"
 
-msgid "DHCP"
-msgstr "DHCP"
-
 msgid "At this point, you need to acquire an IP address.  On a network where IP addresses are automatically assigned @i{via} DHCP, you can run:"
 msgstr "此时，您需要获取一个 IP 地址。在一个通过 DHCP 自动分配 IP 地址的网络上，您可以运行："
-
-msgid "dhclient -v @var{interface}\n"
-msgstr "dhclient -v @var{接口名}\n"
 
 msgid "Try to ping a server to see if networking is up and running:"
 msgstr "尝试 ping 一个服务器以查看网络是否正常运行："
@@ -3966,6 +3949,9 @@ msgstr "guix system image -t iso9660 gnu/system/install.scm\n"
 msgid "guix system image --system=armhf-linux -e '((@@ (gnu system install) os-with-u-boot) (@@ (gnu system install) installation-os) \"A20-OLinuXino-Lime2\")'\n"
 msgstr "guix system image --system=armhf-linux -e '((@@ (gnu system install) os-with-u-boot) (@@ (gnu system install) installation-os) \"A20-OLinuXino-Lime2\")'\n"
 
+msgid "Presumably, you've reached this section because either you have installed Guix on top of another distribution (@pxref{Installation}), or you've installed the standalone Guix System (@pxref{System Installation}).  It's time for you to get started using Guix and this section aims to help you do that and give you a feel of what it's like."
+msgstr "想必您查看本节是因为已在另一个发行版上安装了 Guix（@pxref{Installation}），或者您安装了独立的 Guix 系统（@pxref{System Installation}）。本节旨在帮助你上手，并让你体会一下使用 Guix 究竟是何感受。"
+
 msgid "guix search text editor\n"
 msgstr "guix search text editor\n"
 
@@ -4002,6 +3988,9 @@ msgstr "guix package --list-generations\n"
 
 msgid "Now you know the basics of package management!"
 msgstr "现在你知道包管理的基本知识了吧！"
+
+msgid "Going further"
+msgstr "进一步了解"
 
 msgid ""
 "GUIX_PROFILE=\"$HOME/.config/guix/current\"\n"
@@ -4509,6 +4498,38 @@ msgstr "guix time-machine @var{options}@dots{} -- @var{command} @var {arg}@dots{
 msgid "guix time-machine -C <(echo %default-channels) @dots{}\n"
 msgstr "guix time-machine -C <(echo %default-channels) @dots{}\n"
 
+msgid ""
+"(define channels\n"
+"  ;; This is the old revision from which we want to\n"
+"  ;; extract guile-json.\n"
+"  (list (channel\n"
+"         (name 'guix)\n"
+"         (url \"https://git.guix.gnu.org/guix.git\")\n"
+"         (commit\n"
+"          \"65956ad3526ba09e1f7a40722c96c6ef7c0936fe\"))))\n"
+"\n"
+msgstr ""
+"(define channels\n"
+"  ;; 这是我们想要提取 guile-json 的旧修订版。\n"
+"  (列表 (channel\n"
+"         (name 'guix)\n"
+"         (url \"https://git.guix.gnu.org/guix.git\")\n"
+"         (commit\n"
+"          \"65956ad3526ba09e1f7a40722c96c6ef7c0936fe\"))))\n"
+"\n"
+
+msgid ""
+";; Now create a manifest with the current \"guile\" package\n"
+";; and the old \"guile-json\" package.\n"
+"(packages->manifest\n"
+" (list (first (lookup-inferior-packages inferior \"guile-json\"))\n"
+"       (specification->package \"guile\")))\n"
+msgstr ""
+";; 现在创建一个包含当前 \"guile\" 包和旧 \"guile-json\" 包的清单。\n"
+"(packages->manifest\n"
+" (list (first (lookup-inferior-packages inferior \"guile-json\"))\n"
+"       (specification->package \"guile\")))\n"
+
 msgid "Inferior packages can be used transparently like any other package or file-like object in G-expressions (@pxref{G-Expressions}).  They are also transparently handled by the @code{packages->manifest} procedure, which is commonly used in manifests (@pxref{Invoking guix package, the @option{--manifest} option of @command{guix package}}).  Thus you can insert an inferior package pretty much anywhere you would insert a regular package: in manifests, in the @code{packages} field of your @code{operating-system} declaration, and so on."
 msgstr "下层包可以像 G-表达式中的任何其他包或文件对象一样透明地使用（@pxref{G-Expressions}）。它们也被 @code{packages->manifest} 程序透明地处理，该程序通常在清单中使用（@pxref{Invoking guix package, the @option{--manifest} option of @command{guix package}}）。因此，您几乎可以在任何您插入常规包的地方插入下层包：在清单中，在您的 @code{operating-system} 声明的 @code{packages} 字段中，等等。"
 
@@ -4676,9 +4697,6 @@ msgstr ""
 "       (name 'variant-packages)\n"
 "       (url \"https://example.org/variant-packages.git\")\n"
 "       (commit \"dd3df5e2c8818760a8fc0bd699e55d3b69fef2bb\")))\n"
-
-msgid "guix describe -f channels > channels.scm\n"
-msgstr "guix describe -f channels > channels.scm\n"
 
 msgid "guix time-machine -C channels.scm -- shell python -- python3\n"
 msgstr "guix time-machine -C channels.scm -- shell python -- python3\n"
@@ -5131,6 +5149,24 @@ msgstr "cmake-build-system"
 
 msgid "bootstrap"
 msgstr "bootstrap"
+
+msgid ""
+"(define %standard-phases\n"
+"  ;; The list of standard phases (quite a few are omitted\n"
+"  ;; for brevity).  Each element is a symbol/procedure pair.\n"
+"  (list (cons 'unpack unpack)\n"
+"        (cons 'configure configure)\n"
+"        (cons 'build build)\n"
+"        (cons 'check check)\n"
+"        (cons 'install install)))\n"
+msgstr ""
+"(define %standard-phases\n"
+"  ;; 标准阶段的列表（省略了相当多以简化）。每个元素是一个符号/过程对。\n"
+"  (list (cons 'unpack unpack)\n"
+"        (cons 'configure configure)\n"
+"        (cons 'build build)\n"
+"        (cons 'check check)\n"
+"        (cons 'install install)))\n"
 
 msgid ""
 "#!location/of/bin/bash\n"
@@ -6725,12 +6761,6 @@ msgstr "user-account-password"
 msgid "password, for user accounts"
 msgstr "用户账户之密码"
 
-msgid "You would normally leave this field to @code{#f}, initialize user passwords as @code{root} with the @command{passwd} command, and then let users change it with @command{passwd}.  Passwords set with @command{passwd} are of course preserved across reboot and reconfiguration."
-msgstr "通常应将此字段设为 @code{#f}，由管理员通过 @command{passwd} 初始化用户密码，随后用户可自行使用 @command{passwd} 修改。通过 @command{passwd} 设置的密码在重启或重配置后永久保留。"
-
-msgid "If you @emph{do} want to set an initial password for an account, then this field must contain the encrypted password, as a string.  You can use the @code{crypt} procedure for this purpose:"
-msgstr "若@emph{需}为账户设置初始密码，该字段必须包含加密后的密码字符串。可使用 @code{crypt} 过程生成："
-
 msgid ""
 "(user-account\n"
 "  (name \"charlie\")\n"
@@ -6741,13 +6771,6 @@ msgstr ""
 "  (name \"LiMing\")\n"
 "  (group \"users\")\n"
 "\n"
-
-msgid ""
-"  ;; Specify a SHA-512-hashed initial password.\n"
-"  (password (crypt \"InitialPassword!\" \"$6$abc\")))\n"
-msgstr ""
-"  ;; 指定一个 SHA-512 哈希的初始密码。\n"
-"  (password (crypt \"InitialPassword!\" \"$6$abc\")))\n"
 
 msgid "The hash of this initial password will be available in a file in @file{/gnu/store}, readable by all the users, so this method must be used with care."
 msgstr "此初始密码的哈希值将存储于 @file{/gnu/store} 的公开（所有用户均可读取）可读文件中，故使用时需谨慎。"
@@ -7098,6 +7121,9 @@ msgstr ""
 msgid "(extensions (list dovecot-pigeonhole))\n"
 msgstr "(extensions (list dovecot-pigeonhole))\n"
 
+msgid "In case of password mismatches, log the attempted password.  Valid values are no, plain and sha1.  sha1 can be useful for detecting brute force password attempts vs.  user simply trying the same password over and over again.  You can also truncate the value to n chars by appending \":n\" (e.g.@: sha1:6).  Defaults to @samp{\"no\"}."
+msgstr "在密码不匹配的情况下，记录尝试过的密码。有效值为 no、plain 和 sha1。sha1 能有效区分出暴力破解尝试和用户简单地反复尝试相同密码的情况。您还可以通过附加 \":n\" 来截断值到 n 个字符（例如：sha1:6）。默认为 @samp{\"no\"}。"
+
 msgid "home directory"
 msgstr "家目录"
 
@@ -7368,7 +7394,7 @@ msgid "Authentication scheme for TCP sockets.  If you don't enable SASL, then al
 msgstr "TCP 套接字的身份验证方案。如果您不启用 SASL，则所有 TCP 流量都是明文。不要在开发/测试场景之外这样做。"
 
 msgid "Host UUID.  UUID must not have all digits be the same."
-msgstr "主机 UUID。UUID 不能全部是相同的数字。"
+msgstr "主机 UUID。UUID 的各位数字不能完全相同。"
 
 msgid ""
 "(service qemu-binfmt-service-type\n"
@@ -7660,20 +7686,8 @@ msgstr "为实现引导初始化，Linux-Libre 内核需加载@dfn{初始化内�
 msgid "The @code{initrd-modules} field of an @code{operating-system} declaration allows you to specify Linux-libre kernel modules that must be available in the initrd.  In particular, this is where you would list modules needed to actually drive the hard disk where your root partition is---although the default value of @code{initrd-modules} should cover most use cases.  For example, assuming you need the @code{megaraid_sas} module in addition to the default modules to be able to access your root file system, you would write:"
 msgstr "在 @code{operating-system} 系统声明中，通过 @code{initrd-modules} 字段可指定 initrd 必须包含的 Linux-libre 内核模块。特别要注意：此处应列出驱动根分区所在硬盘所需模块——尽管 @code{initrd-modules} 的默认值已覆盖多数场景。例如，若除默认模块外还需 @code{megaraid_sas} 模块访问根文件系统，则声明如下："
 
-msgid ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (initrd-modules (cons \"megaraid_sas\" %base-initrd-modules)))\n"
-msgstr ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (initrd-modules (cons \"megaraid_sas\" %base-initrd-modules)))\n"
-
 msgid "%base-initrd-modules"
 msgstr "%base-initrd-modules"
-
-msgid "This is the list of kernel modules included in the initrd by default."
-msgstr "此乃是默认包含于 initrd 的内核模块列表。"
 
 msgid "Furthermore, if you need lower-level customization, the @code{initrd} field of an @code{operating-system} declaration allows you to specify which initrd you would like to use.  The @code{(gnu system linux-initrd)} module provides three ways to build an initrd: the high-level @code{base-initrd} procedure and the low-level @code{raw-initrd} and @code{expression->initrd} procedures."
 msgstr "若需更深层定制，可通过 @code{operating-system} 声明的 @code{initrd} 字段指定自定义 initrd。@code{(gnu system linux-initrd)} 模块提供三种 initrd 构建方式：高级过程 @code{base-initrd}；底层过程 @code{raw-initrd} 与 @code{expression->initrd}。"
@@ -7904,17 +7918,6 @@ msgstr "$(guix system vm config.scm) -nic user,model=virtio-net-pci,hostfwd=tcp:
 
 msgid "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 10022 localhost\n"
 msgstr "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 10022 localhost\n"
-
-msgid ""
-"-device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5\n"
-"-chardev spicevmc,name=vdagent,id=vdagent\n"
-"-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\\\n"
-"name=com.redhat.spice.0\n"
-msgstr ""
-"-device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5\n"
-"-chardev spicevmc,name=vdagent,id=vdagent\n"
-"-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\\\n"
-"name=com.redhat.spice.0\n"
 
 msgid "(@var{type} @var{variable} => @var{body})\n"
 msgstr "(@var{type} @var{variable} => @var{body})\n"
@@ -8169,9 +8172,6 @@ msgstr "%base-home-services"
 
 msgid "he-config-bare-bones.scm"
 msgstr "he-config-bare-bones.scm"
-
-msgid "The @code{packages} field should be self-explanatory, it will install the list of packages into the user's profile.  The most important field is @code{services}, it contains a list of @dfn{home services}, which are the basic building blocks of a home environment."
-msgstr "@code{packages} 字段的作用不言而喻，其将在用户软件集中安装指定软件包列表。核心字段当属 @code{services}，它包含构成家环境基础单元的@dfn{家服务}（home service）列表。"
 
 msgid "There is no daemon (at least not necessarily) related to a home service, a home service is just an element that is used to declare part of home environment and extend other parts of it.  The extension mechanism discussed in the previous chapter (@pxref{Defining Services}) should not be confused with Shepherd services (@pxref{Shepherd Services}).  Using this extension mechanism and some Scheme code that glues things together gives the user the freedom to declare their own, very custom, home environments."
 msgstr "家服务（社区习惯称 home 服务）无需关联守护进程（至少非必需），其本质是用于声明并扩展家环境组件的元素。前文所述扩展机制（@pxref{Defining Services}）切勿与 Shepherd 服务（@pxref{Shepherd Services}）混淆。通过该扩展机制及协同处理的 Scheme 代码，用户可自由声明高度定制化的家环境。"

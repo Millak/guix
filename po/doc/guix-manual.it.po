@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-06-21 03:18+0000\n"
+"POT-Creation-Date: 2026-11-21 05:00+0000\n"
 "PO-Revision-Date: 2026-03-29 11:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/documentation-manual/it/>\n"
@@ -183,9 +183,6 @@ msgstr "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, vers
 msgid "0.1.0 or later;"
 msgstr "0.1.0 o successiva;"
 
-msgid "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS until version 3.7.8 included.};"
-msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{I collegamenti Guile a @uref{https://gnutls.org/, GnuTLS} erano distribuiti come parte di GnuTLS fino alla versione 3.7.8 inclusa.};"
-
 msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
 msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, versione 0.1.0 o successiva;"
 
@@ -197,9 +194,6 @@ msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};"
 
 msgid "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
-
-msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
-msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, versione 0.10.0 o successiva;"
 
 msgid "@uref{https://git-scm.com, Git} (yes, both!);"
 msgstr "@uref{https://git-scm.com, Git} (sì, entrambi!);"
@@ -261,14 +255,8 @@ msgstr "Come si può vedere, c'è un problema dell'uovo e della gallina: è prim
 msgid "The easiest way to set up a development environment for Guix is, of course, by using Guix! The following command starts a new shell where all the dependencies and appropriate environment variables are set up to hack on Guix:"
 msgstr "Il modo più semplice per impostare un ambiente di sviluppo per Guix è, naturalmente, usare Guix! Il seguente comando avvia una nuova shell dove tutte le dipendenze e le variabili d'ambiente appropriate sono impostate per hackerare su Guix:"
 
-msgid "guix shell -D guix -CPW\n"
-msgstr "guix shell -D guix -CPW\n"
-
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "o anche, da un albero di lavoro Git per Guix:"
-
-msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
-msgstr "Se @option{-C} (abbreviazione di @option{--container}) non è supportato sul tuo sistema, prova @command{--pure} invece di @option{-CPW}. @xref{Invoking guix shell}, per maggiori informazioni su questo comando."
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "Se non sei in grado di usare Guix quando compili Guix da un checkout, i seguenti sono i pacchetti richiesti in aggiunta a quelli menzionati nelle istruzioni di installazione (@pxref{Requirements})."
@@ -330,18 +318,12 @@ msgstr "./configure\n"
 msgid "Optionally, @code{--localstatedir} and @code{--sysconfdir} can also be provided as arguments.  By default, @code{localstatedir} is @file{/var} (@pxref{The Store}, for information about this) and @code{sysconfdir} is @file{/etc}.  Note that you will probably not run @command{make install} at the end (you don't have to) but it's still important to pass the right @code{localstatedir} and @code{sysconfdir} values, which get recorded in the @code{(guix config)} Guile module."
 msgstr "Opzionalmente, @code{--localstatedir} e @code{--sysconfdir} possono essere forniti come argomenti. Per impostazione predefinita, @code{localstatedir} è @file{/var} (@pxref{The Store}, per informazioni a riguardo) e @code{sysconfdir} è @file{/etc}. Nota che probabilmente non eseguirai @command{make install} alla fine (non è necessario), ma è comunque importante passare i valori corretti di @code{localstatedir} e @code{sysconfdir}, che vengono registrati nel modulo Guile @code{(guix config)}."
 
-msgid "Finally, you can build Guix and, if you feel so inclined, run the tests (@pxref{Running the Test Suite}):"
-msgstr "Infine, puoi costruire Guix e, se te la senti, eseguire i test (@pxref{Running the Test Suite}):"
-
 msgid ""
 "make\n"
 "make check\n"
 msgstr ""
 "make\n"
 "make check\n"
-
-msgid "If anything fails, take a look at installation instructions (@pxref{Installation}) or send a message to the @email{guix-devel@@gnu.org, mailing list}."
-msgstr "Se qualcosa va storto, dai un'occhiata alle istruzioni di installazione (@pxref{Installation}) o invia un messaggio alla @email{guix-devel@@gnu.org, mailing list}."
 
 msgid "From there on, you can authenticate all the commits included in your checkout by running:"
 msgstr "Da qui in poi, puoi autenticare tutti i commit inclusi nel tuo checkout eseguendo:"
@@ -961,9 +943,6 @@ msgstr "Questa è la documentazione in forma di file Texinfo: questo manuale e i
 msgid "po"
 msgstr "po"
 
-msgid "This is the location of translations of Guix itself, of package synopses and descriptions, of the manual, and of the cookbook.  Note that @file{.po} files that live here are pulled directly from Weblate (@pxref{Translating Guix})."
-msgstr "Questa è la posizione delle traduzioni di Guix stesso, delle sinossi e descrizioni dei pacchetti, del manuale e del cookbook. Nota che i file @file{.po} che si trovano qui sono prelevati direttamente da Weblate (@pxref{Translating Guix})."
-
 msgid "etc"
 msgstr "etc"
 
@@ -1098,6 +1077,9 @@ msgstr "Inoltre, la distribuzione GNU segue le @url{https://www.gnu.org/distros/
 
 msgid "Some otherwise free upstream package sources contain a small and optional subset that violates the above guidelines, for instance because this subset is itself non-free code.  When that happens, the offending items are removed with appropriate patches or code snippets in the @code{origin} form of the package (@pxref{Defining Packages}).  This way, @code{guix build --source} returns the ``freed'' source rather than the unmodified upstream source."
 msgstr "Alcuni pacchetti sorgente upstream, altrimenti liberi, contengono un piccolo sottoinsieme opzionale che viola le linee guida sopra menzionate, ad esempio perché questo sottoinsieme è esso stesso codice non libero. Quando ciò accade, gli elementi problematici vengono rimossi con patch o frammenti di codice appropriati nel modulo @code{origin} del pacchetto (@pxref{Defining Packages}). In questo modo, @code{guix build --source} restituisce il codice sorgente ``liberato'' piuttosto che il codice sorgente upstream non modificato."
+
+msgid "bundling"
+msgstr "raggruppamento"
 
 msgid "package name"
 msgstr "nome del pacchetto"
@@ -1271,9 +1253,6 @@ msgstr "Markup Texinfo, nelle descrizioni dei pacchetti"
 msgid "Descriptions can include Texinfo markup, which is useful to introduce ornaments such as @code{@@code} or @code{@@dfn}, bullet lists, or hyperlinks (@pxref{Overview,,, texinfo, GNU Texinfo}).  However you should be careful when using some characters for example @samp{@@} and curly braces which are the basic special characters in Texinfo (@pxref{Special Characters,,, texinfo, GNU Texinfo}).  User interfaces such as @command{guix show} take care of rendering it appropriately."
 msgstr "Le descrizioni possono includere il markup Texinfo, che è utile per introdurre ornamenti come @code{@@code} o @code{@@dfn}, elenchi puntati o collegamenti ipertestuali (@pxref{Overview,,, texinfo, GNU Texinfo}). Tuttavia, dovresti fare attenzione quando usi alcuni caratteri, ad esempio @samp{@@} e le parentesi graffe, che sono i caratteri speciali di base in Texinfo (@pxref{Special Characters,,, texinfo, GNU Texinfo}). Le interfacce utente come @command{guix show} si occupano di renderlo in modo appropriato."
 
-msgid "Synopses and descriptions are translated by volunteers @uref{https://translate.codeberg.org/projects/guix/packages, at Weblate} so that as many users as possible can read them in their native language.  User interfaces search them and display them in the language specified by the current locale."
-msgstr "Sinossi e descrizioni sono tradotte da volontari su @uref{https://translate.codeberg.org/projects/guix/packages, Weblate} in modo che il maggior numero possibile di utenti possa leggerle nella propria lingua madre. Le interfacce utente le cercano e le visualizzano nella lingua specificata dalla localizzazione corrente."
-
 msgid "To allow @command{xgettext} to extract them as translatable strings, synopses and descriptions @emph{must be literal strings}.  This means that you cannot use @code{string-append} or @code{format} to construct these strings:"
 msgstr "Per permettere a @command{xgettext} di estrarle come stringhe traducibili, le sinossi e le descrizioni @emph{devono essere stringhe letterali}. Questo significa che non puoi usare @code{string-append} o @code{format} per costruire queste stringhe:"
 
@@ -1360,9 +1339,6 @@ msgstr "emacs, pacchettizzazione"
 msgid "elisp, packaging"
 msgstr "elisp, pacchettizzazione"
 
-msgid "Emacs packages should preferably use the Emacs build system (@pxref{emacs-build-system}), for uniformity and the benefits provided by its build phases, such as the auto-generation of the autoloads file and the byte compilation of the sources.  Because there is no standardized way to run a test suite for Emacs packages, tests are disabled by default.  When a test suite is available, it should be enabled by setting the @code{#:tests?} argument to @code{#true}.  By default, the command to run the test is @command{make check}, but any command can be specified via the @code{#:test-command} argument.  The @code{#:test-command} argument expects a list containing a command and its arguments, to be invoked during the @code{check} phase."
-msgstr "I pacchetti Emacs dovrebbero preferibilmente usare il sistema di compilazione Emacs (@pxref{emacs-build-system}), per uniformità e per i benefici forniti dalle sue fasi di compilazione, come la generazione automatica del file di autoload e la compilazione in bytecode dei sorgenti. Poiché non esiste un modo standardizzato per eseguire una suite di test per i pacchetti Emacs, i test sono disabilitati per impostazione predefinita. Quando una suite di test è disponibile, dovrebbe essere abilitata impostando l'argomento @code{#:tests?} a @code{#true}. Per impostazione predefinita, il comando per eseguire il test è @command{make check}, ma qualsiasi comando può essere specificato tramite l'argomento @code{#:test-command}. L'argomento @code{#:test-command} si aspetta una lista contenente un comando e i suoi argomenti, da invocare durante la fase @code{check}."
-
 msgid "The Elisp dependencies of Emacs packages are typically provided as @code{propagated-inputs} when required at run time.  As for other packages, build or test dependencies should be specified as @code{native-inputs}."
 msgstr "Le dipendenze Elisp dei pacchetti Emacs sono tipicamente fornite come @code{propagated-inputs} quando richieste a runtime. Come per altri pacchetti, le dipendenze di compilazione o di test dovrebbero essere specificate come @code{native-inputs}."
 
@@ -1419,6 +1395,9 @@ msgstr "Per i pacchetti Java che contengono una singola classe o una piccola ger
 
 msgid "rust"
 msgstr "rust"
+
+msgid "Warning"
+msgstr "Avviso"
 
 msgid "Elm"
 msgstr "Elm"
@@ -1657,9 +1636,6 @@ msgid ""
 msgstr ""
 "guix build --system=armhf-linux --rounds=2 hello\n"
 "guix build --system=aarch64-linux --rounds=2 hello\n"
-
-msgid "bundling"
-msgstr "raggruppamento"
 
 msgid "Make sure the package does not use bundled copies of software already available as separate packages."
 msgstr "Assicurati che il pacchetto non usi copie raggruppate di software già disponibili come pacchetti separati."
@@ -2307,9 +2283,6 @@ msgstr "I contributi alla documentazione possono essere inviati a @email{guix-pa
 msgid "When you need to make more than a simple addition to the documentation, we prefer that you send a proper patch as opposed to sending an email as described above.  @xref{Submitting Patches} for more information on how to send your patches."
 msgstr "Quando devi apportare più di una semplice aggiunta alla documentazione, preferiamo che invii una patch corretta invece di inviare un'email come descritto sopra. @xref{Submitting Patches} per maggiori informazioni su come inviare le tue patch."
 
-msgid "To modify the documentation, you need to edit @file{doc/guix.texi} and @file{doc/contributing.texi} (which contains this documentation section), or @file{doc/guix-cookbook.texi} for the cookbook.  If you compiled the Guix repository before, you will have many more @file{.texi} files that are translations of these documents.  Do not modify them, the translation is managed through @uref{https://translate.codeberg.org/projects/guix, Weblate}.  @xref{Translating Guix} for more information."
-msgstr "Per modificare la documentazione, devi modificare @file{doc/guix.texi} e @file{doc/contributing.texi} (che contiene questa sezione di documentazione) o @file{doc/guix-cookbook.texi} per il cookbook. Se hai compilato il repository Guix in precedenza, avrai molti altri file @file{.texi} che sono traduzioni di questi documenti. Non modificarli, la traduzione è gestita tramite @uref{https://translate.codeberg.org/projects/guix, Weblate}. @xref{Translating Guix} per maggiori informazioni."
-
 msgid "To render documentation, you must first make sure that you ran @command{./configure} in your source tree (@pxref{Running Guix Before It Is Installed}).  After that you can run one of the following commands:"
 msgstr "Per generare la documentazione, devi prima assicurarti di aver eseguito @command{./configure} nel tuo albero sorgente (@pxref{Running Guix Before It Is Installed}). Dopodiché puoi eseguire uno dei seguenti comandi:"
 
@@ -2343,17 +2316,11 @@ msgstr "supporto per la lingua nativa"
 msgid "Writing code and packages is not the only way to provide a meaningful contribution to Guix.  Translating to a language you speak is another example of a valuable contribution you can make.  This section is designed to describe the translation process.  It gives you advice on how you can get involved, what can be translated, what mistakes you should avoid and what we can do to help you!"
 msgstr "Scrivere codice e pacchetti non è l'unico modo per fornire un contributo significativo a Guix. Tradurre in una lingua che conosci è un altro esempio di contributo prezioso che puoi dare. Questa sezione è progettata per descrivere il processo di traduzione. Ti dà consigli su come puoi coinvolgerti, cosa puoi tradurre, quali errori dovresti evitare e cosa possiamo fare per aiutarti!"
 
-msgid "Guix is a big project that has multiple components that can be translated.  We coordinate the translation effort on a @uref{https://translate.codeberg.org/projects/guix/,Weblate instance} hosted by Codeberg.  You will need an account to submit translations."
-msgstr "Guix è un grande progetto con più componenti che possono essere tradotti. Coordiniamo lo sforzo di traduzione su un @uref{https://translate.codeberg.org/projects/guix/,istanza Weblate} ospitata da Codeberg. Avrai bisogno di un account per inviare traduzioni."
-
 msgid "Some of the software packaged in Guix also contain translations.  We do not host a translation platform for them.  If you want to translate a package provided by Guix, you should contact their developers or find the information on their website.  As an example, you can find the homepage of the @code{hello} package by typing @command{guix show hello}.  On the ``homepage'' line, you will see @url{https://www.gnu.org/software/hello/} as the homepage."
 msgstr "Alcuni dei software impacchettati in Guix contengono anche traduzioni. Non ospitiamo una piattaforma di traduzione per loro. Se vuoi tradurre un pacchetto fornito da Guix, dovresti contattare i suoi sviluppatori o trovare le informazioni sul loro sito web. Ad esempio, puoi trovare la homepage del pacchetto @code{hello} digitando @command{guix show hello}. Sulla riga ``homepage'', vedrai @url{https://www.gnu.org/software/hello/} come homepage."
 
 msgid "Many GNU and non-GNU packages can be translated on the @uref{https://translationproject.org,Translation Project}.  Some projects with multiple components have their own platform.  For instance, GNOME has its own platform, @uref{https://l10n.gnome.org/,Damned Lies}."
 msgstr "Molti pacchetti GNU e non GNU possono essere tradotti su @uref{https://translationproject.org,Translation Project}. Alcuni progetti con più componenti hanno la loro piattaforma. Ad esempio, GNOME ha la sua piattaforma, @uref{https://l10n.gnome.org/,Damned Lies}."
-
-msgid "Guix has five components hosted on Weblate."
-msgstr "Guix ha cinque componenti ospitati su Weblate."
 
 msgid "@code{guix} contains all the strings from the Guix software (the"
 msgstr "@code{guix} contiene tutte le stringhe del software Guix (il"
@@ -2382,14 +2349,8 @@ msgstr "@code{documentation-cookbook} è il componente per il cookbook."
 msgid "General Directions"
 msgstr "Indicazioni Generali"
 
-msgid "Once you get an account, you should be able to select a component from @uref{https://translate.codeberg.org/projects/guix/,the guix project}, and select a language.  If your language does not appear in the list, go to the bottom and click on the ``Start new translation'' button.  Select the language you want to translate to from the list, to start your new translation."
-msgstr "Una volta ottenuto un account, dovresti essere in grado di selezionare un componente da @uref{https://translate.codeberg.org/projects/guix/,il progetto guix} e selezionare una lingua. Se la tua lingua non appare nell'elenco, vai in fondo e clicca sul pulsante ``Start new translation''. Seleziona la lingua in cui vuoi tradurre dall'elenco per iniziare la tua nuova traduzione."
-
 msgid "Like lots of other free software packages, Guix uses @uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations, with which translatable strings are extracted from the source code to so-called PO files."
 msgstr "Come molti altri pacchetti software libero, Guix utilizza @uref{https://www.gnu.org/software/gettext,GNU Gettext} per le sue traduzioni, con cui le stringhe traducibili vengono estratte dal codice sorgente in file cosiddetti PO."
-
-msgid "Even though PO files are text files, changes should not be made with a text editor but with PO editing software.  Weblate integrates PO editing functionality.  Alternatively, translators can use any of various free-software tools for filling in translations, of which @uref{https://poedit.net/,Poedit} is one example, and (after logging in)  @uref{https://docs.weblate.org/en/latest/user/files.html,upload} the changed file.  There is also a special @uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU Emacs.  Over time translators find out what software they are happy with and what features they need."
-msgstr "Anche se i file PO sono file di testo, le modifiche non dovrebbero essere fatte con un editor di testo ma con software di editing PO. Weblate integra la funzionalità di editing PO. In alternativa, i traduttori possono utilizzare uno dei vari strumenti software libero per compilare le traduzioni, tra cui @uref{https://poedit.net/,Poedit} è un esempio, e (dopo aver effettuato l'accesso) @uref{https://docs.weblate.org/en/latest/user/files.html,caricare} il file modificato. C'è anche un @uref{https://www.emacswiki.org/emacs/PoMode,modalità di editing PO} speciale per gli utenti di GNU Emacs. Nel tempo i traduttori scoprono con quale software sono soddisfatti e di quali funzionalità hanno bisogno."
 
 msgid "On Weblate, you will find various links to the editor, that will show various subsets (or all) of the strings.  Have a look around and at the @uref{https://docs.weblate.org/en/latest/,documentation} to familiarize yourself with the platform."
 msgstr "Su Weblate, troverai vari collegamenti all'editor, che mostreranno vari sottoinsiemi (o tutte) le stringhe. Dai un'occhiata in giro e alla @uref{https://docs.weblate.org/en/latest/,documentazione} per familiarizzare con la piattaforma."
@@ -3784,9 +3745,6 @@ msgstr "Estendere la durata della batteria, ecc."
 msgid "Audio Services"
 msgstr "Servizi audio"
 
-msgid "The MPD."
-msgstr "L'MPD."
-
 msgid "Virtualization Services"
 msgstr "Servizi di virtualizzazione"
 
@@ -3886,38 +3844,32 @@ msgstr "Instanziare una configurazione home."
 msgid "Environment variables, packages, on-* scripts."
 msgstr "Variabili d'ambiente, pacchetti, script on-*."
 
-msgid "Shells: Shells Home Services"
-msgstr "Shell: Servizi Home per le Shell"
+msgid "Shells Home Services"
+msgstr "Servizi Home per le Shell"
 
 msgid "POSIX shells, Bash, Zsh."
 msgstr "Shell POSIX, Bash, Zsh."
 
-msgid "Mcron: Mcron Home Service"
-msgstr "Mcron: Servizio Home Mcron"
+msgid "Mcron Home Service"
+msgstr "Servizio Home Mcron"
 
 msgid "Scheduled User's Job Execution."
 msgstr "Esecuzione pianificata di lavori dell'utente."
 
-msgid "Power Management: Power Management Home Services"
-msgstr "Gestione energetica: Servizi Home di gestione energetica"
+msgid "Power Management Home Services"
+msgstr "Servizi Home di gestione energetica"
 
 msgid "Services for battery power."
 msgstr "Servizi per l'alimentazione a batteria."
 
-msgid "Shepherd: Shepherd Home Service"
-msgstr "Shepherd: Servizio Home Shepherd"
+msgid "Shepherd Home Service"
+msgstr "Servizio Home Shepherd"
 
 msgid "Managing User's Daemons."
 msgstr "Gestione dei demoni dell'utente."
 
-msgid "SSH: Secure Shell"
-msgstr "SSH: Secure Shell"
-
 msgid "Setting up the secure shell client."
 msgstr "Impostazione del client secure shell."
-
-msgid "GPG: GNU Privacy Guard"
-msgstr "GPG: GNU Privacy Guard"
 
 msgid "Setting up GPG and related tools."
 msgstr "Impostazione di GPG e strumenti correlati."
@@ -3943,8 +3895,8 @@ msgstr "Servizi per gestire la messaggistica."
 msgid "Services for managing media."
 msgstr "Servizi per gestire supporti e media."
 
-msgid "Sway: Sway window manager"
-msgstr "Sway: Window manager Sway"
+msgid "Sway window manager"
+msgstr "Window manager Sway"
 
 msgid "Networking services."
 msgstr "Servizi di rete."
@@ -4340,9 +4292,6 @@ msgstr ""
 "          -d /var/empty -s $(which nologin)          \\\n"
 "          -c \"Utente separazione privilegi demone Guix\" \\\n"
 "          --system guix-daemon\n"
-
-msgid "Warning"
-msgstr "Avviso"
 
 msgid "In this configuration, @file{/gnu/store} is owned by the @code{guix-daemon} user."
 msgstr "In questa configurazione, @file{/gnu/store} è di proprietà dell'utente @code{guix-daemon}."
@@ -4955,21 +4904,6 @@ msgstr "image"
 
 msgid "authentication"
 msgstr "authentication"
-
-msgid "Shells Home Services"
-msgstr "Servizi Home per le Shell"
-
-msgid "Mcron Home Service"
-msgstr "Servizio Home Mcron"
-
-msgid "Power Management Home Services"
-msgstr "Servizi Home di gestione energetica"
-
-msgid "Shepherd Home Service"
-msgstr "Servizio Home Shepherd"
-
-msgid "Sway window manager"
-msgstr "Window manager Sway"
 
 msgid "contributing.texi"
 msgstr "contributing.it.texi"

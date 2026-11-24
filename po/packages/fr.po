@@ -18,15 +18,15 @@ msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2026-04-22 10:58+0000\n"
-"Last-Translator: Mardikhouran <mardikhouran@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-11-20 11:29+0000\n"
+"Last-Translator: roptat <roptat@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/packages/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 2026.10.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Word processing program"
@@ -112,6 +112,39 @@ msgid ""
 "assistant for graphic designers, who need to select individual pixels."
 msgstr "Ce programme agrandit une zone de l’écran selon un facteur entier positif et affiche le résultat dans une fenêtre. Il est utile comme outil d’accessibilité, fonctionnant avec toute interface graphique basée sur le système X Window (il dépend uniquement de la bibliothèque libX11), ou comme aide pour les graphistes qui ont besoin de sélectionner des pixels individuellement."
 
+msgid "Screen magnifier tool for people with low vision"
+msgstr "Outil de loupe d'écran pour les personnes avec une vision amoindrie"
+
+msgid ""
+"MouseLoupe is a kind of magnifying glass combined with the\n"
+"mouse pointer which allows an easy and pleasant web navigation."
+msgstr "MouseLoupe est comme une loupe combinée avec un pointeur de souris permettant une navigation web plus facile et plaisante."
+
+msgid "Library and tools for manipulating access control lists"
+msgstr "Bibliothèque et outils pour gérer les listes de contrôle d'accès"
+
+msgid "Library and tools for manipulating access control lists."
+msgstr "Bibliothèque et outils pour gérer les listes de contrôle d'accès"
+
+msgid "Ada 83 interpreter"
+msgstr "Interpréteur Ada 83"
+
+msgid "File and directory integrity checker"
+msgstr "Vérificateur d'intégrité pour les fichiers et les répertoires"
+
+msgid "Tools for managing UNIX style services"
+msgstr "Outils de gestion des services de type UNIX"
+
+msgid ""
+"@code{daemontools} is a collection of tools for managing UNIX\n"
+"services."
+msgstr ""
+"@code{daemontools} est une collection d'outils pour gérer\n"
+"des services UNIX."
+
+msgid "Clean up file names"
+msgstr "Nettoyer les noms de fichier"
+
 msgid ""
 "Detox is a program that renames files to make them easier to work with\n"
 "under Unix and related operating systems.  Spaces and various other unsafe\n"
@@ -136,6 +169,69 @@ msgstr ""
 
 msgid "Single tool that combines @command{cat} & @command{rm}"
 msgstr "Outil simple combinant @command{cat} et @command{rm}"
+
+msgid "Graphical front end for @command{su}"
+msgstr "Interface utilisateur graphique pour @command{su}"
+
+msgid "Program to view the progress of the coreutils commands"
+msgstr "Programme pour voir la progression des commandes coreutils"
+
+msgid "System service manager"
+msgstr "Gestion de service système"
+
+msgid "The Shepherd for Guix Home, without @command{halt} and @command{reboot}"
+msgstr "Shepherd pour Guix Home, sans @command{halt} ni @command{reboot}"
+
+msgid "Create GNU Shepherd services from the command line"
+msgstr "Créer des services GNU Shepherd depuis la ligne de commande"
+
+msgid "System container manager"
+msgstr "Gestionnaire de conteneur système"
+
+msgid "Simple terminal file manager with @command{vi}-inspired key bindings"
+msgstr "Gestionnaire de fichiers simple pour le terminal, avec des raccourcis-clavier inspirés de @command{vi}"
+
+msgid "Performance data collector"
+msgstr "Collecteur de données de performance"
+
+msgid "Command line utility to run a program as a daemon"
+msgstr "Utilitaire en ligne de commande pour lancer un programme en tant que démon"
+
+msgid "Display file system space usage using graphs and colors"
+msgstr "Affiche l'utilisation de l'espace du système de fichiers en utilisant des graphiques et des couleurs"
+
+msgid "Collect and display system facts"
+msgstr "Recueille et affiche des données sur le système"
+
+msgid "Console based color-coded graphs of CPU load average"
+msgstr "Graphiques en couleur de la charge moyenne du CPU pour la ligne de commande"
+
+msgid ""
+"Show graphs for 1 minute, 5 minute, 15 minute load averages on the\n"
+"console."
+msgstr ""
+"Afficher les graphiques de la charge moyenne sur 1 minute, 5 minutes et 15 minutes\n"
+"sur la console."
+
+msgid "Resource monitor"
+msgstr "Moniteur de ressources"
+
+msgid ""
+"Btop++ provides unified monitoring of CPU, memory, network\n"
+"and processes."
+msgstr ""
+"Btop++ fournit une surveillance unifiée du CPU, de la mémoire, du réseau\n"
+"et des processus."
+
+msgid "Memory reporting tool"
+msgstr "Outil de reporting mémoire"
+
+msgid ""
+"This package provides a command line tool that can give numerous reports\n"
+"on memory usage on GNU/Linux systems."
+msgstr ""
+"Ce paquet fournit un outil en ligne de commande qui peut donner de nombreux\n"
+"rapports sur l'utilisation de la mémoire sur les systèmes GNU/Linux."
 
 msgid "Basic networking utilities"
 msgstr "Outils réseaux basiques"
@@ -4561,6 +4657,9 @@ msgstr "Accès aux données unifiée"
 
 msgid "This package provides a graphical file manager."
 msgstr "Ce paquet fournit un gestionnaire de fichiers graphique."
+
+msgid "GNU Privacy Guard"
+msgstr "GNU Privacy Guard"
 
 msgid "This is a memcache client library for the Go programming language."
 msgstr "C'est une bibliothèque cliente memcache pour le langage de programmation Go."

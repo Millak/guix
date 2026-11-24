@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-06-21 03:18+0000\n"
+"POT-Creation-Date: 2026-11-21 05:00+0000\n"
 "PO-Revision-Date: 2026-06-24 07:18+0000\n"
 "Last-Translator: excata <excata@disroot.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/documentation-manual/ru/>\n"
@@ -193,9 +193,6 @@ msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};"
 msgid "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 
-msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
-msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, версии 0.10.0 или более поздней;"
-
 msgid "@uref{https://git-scm.com, Git} (yes, both!);"
 msgstr "@uref{https://git-scm.com, Git} (да, оба!);"
 
@@ -263,14 +260,8 @@ msgstr "Как видите, здесь возникает проблема ку
 msgid "The easiest way to set up a development environment for Guix is, of course, by using Guix! The following command starts a new shell where all the dependencies and appropriate environment variables are set up to hack on Guix:"
 msgstr "Самый простой способ установить среду разработки для Guix — это, конечно, использовать Guix! Следующая команда запустит новую оболочку со всеми зависимостями и необходимыми переменными окружения:"
 
-msgid "guix shell -D guix -CPW\n"
-msgstr "guix shell -D guix -CPW\n"
-
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "или даже из-под рабочей ветки Git для Guix:"
-
-msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
-msgstr "Если @option{-C} (сокр. от @option{--container}) не поддерживается на вашей системе, попробуйте @command{--pure} вместо @option{-CPW}. см. @xref{Invoking guix shell}, чтобы получить информацию по данной команде."
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "Если вам Guix не удаётся использовать при сборке из рабочего каталога, установите следующие пакеты в дополнение к тем, что были указаны в инструкции по установке (@pxref{Требования})."
@@ -335,18 +326,12 @@ msgstr "./configure\n"
 msgid "Optionally, @code{--localstatedir} and @code{--sysconfdir} can also be provided as arguments.  By default, @code{localstatedir} is @file{/var} (@pxref{The Store}, for information about this) and @code{sysconfdir} is @file{/etc}.  Note that you will probably not run @command{make install} at the end (you don't have to) but it's still important to pass the right @code{localstatedir} and @code{sysconfdir} values, which get recorded in the @code{(guix config)} Guile module."
 msgstr "По желанию, @code{--localstatedir} и @code{--sysconfigdir} могут быть переданы как аргументы.  По умолчанию, @code{localstatedir} является @file{/var} (@pxref{The Store}, для получения информации об этом), а @code{sysconfdir} является @file{/etc}. Обратите внимание, что вы, скорее всего, не будете выполнять @command{make install} в конце (это не обязательно), но все равно важно передать правильные значения @code{localstatedir} и @code{sysconfdir}, которые записываются в модуль @code{(guix config)} Guile."
 
-msgid "Finally, you can build Guix and, if you feel so inclined, run the tests (@pxref{Running the Test Suite}):"
-msgstr "Наконец, вы можете собрать Guix и, если сочтёте нужным, запустите тесты (@pxref{Running the Test Suite}):"
-
 msgid ""
 "make\n"
 "make check\n"
 msgstr ""
 "make\n"
 "make check\n"
-
-msgid "If anything fails, take a look at installation instructions (@pxref{Installation}) or send a message to the @email{guix-devel@@gnu.org, mailing list}."
-msgstr "Если что-то не получится, изучите инструкции установки (@pxref{Installation}) или отправьте сообщение в рассылку @email{guix-devel@@gnu.org}."
 
 msgid "From there on, you can authenticate all the commits included in your checkout by running:"
 msgstr "После этого вы можете аутентифицировать все проверенные коммиты, запустив:"
@@ -398,6 +383,9 @@ msgstr "После успешного завершения @command{configure} �
 
 msgid "make check\n"
 msgstr "make check\n"
+
+msgid "--pure"
+msgstr "--pure"
 
 msgid "Test cases can run in parallel: you can use the @code{-j} option of GNU@tie{}make to speed things up.  The first run may take a few minutes on a recent machine; subsequent runs will be faster because the store that is created for test purposes will already have various things in cache."
 msgstr "Тесты можно выполнять параллельно при включении опции @code{-j} в GNU@tie{}make, так быстрее. Первый запуск может длиться несколько минут на топовой машине, последующие запуски будут быстрее, так как склад, который создаётся для тестов, уже закеширует различные вещи."
@@ -1172,9 +1160,6 @@ msgstr "Разметка Texinfo, в описаниях пакетов"
 msgid "Descriptions can include Texinfo markup, which is useful to introduce ornaments such as @code{@@code} or @code{@@dfn}, bullet lists, or hyperlinks (@pxref{Overview,,, texinfo, GNU Texinfo}).  However you should be careful when using some characters for example @samp{@@} and curly braces which are the basic special characters in Texinfo (@pxref{Special Characters,,, texinfo, GNU Texinfo}).  User interfaces such as @command{guix show} take care of rendering it appropriately."
 msgstr "Описания могут содержать разметку Texinfo, что полезно для использования подсветки, такой, как @code{@@code} или @code{@@dfn}, списков или гиперссылок (@pxref{Overview,,, texinfo, GNU Texinfo}). Будьте, однако, внимательны при пользовании некоторых символов, например @samp{@@} и фигурных скобок, которые являются основными спецсимволами в Texinfo (@pxref{Special Characters,,, texinfo, GNU Texinfo}). Пользовательские интерфейсы, вроде @command{guix show}, правильно учитывают разметку при построении вывода."
 
-msgid "Synopses and descriptions are translated by volunteers @uref{https://translate.codeberg.org/projects/guix/packages, at Weblate} so that as many users as possible can read them in their native language.  User interfaces search them and display them in the language specified by the current locale."
-msgstr "Краткие и полные описания переводятся добровольцами @uref{https://translate.codeberg.org/projects/guix/packages, в Weblate}, чтобы как можно больше пользователей могли читать их на своем родном языке.  Пользовательские интерфейсы производят поиск по ним и отображают их на языке, заданном текущей локалью."
-
 msgid "To allow @command{xgettext} to extract them as translatable strings, synopses and descriptions @emph{must be literal strings}.  This means that you cannot use @code{string-append} or @code{format} to construct these strings:"
 msgstr "Чтобы позволить команде @command{xgettext} извлекать их как текст для перевода, краткие и полные описания @emph{должны быть буквенными строками}.  Это означает, что нельзя пользоваться @code{string-append} или @code{format} при составлении этих строк:"
 
@@ -1212,9 +1197,6 @@ msgstr "Emacs, пакетирование"
 
 msgid "elisp, packaging"
 msgstr "elisp, пакетирование"
-
-msgid "Emacs packages should preferably use the Emacs build system (@pxref{emacs-build-system}), for uniformity and the benefits provided by its build phases, such as the auto-generation of the autoloads file and the byte compilation of the sources.  Because there is no standardized way to run a test suite for Emacs packages, tests are disabled by default.  When a test suite is available, it should be enabled by setting the @code{#:tests?} argument to @code{#true}.  By default, the command to run the test is @command{make check}, but any command can be specified via the @code{#:test-command} argument.  The @code{#:test-command} argument expects a list containing a command and its arguments, to be invoked during the @code{check} phase."
-msgstr "Для пакетов emacs желательно использовать систему сборки emacs (@pxref{emacs-build-system}), ради однородности и полезностей от её фаз сборки, таких, как автоматическое создание файла автозагрузки и байтовая компиляция исходного кода.  Поскольку не существует стандартизированного способа запуска набора тестов для пакетов Emacs, тесты по умолчанию отключены.  Если у пакета есть набор тестов, его следует включить, дав аргументу @code{#:tests?} значение @code{#true}.  По умолчанию команда для запуска теста---@command{make check}, но может быть использована любая команда , указанная в аргументе @code{#:test-command}.  Аргумент @code{#:test-command} ожидает получить список, содержащий команду и ее аргументы, для ее вызова во время фазы @code{check}."
 
 msgid "The Elisp dependencies of Emacs packages are typically provided as @code{propagated-inputs} when required at run time.  As for other packages, build or test dependencies should be specified as @code{native-inputs}."
 msgstr "Elisp-зависимости пакетов emacs обычно указываются как @code{propagated-inputs}, если они необходимы во время работы программы.  Что касается других пакетов, зависимости сборки или тестирования должны быть указаны как @code{native-inputs}."
@@ -1272,6 +1254,9 @@ msgstr "Для пакетов Java, содержащих отдельный кл
 
 msgid "rust"
 msgstr "rust"
+
+msgid "Warning"
+msgstr "Предупреждение"
 
 msgid "Here are some examples for different situations:"
 msgstr "Здесь представлены некоторые примеры для различных ситуаций:"
@@ -1680,9 +1665,6 @@ msgstr "Некоторое программное обеспечение, упа
 msgid "Many GNU and non-GNU packages can be translated on the @uref{https://translationproject.org,Translation Project}.  Some projects with multiple components have their own platform.  For instance, GNOME has its own platform, @uref{https://l10n.gnome.org/,Damned Lies}."
 msgstr "Многие пакеты GNU и не-GNU можно перевести на @uref{https: //translationproject.org,Translation Project}.  Некоторые проекты с несколькими компонентами имеют собственную платформу.  Например, GNOME имеет собственную платформу @uref{https://l10n.gnome.org/,Damned Lies}."
 
-msgid "Guix has five components hosted on Weblate."
-msgstr "Guix состоит из пяти компонентов, размещенных на Weblate."
-
 msgid "@code{guix} contains all the strings from the Guix software (the"
 msgstr "@code{guix} содержит все строки из программного обеспечения Guix ("
 
@@ -1712,9 +1694,6 @@ msgstr "поколения"
 
 msgid "Like lots of other free software packages, Guix uses @uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations, with which translatable strings are extracted from the source code to so-called PO files."
 msgstr "Как и многие другие бесплатные программные пакеты, Guix использует @uref{https://www.gnu.org/software/gettext,GNU Gettext} для своих переводов, с помощью которых переводимые строки извлекаются из исходного кода в так называемые PO-файлы."
-
-msgid "Even though PO files are text files, changes should not be made with a text editor but with PO editing software.  Weblate integrates PO editing functionality.  Alternatively, translators can use any of various free-software tools for filling in translations, of which @uref{https://poedit.net/,Poedit} is one example, and (after logging in)  @uref{https://docs.weblate.org/en/latest/user/files.html,upload} the changed file.  There is also a special @uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU Emacs.  Over time translators find out what software they are happy with and what features they need."
-msgstr "Несмотря на то, что файлы PO являются текстовыми файлами, изменения следует вносить не с помощью текстового редактора, а с помощью программного обеспечения для редактирования PO.  Weblate интегрирует функции редактирования PO.  В качестве альтернативы переводчики могут использовать любой из различных бесплатных программных инструментов для заполнения переводов, одним из примеров которых является @uref{https://poedit.net/,Poedit} и (после входа в систему) @uref{https://docs.weblate.org/en/latest/user/files.html, загрузить} измененный файл.  Существует также специальный @uref {https://www.emacswiki.org/emacs/PoMode,PO режим редактирования} для пользователей GNU Emacs.  Со временем переводчики узнают, какое программное обеспечение им нравится и какие функции им нужны."
 
 msgid "On Weblate, you will find various links to the editor, that will show various subsets (or all) of the strings.  Have a look around and at the @uref{https://docs.weblate.org/en/latest/,documentation} to familiarize yourself with the platform."
 msgstr "На Weblate вы найдете различные ссылки на редактор, который покажет различные подмножества (или все) строк (-и).  Посмотрите вокруг и на @uref{https://docs.weblate.org/en/latest/,documentation}, чтобы ознакомиться с платформой."
@@ -2746,9 +2725,6 @@ msgstr "Сервисы управления питанием"
 msgid "Audio Services"
 msgstr "Сервисы аудио"
 
-msgid "The MPD."
-msgstr "MPD."
-
 msgid "Virtualization Services"
 msgstr "Сервисы виртуализации"
 
@@ -3183,9 +3159,6 @@ msgstr ""
 "          -d /var/empty -s $(which nologin)          \\\n"
 "          -c \"Guix daemon privilege separation user\" \\\n"
 "          --system guix-daemon\n"
-
-msgid "Warning"
-msgstr "Предупреждение"
 
 msgid "If the @command{nologin} binary is not found by @command{which nologin}, you may need to specify its path manually.  This will usually be @file{/sbin/nologin} or @file{/usr/sbin/nologin}."
 msgstr "Если команда @command{which nologin} не находит исполняемый файл @command{nologin}, вам может потребоваться указать путь к нему вручную.  Обычно это @file{/sbin/nologin} или @file{/usr/sbin/nologin}."
@@ -3886,15 +3859,6 @@ msgstr "nsswitch.conf"
 msgid "The GNU C library implements a @dfn{name service switch} (NSS), which is an extensible mechanism for ``name lookups'' in general: host name resolution, user accounts, and more (@pxref{Name Service Switch,,, libc, The GNU C Library Reference Manual})."
 msgstr "Библиотека GNU C реализует @dfn{выбор имён сервисов} (NSS), который представляет собой расширяемый механизм для резолвинга имён в целом: резолвинг имён хостов, аккаунтов пользователей и другое (@pxref{Name Service Switch,,, libc, The GNU C Library Reference Manual})."
 
-msgid "Network information service (NIS)"
-msgstr "Сервис сетевой информации (NIS)"
-
-msgid "NIS (Network information service)"
-msgstr "NIS (сервис сетевой информации)"
-
-msgid "Being extensible, the NSS supports @dfn{plugins}, which provide new name lookup implementations: for example, the @code{nss-mdns} plugin allow resolution of @code{.local} host names, the @code{nis} plugin allows user account lookup using the Network information service (NIS), and so on.  These extra ``lookup services'' are configured system-wide in @file{/etc/nsswitch.conf}, and all the programs running on the system honor those settings (@pxref{NSS Configuration File,,, libc, The GNU C Reference Manual})."
-msgstr "Будучи расширяемым, NSS поддерживает @dfn{плагины}, которые предоставляют реализации разрешения новых имён: плагин @code{nss-mdns} резолвит имена хостов @code{.local}, плагин @code{nis} адресует пользовательские аккаунты, используя сервис сетевой информации (NIS) и т.д. Эти дополнительные сервисы адресации настраиваются для всей системы в @file{/etc/nsswitch.conf}, и все запущенные в системе программы учитывают эти настройки (@pxref{NSS Configuration File,,, libc, The GNU C Reference Manual})."
-
 msgid "When they perform a name lookup---for instance by calling the @code{getaddrinfo} function in C---applications first try to connect to the nscd; on success, nscd performs name lookups on their behalf.  If the nscd is not running, then they perform the name lookup by themselves, by loading the name lookup services into their own address space and running it.  These name lookup services---the @file{libnss_*.so} files---are @code{dlopen}'d, but they may come from the host system's C library, rather than from the C library the application is linked against (the C library coming from Guix)."
 msgstr "Когда выполняется разрешение имён, например, вызовом функции C @code{getaddrinfo}, приложения вначале делают попытку соединиться с nscd; в случае успеха nscd выполняет разрешение имён по их запросу. Если nscd не запущен, тогда они выполняют разрешение имён самостоятельно, загружая сервисы разрешения имён в их собственные адресные пространства и запуская их. Эти сервисы разрешения имён --- файлы @file{libnss_*.so} --- запускаются @code{dlopen}, но они могут поставляться системной библиотекой C, а не библиотекой C, с которой залинковано приложение (библиотека C из Guix)."
 
@@ -4253,9 +4217,6 @@ msgstr "DHCP"
 
 msgid "At this point, you need to acquire an IP address.  On a network where IP addresses are automatically assigned @i{via} DHCP, you can run:"
 msgstr "Теперь нужно получить IP-адрес. В случае сети, где IP-адреса автоматически распределяются с помощью DHCP, можно запустить:"
-
-msgid "dhclient -v @var{interface}\n"
-msgstr "dhclient -v @var{interface}\n"
 
 msgid "Try to ping a server to see if networking is up and running:"
 msgstr "Попробуйте пинговать сервер, чтобы узнать, работает ли сеть:"
@@ -6236,9 +6197,6 @@ msgstr "Формат nar по духу сравним с tar, но с отлич
 msgid "That nar bundle format is essentially the concatenation of zero or more nars along with metadata for each store item it contains: its file name, references, corresponding derivation, and a digital signature."
 msgstr "Формат пакета nar - это, по сути, конкатенация нуля или более nars вместе с метаданными для каждого элемента store, который содержит: имя файла, ссылки, соответствующую derivation и цифровую подпись."
 
-msgid "When exporting, the daemon digitally signs the contents of the archive, and that digital signature is appended.  When importing, the daemon verifies the signature and rejects the import in case of an invalid signature or if the signing key is not authorized."
-msgstr "При экспортировании демон подписывает цифровой подписью содержимое архива, и эта цифровая подпись прикрепляется. При импорте демон проверяет подпись и отменяет импорт в случае недействительной подписи, или если ключ подписи не авторизован."
-
 msgid "The main options are:"
 msgstr "Основные опции:"
 
@@ -6461,9 +6419,6 @@ msgstr ""
 "(list (channel-with-substitutes-available\n"
 "       %default-guix-channel\n"
 "       \"https://ci.guix.gnu.org\"))\n"
-
-msgid "Note that this does not mean that all the packages that you will install after running @command{guix pull} will have available substitutes.  It only ensures that @command{guix pull} will not try to compile package definitions.  This is particularly useful when using machines with limited resources."
-msgstr "Учтите, что это не означает, что все пакеты, которые вы установите после запуска @command{guix pull}, будут иметь доступные заменители.  Это только гарантирует, что @command{guix pull} не будет пытаться скомпилировать определения пакетов.  Это особенно полезно при использовании машин с ограниченными ресурсами."
 
 msgid "personal packages (channels)"
 msgstr "собственные пакеты (каналы)"
@@ -6881,9 +6836,6 @@ msgstr ""
 
 msgid "Create an environment containing the packages installed in @var{profile}.  Use @command{guix package} (@pxref{Invoking guix package}) to create and manage profiles."
 msgstr "Создает окружение, содержащее пакеты, установленные в @var{profile}.  Используйте @command{guix package} (@pxref{Invoking guix package}) для создания и управления профилями."
-
-msgid "--pure"
-msgstr "--pure"
 
 msgid "Unset existing environment variables when building the new environment, except those specified with @option{--preserve} (see below).  This has the effect of creating an environment in which search paths only contain package inputs."
 msgstr "Сброс существующих переменных окружения при сборке нового окружения, кроме обозначенных в опции @option{--preserve} (смотрите ниже). Эффект этой опции --- создание окружения, в котором пути поиска содержат только входные данные пакета."
@@ -8413,15 +8365,6 @@ msgstr "Эта переменная экспортируется @code{(guix bui
 msgid "It adds both @code{ant} and the @dfn{Java Development Kit} (JDK) as provided by the @code{icedtea} package to the set of inputs.  Different packages can be specified with the @code{#:ant} and @code{#:jdk} parameters, respectively."
 msgstr "Она добавляет к набору входных данных как @code{ant}, так и @dfn{Java Development Kit} (JDK), предоставленные пакетом @code{icedtea}.  Различные пакеты можно указать с помощью параметров @code{#:ant} и @code{#:jdk} соответственно."
 
-msgid "When the original package does not provide a suitable Ant build file, the parameter @code{#:jar-name} can be used to generate a minimal Ant build file @file{build.xml} with tasks to build the specified jar archive.  In this case the parameter @code{#:source-dir} can be used to specify the source sub-directory, defaulting to ``src''."
-msgstr "Когда исходный пакет не предоставляет подходящий файл сборки Ant, параметр @code{#:jar-name} можно использовать для создания минимального файла сборки Ant @file{build.xml} с задачами для создания указанного архива jar.  В этом случае параметр @code{#:source-dir} можно использовать для указания подкаталога источника, по умолчанию - src."
-
-msgid "The @code{#:main-class} parameter can be used with the minimal ant buildfile to specify the main class of the resulting jar.  This makes the jar file executable.  The @code{#:test-include} parameter can be used to specify the list of junit tests to run.  It defaults to @code{(list \"**/*Test.java\")}.  The @code{#:test-exclude} can be used to disable some tests.  It defaults to @code{(list \"**/Abstract*.java\")}, because abstract classes cannot be run as tests."
-msgstr "Параметр @code{#:main-class} можно использовать с минимальным файлом сборки ant для указания основного класса результирующего jar-файла.  Это делает файл jar исполняемым.  Параметр @code{#:test-include} можно использовать для указания списка запускаемых тестов junit.  По умолчанию это @code{(list \"**/*Test.java\")}.  @code{#:test-exclude} можно использовать для отключения некоторых тестов.  По умолчанию это @code{(list \"**/Abstract*.java\")}, потому что абстрактные классы не могут быть запущены как тесты."
-
-msgid "The parameter @code{#:build-target} can be used to specify the Ant task that should be run during the @code{build} phase.  By default the ``jar'' task will be run."
-msgstr "Параметр @code{#:build-target} можно использовать для указания задачи Ant, которая должна выполняться на этапе @code{build}.  По умолчанию будет запущена задача jar."
-
 msgid "Android NDK build system"
 msgstr "система сборки Android NDK"
 
@@ -8451,12 +8394,6 @@ msgstr "Кроме того, соответствующий исходный п�
 
 msgid "In order to create executable programs and images, the build-side procedures @code{build-program} and @code{build-image} can be used.  They should be called in a build phase after the @code{create-asdf-configuration} phase, so that the system which was just built can be used within the resulting image.  @code{build-program} requires a list of Common Lisp expressions to be passed as the @code{#:entry-program} argument."
 msgstr "Для создания исполняемых программ и образов можно использовать процедуры сборки @code{build-program} и @code{build-image}.  Их следует вызывать в фазе сборки после фазы @code{create-symlinks}, чтобы только что созданную систему можно было использовать в полученном образе.  @code{build-program} требует, чтобы список выражений Common Lisp был передан в качестве аргумента @code{#:entry-program}."
-
-msgid "By default, all the @file{.asd} files present in the sources are read to find system definitions.  The @code{#:asd-files} parameter can be used to specify the list of @file{.asd} files to read.  Furthermore, if the package defines a system for its tests in a separate file, it will be loaded before the tests are run if it is specified by the @code{#:test-asd-file} parameter.  If it is not set, the files @code{<system>-tests.asd}, @code{<system>-test.asd}, @code{tests.asd}, and @code{test.asd} will be tried if they exist."
-msgstr "Если система не определена в собственном файле @file{.asd} с тем же именем, тогда следует использовать параметр @code{#:asd-file}, чтобы указать, в каком файле определена система.  Кроме того, если пакет определяет систему для своих тестов в отдельном файле, он будет загружен перед запуском тестов, если он указан параметром @code{#:test-asd-file}.  Если он не установлен, будут попробованы файлы @code{<system>-tests.asd}, @code{<system>-test.asd}, @code{tests.asd} и @code{test.asd}, если они есть."
-
-msgid "If for some reason the package must be named in a different way than the naming conventions suggest, or if several systems must be compiled, the @code{#:asd-systems} parameter can be used to specify the list of system names."
-msgstr "Если по какой-то причине пакет должен быть назван иначе, чем это предлагается в соглашениях об именах, можно использовать параметр @code{#:asd-system-name} для указания имени системы."
 
 msgid "Rust programming language"
 msgstr "Язык программирования Rust"
@@ -8668,14 +8605,8 @@ msgstr "Эта переменная экспортируется в @code{(guix 
 msgid "The maven build system ensures that maven will not try to download any dependency by running in offline mode.  Maven will fail if a dependency is missing.  Before running Maven, the @file{pom.xml} (and subprojects) are modified to specify the version of dependencies and plugins that match the versions available in the guix build environment.  Dependencies and plugins must be installed in the fake maven repository at @file{lib/m2}, and are symlinked into a proper repository before maven is run.  Maven is instructed to use that repository for the build and installs built artifacts there.  Changed files are copied to the @file{lib/m2} directory of the package output."
 msgstr "Система сборки maven гарантирует, что maven не будет пытаться загрузить какие-либо зависимости, работая в offline режиме.  Maven завершится ошибкой, если зависимость отсутствует.  Перед запуском Maven @file{pom.xml} (и подпроекты) модифицируются, чтобы указать версию зависимостей и плагинов, которые соответствуют версиям, доступным в среде сборки guix.  Зависимости и плагины должны быть установлены в поддельном репозитории maven по адресу @file{lib/m2} и перед запуском maven привязаны к соответствующему репозиторию.  Maven получает указание использовать этот репозиторий для сборки и устанавливает туда созданные артефакты.  Измененные файлы копируются в каталог @file{lib/m2} выходных данных пакета."
 
-msgid "You can specify a @file{pom.xml} file with the @code{#:pom-file} argument, or let the build system use the default @file{pom.xml} file in the sources."
-msgstr "Вы можете указать файл @file{pom.xml} с аргументом @code{#:pom-file} или позволить системе сборки использовать файл @file{pom.xml} по умолчанию в источниках."
-
 msgid "In case you need to specify a dependency's version manually, you can use the @code{#:local-packages} argument.  It takes an association list where the key is the groupId of the package and its value is an association list where the key is the artifactId of the package and its value is the version you want to override in the @file{pom.xml}."
 msgstr "Если вам нужно указать версию зависимости вручную, вы можете использовать аргумент @code{#:local-packages}.  Он принимает список ассоциаций, где ключ - это groupId пакета, а его значение - это список ассоциаций, где ключ - это artifactId пакета, а его значение - это версия, которую вы хотите переопределить в @file{pom.xml}."
-
-msgid "Some packages use dependencies or plugins that are not useful at runtime nor at build time in Guix.  You can alter the @file{pom.xml} file to remove them using the @code{#:exclude} argument.  Its value is an association list where the key is the groupId of the plugin or dependency you want to remove, and the value is a list of artifactId you want to remove."
-msgstr "Некоторые пакеты используют зависимости или плагины, которые не используются ни во время выполнения, ни во время сборки в Guix.  Вы можете изменить файл @file{pom.xml}, чтобы удалить их, используя аргумент @code{#:exclude}.  Его значение - это список ассоциаций, где ключ - это groupId плагина или зависимости, которые вы хотите удалить, а значение - это список artifactId, которые вы хотите удалить."
 
 msgid "You can override the default @code{jdk} and @code{maven} packages with the corresponding argument, @code{#:jdk} and @code{#:maven}."
 msgstr "Вы можете переопределить пакеты по умолчанию @code{jdk} и @code{maven} с помощью соответствующего аргумента, @code{#:jdk} и @code{#:maven}."
@@ -8869,14 +8800,8 @@ msgstr "Эта переменная экспортируется в @code{(guix 
 msgid "Which Node.js package is used to interpret the @code{npm} commands can be specified with the @code{#:node} parameter which defaults to @code{node}."
 msgstr "Какой пакет Node.js используется для интерпретации команд @code{npm}, можно указать с помощью параметра @code{#:node}, который по умолчанию равен @code{node}."
 
-msgid "Lastly, for packages that do not need anything as sophisticated, a ``trivial'' build system is provided.  It is trivial in the sense that it provides basically no support: it does not pull any implicit inputs, and does not have a notion of build phases."
-msgstr "Наконец, для пакетов, которым не нужно ничего столь же сложного, предоставляется ``trivial'' система сборки.  Она тривиальна в том смысле, что она практически не оказывает поддержки при сборке: она не извлекает никаких неявных входных данных и не имеет понятия о этапах сборки."
-
 msgid "This variable is exported by @code{(guix build-system trivial)}."
 msgstr "Эта переменная экспортируется @code{(guix build-system trivial)}."
-
-msgid "This build system requires a @code{#:builder} argument.  This argument must be a Scheme expression that builds the package output(s)---as with @code{build-expression->derivation} (@pxref{Derivations, @code{build-expression->derivation}})."
-msgstr "Эта система сборки требует аргумента @code{#:builder}.  Этот аргумент должен быть Scheme выражением, которое строит выходные данные пакета---как с @code{build-expression->derivation} (@pxref{Derivations, @code{build-expression->derivation}})."
 
 msgid "build phases, for packages"
 msgstr "входные данные, для пакетов Python"
@@ -10712,9 +10637,6 @@ msgstr "@code{features} (default: @code{'()})"
 msgid "@code{user} (default: @code{\"root\"})"
 msgstr "@code{port} (default: @code{22})"
 
-msgid "@code{modules} (default: @code{%default-modules})"
-msgstr "@code{modules} (default: @code{%default-modules})"
-
 msgid "The @code{(gnu services syncthing)} module provides the following services:"
 msgstr "Модуль @code{(guix inferior)} предоставляет следующие процедуры для работы с ранними версиями:"
 
@@ -10951,9 +10873,6 @@ msgstr "@code{port} (default: @code{22})"
 
 msgid "This data type represents the configuration of the SDDM login manager.  The available fields are:"
 msgstr "Этот тип данных представляет машины для сборки, на которые демон может разгружать сборки. Важные поля:"
-
-msgid "@code{sddm} (default: @code{sddm})"
-msgstr "@code{speed} (default: @code{1.0})"
 
 msgid "The SDDM package to use."
 msgstr "Используемый пакет SDDM."
@@ -12210,9 +12129,6 @@ msgstr "Конфигурирование системы"
 msgid "This data type represents the configuration of the Nix daemon."
 msgstr "Управление конфигурацией операционной системы."
 
-msgid "@code{nix} (default: @code{nix})"
-msgstr "@code{speed} (default: @code{1.0})"
-
 msgid "The Nix package to use."
 msgstr "Используемый пакет Nix."
 
@@ -12531,6 +12447,9 @@ msgstr "@code{features} (default: @code{'()})"
 msgid "herd doc @var{service-name}\n"
 msgstr "herd doc @var{service-name}\n"
 
+msgid "@code{modules} (default: @code{%default-modules})"
+msgstr "@code{modules} (default: @code{%default-modules})"
+
 msgid "{Data Type} shepherd-action"
 msgstr "{Data Type} shepherd-action"
 
@@ -12546,14 +12465,8 @@ msgstr "Конфигурирование системы"
 msgid "This data type represents the Shepherd's configuration."
 msgstr "Управление конфигурацией операционной системы."
 
-msgid "shepherd (default: @code{shepherd})"
-msgstr "@code{port} (default: @code{22})"
-
 msgid "The Shepherd package to use."
 msgstr "Используемый пакет Hurd."
-
-msgid "services (default: @code{'()})"
-msgstr "@code{features} (default: @code{'()})"
 
 msgid "The following example specifies the Shepherd package for the operating system:"
 msgstr "Следующий пример порождает новую оболочку, установленную для разработки GNU@tie{}Guile:"
@@ -12563,6 +12476,12 @@ msgstr "guix system troubleshooting"
 
 msgid "Available @code{home-mcron-configuration} fields are:"
 msgstr "Доступными полями @code{home-mcron-configuration} являются:"
+
+msgid "shepherd (default: @code{shepherd})"
+msgstr "@code{port} (default: @code{22})"
+
+msgid "services (default: @code{'()})"
+msgstr "@code{features} (default: @code{'()})"
 
 msgid "Available @code{proxy-jump} fields are:"
 msgstr "Доступными полями @code{proxy-jump} являются:"

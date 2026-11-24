@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-04 03:18+0000\n"
-"PO-Revision-Date: 2026-05-31 06:46+0000\n"
+"POT-Creation-Date: 2026-10-17 05:00+0000\n"
+"PO-Revision-Date: 2026-11-23 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/documentation-cookbook/it/>\n"
 "Language: it\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5\n"
+"X-Generator: Weblate 2026.10.1\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -51,7 +51,7 @@ msgid "This document presents tutorials and detailed examples for GNU@tie{}Guix,
 msgstr "Questo documento presenta tutorial ed esempi dettagliati per GNU@tie{}Guix, uno strumento di gestione pacchetti funzionale scritto per il sistema GNU. Si prega di @pxref{Top,,, guix.it, manuale di riferimento di GNU Guix} per dettagli sul sistema, la sua API e i concetti correlati."
 
 msgid "This manual is also available in Simplified Chinese (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Spanish (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
-msgstr "Questo manuale è disponibile anche in inglese (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), francese (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), cinese semplificato (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), tedesco (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), coreano (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), spagnolo (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), portoghese brasiliano (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), russo (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), slovacco (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), svedese (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}) e tamulo (@pxref{Top,,, guix-cookbook.ta, GNU Guix கையேடு}). Se desideri tradurre questo documento nella tua lingua madre, considera di unirti a @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Tradurre Guix,,, guix.it, Manuale di riferimento di GNU Guix})."
+msgstr "Questo manuale è disponibile anche in inglese (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), francese (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), cinese semplificato (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), tedesco (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), coreano (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), spagnolo (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), portoghese brasiliano (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), russo (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), slovacco (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}) e svedese (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}). Se desideri tradurre questo documento nella tua lingua madre, considera di unirti a @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Tradurre Guix,,, guix.it, Manuale di riferimento di GNU Guix})."
 
 msgid "Scheme tutorials"
 msgstr "Tutorial di Scheme"
@@ -299,8 +299,8 @@ msgstr "Rete instradata per libvirt"
 msgid "Custom NAT-based network for libvirt"
 msgstr "Rete personalizzata basata su NAT per libvirt"
 
-msgid "References: VM References"
-msgstr "Riferimenti: Riferimenti VM"
+msgid "VM References"
+msgstr "Riferimenti VM"
 
 msgid "Further reading on virtual machines."
 msgstr "Ulteriori letture sulle macchine virtuali."
@@ -1212,9 +1212,6 @@ msgstr "A differenza della maggior parte delle distribuzioni software, il reposi
 msgid "Check out the official @uref{https://git-scm.com/, Git} repository:"
 msgstr "Dai un'occhiata al repository @uref{https://git-scm.com/, Git} ufficiale:"
 
-msgid "$ git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "$ git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "In the rest of this article, we use @samp{$GUIX_CHECKOUT} to refer to the location of the checkout."
 msgstr "Nel resto di questo articolo, useremo @samp{$GUIX_CHECKOUT} per fare riferimento alla posizione del checkout."
 
@@ -1279,9 +1276,6 @@ msgstr "e rivedere la lista di controllo dal manuale (@pxref{Invia delle patches
 
 msgid "Once you are happy with the result, you are welcome to send your contribution to make it part of Guix.  This process is also detailed in the manual.  (@pxref{Contributing,,, guix, GNU Guix Reference Manual})"
 msgstr "Una volta che sei soddisfatto del risultato, sei il benvenuto a inviare il tuo contributo per renderlo parte di Guix. Questo processo è anche dettagliato nel manuale. (@pxref{Contribuire,,, guix.it, Manuale di riferimento di GNU Guix})"
-
-msgid "It's a community effort so the more join in, the better Guix becomes!"
-msgstr "È uno sforzo della comunità, quindi più persone si uniscono, migliore diventa Guix!"
 
 msgid "The above ``Hello World'' example is as simple as it goes.  Packages can be more complex than that and Guix can handle more advanced scenarios.  Let's look at another, more sophisticated package (slightly modified from the source):"
 msgstr "L'esempio \"Ciao Mondo\" sopra è il più semplice possibile. I pacchetti possono essere più complessi di così e Guix può gestire scenari più avanzati. Diamo un'occhiata a un altro pacchetto più sofisticato (leggermente modificato dalla fonte):"
@@ -1487,13 +1481,6 @@ msgstr ""
 
 msgid "Snippets"
 msgstr "Frammenti"
-
-msgid "Snippets are quoted (i.e. non-evaluated) Scheme code that are a means of patching the source.  They are a Guix-y alternative to the traditional @file{.patch} files.  Because of the quote, the code in only evaluated when passed to the Guix daemon for building.  There can be as many snippets as needed."
-msgstr ""
-"Gli snippet sono codice Scheme quotato (cioè non valutato) che è un mezzo per\n"
-"applicare patch al sorgente. Sono un'alternativa in stile Guix ai tradizionali\n"
-"file @file{.patch}. A causa della quotatura, il codice viene valutato solo quando\n"
-"passato al demone Guix per la costruzione. Possono esserci quanti snippet sono necessari."
 
 msgid "Snippets might need additional Guile modules which can be imported from the @code{modules} field."
 msgstr "Gli snippet potrebbero aver bisogno di moduli Guile aggiuntivi che possono essere importati dal campo @code{modules}."
@@ -2945,9 +2932,6 @@ msgstr ""
 "chiave di sicurezza Yubico. Si spera che la configurazione possa essere utile anche per altre\n"
 "chiavi di sicurezza, con piccole modifiche."
 
-msgid "Configuration for use as a two-factor authenticator (2FA)"
-msgstr "Configurazione per l'uso come autenticatore a due fattori (2FA)"
-
 msgid "To be usable, the udev rules of the system should be extended with key-specific rules.  The following shows how to extend your udev rules with the @file{lib/udev/rules.d/70-u2f.rules} udev rule file provided by the @code{libfido2} package from the @code{(gnu packages security-token)} module and add your user to the @samp{\"plugdev\"} group it uses:"
 msgstr ""
 "Per essere utilizzabile, le regole udev del sistema dovrebbero essere estese con regole\n"
@@ -3229,13 +3213,6 @@ msgstr "Si noti che l'autore ha descritto questo comando come: “[…] uno scri
 
 msgid "Using NetworkManager"
 msgstr "Utilizzo di NetworkManager"
-
-msgid "Thanks to NetworkManager support for Wireguard we can connect to our VPN using @command{nmcli} command.  Up to this point this guide assumes that you're using Network Manager service provided by @code{%desktop-services}.  Ortherwise you need to adjust your services list to load @code{network-manager-service-type} and reconfigure your Guix system."
-msgstr ""
-"Grazie al supporto di NetworkManager per Wireguard, possiamo connetterci alla nostra VPN\n"
-"usando il comando @command{nmcli}. Fino a questo punto, questa guida presuppone che\n"
-"stai usando il servizio Network Manager fornito da @code{%desktop-services}.\n"
-"Altrimenti devi regolare l'elenco dei tuoi servizi per caricare @code{network-manager-service-type} e riconfigurare il tuo sistema Guix."
 
 msgid "To import your VPN configuration execute nmcli import command:"
 msgstr "Per importare la tua configurazione VPN, esegui il comando nmcli import:"
@@ -3522,15 +3499,6 @@ msgid ""
 "\n"
 msgstr ""
 "  (swap-devices (list \"/dev/sdb\"))\n"
-"\n"
-
-msgid ""
-"  (initrd-modules (cons \"virtio_scsi\"    ; Needed to find the disk\n"
-"                        %base-initrd-modules))\n"
-"\n"
-msgstr ""
-"  (initrd-modules (cons \"virtio_scsi\"    ; Necessario per trovare il disco\n"
-"                        %base-initrd-modules))\n"
 "\n"
 
 msgid ""
@@ -3843,15 +3811,6 @@ msgstr ""
 "\t       (bootloader grub-bootloader)\n"
 "\t       (targets (list \"/dev/sda\" \"/dev/sdb\"))\n"
 "\t       (terminal-outputs '(console))))\n"
-"\n"
-
-msgid ""
-"  ;; Add a kernel module for RAID-1 (aka. \"mirror\").\n"
-"  (initrd-modules (cons* \"raid1\"  %base-initrd-modules))\n"
-"\n"
-msgstr ""
-"  ;; Aggiungi un modulo del kernel per RAID-1 (alias \"mirror\").\n"
-"  (initrd-modules (cons* \"raid1\"  %base-initrd-modules))\n"
 "\n"
 
 msgid ""
@@ -4409,15 +4368,6 @@ msgid "Start the @code{bluetooth} service and then use @command{bluetoothctl} to
 msgstr "Avvia il servizio @code{bluetooth} e poi usa @command{bluetoothctl} per scandire i dispositivi Bluetooth. Prova a identificare il tuo altoparlante Bluetooth e ricava il suo ID dispositivo dalla lista risultante di dispositivi che è indubbiamente dominata da un'incredibile varietà di gadget di automazione domestica dei tuoi vicini. Questo deve essere fatto solo una volta:"
 
 msgid ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-msgstr ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-
-msgid ""
 "[bluetooth]# power on\n"
 "[bluetooth]# Changing power on succeeded\n"
 "\n"
@@ -4492,36 +4442,6 @@ msgid ""
 "\n"
 msgstr ""
 "[CHG] Dispositivo AA:BB:CC:A4:AA:CD Connesso: no\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes\n"
-"Changing AA:BB:CC:A4:AA:CD trust succeeded\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Dispositivo AA:BB:CC:A4:AA:CD Affidabile: sì\n"
-"Modifica dell'affidabilità di AA:BB:CC:A4:AA:CD riuscita\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Attempting to connect to AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes\n"
-"Connection successful\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Tentativo di connessione a AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Dispositivo AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Dispositivo AA:BB:CC:A4:AA:CD Connesso: sì\n"
-"Connessione riuscita\n"
 "\n"
 
 msgid ""
@@ -5198,6 +5118,9 @@ msgstr "Guix può produrre immagini disco (@pxref{Invocare guix system,,, guix.i
 msgid "This chapter aims to provide hands-on, practical examples that relates to the usage and configuration of virtual machines on a Guix System."
 msgstr "Questo capitolo si propone di fornire esempi pratici e concreti relativi all'utilizzo e alla configurazione di macchine virtuali su un sistema Guix."
 
+msgid "References: VM References"
+msgstr "Riferimenti: Riferimenti VM"
+
 msgid "Network bridge interface"
 msgstr "Interfaccia bridge di rete"
 
@@ -5593,9 +5516,6 @@ msgstr ""
 
 msgid "Ensure that you have IPv4 forwarding enabled (you can use @code{sysctl-service-type} for this)."
 msgstr "Assicurati di avere l'inoltro IPv4 abilitato (puoi usare @code{sysctl-service-type} per questo)."
-
-msgid "VM References"
-msgstr "Riferimenti VM"
 
 msgid "@uref{https://jamielinux.com/docs/libvirt-networking-handbook/index.html, The (unofficial) libvirt Networking Handbook}@* Note that this resource is rather outdated at the time of writing (as of March 2025, it was last updated in 2015).  Nevertheless, the authors of this chapter have found it to be a valuable source of information."
 msgstr "@uref{https://jamielinux.com/docs/libvirt-networking-handbook/index.html, The (unofficial) libvirt Networking Handbook}@* Nota che questa risorsa è piuttosto datata al momento della stesura (a marzo 2025, è stata aggiornata l'ultima volta nel 2015). Ciononostante, gli autori di questo capitolo l'hanno trovata una preziosa fonte di informazioni."

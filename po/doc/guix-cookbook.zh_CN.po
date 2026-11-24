@@ -9,16 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-12 03:18+0000\n"
-"PO-Revision-Date: 2026-07-17 07:07+0000\n"
-"Last-Translator: Eugene_Cheng <eugene_cheng@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-10-17 05:00+0000\n"
+"PO-Revision-Date: 2026-09-28 14:29+0000\n"
+"Last-Translator: cygauss <cygauss@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-cookbook/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -27,6 +27,9 @@ msgstr ""
 
 msgid "GNU Guix Cookbook"
 msgstr "GNU Guix 烹饪书"
+
+msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023--2026 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2025 Gabriel Wicki*"
+msgstr "版权所有 @copyright{} 2019, 2022 Ricardo Wurmus@* 版权所有 @copyright{} 2019 Efraim Flashner@* 版权所有 @copyright{} 2019 Pierre Neidhardt@* 版权所有 @copyright{} 2020 Oleg Pykhalov@* 版权所有 @copyright{} 2020 Matthew Brooks@* 版权所有 @copyright{} 2020 Marcin Karpezo@* 版权所有 @copyright{} 2020 Brice Waegeneire@* 版权所有 @copyright{} 2020 André Batista@* 版权所有 @copyright{} 2020 Christine Lemmer-Webber@* 版权所有 @copyright{} 2021 Joshua Branson@* 版权所有 @copyright{} 2022, 2023 Maxim Cournoyer@* 版权所有 @copyright{} 2023--2026 Ludovic Courtès@* 版权所有 @copyright{} 2023 Thomas Ieong@* 版权所有 @copyright{} 2023 Marek Felšöci@* 版权所有 @copyright{} 2023 Konrad Hinsen@* 版权所有 @copyright{} 2023 Philippe Swartvagher@* 版权所有 @copyright{} 2024 Florian Pelz@* 版权所有 @copyright{} 2025 45mg@* 版权所有 @copyright{} 2025 Gabriel Wicki*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "现允许根据 GNU 自由文档许可证第 1.3 版或自由软件基金会发布的任何更高版本的条款复制、分发和（或）修改本文件；没有不可变小节，没有封面文字，也没有封底文字。此许可证的副本包含在标题为“GNU 自由文档许可证”的部分内。"
@@ -336,6 +339,9 @@ msgstr "入门"
 
 msgid "Building with Guix"
 msgstr "用 Guix 构建"
+
+msgid "Going further"
+msgstr "进一步了解"
 
 msgid "packaging"
 msgstr "打包"
@@ -653,9 +659,6 @@ msgstr ""
 "git init\n"
 "git add my-hello.scm\n"
 "git commit -m \"First commit of my channel.\"\n"
-
-msgid "$ git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "$ git clone https://git.guix.gnu.org/guix.git\n"
 
 msgid ""
 "  $ cd $GUIX_CHECKOUT\n"
@@ -1435,6 +1438,9 @@ msgstr ""
 
 msgid "# nmcli con add type bridge con-name br0 ifname br0\n"
 msgstr "# nmcli con add type bridge con-name br0 ifname br0\n"
+
+msgid "Important"
+msgstr "注意"
 
 msgid ""
 "(privileged-programs\n"

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-04 03:18+0000\n"
-"PO-Revision-Date: 2026-05-31 06:46+0000\n"
+"POT-Creation-Date: 2026-10-17 05:00+0000\n"
+"PO-Revision-Date: 2026-11-23 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Slovak <https://translate.codeberg.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 2026.5\n"
+"X-Generator: Weblate 2026.10.1\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -50,7 +50,7 @@ msgid "This document presents tutorials and detailed examples for GNU@tie{}Guix,
 msgstr "Tento dokument obsahuje návody a podrobné príklady použitia GNU@tie{}Guix, funkcionálneho správcu balíkov napísaného pre systém GNU.  Získajte viac podrobností o systéme, jeho API a súvisiacich pojmoch v @pxref{Top,,, guix, GNU Guix reference manual}."
 
 msgid "This manual is also available in Simplified Chinese (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Spanish (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
-msgstr "Táto príručka je dostupná aj v angličtine (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), čínštine (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), francúzštine (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), nemčine (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), kórejčine (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), španielčine (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), taliančine (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), brazílskej portugalčine (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), ruštine (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), švédčine (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}) a tamilčine (@pxref{Top,,, guix-cookbook.ta, GNU Guix கையேடு}).  Ak chcete pomôcť s prekladom tohto dokumentu do vášho rodného jazyka, pripojte sa k @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
+msgstr "Táto príručka je dostupná aj v angličtine (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), čínštine (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), francúzštine (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), nemčine (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), kórejčine (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), španielčine (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), taliančine (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), brazílskej portugalčine (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), ruštine (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}) a švédčine (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  Ak chcete pomôcť s prekladom tohto dokumentu do vášho rodného jazyka, pripojte sa k @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
 
 msgid "Scheme tutorials"
 msgstr "Návody na Scheme"
@@ -1203,9 +1203,6 @@ msgstr "Na rozdiel od väčšiny softvérových distribúcií, repozitár Guixu 
 msgid "Check out the official @uref{https://git-scm.com/, Git} repository:"
 msgstr "Vytvorte si kópiu oficiálneho @uref{https://git-scm.com/, Git} repozitára:"
 
-msgid "$ git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "$ git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "In the rest of this article, we use @samp{$GUIX_CHECKOUT} to refer to the location of the checkout."
 msgstr "Vo zvyšku tohto príspevku použijeme pri odkazovaní na túto kópiu premennú @samp{$GUIX_CHECKOUT}."
 
@@ -1270,9 +1267,6 @@ msgstr "a prejsť si kontrolný zoznam z príručky (@pxref{Submitting Patches,,
 
 msgid "Once you are happy with the result, you are welcome to send your contribution to make it part of Guix.  This process is also detailed in the manual.  (@pxref{Contributing,,, guix, GNU Guix Reference Manual})"
 msgstr "Keď ste spokojní s výsledkom, privítame, ak nám zašlete váš príspevok, aby sa mohol stať súčasťou Guixu. Tento postup je tiež opísaný v príručke. (@pxref{Contributing,,, guix, GNU Guix Reference Manual})"
-
-msgid "It's a community effort so the more join in, the better Guix becomes!"
-msgstr "Guix závisí od spoločného úsilia, preto čím viac ľudí prispeje, tým bude Guix lepší!"
 
 msgid "The above ``Hello World'' example is as simple as it goes.  Packages can be more complex than that and Guix can handle more advanced scenarios.  Let's look at another, more sophisticated package (slightly modified from the source):"
 msgstr "Vyššie uvedený príklad zadania balíka „Ahoj svet“ je taký jednoduchý ako sa len dá. Avšak, zadania balíkov môžu byť zložitejšie a Guix si poradí aj s omnoho náročnejšími balíkmi. Pozrime sa teda na iné, zložitejšie zadanie balíka (mierne upravené v porovnaní s pôvodným zadaním):"
@@ -1430,9 +1424,6 @@ msgstr "Do budúcna bude snáď @command{guix download} schopný vykonávať tie
 
 msgid "Snippets"
 msgstr "Kusy kódu"
-
-msgid "Snippets are quoted (i.e. non-evaluated) Scheme code that are a means of patching the source.  They are a Guix-y alternative to the traditional @file{.patch} files.  Because of the quote, the code in only evaluated when passed to the Guix daemon for building.  There can be as many snippets as needed."
-msgstr "Kusy kódu predstavujú malé časti Scheme kódu v úvodzovkách, t.j. bežne nevykonávané, ktoré sa používajú na plátanie zdrojových súborov. Je to taká Guixová náhrada za dobre známe @file{.patch} súbory. Vďaka úvodzovkám sa daný kód vykoná len vtedy, keď sa odošle démonovi Guixu na zostavenie. V praxi môžeme použiť toľko kusov kódu, koľko potrebujeme."
 
 msgid "Snippets might need additional Guile modules which can be imported from the @code{modules} field."
 msgstr "Kusy kódu môžu vyžadovať prídavné moduly Guilu, ktoré je možné načítať pomocou poľa @code{modules}."
@@ -2474,9 +2465,6 @@ msgstr "Používanie bezpečnostných kľúčov môže zvýšiť vašu bezpečno
 msgid "The example configuration detailed below showcases what minimal configuration needs to be made on your Guix System to allow the use of a Yubico security key.  It is hoped the configuration can be useful for other security keys as well, with minor adjustments."
 msgstr "Nižšie uvedený podrobný príklad znázorňuje najstručnejšie možné nastavenie potrebné pre umožnenie používania bezpečnostného kľúča Yubico v systéme Guix.  Dúfame, že toto nastavenie bude, s menšími úpravami, možné použiť aj pre iné bezpečnostné kľúče."
 
-msgid "Configuration for use as a two-factor authenticator (2FA)"
-msgstr "Nastavenie pre použitie v rámci dvojstupňového overenia (2FA)"
-
 msgid "To be usable, the udev rules of the system should be extended with key-specific rules.  The following shows how to extend your udev rules with the @file{lib/udev/rules.d/70-u2f.rules} udev rule file provided by the @code{libfido2} package from the @code{(gnu packages security-token)} module and add your user to the @samp{\"plugdev\"} group it uses:"
 msgstr "Aby sa kľúč dal použiť, je nutné rozšíriť udev pravidlá systému o pravidlá príznačné pre daný kľúč.  Nasledovný postup popisuje kroky pre rozšírenie udev pravidiel prostredníctvom súboru udev pravidiel @file{lib/udev/rules.d/70-u2f.rules} poskytovaného balíkom @code{libfido2} z modulu @code{(gnu packages security-token)} a pre pridanie vášho používateľského účtu do skupiny @samp{\"plugdev\"}, ktorú využíva:"
 
@@ -2622,9 +2610,6 @@ msgstr "Vedzte však, že autor tento príkaz opísal ako „[…] veľmi narýc
 
 msgid "Using NetworkManager"
 msgstr "Použitie nástroja NetworkManager"
-
-msgid "Thanks to NetworkManager support for Wireguard we can connect to our VPN using @command{nmcli} command.  Up to this point this guide assumes that you're using Network Manager service provided by @code{%desktop-services}.  Ortherwise you need to adjust your services list to load @code{network-manager-service-type} and reconfigure your Guix system."
-msgstr "Vďaka podpore nástroja NetworkManager pre Wireguard sa môžeme k našej VPN sieti pripojiť pomocou príkazu @command{nmcli}.  Tento návod predpokladá, že používate službu NetworkManager, ktorú poskytujú @code{%desktop-services}.  V opačnom prípade budete musieť rozšíriť váš zoznam služieb o @code{network-manager-service-type} a znovunastaviť váš systém Guix."
 
 msgid "To import your VPN configuration execute nmcli import command:"
 msgstr "Pre načítanie vášho nastavenia VPN vykonajte nasledovný nmcli príkaz:"
@@ -2866,15 +2851,6 @@ msgid ""
 "\n"
 msgstr ""
 "  (swap-devices (list \"/dev/sdb\"))\n"
-"\n"
-
-msgid ""
-"  (initrd-modules (cons \"virtio_scsi\"    ; Needed to find the disk\n"
-"                        %base-initrd-modules))\n"
-"\n"
-msgstr ""
-"  (initrd-modules (cons \"virtio_scsi\"    ; Potrebné pre nájdenie disku\n"
-"                        %base-initrd-modules))\n"
 "\n"
 
 msgid ""
@@ -3331,15 +3307,6 @@ msgid "Start the @code{bluetooth} service and then use @command{bluetoothctl} to
 msgstr "Spustite službu @code{bluetooth} a zistite Bluetooth zariadenia pomocou @command{bluetoothctl}.  Pokúste sa stotožniť váš Bluetooth reproduktor a vyberte jeho označenie z výsledného zoznamu zariadení, ktorý je nepochybne plný rôznych hračičiek vašich susedov.  Toto je potrebné urobiť iba raz:"
 
 msgid ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-msgstr ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-
-msgid ""
 "[bluetooth]# power on\n"
 "[bluetooth]# Changing power on succeeded\n"
 "\n"
@@ -3414,36 +3381,6 @@ msgid ""
 "\n"
 msgstr ""
 "[CHG] Device AA:BB:CC:A4:AA:CD Connected: no\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes\n"
-"Changing AA:BB:CC:A4:AA:CD trust succeeded\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes\n"
-"Changing AA:BB:CC:A4:AA:CD trust succeeded\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Attempting to connect to AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes\n"
-"Connection successful\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Attempting to connect to AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes\n"
-"Connection successful\n"
 "\n"
 
 msgid ""

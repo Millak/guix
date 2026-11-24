@@ -14,15 +14,15 @@ msgstr ""
 "Project-Id-Version: guix 0.4-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2026-06-12 23:25+0000\n"
-"Last-Translator: annibal <annibal@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2026-11-22 13:32+0000\n"
+"Last-Translator: rbcj <rbcj@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/packages/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.10.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Word processing program"
@@ -368,6 +368,27 @@ msgstr "Este pacote fornece um programa que coleta vários dados de desempenho c
 
 msgid "Command line utility to run a program as a daemon"
 msgstr "Utilitário em linha de comando para executar um programa como daemon"
+
+msgid "User-space component to the Linux auditing system"
+msgstr "Componentes em espaço do usuário para o sistema de auditória do Linux"
+
+msgid "Command line system resource monitoring tool"
+msgstr "Ferramentas de linha de comando para monitoração de sistema"
+
+msgid "System information tool"
+msgstr "Ferramenta de coleta de informações de sistema"
+
+msgid "Display system information in a stylized manner"
+msgstr "Exibir informações sobre o sistema de forma estilizada"
+
+msgid "This package provides @code{udev} bindings for Python."
+msgstr "Este pacote fornece pontes @code{udev} para Python"
+
+msgid "Command line client for DigitalOcean"
+msgstr "Cliente em linha de comando para o DigitalOcean"
+
+msgid "Graphical disk usage analyzer"
+msgstr "Analisador gráfico de uso de disco"
 
 msgid "Spell checker"
 msgstr "Corretor ortográfico"
@@ -3359,11 +3380,14 @@ msgstr ""
 "modificado bastante para ser adequado para o XZ Utils. O algoritmo de compressão primário é atualmente o LZMA2, que é usado dentro do formato de contêiner .xz. Com arquivos típicos, o XZ Utils cria uma saída 30% menor\n"
 "do que o gzip e 15% menor do que o bzip2."
 
+msgid "Data compression library for embedded/real-time systems"
+msgstr "Biblioteca de compressão de dados para sistemas embarcados/tempo real"
+
 msgid "LHA archive decompressor"
 msgstr "Descompressor de arquivo LHA"
 
 msgid "Data compression library suitable for real-time data de-/compression"
-msgstr "Biblioteca de compressão de dados adequada para descompressão/descompressão de dados em tempo real"
+msgstr "Biblioteca de compressão de dados adequada para des-/compressão de dados em tempo real"
 
 msgid ""
 "LZO is a data compression library which is suitable for data\n"
@@ -5980,6 +6004,9 @@ msgstr ""
 msgid "Z-machine interpreter"
 msgstr "Intérprete Z-machine"
 
+msgid "C library for use on embedded systems"
+msgstr "Biblioteca C para uso em sistemas embarcados"
+
 msgid ""
 "The shared-mime-info package contains the core database of common types\n"
 "and the update-mime-database command used to extend it.  It requires glib2 to\n"
@@ -6863,7 +6890,7 @@ msgstr ""
 "lutar contra Morgoth, o Senhor das Trevas."
 
 msgid "Lemmings clone"
-msgstr "Lemmings clone"
+msgstr "Clone do Lemmings"
 
 msgid ""
 "Pingus is a free Lemmings-like puzzle game in which the player takes\n"
@@ -11926,6 +11953,9 @@ msgstr "Cliente Go para Redis"
 
 msgid "Redigo is a Go client for the Redis database."
 msgstr "Redigo é um cliente Go para o banco de dados Redis."
+
+msgid "Colorful log/slog handler for CLI applications "
+msgstr "Manipulador de log/slog colorido para aplicações CLI. "
 
 msgid "Embedded key/value database for Go"
 msgstr "Banco de dados de chave/valor incorporado para Go"
@@ -21077,6 +21107,9 @@ msgstr "O pacote netlink fornece uma biblioteca netlink simples para Go. Netlink
 msgid "Simple network namespace handling for Go"
 msgstr "Manipulação simples de namespace de rede para Go"
 
+msgid "Introduction"
+msgstr "Introdução"
+
 msgid "Application Menu applet"
 msgstr "Applet do menu do aplicativo"
 
@@ -23043,6 +23076,9 @@ msgstr ""
 "é o uso de Scalable Vector Graphics (SVG), um padrão W3C baseado em XML,\n"
 "como o formato nativo."
 
+msgid "Fast parser library for mathematical expressions"
+msgstr "Biblioteca rápida de análise sintática para expressões matemáticas"
+
 msgid "Program to download and decrypt @code{aesgcm://} URLs"
 msgstr "Programa para baixar e descriptografar URLs @code{aesgcm://}"
 
@@ -23424,10 +23460,10 @@ msgid ""
 "once.  It supports both talk protocols (\"talk\" and \"ntalk\") and can communicate\n"
 "with several different talk daemons at the same time."
 msgstr ""
-"Ytalk é um substituto para o programa BSD talk. Seu principal\n"
-"a vantagem é a capacidade de se comunicar com qualquer número arbitrário de usuários em\n"
-"uma vez. Ele suporta ambos os protocolos talk (\"talk\" e \"ntalk\") e pode se comunicar\n"
-"com vários talk daemons diferentes ao mesmo tempo."
+"Ytalk é um substituto para o programa BSD talk.  Seu principal\n"
+"vantagem é a capacidade de se comunicar um número arbitrário de usuários. \n"
+"O programa suporta ambos os protocolos \"talk\" e \"ntalk\" e pode se comunicar\n"
+"com vários daemons talk distintos ao mesmo tempo."
 
 msgid "Portable high-level Jabber/XMPP library for C++"
 msgstr "Biblioteca Jabber/XMPP portátil de alto nível para C++"
@@ -23670,7 +23706,7 @@ msgstr ""
 "bem como em plataformas de desktop. É baseado em LibPurple e ModemManager."
 
 msgid "Message broker"
-msgstr "Corretor de mensagens"
+msgstr "Message broker"
 
 msgid "Python implementation of an MQTT client class"
 msgstr "Implementação Python de uma classe de cliente MQTT"
@@ -24106,7 +24142,7 @@ msgstr ""
 "@item @command{tcptraceroute6}: traceroute IPv6 sobre TCP.\n"
 "@item @command{traceroute6}: traceroute IPv6 sobre UDP.\n"
 "@item @command{rdnssd}: Daemon de descoberta de servidores DNS recursivos.\n"
-"@end detalhar"
+"@end itemize"
 
 msgid "Proxy ARP requests to other interfaces"
 msgstr "Solicitações de proxy ARP para outras interfaces"
@@ -25459,6 +25495,13 @@ msgid ""
 msgstr ""
 "Este pacote fornece uma interface Python para o pacote @code{brotli}\n"
 ", uma implementação do algoritmo de compressão sem perdas Brotli."
+
+msgid ""
+"This package provides a Python library to send files to the\n"
+"user's @file{~/Trash} directory."
+msgstr ""
+"Este pacote fornece uma biblioteca Python para envio de arquivos\n"
+"para o diretório @file{~/Trash} do usuário."
 
 msgid ""
 "RNNoise is a noise suppression library based on a recurrent\n"

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2026-05-28 14:20+0000\n"
+"PO-Revision-Date: 2026-09-18 20:30+0000\n"
 "Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 msgid "Word processing program"
 msgstr "Ordbehandlingsprogram"
@@ -33,6 +33,16 @@ msgstr "Det här paketet tillhandahåller ett enkelt och konfigurerbart systemin
 
 msgid "This package provides @code{udev} bindings for Python."
 msgstr "Det här paketet tillhandahåller @code{udev}-bindningar till Python."
+
+msgid ""
+"This package provides tools to manage clients of the\n"
+"Logitech Unifying Receiver."
+msgstr ""
+"Det här paketet tillhandahåller verktyg för att hantera klienter för \n"
+"Logitech Unifying Receiver."
+
+msgid "Graphical disk usage analyzer"
+msgstr "Grafiskt analysverktyg för diskanvändning"
 
 msgid ""
 "This package provides Python bindings for the Littlewood-Richardson\n"
@@ -257,6 +267,12 @@ msgstr "Databasens nyckelvärde"
 
 msgid "Trivial database"
 msgstr "Ordinär databas"
+
+msgid "SQL tokenizer"
+msgstr "SQL-tokeniserare"
+
+msgid "Security-oriented fuzzer"
+msgstr "Säkerhetsinriktad slumpdatatestare"
 
 msgid "Memory scanner"
 msgstr "Minneskannare"
@@ -759,6 +775,9 @@ msgstr "Skriver ``konfigurationer''"
 
 msgid "Vector arrows"
 msgstr "Vektor-pilar"
+
+msgid "Bembo-like font"
+msgstr "Bembo-liknande typsnitt"
 
 msgid "Linguistic tools"
 msgstr "Lingvistiska verktyg"

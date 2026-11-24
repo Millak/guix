@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-06-21 03:18+0000\n"
-"PO-Revision-Date: 2026-06-22 15:13+0000\n"
+"POT-Creation-Date: 2026-11-21 05:00+0000\n"
+"PO-Revision-Date: 2026-09-23 06:54+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.6.1\n"
+"X-Generator: Weblate 2026.9.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -188,9 +188,6 @@ msgstr "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, Vers
 msgid "0.1.0 or later;"
 msgstr "0.1.0 oder neuer,"
 
-msgid "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS until version 3.7.8 included.};"
-msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (siehe die @ref{Guile Preparations, Installationsanleitung der GnuTLS-Anbindungen für Guile,, gnutls-guile, GnuTLS-Guile})@footnote{Bis einschließlich Version 3.7.8 wurden die Guile-Anbindungen für @uref{https://gnutls.org/, GnuTLS} bei GnuTLS mitgeliefert.},"
-
 msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
 msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, Version 0.1.0 oder neuer,"
 
@@ -202,9 +199,6 @@ msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib},"
 
 msgid "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi},"
-
-msgid "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0 or later;"
-msgstr "@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, Version 0.10.0 oder neuer,"
 
 msgid "@uref{https://git-scm.com, Git} (yes, both!);"
 msgstr "@uref{https://git-scm.com, Git} (ja, beide!),"
@@ -276,24 +270,8 @@ msgstr "Wie Sie sehen können, liegt hier ein Henne-Ei-Problem vor: Sie müssen 
 msgid "The easiest way to set up a development environment for Guix is, of course, by using Guix! The following command starts a new shell where all the dependencies and appropriate environment variables are set up to hack on Guix:"
 msgstr "Der einfachste Weg, eine Entwicklungsumgebung für Guix einzurichten, ist natürlich, Guix zu benutzen! Der folgende Befehl startet eine neue Shell, in der alle Abhängigkeiten und Umgebungsvariablen bereits eingerichtet sind, um an Guix zu arbeiten:"
 
-msgid "guix shell -D guix -CPW\n"
-msgstr "guix shell -D guix -CPW\n"
-
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "Oder kürzer, aus einem Git-Arbeitsverzeichnis von Guix heraus:"
-
-msgid ""
-"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
-"guix shell -CPW\n"
-msgstr ""
-"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
-"guix shell -CPW\n"
-
-msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
-msgstr "Wenn @option{-C} (die Kurzform von @option{--container}) auf Ihrem System nicht unterstützt wird, können Sie @command{--pure} statt @option{-CPW} schreiben. Siehe @ref{Invoking guix shell} für mehr Informationen, was Sie mit diesem Befehl tun."
-
-msgid "Most of the test suite runs without an internet connection. The @option{-N} (short for @option{--network}) can be added to the @code{guix shell} command to run the tests that require internet access."
-msgstr "Der Großteil des Testkatalogs läuft ohne Internetverbindung. Wenn Sie die Befehlszeilenoption @option{-N} (Kurzform von @option{--network}) an den Befehl @code{guix shell} übergeben, laufen auch diejenigen Tests, die einen Internetzugang brauchen."
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "Wenn Sie Guix nicht benutzen können, wenn Sie es aus einem Checkout erstellen, werden die folgenden Pakete zusätzlich zu denen benötigt, die in den Installationsanweisungen angegeben sind (siehe @ref{Requirements})."
@@ -315,9 +293,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz},"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
-
-msgid "guix shell -D guix -CPW strace\n"
-msgstr "guix shell -D guix -CPW strace\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Damit können Sie die Infrastruktur des Erstellungssystems mit Autoconf und Automake erzeugen."
@@ -361,18 +336,12 @@ msgstr "./configure\n"
 msgid "Optionally, @code{--localstatedir} and @code{--sysconfdir} can also be provided as arguments.  By default, @code{localstatedir} is @file{/var} (@pxref{The Store}, for information about this) and @code{sysconfdir} is @file{/etc}.  Note that you will probably not run @command{make install} at the end (you don't have to) but it's still important to pass the right @code{localstatedir} and @code{sysconfdir} values, which get recorded in the @code{(guix config)} Guile module."
 msgstr "Optional können auch @code{--localstatedir} und @code{--sysconfdir} als Argumente angegeben werden. Vorgegeben ist, dass @file{/var} als @code{localstatedir}-Wert benutzt wird (weitere Informationen siehe @ref{The Store}) und @file{/etc} für @code{sysconfdir}. Denken Sie daran, dass Sie am Ende wahrscheinlich @emph{nicht} @command{make install} ausführen möchten (müssen Sie auch nicht), aber es ist dennoch wichtig, die richtige @code{localstatedir} und @code{sysconfdir} zu übergeben, welche im Guile-Modul @code{(guix config)} festgehalten werden."
 
-msgid "Finally, you can build Guix and, if you feel so inclined, run the tests (@pxref{Running the Test Suite}):"
-msgstr "Schließlich können Sie Guix erstellen und, wenn Sie möchten, die Tests ausführen (siehe @ref{Running the Test Suite}):"
-
 msgid ""
 "make\n"
 "make check\n"
 msgstr ""
 "make\n"
 "make check\n"
-
-msgid "If anything fails, take a look at installation instructions (@pxref{Installation}) or send a message to the @email{guix-devel@@gnu.org, mailing list}."
-msgstr "Falls etwas fehlschlägt, werfen Sie einen Blick auf die Installationsanweisungen (siehe @ref{Installation}) oder senden Sie eine E-Mail an die @email{guix-devel@@gnu.org, Mailingliste}."
 
 msgid "From there on, you can authenticate all the commits included in your checkout by running:"
 msgstr "Von da an können Sie alle Commits in Ihrem Checkout authentifizieren, indem Sie dies ausführen:"
@@ -430,6 +399,9 @@ msgstr "Nachdem @command{configure} und @code{make} erfolgreich durchgelaufen si
 
 msgid "make check\n"
 msgstr "make check\n"
+
+msgid "--pure"
+msgstr "--pure"
 
 msgid "Test cases can run in parallel: you can use the @code{-j} option of GNU@tie{}make to speed things up.  The first run may take a few minutes on a recent machine; subsequent runs will be faster because the store that is created for test purposes will already have various things in cache."
 msgstr "Testfälle können parallel ausgeführt werden. Sie können die Befehlszeiltenoption @code{-j} von GNU@tie{}make benutzen, damit es schneller geht. Der erste Durchlauf kann auf neuen Maschinen ein paar Minuten dauern, nachfolgende Ausführungen werden schneller sein, weil der für die Tests erstellte Store schon einige Dinge zwischengespeichert haben wird."
@@ -1157,9 +1129,6 @@ msgstr "Dort befindet sich die Dokumentation in Form von Texinfo-Dateien, d.h.@:
 msgid "po"
 msgstr "po"
 
-msgid "This is the location of translations of Guix itself, of package synopses and descriptions, of the manual, and of the cookbook.  Note that @file{.po} files that live here are pulled directly from Weblate (@pxref{Translating Guix})."
-msgstr "An diesem Ort sind die Übersetzungen von Guix selbst, von Zusammenfassungen und Beschreibungen der Pakete, vom Handbuch und vom Kochbuch. Beachten Sie, dass die @file{.po}-Dateien hier direkt von Weblate heruntergeladen werden (siehe @ref{Translating Guix})."
-
 msgid "etc"
 msgstr "etc"
 
@@ -1300,6 +1269,9 @@ msgstr "Außerdem befolgt die GNU-Distribution die @url{https://www.gnu.org/dist
 
 msgid "Some otherwise free upstream package sources contain a small and optional subset that violates the above guidelines, for instance because this subset is itself non-free code.  When that happens, the offending items are removed with appropriate patches or code snippets in the @code{origin} form of the package (@pxref{Defining Packages}).  This way, @code{guix build --source} returns the ``freed'' source rather than the unmodified upstream source."
 msgstr "Ansonsten freier Paketquellcode von manchen Anbietern enthält einen kleinen und optionalen Teil, der diese Richtlinien verletzt. Zum Beispiel kann dieser Teil selbst unfreier Code sein. Wenn das vorkommt, wird der sie verletzende Teil mit angemessenen Patches oder Code-Schnipseln innerhalb der @code{origin}-Form des Pakets entfernt (siehe @ref{Defining Packages}). Dadurch liefert Ihnen @code{guix build --source} nur den „befreiten“ Quellcode und nicht den unmodifizierten Quellcode des Anbieters."
+
+msgid "bundling"
+msgstr "gebündelt"
 
 msgid "package name"
 msgstr "Paketname"
@@ -1473,9 +1445,6 @@ msgstr "Texinfo-Auszeichnungen, in Paketbeschreibungen"
 msgid "Descriptions can include Texinfo markup, which is useful to introduce ornaments such as @code{@@code} or @code{@@dfn}, bullet lists, or hyperlinks (@pxref{Overview,,, texinfo, GNU Texinfo}).  However you should be careful when using some characters for example @samp{@@} and curly braces which are the basic special characters in Texinfo (@pxref{Special Characters,,, texinfo, GNU Texinfo}).  User interfaces such as @command{guix show} take care of rendering it appropriately."
 msgstr "Beschreibungen können wie bei Texinfo ausgezeichneten Text enthalten. Das bedeutet, Text kann Verzierungen wie @code{@@code} oder @code{@@dfn}, Auflistungen oder Hyperlinks enthalten (siehe @ref{Overview,,, texinfo, GNU Texinfo}). Sie sollten allerdings vorsichtig sein, wenn Sie bestimmte Zeichen wie @samp{@@} und geschweifte Klammern schreiben, weil es sich dabei um die grundlegenden Sonderzeichen in Texinfo handelt (siehe @ref{Special Characters,,, texinfo, GNU Texinfo}). Benutzungsschnittstellen wie @command{guix show} kümmern sich darum, solche Auszeichnungen angemessen darzustellen."
 
-msgid "Synopses and descriptions are translated by volunteers @uref{https://translate.codeberg.org/projects/guix/packages, at Weblate} so that as many users as possible can read them in their native language.  User interfaces search them and display them in the language specified by the current locale."
-msgstr "Zusammenfassungen und Beschreibungen werden von Freiwilligen @uref{https://translate.codeberg.org/projects/guix/packages, bei Weblate} übersetzt, damit so viele Nutzer wie möglich sie in ihrer Muttersprache lesen können. Mit Schnittstellen für Benutzer können sie in der von der aktuell eingestellten Locale festgelegten Sprache durchsucht und angezeigt werden."
-
 msgid "To allow @command{xgettext} to extract them as translatable strings, synopses and descriptions @emph{must be literal strings}.  This means that you cannot use @code{string-append} or @code{format} to construct these strings:"
 msgstr "Damit @command{xgettext} sie als übersetzbare Zeichenketten extrahieren kann, @emph{müssen} Zusammenfassungen und Beschreibungen einfache Zeichenketten-Literale sein. Das bedeutet, dass Sie diese Zeichenketten nicht mit Prozeduren wie @code{string-append} oder @code{format} konstruieren können:"
 
@@ -1563,9 +1532,6 @@ msgstr "emacs, Pakete dafür schreiben"
 msgid "elisp, packaging"
 msgstr "elisp, Pakete dafür schreiben"
 
-msgid "Emacs packages should preferably use the Emacs build system (@pxref{emacs-build-system}), for uniformity and the benefits provided by its build phases, such as the auto-generation of the autoloads file and the byte compilation of the sources.  Because there is no standardized way to run a test suite for Emacs packages, tests are disabled by default.  When a test suite is available, it should be enabled by setting the @code{#:tests?} argument to @code{#true}.  By default, the command to run the test is @command{make check}, but any command can be specified via the @code{#:test-command} argument.  The @code{#:test-command} argument expects a list containing a command and its arguments, to be invoked during the @code{check} phase."
-msgstr "Für Emacs-Pakete sollte man bevorzugt das Emacs-Erstellungssystem benutzen (siehe @ref{emacs-build-system}), wegen der Einheitlichkeit und der Vorteile durch seine Erstellungsphasen. Dazu gehören das automatische Erzeugen der Autoloads-Datei und das Kompilieren des Quellcodes zu Bytecode (Byte Compilation). Weil es keinen Standard gibt, wie ein Testkatalog eines Emacs-Pakets ausgeführt wird, sind Tests nach Vorgabe abgeschaltet. Wenn es einen Testkatalog gibt, sollte er aktiviert werden, indem Sie das Argument @code{#:tests?} auf @code{#true} setzen. Vorgegeben ist, die Tests mit dem Befehl @command{make check} auszuführen, aber mit dem Argument @code{#:test-command} kann ein beliebiger anderer Befehl festgelegt werden. Für das Argument @code{#:test-command} wird eine Liste aus dem Befehl und den Argumenten an den Befehl erwartet. Er wird während der @code{check}-Phase aufgerufen."
-
 msgid "The Elisp dependencies of Emacs packages are typically provided as @code{propagated-inputs} when required at run time.  As for other packages, build or test dependencies should be specified as @code{native-inputs}."
 msgstr "Die Elisp-Abhängigkeiten von Emacs-Paketen werden typischerweise als @code{propagated-inputs} bereitgestellt, wenn sie zur Laufzeit benötigt werden. Wie bei anderen Paketen sollten Abhängigkeiten zum Erstellen oder Testen als @code{native-inputs} angegeben werden."
 
@@ -1640,6 +1606,9 @@ msgstr "Bei Java-Paketen, die eine einzelne Klasse oder eine kleine Klassenhiera
 
 msgid "rust"
 msgstr "rust"
+
+msgid "Warning"
+msgstr "Warnung"
 
 msgid "Elm"
 msgstr "Elm"
@@ -1881,9 +1850,6 @@ msgid ""
 msgstr ""
 "guix build --system=armhf-linux --rounds=2 hello\n"
 "guix build --system=aarch64-linux --rounds=2 hello\n"
-
-msgid "bundling"
-msgstr "gebündelt"
 
 msgid "Make sure the package does not use bundled copies of software already available as separate packages."
 msgstr "Achten Sie darauf, dass im Paket keine Software gebündelt mitgeliefert wird, die bereits in separaten Paketen zur Verfügung steht."
@@ -2302,9 +2268,6 @@ msgstr "Schicken Sie Beiträge zur Dokumentation an @email{guix-patches@@gnu.org
 msgid "When you need to make more than a simple addition to the documentation, we prefer that you send a proper patch as opposed to sending an email as described above.  @xref{Submitting Patches} for more information on how to send your patches."
 msgstr "Wenn es um mehr als eine kleine Erweiterung der Dokumentation geht, ist es uns allerdings lieber, wenn Sie einen ordentlichen Patch und keine solche E-Mail schicken. Siehe @ref{Submitting Patches} für mehr Informationen, wie Sie Patches abschicken."
 
-msgid "To modify the documentation, you need to edit @file{doc/guix.texi} and @file{doc/contributing.texi} (which contains this documentation section), or @file{doc/guix-cookbook.texi} for the cookbook.  If you compiled the Guix repository before, you will have many more @file{.texi} files that are translations of these documents.  Do not modify them, the translation is managed through @uref{https://translate.codeberg.org/projects/guix, Weblate}.  @xref{Translating Guix} for more information."
-msgstr "Änderungen an der Dokumentation können Sie vornehmen, indem Sie @file{doc/guix.texi} und @file{doc/contributing.texi} bearbeiten (letztere enthält diesen Mitwirkungsteil der Dokumentation) oder indem Sie @file{doc/guix-cookbook.texi} bearbeiten, worin Sie das Kochbuch finden. Wenn Sie schon einmal die Dateien im Guix-Repository kompiliert haben, werden dort auch viele weitere @file{.texi}-Dateien zu finden sein; es handelt sich um übersetzte Fassungen dieser Dokumente. Verändern Sie diese @emph{nicht}, denn die Übersetzung organisieren wir über @uref{https://translate.codeberg.org/projects/guix, Weblate}. Siehe @ref{Translating Guix} für weitere Informationen."
-
 msgid "To render documentation, you must first make sure that you ran @command{./configure} in your source tree (@pxref{Running Guix Before It Is Installed}).  After that you can run one of the following commands:"
 msgstr "Um die Dokumentation in lesefreundlichere Formate zu übertragen, ist der erste Schritt, @command{./configure} in Ihrem Guix-Quellbaum laufen zu lassen, wenn es noch nicht geschehen ist (siehe @ref{Running Guix Before It Is Installed}). Danach geht es mit diesen Befehlen weiter:"
 
@@ -2341,17 +2304,11 @@ msgstr "Native Language Support"
 msgid "Writing code and packages is not the only way to provide a meaningful contribution to Guix.  Translating to a language you speak is another example of a valuable contribution you can make.  This section is designed to describe the translation process.  It gives you advice on how you can get involved, what can be translated, what mistakes you should avoid and what we can do to help you!"
 msgstr "Softwareentwicklung und Paketierung sind nicht die einzigen Möglichkeiten, um bedeutsam zu Guix beizutragen. Übersetzungen in andere Sprachen sind auch ein wertvoller Beitrag. In diesem Abschnitt ist der Übersetzungsprozess beschrieben, mit Hinweisen dazu wie du mitmachen kannst, was übersetzt werden kann, welche Fehler du vermeiden solltest und wie wir dich unterstützen können."
 
-msgid "Guix is a big project that has multiple components that can be translated.  We coordinate the translation effort on a @uref{https://translate.codeberg.org/projects/guix/,Weblate instance} hosted by Codeberg.  You will need an account to submit translations."
-msgstr "Guix ist ein großes Projekt und hat mehrere Komponenten, die übersetzt werden können. Wir koordinieren die Arbeit an der Übersetzung auf einer @uref{https://translate.codeberg.org/projects/guix/,Weblate-Instanz}, die von Codeberg zur Verfügung gestellt wird. Sie brauchen dort ein Konto, um Übersetzungen einzureichen."
-
 msgid "Some of the software packaged in Guix also contain translations.  We do not host a translation platform for them.  If you want to translate a package provided by Guix, you should contact their developers or find the information on their website.  As an example, you can find the homepage of the @code{hello} package by typing @command{guix show hello}.  On the ``homepage'' line, you will see @url{https://www.gnu.org/software/hello/} as the homepage."
 msgstr "Manche mit Guix auslieferbaren Pakete verfügen auch über Übersetzungen. An deren Übersetzungsplattform sind wir nicht beteiligt. Wenn Sie ein in Guix angebotenes Paket übersetzen möchten, sollten Sie mit dessen Entwicklern in Kontakt treten oder auf deren Webauftritt nach Informationen suchen. Sie können die Homepage zum Beispiel des @code{hello}-Pakets finden, indem Sie @command{guix show hello} ausführen. Auf der Zeile „homepage“ sehen Sie, dass @url{https://www.gnu.org/software/hello/} die Homepage ist."
 
 msgid "Many GNU and non-GNU packages can be translated on the @uref{https://translationproject.org,Translation Project}.  Some projects with multiple components have their own platform.  For instance, GNOME has its own platform, @uref{https://l10n.gnome.org/,Damned Lies}."
 msgstr "Viele GNU-Pakete und Nicht-GNU-Pakete können beim @uref{https://translationproject.org,Translation Project} übersetzt werden. Manche Projekte, die aus mehreren Komponenten bestehen, haben ihre eigene Plattform. Zum Beispiel hat GNOME die Übersetzungsplattform @uref{https://l10n.gnome.org/,Damned Lies}."
-
-msgid "Guix has five components hosted on Weblate."
-msgstr "Guix hat fünf Komponenten, die auf Weblate übersetzt werden können."
 
 msgid "@code{guix} contains all the strings from the Guix software (the"
 msgstr "@code{guix} umfasst alle Zeichenketten der Guix-Software (also das"
@@ -2380,14 +2337,8 @@ msgstr "@code{documentation-cookbook} ist die Komponente für das Kochbuch."
 msgid "General Directions"
 msgstr "Wie Sie allgemein vorgehen"
 
-msgid "Once you get an account, you should be able to select a component from @uref{https://translate.codeberg.org/projects/guix/,the guix project}, and select a language.  If your language does not appear in the list, go to the bottom and click on the ``Start new translation'' button.  Select the language you want to translate to from the list, to start your new translation."
-msgstr "Sobald Sie ein Konto haben, sollten Sie eine Komponente des @uref{https://translate.codeberg.org/projects/guix/,Guix-Projekts} und eine Sprache auswählen können. Wenn Ihre Sprache in der Liste fehlt, gehen Sie ans Ende und klicken Sie auf den „Neue Übersetzung starten“-Knopf. Nachdem Sie die Sprache, in die Sie übersetzen möchten, ausgewählt haben, wird eine neue Übersetzung angelegt."
-
 msgid "Like lots of other free software packages, Guix uses @uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations, with which translatable strings are extracted from the source code to so-called PO files."
 msgstr "Wie zahlreiche andere Freie-Software-Pakete benutzt Guix @uref{https://www.gnu.org/software/gettext,GNU Gettext} für seine Übersetzungen. Damit werden übersetzbare Zeichenketten aus dem Quellcode in sogenannte PO-Dateien extrahiert."
-
-msgid "Even though PO files are text files, changes should not be made with a text editor but with PO editing software.  Weblate integrates PO editing functionality.  Alternatively, translators can use any of various free-software tools for filling in translations, of which @uref{https://poedit.net/,Poedit} is one example, and (after logging in)  @uref{https://docs.weblate.org/en/latest/user/files.html,upload} the changed file.  There is also a special @uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU Emacs.  Over time translators find out what software they are happy with and what features they need."
-msgstr "Obwohl es sich bei PO-Dateien um Textdateien handelt, sollten Änderungen nicht mit einem Texteditor vorgenommen werden, sondern mit Software eigens zum Bearbeiten von PO-Dateien. In Weblate sind PO-Bearbeitungsfunktionen integriert. Alternativ haben Übersetzer die Wahl zwischen vielen Freie-Software-Werkzeugen zum Eintragen von Übersetzungen; ein Beispiel ist @uref{https://poedit.net/,Poedit}. Nachdem Sie sich angemeldet haben, @uref{https://docs.weblate.org/en/latest/user/files.html,laden} Sie die geänderte Datei in Weblate hoch. Es gibt auch einen speziellen @uref{https://www.emacswiki.org/emacs/PoMode,PO-Bearbeitungsmodus} für Nutzer von GNU Emacs. Mit der Zeit finden Übersetzer heraus, welche Software sie bevorzugen und welche die Funktionen bietet, die sie brauchen."
 
 msgid "On Weblate, you will find various links to the editor, that will show various subsets (or all) of the strings.  Have a look around and at the @uref{https://docs.weblate.org/en/latest/,documentation} to familiarize yourself with the platform."
 msgstr "In Weblate finden Sie an vielen Stellen Verweise auf den Editor, um Teilmengen der Zeichenketten oder alle davon zu übersetzen. Sehen Sie sich um und werfen Sie einen Blick auf Weblates @uref{https://docs.weblate.org/en/latest/,Dokumentation}, um sich mit der Plattform vertraut zu machen."
@@ -3683,9 +3634,6 @@ msgstr "Den Akku schonen, etc."
 msgid "Audio Services"
 msgstr "Audio-Dienste"
 
-msgid "The MPD."
-msgstr "Der MPD."
-
 msgid "Virtualization Services"
 msgstr "Virtualisierungsdienste"
 
@@ -3794,98 +3742,98 @@ msgstr "Essenzielle Persönliche Dienste"
 msgid "Environment variables, packages, on-* scripts."
 msgstr "Umgebungsvariable, Pakete, on-*-Skripte."
 
-msgid "Shells: Shells Home Services"
-msgstr "Shells: Persönliche Shell-Dienste"
+msgid "Shells Home Services"
+msgstr "Persönliche Shell-Dienste"
 
 msgid "POSIX shells, Bash, Zsh."
 msgstr "POSIX-Shells, Bash, Zsh."
 
-msgid "Mcron: Mcron Home Service"
-msgstr "Mcron: Persönlicher Mcron-Dienst"
+msgid "Mcron Home Service"
+msgstr "Persönlicher Mcron-Dienst"
 
 msgid "Scheduled User's Job Execution."
 msgstr "Geplante Auftragsausführung durch Benutzer."
 
-msgid "Power Management: Power Management Home Services"
-msgstr "Stromverbrauch: Persönliche Dienste zur Stromverbrauchsverwaltung"
+msgid "Power Management Home Services"
+msgstr "Persönliche Dienste zur Stromverbrauchsverwaltung"
 
 msgid "Services for battery power."
 msgstr "Dienste zum Batterieverbrauch."
 
-msgid "Shepherd: Shepherd Home Service"
-msgstr "Shepherd: Persönlicher Shepherd-Dienst"
+msgid "Shepherd Home Service"
+msgstr "Persönlicher Shepherd-Dienst"
 
 msgid "Managing User's Daemons."
 msgstr "Des Benutzers Daemons verwalten."
 
-msgid "SSH: Secure Shell"
-msgstr "SSH: Secure Shell"
+msgid "Secure Shell"
+msgstr "Secure Shell"
 
 msgid "Setting up the secure shell client."
 msgstr "Den Secure-Shell-Client einrichten."
 
-msgid "GPG: GNU Privacy Guard"
-msgstr "GPG: GNU Privacy Guard"
+msgid "GNU Privacy Guard"
+msgstr "GNU Privacy Guard"
 
 msgid "Setting up GPG and related tools."
 msgstr "Einrichten von GPG und was dazugehört."
 
-msgid "Desktop: Desktop Home Services"
-msgstr "Desktop: Persönliche Desktop-Dienste"
+msgid "Desktop Home Services"
+msgstr "Persönliche Desktop-Dienste"
 
 msgid "Services for graphical environments."
 msgstr "Dienste für grafische Umgebungen."
 
-msgid "Guix: Guix Home Services"
-msgstr "Guix: Persönliche Guix-Dienste"
+msgid "Guix Home Services"
+msgstr "Persönliche Guix-Dienste"
 
 msgid "Services for Guix."
 msgstr "Dienste zu Guix."
 
-msgid "Fonts: Fonts Home Services"
-msgstr "Schriftarten: Persönliche Schriftarten-Dienste"
+msgid "Fonts Home Services"
+msgstr "Persönliche Schriftarten-Dienste"
 
 msgid "Services for managing User's fonts."
 msgstr "Schriftarten je Benutzer."
 
-msgid "Sound: Sound Home Services"
-msgstr "Audio: Persönliche Tondienste"
+msgid "Sound Home Services"
+msgstr "Persönliche Tondienste"
 
 msgid "Dealing with audio."
 msgstr "Ton regeln."
 
-msgid "Mail: Mail Home Services"
-msgstr "Mail: Persönliche Maildienste"
+msgid "Mail Home Services"
+msgstr "Persönliche Maildienste"
 
 msgid "Services for managing mail."
 msgstr "Dienste, um E-Mail einzurichten."
 
-msgid "Messaging: Messaging Home Services"
-msgstr "Kurznachrichten: Persönliche Kurznachrichtendienste"
+msgid "Messaging Home Services"
+msgstr "Persönliche Kurznachrichtendienste"
 
 msgid "Services for managing messaging."
 msgstr "Messaging managen."
 
-msgid "Media: Media Home Services"
-msgstr "Medien: Persönliche Mediendienste"
+msgid "Media Home Services"
+msgstr "Persönliche Mediendienste"
 
 msgid "Services for managing media."
 msgstr "Zum Umgang mit Medien."
 
-msgid "Sway: Sway window manager"
-msgstr "Sway: Sway-Fensterverwaltung"
+msgid "Sway window manager"
+msgstr "Sway-Fensterverwaltung"
 
 msgid "Setting up the Sway configuration."
 msgstr "Anlegen der Sway-Konfiguration."
 
-msgid "Networking: Networking Home Services"
-msgstr "Netzwerk: Persönliche Netzwerkdienste"
+msgid "Networking Home Services"
+msgstr "Persönliche Netzwerkdienste"
 
 msgid "Networking services."
 msgstr "Netzwerkdienste."
 
-msgid "Miscellaneous: Miscellaneous Home Services"
-msgstr "Verschiedenes: Verschiedene Persönliche Dienste"
+msgid "Miscellaneous Home Services"
+msgstr "Verschiedene Persönliche Dienste"
 
 msgid "More services."
 msgstr "Weitere Dienste."
@@ -4346,9 +4294,6 @@ msgstr ""
 "          -d /var/empty -s $(which nologin)          \\\n"
 "          -c \"Guix-Daemon-Benutzer zur Privilegientrennung\" \\\n"
 "          --system guix-daemon\n"
-
-msgid "Warning"
-msgstr "Warnung"
 
 msgid "If the @command{nologin} binary is not found by @command{which nologin}, you may need to specify its path manually.  This will usually be @file{/sbin/nologin} or @file{/usr/sbin/nologin}."
 msgstr "Wenn das Programm @command{nologin} mit @command{which nologin} nicht gefunden werden kann, müssen Sie vielleicht seinen Pfad manuell angeben. Normalerweise lautet er @file{/sbin/nologin} oder @file{/usr/sbin/nologin}."
@@ -5256,15 +5201,6 @@ msgstr "nsswitch.conf"
 msgid "The GNU C library implements a @dfn{name service switch} (NSS), which is an extensible mechanism for ``name lookups'' in general: host name resolution, user accounts, and more (@pxref{Name Service Switch,,, libc, The GNU C Library Reference Manual})."
 msgstr "Die GNU-C-Bibliothek implementiert einen @dfn{Name Service Switch} (NSS), welcher einen erweiterbaren Mechanismus zur allgemeinen „Namensauflösung“ darstellt: Hostnamensauflösung, Benutzerkonten und weiteres (siehe @ref{Name Service Switch,,, libc, Referenzhandbuch der GNU-C-Bibliothek})."
 
-msgid "Network information service (NIS)"
-msgstr "Network Information Service (NIS)"
-
-msgid "NIS (Network information service)"
-msgstr "NIS (Network Information Service)"
-
-msgid "Being extensible, the NSS supports @dfn{plugins}, which provide new name lookup implementations: for example, the @code{nss-mdns} plugin allow resolution of @code{.local} host names, the @code{nis} plugin allows user account lookup using the Network information service (NIS), and so on.  These extra ``lookup services'' are configured system-wide in @file{/etc/nsswitch.conf}, and all the programs running on the system honor those settings (@pxref{NSS Configuration File,,, libc, The GNU C Reference Manual})."
-msgstr "Für die Erweiterbarkeit unterstützt der NSS @dfn{Plugins}, welche neue Implementierungen zur Namensauflösung bieten: Zum Beispiel ermöglicht das Plugin @code{nss-mdns} die Namensauflösung für @code{.local}-Hostnamen, das Plugin @code{nis} gestattet die Auflösung von Benutzerkonten über den Network Information Service (NIS) und so weiter. Diese zusätzlichen „Auflösungsdienste“ werden systemweit konfiguriert in @file{/etc/nsswitch.conf} und alle auf dem System laufenden Programme halten sich an diese Einstellungen (siehe @ref{NSS Configuration File,,, libc, GNU-C-Referenzhandbuch})."
-
 msgid "When they perform a name lookup---for instance by calling the @code{getaddrinfo} function in C---applications first try to connect to the nscd; on success, nscd performs name lookups on their behalf.  If the nscd is not running, then they perform the name lookup by themselves, by loading the name lookup services into their own address space and running it.  These name lookup services---the @file{libnss_*.so} files---are @code{dlopen}'d, but they may come from the host system's C library, rather than from the C library the application is linked against (the C library coming from Guix)."
 msgstr "Wenn sie eine Namensauflösung durchführen@tie{}– zum Beispiel, indem sie die @code{getaddrinfo}-Funktion in C aufrufen@tie{}–, versuchen die Anwendungen als Erstes, sich mit dem nscd zu verbinden; ist dies erfolgreich, führt nscd für sie die weiteren Namensauflösungen durch. Falls nscd nicht läuft, führen sie selbst die Namensauflösungen durch, indem sie die Namensauflösungsdienste in ihren eigenen Adressraum laden und ausführen. Diese Namensauflösungsdienste@tie{}– die @file{libnss_*.so}-Dateien@tie{}– werden mit @code{dlopen} geladen, aber sie kommen von der C-Bibliothek des Wirtssystems und nicht von der C-Bibliothek, an die die Anwendung gebunden wurde (also der C-Bibliothek von Guix)."
 
@@ -5725,9 +5661,6 @@ msgstr "DHCP"
 
 msgid "At this point, you need to acquire an IP address.  On a network where IP addresses are automatically assigned @i{via} DHCP, you can run:"
 msgstr "Zu diesem Zeitpunkt müssen Sie sich eine IP-Adresse beschaffen. Auf einem Netzwerk, wo IP-Adressen automatisch @i{via} DHCP zugewiesen werden, können Sie das hier ausführen:"
-
-msgid "dhclient -v @var{interface}\n"
-msgstr "dhclient -v @var{Schnittstelle}\n"
 
 msgid "Try to ping a server to see if networking is up and running:"
 msgstr "Versuchen Sie, einen Server zu pingen, um zu prüfen, ob sie mit dem Internet verbunden sind und alles richtig funktioniert:"
@@ -8249,9 +8182,6 @@ msgstr "Das Nar-Format folgt einem ähnlichen Gedanken wie beim „tar“-Format
 msgid "That nar bundle format is essentially the concatenation of zero or more nars along with metadata for each store item it contains: its file name, references, corresponding derivation, and a digital signature."
 msgstr "Das Nar-Bündel-Format setzt sich im Prinzip aus null oder mehr aneinandergehängten Nars zusammen mit Metadaten für jedes enthaltene Store-Objekt, nämlich dessen Dateinamen, Referenzen, der zugehörigen Ableitung sowie einer digitalen Signatur."
 
-msgid "When exporting, the daemon digitally signs the contents of the archive, and that digital signature is appended.  When importing, the daemon verifies the signature and rejects the import in case of an invalid signature or if the signing key is not authorized."
-msgstr "Beim Exportieren versieht der Daemon den Inhalt des Archivs mit einer digitalen Signatur, auch Beglaubigung genannt. Diese digitale Signatur wird an das Archiv angehängt. Beim Importieren verifiziert der Daemon die Signatur und lehnt den Import ab, falls die Signatur ungültig oder der Signierschlüssel nicht autorisiert ist."
-
 msgid "The main options are:"
 msgstr "Die wichtigsten Befehlszeilenoptionen sind:"
 
@@ -8619,6 +8549,9 @@ msgstr "Wenn Sie neugierig sind, wie die Authentifizierung funktioniert, lesen S
 msgid "When running @command{guix pull}, Guix will first compile the definitions of every available package.  This is an expensive operation for which substitutes (@pxref{Substitutes}) may be available.  The following snippet in @file{channels.scm} will ensure that @command{guix pull} uses the latest commit with available substitutes for the package definitions: this is done by querying the continuous integration server at @url{https://ci.guix.gnu.org}."
 msgstr "Wenn Sie @command{guix pull} ausführen, wird Guix als Erstes die Definition jedes verfügbaren Pakets kompilieren. Das ist eine teure Operation, für die es aber Substitute geben könnte (siehe @ref{Substitutes}). Mit dem folgenden Schnipsel in @file{channels.scm} wird sichergestellt, dass @command{guix pull} den neuesten Commit benutzt, für den bereits Substitute für die Paketdefinitionen vorliegen. Dazu wird der Server für Kontinuierliche Integration auf @url{https://ci.guix.gnu.org} angefragt."
 
+msgid "Compatibility Note"
+msgstr "Anmerkung zur Kompatibilität"
+
 msgid ""
 "(use-modules (guix ci))\n"
 "\n"
@@ -8634,9 +8567,6 @@ msgstr ""
 "(list (channel-with-substitutes-available\n"
 "       %default-guix-channel\n"
 "       \"https://ci.guix.gnu.org\"))\n"
-
-msgid "Note that this does not mean that all the packages that you will install after running @command{guix pull} will have available substitutes.  It only ensures that @command{guix pull} will not try to compile package definitions.  This is particularly useful when using machines with limited resources."
-msgstr "Beachten Sie: Das heißt @emph{nicht}, dass für alle Pakete, die Sie installieren werden, nachdem Sie @command{guix pull} durchgeführt haben, bereits Substitute vorliegen. Es wird nur sichergestellt, dass @command{guix pull} keine Paketdefinitionen zu kompilieren versucht. Das hilft besonders auf Maschinen mit eingeschränkten Rechenressourcen."
 
 msgid "personal packages (channels)"
 msgstr "Eigene Pakete (Kanäle)"
@@ -9272,9 +9202,6 @@ msgstr "Na bitte. Aus der langen Befehlszeile ist ein Manifest geworden! Beim Ve
 
 msgid "Create an environment containing the packages installed in @var{profile}.  Use @command{guix package} (@pxref{Invoking guix package}) to create and manage profiles."
 msgstr "Eine Umgebung mit den Paketen erzeugen, die im @var{Profil} installiert sind. Benutzen Sie @command{guix package} (siehe @ref{Invoking guix package}), um Profile anzulegen und zu verwalten."
-
-msgid "--pure"
-msgstr "--pure"
 
 msgid "Unset existing environment variables when building the new environment, except those specified with @option{--preserve} (see below).  This has the effect of creating an environment in which search paths only contain package inputs."
 msgstr "Bestehende Umgebungsvariable deaktivieren, wenn die neue Umgebung erzeugt wird, mit Ausnahme der mit @option{--preserve} angegebenen Variablen (siehe unten). Dies bewirkt, dass eine Umgebung erzeugt wird, in der die Suchpfade nur Paketeingaben nennen und sonst nichts."
@@ -10474,9 +10401,6 @@ msgstr "Welche Schlüsselwortargumente genau unterstützt werden, hängt vom jew
 msgid "The REPL has dedicated commands to interactively inspect values of some of these arguments, as a convenient debugging aid (@pxref{Using Guix Interactively})."
 msgstr "Auf der REPL können Sie sich mit speziellen Befehlen interaktiv anzeigen lassen, welchen Wert einige dieser Argumente haben, um Ihnen bei der Fehlersuche zu helfen (siehe @ref{Using Guix Interactively})."
 
-msgid "Compatibility Note"
-msgstr "Anmerkung zur Kompatibilität"
-
 msgid "Until version 1.3.0, the @code{arguments} field would typically use @code{quote} (@code{'}) or @code{quasiquote} (@code{`}) and no G-expressions, like so:"
 msgstr "Bis Version 1.3.0 hat man im @code{arguments}-Feld üblicherweise @code{quote} (@code{'}) oder @code{quasiquote} (@code{`}) geschrieben, statt G-Ausdrücke zu verwenden, etwa so:"
 
@@ -11235,9 +11159,6 @@ msgstr "Paketumwandlungen"
 msgid "These are pretty simple package variants.  As a convenience, the @code{(guix transformations)} module provides a high-level interface that directly maps to the more sophisticated package transformation options (@pxref{Package Transformation Options}):"
 msgstr "Bei diesen handelt es sich um sehr einfache Paketvarianten. Bequemer ist es dann, mit dem Modul @code{(guix transformations)} eine hochsprachliche Schnittstelle einzusetzen, die auf die komplexeren Paketumwandlungsoptionen direkt abbildet (siehe @ref{Package Transformation Options}):"
 
-msgid "{Procedure} options->transformation opts"
-msgstr "{Prozedur} options->transformation Optionen"
-
 msgid "Return a procedure that, when passed an object to build (package, derivation, etc.), applies the transformations specified by @var{opts} and returns the resulting objects.  @var{opts} must be a list of symbol/string pairs such as:"
 msgstr "Liefert eine Prozedur, die gegeben ein zu erstellendes Objekt (ein Paket, eine Ableitung oder Ähnliches) die durch @var{Optionen} festgelegten Umwandlungen daran umsetzt und die sich ergebenden Objekte zurückliefert. @var{Optionen} muss eine Liste von Paaren aus Symbol und Zeichenkette sein wie:"
 
@@ -11834,15 +11755,6 @@ msgstr "Diese Variable wird vom Modul @code{(guix build-system ant)} exportiert.
 msgid "It adds both @code{ant} and the @dfn{Java Development Kit} (JDK) as provided by the @code{icedtea} package to the set of inputs.  Different packages can be specified with the @code{#:ant} and @code{#:jdk} parameters, respectively."
 msgstr "Sowohl @code{ant} als auch der @dfn{Java Development Kit} (JDK), wie er vom Paket @code{icedtea} bereitgestellt wird, werden zu den Eingaben hinzugefügt. Wenn andere Pakete dafür benutzt werden sollen, können sie jeweils mit den Parametern @code{#:ant} und @code{#:jdk} festgelegt werden."
 
-msgid "When the original package does not provide a suitable Ant build file, the parameter @code{#:jar-name} can be used to generate a minimal Ant build file @file{build.xml} with tasks to build the specified jar archive.  In this case the parameter @code{#:source-dir} can be used to specify the source sub-directory, defaulting to ``src''."
-msgstr "Falls das ursprüngliche Paket über keine nutzbare Ant-Erstellungsdatei („Ant-Buildfile“) verfügt, kann aus der Angabe im Parameter @code{#:jar-name} eine minimale Ant-Erstellungsdatei @file{build.xml} erzeugt werden, in der die für die Erstellung durchzuführenden Aufgaben (Tasks) für die Erstellung des angegebenen Jar-Archivs stehen. In diesem Fall kann der Parameter @code{#:source-dir} benutzt werden, um das Unterverzeichnis mit dem Quellcode anzugeben; sein Vorgabewert ist „src“."
-
-msgid "The @code{#:main-class} parameter can be used with the minimal ant buildfile to specify the main class of the resulting jar.  This makes the jar file executable.  The @code{#:test-include} parameter can be used to specify the list of junit tests to run.  It defaults to @code{(list \"**/*Test.java\")}.  The @code{#:test-exclude} can be used to disable some tests.  It defaults to @code{(list \"**/Abstract*.java\")}, because abstract classes cannot be run as tests."
-msgstr "Der Parameter @code{#:main-class} kann mit einer minimalen Ant-Erstellungsdatei benutzt werden, um die Hauptklasse des resultierenden Jar-Archivs anzugeben. Dies ist nötig, wenn die Jar-Datei ausführbar sein soll. Mit dem Parameter @code{#:test-include} kann eine Liste angegeben werden, welche Junit-Tests auszuführen sind. Der Vorgabewert ist @code{(list \"**/*Test.java\")}. Mit @code{#:test-exclude} kann ein Teil der Testdateien ignoriert werden. Der Vorgabewert ist @code{(list \"**/Abstract*.java\")}, weil abstrakte Klassen keine ausführbaren Tests enthalten können."
-
-msgid "The parameter @code{#:build-target} can be used to specify the Ant task that should be run during the @code{build} phase.  By default the ``jar'' task will be run."
-msgstr "Der Parameter @code{#:build-target} kann benutzt werden, um die Ant-Aufgabe (Task) anzugeben, die während der @code{build}-Phase ausgeführt werden soll. Vorgabe ist, dass die Aufgabe (Task) „jar“ ausgeführt wird."
-
 msgid "android-ndk-build-system"
 msgstr "android-ndk-build-system"
 
@@ -11887,12 +11799,6 @@ msgstr "Zudem sollte das entsprechende Quellcode-Paket mit der Konvention wie be
 
 msgid "In order to create executable programs and images, the build-side procedures @code{build-program} and @code{build-image} can be used.  They should be called in a build phase after the @code{create-asdf-configuration} phase, so that the system which was just built can be used within the resulting image.  @code{build-program} requires a list of Common Lisp expressions to be passed as the @code{#:entry-program} argument."
 msgstr "Um ausführbare Programme und Abbilder zu erzeugen, können die erstellungsseitigen Prozeduren @code{build-program} und @code{build-image} benutzt werden. Sie sollten in einer Erstellungsphase nach der @code{create-asdf-configuration}-Phase aufgerufen werden, damit das gerade erstellte System Teil des resultierenden Abbilds sein kann. An @code{build-program} muss eine Liste von Common-Lisp-Ausdrücken über das Argument @code{#:entry-program} übergeben werden."
-
-msgid "By default, all the @file{.asd} files present in the sources are read to find system definitions.  The @code{#:asd-files} parameter can be used to specify the list of @file{.asd} files to read.  Furthermore, if the package defines a system for its tests in a separate file, it will be loaded before the tests are run if it is specified by the @code{#:test-asd-file} parameter.  If it is not set, the files @code{<system>-tests.asd}, @code{<system>-test.asd}, @code{tests.asd}, and @code{test.asd} will be tried if they exist."
-msgstr "Vorgegeben ist, alle @file{.asd}-Dateien im Quellverzeichnis zu lesen, um zu ermitteln, welche Systeme definiert sind. Mit dem Parameter @code{#:asd-files} kann die Liste zu lesender @file{.asd}-Dateien festgelegt werden. Außerdem wird bei Paketen, für deren Tests ein System in einer separaten Datei definiert wurde, dieses System geladen, bevor die Tests ablaufen, wenn es im Parameter @code{#:test-asd-file} steht. Ist dafür kein Wert gesetzt, werden die Dateien @code{<system>-tests.asd}, @code{<system>-test.asd}, @code{tests.asd} und @code{test.asd} durchsucht, wenn sie existieren."
-
-msgid "If for some reason the package must be named in a different way than the naming conventions suggest, or if several systems must be compiled, the @code{#:asd-systems} parameter can be used to specify the list of system names."
-msgstr "Wenn aus irgendeinem Grund der Paketname nicht den Namenskonventionen folgen kann oder wenn mehrere Systeme kompiliert werden, kann der Parameter @code{#:asd-systems} benutzt werden, um die Liste der Systemnamen anzugeben."
 
 msgid "cargo-build-system"
 msgstr "cargo-build-system"
@@ -12251,14 +12157,8 @@ msgstr "Diese Variable wird vom Modul @code{(guix build-system maven)} exportier
 msgid "The maven build system ensures that maven will not try to download any dependency by running in offline mode.  Maven will fail if a dependency is missing.  Before running Maven, the @file{pom.xml} (and subprojects) are modified to specify the version of dependencies and plugins that match the versions available in the guix build environment.  Dependencies and plugins must be installed in the fake maven repository at @file{lib/m2}, and are symlinked into a proper repository before maven is run.  Maven is instructed to use that repository for the build and installs built artifacts there.  Changed files are copied to the @file{lib/m2} directory of the package output."
 msgstr "Durch Guix’ Maven-Erstellungssystem wird gewährleistet, dass Maven im Offline-Modus läuft und somit nicht versucht, Abhängigkeiten herunterzuladen. Maven wird in einen Fehler laufen, wenn eine Abhängigkeit fehlt. Bevor Maven ausgeführt wird, wird der Inhalt der @file{pom.xml} (auch in Unterprojekten) so verändert, dass darin die diejenige Version von Abhängigkeiten und Plugins aufgeführt wird, die in Guix’ Erstellungsumgebung vorliegt. Abhängigkeiten und Plugins müssen in das vorgetäuschte Maven-Repository unter @file{lib/m2} installiert werden; bevor Maven ausgeführt wird, werden symbolische Verknüpfungen in ein echtes Repository hergestellt. Maven wird angewiesen, dieses Repository für die Erstellung zu verwenden und installiert erstellte Artefakte dorthin. Geänderte Dateien werden ins Verzeichnis @file{lib/m2} der Paketausgabe kopiert."
 
-msgid "You can specify a @file{pom.xml} file with the @code{#:pom-file} argument, or let the build system use the default @file{pom.xml} file in the sources."
-msgstr "Sie können eine @file{pom.xml}-Datei über das Argument @code{#:pom-file} festlegen oder die vom Erstellungssystem vorgegebene @file{pom.xml}-Datei im Quellverzeichnis verwenden lassen."
-
 msgid "In case you need to specify a dependency's version manually, you can use the @code{#:local-packages} argument.  It takes an association list where the key is the groupId of the package and its value is an association list where the key is the artifactId of the package and its value is the version you want to override in the @file{pom.xml}."
 msgstr "Sollten Sie die Version einer Abhängigkeit manuell angeben müssen, können Sie dafür das Argument @code{#:local-packages} benutzen. Es nimmt eine assoziative Liste entgegen, deren Schlüssel jeweils die @code{groupId} des Pakets und deren Wert eine assoziative Liste ist, deren Schlüssel wiederum die @code{artifactId} des Pakets und deren Wert die einzusetzende Version in @file{pom.xml} ist."
-
-msgid "Some packages use dependencies or plugins that are not useful at runtime nor at build time in Guix.  You can alter the @file{pom.xml} file to remove them using the @code{#:exclude} argument.  Its value is an association list where the key is the groupId of the plugin or dependency you want to remove, and the value is a list of artifactId you want to remove."
-msgstr "Manche Pakete haben Abhängigkeiten oder Plugins, die weder zur Laufzeit noch zur Erstellungszeit in Guix sinnvoll sind. Sie können sie entfernen, indem Sie das @code{#:exclude}-Argument verwenden, um die @file{pom.xml}-Datei zu bearbeiten. Sein Wert ist eine assoziative Liste, deren Schlüssel die @code{groupId} des Plugins oder der Abhängigkeit ist, die Sie entfernen möchten, und deren Wert eine Liste von zu entfernenden @code{artifactId}-Vorkommen angibt."
 
 msgid "You can override the default @code{jdk} and @code{maven} packages with the corresponding argument, @code{#:jdk} and @code{#:maven}."
 msgstr "Sie können statt der vorgegebenen @code{jdk}- und @code{maven}-Pakete andere Pakete mit dem entsprechenden Argument, @code{#:jdk} bzw.@: @code{#:maven}, verwenden."
@@ -12644,17 +12544,11 @@ msgstr "Tree-sitter-Pakete können mehrere Grammatiken enthalten. Deswegen ermö
 msgid "Grammars sometimes depend on each other, such as C++ depending on C and TypeScript depending on JavaScript.  You may use inputs to declare such dependencies."
 msgstr "In manchen Fällen hängt die eine Grammatik von der anderen ab, etwa wenn C++ von C abhängt oder TypeScript von JavaScript. Solche Abhängigkeiten können Sie als Eingaben unter @code{#:inputs} angeben."
 
-msgid "Lastly, for packages that do not need anything as sophisticated, a ``trivial'' build system is provided.  It is trivial in the sense that it provides basically no support: it does not pull any implicit inputs, and does not have a notion of build phases."
-msgstr "Letztlich gibt es für die Pakete, die bei weitem nichts so komplexes brauchen, ein „triviales“ Erstellungssystem. Es ist in dem Sinn trivial, dass es praktisch keine Hilfestellungen gibt: Es fügt keine impliziten Eingaben hinzu und hat kein Konzept von Erstellungsphasen."
-
 msgid "trivial-build-system"
 msgstr "trivial-build-system"
 
 msgid "This variable is exported by @code{(guix build-system trivial)}."
 msgstr "Diese Variable wird vom Modul @code{(guix build-system trivial)} exportiert."
-
-msgid "This build system requires a @code{#:builder} argument.  This argument must be a Scheme expression that builds the package output(s)---as with @code{build-expression->derivation} (@pxref{Derivations, @code{build-expression->derivation}})."
-msgstr "Diesem Erstellungssystem muss im Argument @code{#:builder} ein Scheme-Ausdruck übergeben werden, der die Paketausgabe(n) erstellt@tie{}– wie bei @code{build-expression->derivation} (siehe @ref{Derivations, @code{build-expression->derivation}})."
 
 msgid "channel-build-system"
 msgstr "channel-build-system"
@@ -19856,9 +19750,6 @@ msgstr "Diese Tastaturbelegung wird benutzt, sobald der Kernel gebootet wurde. D
 msgid "This does @emph{not} specify the keyboard layout used by the bootloader, nor that used by the graphical display server.  @xref{Bootloader Configuration}, for information on how to specify the bootloader's keyboard layout.  @xref{X Window}, for information on how to specify the keyboard layout used by the X Window System."
 msgstr "Damit wird @emph{nicht} angegeben, welche Tastaturbelegung der Bootloader benutzt, und auch nicht, welche der grafische Anzeigeserver verwendet. Siehe @ref{Bootloader Configuration} für Informationen darüber, wie Sie die Tastaturbelegung des Bootloaders angeben können. Siehe @ref{X Window} für Informationen darüber, wie Sie die Tastaturbelegung angeben können, die das X-Fenstersystem verwendet."
 
-msgid "@code{initrd-modules} (default: @code{%base-initrd-modules})"
-msgstr "@code{initrd-modules} (Vorgabe: @code{%base-initrd-modules})"
-
 msgid "initrd"
 msgstr "initrd"
 
@@ -20663,9 +20554,6 @@ msgstr "Ruhezustand"
 msgid "suspend to disk"
 msgstr "Suspend to Disk"
 
-msgid "Swap space is also required to put the system into @dfn{hibernation} (also called @dfn{suspend to disk}), whereby memory is dumped to swap before shutdown so it can be restored when the machine is eventually restarted.  Hibernation uses at most half the size of the RAM in the configured swap space.  The Linux kernel needs to know about the swap space to be used to resume from hibernation on boot (@i{via} a kernel argument).  When using a swap file, its offset in the device holding it also needs to be given to the kernel; that value has to be updated if the file is initialized again as swap---e.g., because its size was changed."
-msgstr "Auch ist Swap-Speicher notwendig, damit das System in den @dfn{Ruhezustand} wechseln kann (man spricht auch von @dfn{Suspend to Disk}). Dabei wird der Systemzustand aus dem Arbeitsspeicher in den Swap-Speicher ausgelagert, bevor der Rechner herunterfährt, so dass er beim nächsten Start der Maschine wiederhergestellt werden kann. Der Ruhezustand benötigt höchstens so viel wie die halbe Größe des Arbeitsspeichers als konfigurierter Swap-Speicher. Es ist erforderlich, dass der Linux-Kernel die Information über zur Wiederherstellung zu nutzenden Swap-Speicher schon beim Booten mitgeteilt bekommt (über ein Kernel-Argument). Wenn eine Swap-Datei benutzt wird, muss deren Versatz gegenüber dem sie beinhaltenden Gerät ebenso von vornherein dem Kernel übergeben werden; dieser Wert muss erneuert werden, wenn die Datei als Swap-Speicher neu initialisiert wird, weil z.B.@: Sie ihre Größe geändert haben."
-
 msgid "Note that swap space is not zeroed on shutdown, so sensitive data (such as passwords) may linger on it if it was paged out.  As such, you should consider having your swap reside on an encrypted device (@pxref{Mapped Devices})."
 msgstr "Vorsicht, Swap-Speicher wird beim Herunterfahren nicht genullt. Sensible Daten (wie Passwörter) können sich darin befinden, wenn deren Speicherseiten verdrängt wurden. Daher sollten Sie in Betracht ziehen, Ihren Swap-Speicher auf ein verschlüsseltes Gerät zu legen (siehe @ref{Mapped Devices})."
 
@@ -20965,12 +20853,6 @@ msgstr "user-account-password"
 msgid "password, for user accounts"
 msgstr "Passwort, für Benutzerkonten"
 
-msgid "You would normally leave this field to @code{#f}, initialize user passwords as @code{root} with the @command{passwd} command, and then let users change it with @command{passwd}.  Passwords set with @command{passwd} are of course preserved across reboot and reconfiguration."
-msgstr "Normalerweise lassen Sie dieses Feld auf @code{#f} und initialisieren Benutzerpasswörter als @code{root} mit dem @command{passwd}-Befehl. Die Benutzer lässt man ihr eigenes Passwort dann mit @command{passwd} ändern. Mit @command{passwd} festgelegte Passwörter bleiben natürlich beim Neustarten und beim Rekonfigurieren erhalten."
-
-msgid "If you @emph{do} want to set an initial password for an account, then this field must contain the encrypted password, as a string.  You can use the @code{crypt} procedure for this purpose:"
-msgstr "Wenn Sie aber @emph{doch} ein anfängliches Passwort für ein Konto voreinstellen möchten, muss dieses Feld hier das verschlüsselte Passwort als Zeichenkette enthalten. Sie können dazu die Prozedur @code{crypt} benutzen."
-
 msgid ""
 "(user-account\n"
 "  (name \"charlie\")\n"
@@ -20981,13 +20863,6 @@ msgstr ""
 "  (name \"charlie\")\n"
 "  (group \"users\")\n"
 "\n"
-
-msgid ""
-"  ;; Specify a SHA-512-hashed initial password.\n"
-"  (password (crypt \"InitialPassword!\" \"$6$abc\")))\n"
-msgstr ""
-"  ;; Ein mit SHA-512 gehashtes initiales Passwort.\n"
-"  (password (crypt \"InitialPassword!\" \"$6$abc\")))\n"
 
 msgid "The hash of this initial password will be available in a file in @file{/gnu/store}, readable by all the users, so this method must be used with care."
 msgstr "Der Hash dieses initialen Passworts wird in einer Datei im @file{/gnu/store} abgelegt, auf die alle Benutzer Lesezugriff haben, daher ist Vorsicht geboten, wenn Sie diese Methode verwenden."
@@ -23201,6 +23076,9 @@ msgstr "Zusätzliche dateiartige CSS-Stylesheet, um das Aussehen von GTK anzupas
 msgid "The command to be started by @command{gtkgreet} on successful login, an instance of @code{greetd-user-session}."
 msgstr "Der bei erfolgreicher Anmeldung durch @command{gtkgreet} auszuführende Befehl, als Instanz von @code{greetd-user-session}."
 
+msgid "Package providing the @command{sway} and @command{swaymsg} commands."
+msgstr "Paket mit den Befehlen @command{sway} und @command{swaymsg}."
+
 msgid "cron"
 msgstr "cron"
 
@@ -24417,62 +24295,6 @@ msgstr "@code{config-file} (Vorgabe: @code{#~(string-append #$usb-modeswitch:dis
 msgid "Which config file to use for the USB_ModeSwitch dispatcher.  By default the config file shipped with USB_ModeSwitch is used which disables logging to @file{/var/log} among other default settings.  If set to @code{#f}, no config file is used."
 msgstr "Welche Konfigurationsdatei das USB_ModeSwitch-Aufrufprogramm („Dispatcher“) benutzt. Nach Vorgabe wird die mit USB_ModeSwitch ausgelieferte Konfigurationsdatei benutzt, die neben anderen Voreinstellungen die Protokollierung nach @file{/var/log} abschaltet. Wenn @code{#f} festgelegt wird, wird keine Konfigurationsdatei benutzt."
 
-msgid "The @code{(gnu services networking)} module discussed in the previous section provides services for more advanced setups: providing a DHCP service for others to use, filtering packets with iptables or nftables, running a WiFi access point with @command{hostapd}, running the @command{inetd} ``superdaemon'', and more.  This section describes those."
-msgstr "Das im vorherigen Abschnitt besprochene Modul @code{(gnu services networking)} stellt auch Dienste für fortgeschrittene Netzwerkeinrichtungen zur Verfügung, etwa um einen DHCP-Dienst für andere anzubieten, Pakete mit iptables oder nftables zu filtern, einen WLAN-Zugangspunkt mit @command{hostapd} verfügbar zu machen, den „Superdaemon“ @command{inetd} auszuführen und noch mehr. In diesem Abschnitt werden sie beschrieben."
-
-msgid "dhcpd-service-type"
-msgstr "dhcpd-service-type"
-
-msgid "This type defines a service that runs a DHCP daemon.  To create a service of this type, you must supply a @code{<dhcpd-configuration>}.  For example:"
-msgstr "Dieser Diensttyp definiert einen Dienst, der einen DHCP-Daemon ausführt. Um einen Dienst zu diesem Typ anzugeben, müssen Sie eine @code{<dhcpd-configuration>} bereitstellen. Zum Beispiel so:"
-
-msgid ""
-"(service dhcpd-service-type\n"
-"         (dhcpd-configuration\n"
-"          (config-file (local-file \"my-dhcpd.conf\"))\n"
-"          (interfaces '(\"enp0s25\"))))\n"
-msgstr ""
-"(service dhcpd-service-type\n"
-"         (dhcpd-configuration\n"
-"          (config-file (local-file \"my-dhcpd.conf\"))\n"
-"          (interfaces '(\"enp0s25\"))))\n"
-
-msgid "{Data Type} dhcpd-configuration"
-msgstr "{Datentyp} dhcpd-configuration"
-
-msgid "@code{package} (default: @code{isc-dhcp})"
-msgstr "@code{package} (Vorgabe: @code{isc-dhcp})"
-
-msgid "The package that provides the DHCP daemon.  This package is expected to provide the daemon at @file{sbin/dhcpd} relative to its output directory.  The default package is the @uref{https://www.isc.org/dhcp/, ISC's DHCP server}."
-msgstr "Das Paket, das den DHCP-Daemon zur Verfügung stellt. Von diesem Paket wird erwartet, dass es den Daemon unter dem Pfad @file{sbin/dhcpd} relativ zum Verzeichnis der Paketausgabe bereitstellt. Das vorgegebene Paket ist @uref{https://www.isc.org/dhcp/, der DHCP-Server vom ISC}."
-
-msgid "The configuration file to use.  This is required.  It will be passed to @code{dhcpd} via its @code{-cf} option.  This may be any ``file-like'' object (@pxref{G-Expressions, file-like objects}).  See @code{man dhcpd.conf} for details on the configuration file syntax."
-msgstr "Die Konfigurationsdatei, die benutzt werden soll. Sie @emph{muss} angegeben werden und wird an @code{dhcpd} mittels seiner Befehlszeilenoption @code{-cf} übergeben. Ein beliebiges „dateiartiges“ Objekt kann dafür angegeben werden (siehe @ref{G-Expressions, dateiartige Objekte}). Siehe @code{man dhcpd.conf} für Details, welcher Syntax die Konfigurationsdatei genügen muss."
-
-msgid "@code{version} (default: @code{\"4\"})"
-msgstr "@code{version} (Vorgabe: @code{\"4\"})"
-
-msgid "The DHCP version to use.  The ISC DHCP server supports the values ``4'', ``6'', and ``4o6''.  These correspond to the @code{dhcpd} program options @code{-4}, @code{-6}, and @code{-4o6}.  See @code{man dhcpd} for details."
-msgstr "Die DHCP-Version, die benutzt werden soll. Der ISC-DHCP-Server unterstützt die Werte „4“, „6“ und „4o6“. Das Feld entspricht den Befehlszeilenoptionen @code{-4}, @code{-6} und @code{-4o6} von @code{dhcpd}. Siehe @code{man dhcpd} für Details."
-
-msgid "@code{run-directory} (default: @code{\"/run/dhcpd\"})"
-msgstr "@code{run-directory} (Vorgabe: @code{\"/run/dhcpd\"})"
-
-msgid "The run directory to use.  At service activation time, this directory will be created if it does not exist."
-msgstr "Das zu benutzende Laufzeit-Verzeichnis („run“-Verzeichnis). Wenn der Dienst aktiviert wird, wird dieses Verzeichnis erzeugt, wenn es noch nicht existiert."
-
-msgid "@code{pid-file} (default: @code{\"/run/dhcpd/dhcpd.pid\"})"
-msgstr "@code{pid-file} (Vorgabe: @code{\"/run/dhcpd/dhcpd.pid\"})"
-
-msgid "The PID file to use.  This corresponds to the @code{-pf} option of @code{dhcpd}.  See @code{man dhcpd} for details."
-msgstr "Die zu benutzende PID-Datei. Dieses Feld entspricht der Befehlszeilenoption @code{-pf} von @code{dhcpd}. Siehe @code{man dhcpd} für Details."
-
-msgid "@code{interfaces} (default: @code{'()})"
-msgstr "@code{interfaces} (Vorgabe: @code{'()})"
-
-msgid "The names of the network interfaces on which dhcpd should listen for broadcasts.  If this list is not empty, then its elements (which must be strings) will be appended to the @code{dhcpd} invocation when starting the daemon.  It may not be necessary to explicitly specify any interfaces here; see @code{man dhcpd} for details."
-msgstr "Die Namen der Netzwerkschnittstelle, auf der dhcpd auf Broadcast-Nachrichten lauscht. Wenn diese Liste nicht leer ist, werden ihre Elemente (diese müssen Zeichenketten sein) an den @code{dhcpd}-Aufruf beim Starten des Daemons angehängt. Es ist unter Umständen @emph{nicht} nötig, hier Schnittstellen ausdrücklich anzugeben; siehe @code{man dhcpd} für Details."
-
 msgid "hostapd service, for Wi-Fi access points"
 msgstr "hostapd-Dienst, für WLAN-Zugangspunkte (Access Points)"
 
@@ -24730,6 +24552,9 @@ msgstr ""
 " (type 'server)\n"
 " (address \"ein.ntp.server.org\")\n"
 " (options `(iburst (version 3) (maxpoll 16) prefer))))\n"
+
+msgid "@code{host-name} (type: string)"
+msgstr "@code{host-name} (Typ: Zeichenkette)"
 
 msgid "OpenNTPD"
 msgstr "OpenNTPD"
@@ -25200,9 +25025,6 @@ msgstr "@code{gid} (Vorgabe: @code{\"rsyncd\"})"
 
 msgid "Group name or group ID that will be used when accessing the module."
 msgstr "Benutzergruppenname oder Gruppenidentifikator („Group-ID“), mit dem auf das Modul zugegriffen wird."
-
-msgid "@code{modules} (default: @code{%default-modules})"
-msgstr "@code{modules} (Vorgabe: @code{%default-modules})"
 
 msgid "List of ``modules''---i.e., directories exported over rsync.  Each element must be a @code{rsync-module} record, as described below."
 msgstr "Liste von „Modulen“@tie{}– d.h.@: Verzeichnissen, die mit rsync exportiert werden. Jedes Element muss ein @code{rsync-module}-Verbund sein, wie nun beschrieben wird."
@@ -26438,12 +26260,6 @@ msgstr "@code{x-session} (Vorgabe: @code{(xinitrc)})"
 msgid "Script to run before starting a X session."
 msgstr "Das Skript, das vor dem Starten einer X-Sitzung ausgeführt werden soll."
 
-msgid "@code{xdmcp?} (default: @code{#f})"
-msgstr "@code{xdmcp?} (Vorgabe: @code{#f})"
-
-msgid "When true, enable the X Display Manager Control Protocol (XDMCP).  This should only be enabled in trusted environments, as the protocol is not secure.  When enabled, GDM listens for XDMCP queries on the UDP port 177."
-msgstr "Wenn dies auf wahr gesetzt ist, wird das X Display Manager Control Protocol (XDMCP) aktiviert. Sie sollten es nur in vertrauenswürdigen Umgebungen aktivieren, denn das Protokoll ist @emph{nicht} sicher. Wenn es aktiviert ist, lauscht GDM auf XDMCP-Anfragen auf UDP-Port 177."
-
 msgid "@code{dbus-daemon} (default: @code{dbus-daemon-wrapper})"
 msgstr "@code{dbus-daemon} (Vorgabe: @code{dbus-daemon-wrapper})"
 
@@ -26636,14 +26452,8 @@ msgstr "{Datentyp} sddm-configuration"
 msgid "This data type represents the configuration of the SDDM login manager.  The available fields are:"
 msgstr "Dieser Datentyp repräsentiert die Konfiguration der SDDM-Anmeldeverwaltung. Die verfügbaren Felder sind:"
 
-msgid "@code{sddm} (default: @code{sddm})"
-msgstr "@code{sddm} (Vorgabe: @code{sddm})"
-
 msgid "The SDDM package to use."
 msgstr "Das SDDM-Paket, was benutzt werden soll."
-
-msgid "sddm has Qt6 enabled by default. If you want to still use a Qt5 theme, you need to set it to @code{sddm-qt5}."
-msgstr "In SDDM die Version Qt6 vorgegeben. Wenn Sie weiterhin ein Qt5-Thema benutzen möchten, müssen Sie dies auf @code{sddm-qt5} setzen."
 
 msgid "@code{display-server} (default: \"x11\")"
 msgstr "@code{display-server} (Vorgabe: \"x11\")"
@@ -28436,9 +28246,6 @@ msgstr "@code{remove-ipc?} (Vorgabe: @code{#t}) (Typ: Vielleicht-Boolescher-Ausd
 
 msgid "@code{hibernate-delay-seconds} (type: maybe-non-negative-integer)"
 msgstr "@code{hibernate-delay-seconds} (Typ: Vielleicht-Nichtnegative-ganze-Zahl)"
-
-msgid "Deprecated option."
-msgstr "Diese Option ist veraltet und wird demnächst verschwinden."
 
 msgid "accountsservice-service-type"
 msgstr "accountsservice-service-type"
@@ -32484,6 +32291,13 @@ msgstr "@code{extra-content} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
 
 msgid "@code{key} (type: string)"
 msgstr "@code{key} (Typ: Zeichenkette)"
+
+msgid ""
+"  ;; @dots{}\n"
+"\n"
+msgstr ""
+"  ;; …\n"
+"\n"
 
 msgid "telephony, services"
 msgstr "Telefonie, Dienste"
@@ -37820,6 +37634,15 @@ msgstr "Ist zum Beispiel @code{tftp-root} @samp{/tftp} und fragt Client @samp{1.
 msgid "This option provides an ``escape hatch'' for the user to provide arbitrary command-line arguments to @command{dnsmasq} as a list of strings."
 msgstr "Dieses Feld ist ein „Notausstieg“, mit dem Nutzer beliebige Befehlszeilenoptionen direkt an @command{dnsmasq} übergeben können. Diese müssen hier als eine Liste von Zeichenketten angegeben werden."
 
+msgid "ddclient Service"
+msgstr "ddclient-Dienst"
+
+msgid "ddclient"
+msgstr "ddclient"
+
+msgid "Available @code{ddclient-configuration} fields are:"
+msgstr "Verfügbare @code{ddclient-configuration}-Felder sind:"
+
 msgid "VNC (virtual network computing)"
 msgstr "VNC (Virtual Network Computing)"
 
@@ -37864,40 +37687,6 @@ msgstr ""
 "# Über VNC darauf zugreifen.\n"
 "guix shell tigervnc-client -- vncviewer localhost:5910\n"
 
-msgid "The following configuration combines XDMCP and Inetd to allow multiple users to concurrently use the remote system and login graphically via the GDM display manager:"
-msgstr "Die folgende Konfiguration setzt XDMCP und Inetd gemeinsam ein, damit mehrere Benutzer gleichzeitig das entfernte System nutzen können und sich grafisch über die GDM-Anzeigenverwaltung anmelden können:"
-
-msgid ""
-"(operating-system\n"
-"  [...]\n"
-"  (services (cons*\n"
-"             [...]\n"
-"             (service xvnc-service-type (xvnc-configuration\n"
-"                                         (display-number 5)\n"
-"                                         (localhost? #f)\n"
-"                                         (xdmcp? #t)\n"
-"                                         (inetd? #t)))\n"
-"             (modify-services %desktop-services\n"
-"               (gdm-service-type config => (gdm-configuration\n"
-"                                            (inherit config)\n"
-"                                            (auto-suspend? #f)\n"
-"                                            (xdmcp? #t)))))))\n"
-msgstr ""
-"(operating-system\n"
-"  […]\n"
-"  (services (cons*\n"
-"             […]\n"
-"             (service xvnc-service-type (xvnc-configuration\n"
-"                                         (display-number 5)\n"
-"                                         (localhost? #f)\n"
-"                                         (xdmcp? #t)\n"
-"                                         (inetd? #t)))\n"
-"             (modify-services %desktop-services\n"
-"               (gdm-service-type config => (gdm-configuration\n"
-"                                            (inherit config)\n"
-"                                            (auto-suspend? #f)\n"
-"                                            (xdmcp? #t)))))))\n"
-
 msgid "A remote user could then connect to it by using the @command{vncviewer} command or a compatible VNC client and start a desktop session of their choosing:"
 msgstr "Eine entfernte Nutzerin könnte sich damit verbinden, indem sie den Befehl @command{vncviewer} oder einen kompatiblen VNC-Client einsetzt und eine Sitzung auf einer Arbeitsumgebung ihrer Wahl beginnt:"
 
@@ -37921,9 +37710,6 @@ msgstr "Das Paket, das die Binärdatei Xvnc zur Verfügung stellt."
 
 msgid "@code{display-number} (default: @code{0}) (type: number)"
 msgstr "@code{display-number} (Vorgabe: @code{0}) (Typ: Zahl)"
-
-msgid "The display number used by Xvnc.  You should set this to a number not already used a Xorg server."
-msgstr "Die Nummer der Anzeige, um die sich Xvnc kümmert. Sie sollten eine Zahl wählen, die der Xorg-Server @emph{nicht} bereits in Beschlag nimmt."
 
 msgid "@code{geometry} (default: @code{\"1024x768\"}) (type: string)"
 msgstr "@code{geometry} (Vorgabe: @code{\"1024x768\"}) (Typ: Zeichenkette)"
@@ -39769,9 +39555,6 @@ msgstr "@code{thermald} (Vorgabe: @var{thermald})"
 msgid "Package object of thermald."
 msgstr "Paketobjekt von thermald."
 
-msgid "The @code{(gnu services audio)} module provides a service to start MPD (the Music Player Daemon)."
-msgstr "Das Modul @code{(gnu services audio)} stellt einen Dienst zur Verfügung, um MPD (den Music Player Daemon) zu starten."
-
 msgid "mpd"
 msgstr "mpd"
 
@@ -39828,15 +39611,6 @@ msgstr "@code{user} (Typ: Benutzerkonto)"
 
 msgid "The user to run mpd as."
 msgstr "Das Benutzerkonto, mit dem mpd ausgeführt wird."
-
-msgid "@code{group} (type: user-group)"
-msgstr "@code{group} (Typ: Benutzergruppe)"
-
-msgid "The group to run mpd as."
-msgstr "Die Benutzergruppe, mit der mpd ausgeführt wird."
-
-msgid "The default @code{%mpd-group} is a system group with name ``mpd''."
-msgstr "Vorgegeben ist @code{%mpd-group}, was für eine System-Benutzergruppe mit Namen „mpd“ steht."
 
 msgid "@code{environment-variables} (default: @code{'(\"PULSE_CLIENTCONFIG=/etc/pulse/client.conf\" \"PULSE_CONFIG=/etc/pulse/daemon.conf\")}) (type: list-of-strings)"
 msgstr "@code{environment-variables} (Vorgabe: @code{'(\"PULSE_CLIENTCONFIG=/etc/pulse/client.conf\" \"PULSE_CONFIG=/etc/pulse/daemon.conf\")}) (Typ: Liste-von-Zeichenketten)"
@@ -42306,9 +42080,6 @@ msgstr "{@code{cgit-configuration}-Parameter} Dateiobjekt css"
 msgid "URL which specifies the css document to include in all cgit pages."
 msgstr "URL, die angibt, welches CSS-Dokument von jeder Cgit-Seite eingebunden werden soll."
 
-msgid "Defaults to @samp{\"/share/cgit/cgit.css\"}."
-msgstr "Die Vorgabe ist @samp{\"/share/cgit/cgit.css\"}."
-
 msgid "{@code{cgit-configuration} parameter} file-object email-filter"
 msgstr "{@code{cgit-configuration}-Parameter} Dateiobjekt email-filter"
 
@@ -42449,9 +42220,6 @@ msgstr "{@code{cgit-configuration}-Parameter} Dateiobjekt logo"
 
 msgid "URL which specifies the source of an image which will be used as a logo on all cgit pages."
 msgstr "URL, unter der ein Bild zu finden ist, das auf allen Cgit-Seiten als Logo zu sehen sein wird."
-
-msgid "Defaults to @samp{\"/share/cgit/cgit.png\"}."
-msgstr "Die Vorgabe ist @samp{\"/share/cgit/cgit.png\"}."
 
 msgid "{@code{cgit-configuration} parameter} string logo-link"
 msgstr "{@code{cgit-configuration}-Parameter} Zeichenkette logo-link"
@@ -44617,9 +44385,6 @@ msgstr "fprintd-service-type"
 msgid "The service type for @command{fprintd}, which provides the fingerprint reading capability."
 msgstr "Der Diensttyp für @command{fprintd}, mit dem Fingerabdrücke gelesen werden können."
 
-msgid "(service fprintd-service-type)\n"
-msgstr "(service fprintd-service-type)\n"
-
 msgid "sysctl"
 msgstr "sysctl"
 
@@ -45336,9 +45101,6 @@ msgstr "{Datentyp} nix-configuration"
 
 msgid "This data type represents the configuration of the Nix daemon."
 msgstr "Dieser Datentyp repräsentiert die Konfiguration des Nix-Daemons."
-
-msgid "@code{nix} (default: @code{nix})"
-msgstr "@code{nix} (Vorgabe: @code{nix})"
 
 msgid "The Nix package to use."
 msgstr "Das zu verwendende Nix-Paket."
@@ -46087,20 +45849,8 @@ msgstr "Um ihn zu initialisieren (zu „bootstrappen“), wird für den Kernel L
 msgid "The @code{initrd-modules} field of an @code{operating-system} declaration allows you to specify Linux-libre kernel modules that must be available in the initrd.  In particular, this is where you would list modules needed to actually drive the hard disk where your root partition is---although the default value of @code{initrd-modules} should cover most use cases.  For example, assuming you need the @code{megaraid_sas} module in addition to the default modules to be able to access your root file system, you would write:"
 msgstr "Mit dem Feld @code{initrd-modules} einer @code{operating-system}-Deklaration können Sie angeben, welche Kernel-Module für Linux-libre in der initrd verfügbar sein müssen. Insbesondere müssen hier die Module aufgeführt werden, um die Festplatte zu betreiben, auf der sich Ihre Wurzelpartition befindet@tie{}– allerdings sollte der vorgegebene Wert der @code{initrd-modules} in dem meisten Fällen genügen. Wenn Sie aber zum Beispiel das Kernel-Modul @code{megaraid_sas} zusätzlich zu den vorgegebenen Modulen brauchen, um auf Ihr Wurzeldateisystem zugreifen zu können, würden Sie das so schreiben:"
 
-msgid ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (initrd-modules (cons \"megaraid_sas\" %base-initrd-modules)))\n"
-msgstr ""
-"(operating-system\n"
-"  ;; …\n"
-"  (initrd-modules (cons \"megaraid_sas\" %base-initrd-modules)))\n"
-
 msgid "%base-initrd-modules"
 msgstr "%base-initrd-modules"
-
-msgid "This is the list of kernel modules included in the initrd by default."
-msgstr "Der Vorgabewert für die Liste der Kernel-Module, die in der initrd enthalten sein sollen."
 
 msgid "Furthermore, if you need lower-level customization, the @code{initrd} field of an @code{operating-system} declaration allows you to specify which initrd you would like to use.  The @code{(gnu system linux-initrd)} module provides three ways to build an initrd: the high-level @code{base-initrd} procedure and the low-level @code{raw-initrd} and @code{expression->initrd} procedures."
 msgstr "Wenn Sie noch systemnähere Anpassungen durchführen wollen, können Sie im Feld @code{initrd} einer @code{operating-system}-Deklaration angeben, was für eine Art von initrd Sie benutzen möchten. Das Modul @code{(gnu system linux-initrd)} enthält drei Arten, eine initrd zu erstellen: die abstrakte Prozedur @code{base-initrd} und die systemnahen Prozeduren @code{raw-initrd} und @code{expression->initrd}."
@@ -47394,9 +47144,6 @@ msgstr "Dieser Datentyp repräsentiert die SSH-Client-Parameter einer Maschine, 
 msgid "@code{build-locally?} (default: @code{#t})"
 msgstr "@code{build-locally?} (Vorgabe: @code{#t})"
 
-msgid "If false, system derivations will be built on the machine being deployed to."
-msgstr "Wenn es falsch ist, werden Ableitungen für das System auf der Maschine erstellt, auf die es aufgespielt wird."
-
 msgid "system"
 msgstr "system"
 
@@ -47405,9 +47152,6 @@ msgstr "Der Systemtyp, der die Architektur der Maschine angibt, auf die aufgespi
 
 msgid "@code{authorize?} (default: @code{#t})"
 msgstr "@code{authorize?} (Vorgabe: @code{#t})"
-
-msgid "If true, the coordinator's signing key will be added to the remote's ACL keyring."
-msgstr "Wenn es wahr ist, wird der Signierschlüssel des Koordinators zum ACL-Schlüsselbund (der Access Control List, deutsch Zugriffssteuerungsliste) der entfernten Maschine hinzugefügt."
 
 msgid "@code{identity} (default: @code{#f})"
 msgstr "@code{identity} (Vorgabe: @code{#f})"
@@ -47575,25 +47319,8 @@ msgstr "Wenn dieses Beispiel zu @samp{hostfwd} bei Ihnen nicht funktioniert (wei
 msgid "Using @command{virt-viewer} with Spice"
 msgstr "@command{virt-viewer} mit Spice benutzen"
 
-msgid "As an alternative to the default @command{qemu} graphical client you can use the @command{remote-viewer} from the @command{virt-viewer} package.  To connect pass the @command{-spice port=5930,disable-ticketing} flag to @command{qemu}.  See previous section for further information on how to do this."
-msgstr "Eine Alternative zur grafischen Schnittstelle des standardmäßigen @command{qemu} ist, sich mit Hilfe des @command{remote-viewer} aus dem Paket @command{virt-viewer} zu verbinden. Um eine Verbindung herzustellen, übergeben Sie die Befehlszeilenoption @command{-spice port=5930,disable-ticketing} an @command{qemu}. Siehe den vorherigen Abschnitt für weitere Informationen, wie Sie das übergeben."
-
 msgid "Spice also allows you to do some nice stuff like share your clipboard with your VM@.  To enable that you'll also have to pass the following flags to @command{qemu}:"
 msgstr "Spice macht es auch möglich, ein paar nette Hilfestellungen zu benutzen, zum Beispiel können Sie Ihren Zwischenspeicher zum Kopieren und Einfügen (Ihr „Clipboard“) mit Ihrer virtuellen Maschine teilen. Um das zu aktivieren, werden Sie die folgenden Befehlszeilennoptionen zusätzlich an @command{qemu} übergeben müssen:"
-
-msgid ""
-"-device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5\n"
-"-chardev spicevmc,name=vdagent,id=vdagent\n"
-"-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\\\n"
-"name=com.redhat.spice.0\n"
-msgstr ""
-"-device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5\n"
-"-chardev spicevmc,name=vdagent,id=vdagent\n"
-"-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\\\n"
-"name=com.redhat.spice.0\n"
-
-msgid "You'll also need to add the @code{(spice-vdagent-service)} to your system definition (@pxref{Miscellaneous Services, Spice service})."
-msgstr "Sie werden auch den @code{(spice-vdagent-service)} zu Ihrer Systemdefinition hinzufügen müssen (siehe @ref{Miscellaneous Services, Spice-Dienst})."
 
 msgid "The previous sections show the available services and how one can combine them in an @code{operating-system} declaration.  But how do we define them in the first place? And what is a service anyway?"
 msgstr "Der vorhergehende Abschnitt präsentiert die verfügbaren Dienste und wie man sie in einer @code{operating-system}-Deklaration kombiniert. Aber wie definieren wir solche Dienste eigentlich? Und was ist überhaupt ein Dienst?"
@@ -47661,9 +47388,6 @@ msgstr "Ein Name, der nur dazu da ist, dass man leichter die Abläufe verstehen 
 
 msgid "A list of @dfn{service extensions}, where each extension designates the target service type and a procedure that, given the parameters of the service, returns a list of objects to extend the service of that type."
 msgstr "Eine Liste von @dfn{Diensterweiterungen} („service extensions“). Jede Erweiterung gibt den Ziel-Diensttyp an sowie eine Prozedur, die für gegebene Parameter für den Dienst eine Liste von Objekten zurückliefert, um den Dienst dieses Typs zu erweitern."
-
-msgid "Every service type has at least one service extension.  The only exception is the @dfn{boot service type}, which is the ultimate service."
-msgstr "Jeder Diensttyp benutzt mindestens eine Diensterweiterung. Die einzige Ausnahme ist der @dfn{boot service type}, der die Grundlage aller Dienste ist."
 
 msgid "Optionally, a default value for instances of this type."
 msgstr "Optional kann ein Vorgabewert für Instanzen dieses Typs angegeben werden."
@@ -48147,9 +47871,6 @@ msgstr "Ebenso müssen Dienste, die beim Start oder im Betrieb Dateisysteme einb
 msgid "one-shot services, for the Shepherd"
 msgstr "einmalig ausgeführte Dienste, für Shepherd"
 
-msgid "Whether this service is @dfn{one-shot}.  One-shot services stop immediately after their @code{start} action has completed.  @xref{Slots of services,,, shepherd, The GNU Shepherd Manual}, for more info."
-msgstr "Gibt an, ob dieser Dienst nur einmal ausgeführt wird („one-shot“). Einmalig ausgeführte Dienste werden gestoppt, sobald ihre @code{start}-Aktion abgeschlossen wurde. Siehe @ref{Slots of services,,, shepherd, The GNU Shepherd Manual} für weitere Informationen."
-
 msgid "@code{respawn?} (default: @code{#t})"
 msgstr "@code{respawn?} (Vorgabe: @code{#t})"
 
@@ -48203,6 +47924,9 @@ msgstr "herd doc @var{Dienstname}\n"
 
 msgid "where @var{service-name} is one of the symbols in @code{provision} (@pxref{Invoking herd,,, shepherd, The GNU Shepherd Manual})."
 msgstr "wobei der @var{Dienstname} eines der Symbole aus der @code{provision}-Liste sein muss (siehe @ref{Invoking herd,,, shepherd, The GNU Shepherd Manual})."
+
+msgid "@code{modules} (default: @code{%default-modules})"
+msgstr "@code{modules} (Vorgabe: @code{%default-modules})"
 
 msgid "This is the list of modules that must be in scope when @code{start} and @code{stop} are evaluated."
 msgstr "Dies ist die Liste der Module, die in den Sichtbarkeitsbereich geladen sein müssen, wenn @code{start} und @code{stop} ausgewertet werden."
@@ -48364,14 +48088,8 @@ msgstr "{Datentyp} shepherd-configuration"
 msgid "This data type represents the Shepherd's configuration."
 msgstr "Dieser Datentyp repräsentiert die Konfiguration von Shepherd."
 
-msgid "shepherd (default: @code{shepherd})"
-msgstr "shepherd (Vorgabe: @code{shepherd})"
-
 msgid "The Shepherd package to use."
 msgstr "Das zu benutzende Shepherd-Paket."
-
-msgid "services (default: @code{'()})"
-msgstr "services (Vorgabe: @code{'()})"
 
 msgid "A list of @code{<shepherd-service>} to start.  You should probably use the service extension mechanism instead (@pxref{Shepherd Services})."
 msgstr "Eine Liste zu startender Shepherd-Dienste als @code{<shepherd-service>}-Objekte. Wahrscheinlich sollten Sie stattdessen den Mechanismus zur Diensterweiterung benutzen (siehe @ref{Shepherd Services})."
@@ -49177,9 +48895,6 @@ msgstr "home-environment"
 msgid "he-config-bare-bones.scm"
 msgstr "he-config-bare-bones.scm"
 
-msgid "The @code{packages} field should be self-explanatory, it will install the list of packages into the user's profile.  The most important field is @code{services}, it contains a list of @dfn{home services}, which are the basic building blocks of a home environment."
-msgstr "Was das @code{packages}-Feld tut, sollte klar sein: Dadurch werden die aufgelisteten Pakete in das Profil des Benutzers installiert. Das wichtigste Feld ist @code{services}, was eine Liste @dfn{Persönlicher Dienste} zu enthalten hat. Sie stellen die Grundbausteine einer Persönlichen Umgebung dar."
-
 msgid "There is no daemon (at least not necessarily) related to a home service, a home service is just an element that is used to declare part of home environment and extend other parts of it.  The extension mechanism discussed in the previous chapter (@pxref{Defining Services}) should not be confused with Shepherd services (@pxref{Shepherd Services}).  Using this extension mechanism and some Scheme code that glues things together gives the user the freedom to declare their own, very custom, home environments."
 msgstr "Für Persönliche Dienste gibt es keinen Daemon (zumindest nicht zwingend). Ein Persönlicher Dienst stellt nur ein Element dar, um einen Aspekt einer Persönlichen Umgebung zu deklarieren bzw.@: andere Aspekte zu erweitern. Dieser im vorherigen Kapitel erörterte Erweiterungsmechanismus (siehe @ref{Defining Services}) sollte nicht verwechselt werden mit Shepherd-Diensten (siehe @ref{Shepherd Services}). Mit dem Erweiterungsmechanismus und etwas Scheme-Code, um die Dinge zusammenzubringen, haben Sie als Nutzer die Freiheit, eigens auf Sie abgestimmte Persönliche Umgebungen zu entwerfen."
 
@@ -49568,9 +49283,6 @@ msgstr "@code{packages} (Typ: Vielleicht-Liste-von-Zeichenketten)"
 msgid "The names of a subset of the GNU Stow package layer directories.  When provided the @code{home-dotfiles-service-type} will only provision dotfiles from this subset of applications.  This field will be ignored if @code{layout} is set to @code{'plain}."
 msgstr "Die Namen eines Teils der Verzeichnisse im Paketlayout von GNU Stow. Wenn Sie welche angeben, wird @code{home-dotfiles-service-type} nur die Dotfiles aus dieser Teilmenge von Anwendungen einspielen. Dieses Feld wird beim Layout @code{'plain} ignoriert."
 
-msgid "The list of file patterns @code{home-dotfiles-service-type} will exclude while visiting each one of the @code{directories}."
-msgstr "Die Liste von Mustern, welche Dateien @code{home-dotfiles-service-type} auf der Suche nach Dotfiles beim Besuchen jedes in @code{directories} aufgeführten Verzeichnisses ausschließen soll."
-
 msgid "home-xdg-configuration-files-service-type"
 msgstr "home-xdg-configuration-files-service-type"
 
@@ -49617,9 +49329,6 @@ msgstr "Wenn es schon eine Datei mit so einem Namen gibt, wird von der im Konfli
 
 msgid "symlink-manager is a part of essential home services and is enabled and used by default."
 msgstr "symlink-manager ist Teil der essenziellen Persönlichen Dienste und ist somit nach Vorgabeeinstellungen aktiviert und wird benutzt."
-
-msgid "Shells Home Services"
-msgstr "Persönliche Shell-Dienste"
 
 msgid "Shells"
 msgstr "Shells"
@@ -49968,9 +49677,6 @@ msgstr "@code{extra-content} (Vorgabe: @code{\"\"}) (Typ: Konfigurationstext)"
 msgid "Extra content appended as-is to the configuration file.  Run @command{man readline} for more information about all the configuration options."
 msgstr "Weiterer Text, der unverändert an die Konfigurationsdatei angehängt wird. Führen Sie @command{man readline} aus, um weitere Informationen über all die Konfigurationsoptionen zu bekommen."
 
-msgid "Mcron Home Service"
-msgstr "Persönlicher Mcron-Dienst"
-
 msgid "Scheduled User's Job Execution"
 msgstr "Geplante Auftragsausführung durch Benutzer"
 
@@ -50000,9 +49706,6 @@ msgstr "Verfügbare @code{home-mcron-configuration}-Felder sind:"
 
 msgid "@code{(ice-9 format)} format string for log messages.  The default value produces messages like \"@samp{@var{pid} @var{name}: @var{message}\"} (@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message is also prefixed by a timestamp by GNU Shepherd."
 msgstr "Eine Formatzeichenkette gemäß @code{(ice-9 format)} für die Protokollnachrichten. Mit dem Vorgabewert werden Nachrichten in der Form \"@samp{@var{Prozesskennung} @var{Name}: @var{Nachricht}\"} geschrieben (siehe @ref{Invoking mcron, Aufrufen von mcron,, mcron,GNU@tie{}mcron}). Außerdem schreibt GNU@tie{}Shepherd vor jeder Nachricht einen Zeitstempel."
-
-msgid "Power Management Home Services"
-msgstr "Persönliche Dienste zur Stromverbrauchsverwaltung"
 
 msgid "power management"
 msgstr "Stromverbrauch verwalten"
@@ -50112,9 +49815,6 @@ msgstr "@code{ignore-missing?} (Vorgabe: @code{#f})"
 msgid "Whether to ignore missing battery errors."
 msgstr "Ob Fehler, dass eine Batterie fehlt, ignoriert werden sollen."
 
-msgid "Shepherd Home Service"
-msgstr "Persönlicher Shepherd-Dienst"
-
 msgid "Managing User Daemons"
 msgstr "Benutzer-Daemons verwalten"
 
@@ -50136,11 +49836,17 @@ msgstr "Dieser Diensttyp stellt das Ziel für Diensterweiterungen dar, die Sheph
 msgid "{Data Type} home-shepherd-configuration"
 msgstr "{Datentyp} home-shepherd-configuration"
 
+msgid "shepherd (default: @code{shepherd})"
+msgstr "shepherd (Vorgabe: @code{shepherd})"
+
 msgid "auto-start? (default: @code{#t})"
 msgstr "auto-start? (Vorgabe: @code{#t})"
 
 msgid "Whether or not to start Shepherd on first login."
 msgstr "Ob Shepherd bei einer ersten Anmeldung gestartet werden soll."
+
+msgid "services (default: @code{'()})"
+msgstr "services (Vorgabe: @code{'()})"
 
 msgid "The Shepherd allows you to define @dfn{timers}, a special type of service that performs a given task periodically.  Just like you can define timers at the system level (@pxref{Scheduled Job Execution}), you can do so in your home environment."
 msgstr "Shepherd macht es möglich, dass Sie @dfn{Timer} definieren, eine besondere Art Dienst, die einen vorgegebenen Auftrag wiederholt durchführt. Genau wie Sie Timer auf Systemebene definieren können (siehe @ref{Scheduled Job Execution}), können Sie es in Ihrer Persönlichen Umgebung tun."
@@ -50168,9 +49874,6 @@ msgstr "Dies sind die Shepherd-Dienste @code{timer} und @code{transient}. Erster
 
 msgid "@xref{shepherd-transient-timer-services, the system @code{timer} and @code{transient} services}, which are their Guix System counterparts, for more info."
 msgstr "Siehe @ref{shepherd-transient-timer-services, die systemweiten Dienste @code{timer} und @code{transient}}, was die Gegenstücke hierzu auf Guix System sind, wenn Sie Näheres wissen möchten."
-
-msgid "Secure Shell"
-msgstr "Secure Shell"
 
 msgid "secure shell client, configuration"
 msgstr "Secure-Shell-Client, Konfiguration"
@@ -50348,9 +50051,6 @@ msgstr "{Datentyp} proxy-jump"
 msgid "Available @code{proxy-jump} fields are:"
 msgstr "Verfügbare @code{proxy-jump}-Felder sind:"
 
-msgid "@code{host-name} (type: string)"
-msgstr "@code{host-name} (Typ: Zeichenkette)"
-
 msgid "Host name---e.g., @code{foo.example.org} or @code{192.168.1.2}."
 msgstr "Der Rechnername, z.B.@: @code{foo.example.org} oder @code{192.168.1.2}."
 
@@ -50474,9 +50174,6 @@ msgstr "Das Verzeichnis, wo der Socket für den ssh-agent liegen soll."
 msgid "Extra options will be passed to @command{ssh-agent}, please run @command{man ssh-agent} for more information."
 msgstr "Zusätzliche Befehlszeilenoptionen, die dem @command{ssh-agent} mitgegeben werden sollen. Führen Sie @command{man ssh-agent} aus, um weitere Informationen zu erhalten."
 
-msgid "GNU Privacy Guard"
-msgstr "GNU Privacy Guard"
-
 msgid "GNU Privacy Guard, Home service"
 msgstr "GNU Privacy Guard, Persönlicher Dienst"
 
@@ -50564,12 +50261,6 @@ msgstr "@code{max-cache-ttl-ssh} (Vorgabe: @code{7200}) (Typ: Ganze-Zahl)"
 
 msgid "Maximum time a cache entry for SSH keys is valid, in seconds."
 msgstr "Wie lange ein SSH-Zugang höchstens zwischengespeichert wird, in Sekunden."
-
-msgid "Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}."
-msgstr "„Roher Inhalt“, der so, wie er ist, ans Ende von @file{~/.gnupg/gpg-agent.conf} angehängt wird."
-
-msgid "Desktop Home Services"
-msgstr "Persönliche Desktop-Dienste"
 
 msgid "The @code{(gnu home services desktop)} module provides services that you may find useful on ``desktop'' systems running a graphical user environment such as Xorg."
 msgstr "Das Modul @code{(gnu home services desktop)} stellt Dienste zur Verfügung, die Ihnen auf „Desktop“-Systemen helfen können, d.h.@: wenn Sie eine grafische Arbeitsumgebung mit z.B.@: Xorg gebrauchen."
@@ -50807,9 +50498,6 @@ msgstr "home-startx-command-service-type"
 msgid "Add @command{startx} to the home profile putting it onto @env{PATH}."
 msgstr "Fügt @command{startx} zum Persönlichen Profil hinzu, wodurch es in @env{PATH} eingetragen wird."
 
-msgid "Guix Home Services"
-msgstr "Persönliche Guix-Dienste"
-
 msgid "The @code{(gnu home services guix)} module provides services for user-specific Guix configuration."
 msgstr "Das Modul @code{(gnu home services guix)} bietet Dienste an, um Guix für den Benutzer einzurichten."
 
@@ -50839,9 +50527,6 @@ msgstr ""
 "                 (channel\n"
 "                  (name 'paketvarianten)\n"
 "                  (url \"https://example.org/variant-packages.git\"))))\n"
-
-msgid "Fonts Home Services"
-msgstr "Persönliche Schriftarten-Dienste"
 
 msgid "The @code{(gnu home services fontutils)} module provides services for user-specific Fontconfig setup.  The @uref{https://www.freedesktop.org/wiki/Software/fontconfig,Fontconfig} library is used by many applications to access fonts on the system."
 msgstr "Im Modul @code{(gnu home services fontutils)} werden Dienste bereitgestellt, um Fontconfig für einen einzelnen Benutzer einzustellen. Die @uref{https://www.freedesktop.org/wiki/Software/fontconfig,Fontconfig-Bibliothek} wird von vielen Anwendungen verwendet, damit sie auf die Schriftarten im System zugreifen können."
@@ -50874,9 +50559,6 @@ msgstr ""
 "                        (family \"monospace\")\n"
 "                        (prefer\n"
 "                         (family \"Liberation Mono\")))))\n"
-
-msgid "Sound Home Services"
-msgstr "Persönliche Tondienste"
 
 msgid "The @code{(gnu home services sound)} module provides services related to sound support."
 msgstr "Das Modul @code{(gnu home services sound)} stellt Dienste bereit, die mit Sound-Unterstützung zu tun haben."
@@ -51030,9 +50712,6 @@ msgstr "Wenn es auf wahr gesetzt ist, wird PipeWires Emulation für PulseAudio a
 msgid "@code{extra-content} (default: @code{\"\"}) (type: string)"
 msgstr "@code{extra-content} (Vorgabe: @code{\"\"}) (Typ: Zeichenkette)"
 
-msgid "Mail Home Services"
-msgstr "Persönliche Maildienste"
-
 msgid "The @code{(gnu home services mail)} module provides services that help you set up the tools to work with emails in your home environment."
 msgstr "Das Modul @code{(gnu home services mail)} stellt Dienste zur Verfügung, die Ihnen helfen, Programme zum Umgang mit E-Mail in Ihrer Persönlichen Umgebung einzurichten."
 
@@ -51180,9 +50859,6 @@ msgstr "Legt als Passwort für die Authentisierung die Ausgabe (stdout) des ange
 msgid "Extra content appended as-is to the configuration block.  Run @command{man msmtp} for more information about the configuration file format."
 msgstr "Weiterer Text, der unverändert an diesen Konfigurationsblock angehängt wird. Führen Sie @command{man msmtp} aus, um weitere Informationen über das Format der Konfigurationsdatei zu erfahren."
 
-msgid "Messaging Home Services"
-msgstr "Persönliche Kurznachrichtendienste"
-
 msgid "znc"
 msgstr "znc"
 
@@ -51225,9 +50901,6 @@ msgstr "Dies ist der Diensttyp des Persönlichen Snuik-Dienstes. Als Wert verwen
 msgid "You may specify a custom configuration by providing a @code{snuik-configuration} record, exactly like for @code{snuik-service-type} and wrapping it in @code{for-home}.  Here is an example of a service and its configuration that you could add to the @code{services} field of your @code{home-environment}:"
 msgstr "Dabei können Sie auch eine angepasste Konfiguration angeben, indem Sie ein @code{snuik-configuration}-Verbundsobjekt genau wie bei @code{snuik-service-type} angeben, es aber in @code{for-home} umhüllen. Hier ist ein Beispiel für einen Dienst und seine Konfiguration, die Sie ins Feld @code{services} Ihrer @code{home-environment} einfügen können:"
 
-msgid "Media Home Services"
-msgstr "Persönliche Mediendienste"
-
 msgid "kodi"
 msgstr "kodi"
 
@@ -51263,9 +50936,6 @@ msgstr "Das zu benutzende Kodi-Paket."
 
 msgid "Extra options will be passed to @command{kodi}, please run @command{man kodi} for more information."
 msgstr "Zusätzliche Befehlszeilenoptionen, mit denen @command{kodi} gestartet werden soll. Führen Sie @command{man kodi} aus, um weitere Informationen zu erhalten."
-
-msgid "Sway window manager"
-msgstr "Sway-Fensterverwaltung"
 
 msgid "sway, Home Service"
 msgstr "Sway, Persönlicher Dienst"
@@ -51530,9 +51200,6 @@ msgstr "ein G-Ausdruck,"
 msgid "a file-like object,"
 msgstr "ein dateiartiges Objekt,"
 
-msgid "a pair.  The first argument of this pair must be a string, a G-expression or a file-like object.  The second element describes how the wallpaper will be displayed.  It must be a symbol among @code{stretch}, @code{fill}, @code{fit}, @code{center} and @code{tile}."
-msgstr "ein Paar. In letzterem Fall muss sein erstes Argument eine Zeichenkette, ein G-Ausdruck oder ein dateiartiges Objekt sein. Das zweite Argument im Paar beschreibt, auf welche Art das Hintergrundbild angezeigt werden soll. Es muss eines der Symbole @code{stretch}, @code{fill}, @code{fit}, @code{center} oder @code{tile} sein."
-
 msgid "If the second element is not specified (@i{i.e.}@: when the value is not a pair), the @code{fill} mode will be used."
 msgstr "Wenn das zweite Argument nicht angegeben wird (d.h. wenn als Wert kein Paar benutzt wird), wird der @code{fill}-Modus angewandt."
 
@@ -51716,9 +51383,6 @@ msgstr "@code{keybindings} (Vorgabe: @code{'()})"
 msgid "This field describes keybindings.  The value is an association list.  As above, keys are symbols and values are either strings, G-expressions or cons-cells."
 msgstr "Dieses Feld beschreibt die Tastenbelegungen. Als Wert wird eine assoziative Liste angegeben. Auch hier sind Schlüssel Symbole und Werte sind entweder Zeichenketten, G-Ausdrücke oder Cons-Zellen."
 
-msgid "Networking Home Services"
-msgstr "Persönliche Netzwerkdienste"
-
 msgid "This section lists services somewhat networking-related that you may use with Guix Home."
 msgstr "In diesem Abschnitt werden Dienste aufgelistet, die irgendwie mit Netzwerkkommunikation zu tun haben und die Sie mit Guix Home verwenden können."
 
@@ -51751,9 +51415,6 @@ msgstr ""
 
 msgid "For details about @code{syncthing-configuration}, check out the documentation of the system service (@pxref{Networking Services, @code{syncthing-service-type}})."
 msgstr "Nähere Informationen zur @code{syncthing-configuration} finden Sie in der Dokumentation des Systemdienstes (siehe @ref{Networking Services, @code{syncthing-service-type}})."
-
-msgid "Miscellaneous Home Services"
-msgstr "Verschiedene Persönliche Dienste"
 
 msgid "This section lists Home services that lack a better place."
 msgstr "Dieser Abschnitt führt Persönliche Dienste auf, die sich nicht besser kategorisieren ließen."
@@ -52420,9 +52081,6 @@ msgstr "@code{file-system} (Vorgabe: @code{\"ext4\"})"
 
 msgid "The partition file system as a string, defaulting to @code{\"ext4\"}."
 msgstr "Das Dateisystem der Partition als Zeichenkette. Die Vorgabe ist @code{\"ext4\"}."
-
-msgid "The supported values are @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"}, and @code{\"swap\"}."
-msgstr "Als Wert werden @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"} und @code{\"swap\"} unterstützt."
 
 msgid "@code{\"vfat\"}, @code{\"fat16\"}, and @code{\"fat32\"} partitions without the @code{'esp} flag are by default LBA compatible."
 msgstr "Partitionen mit @code{\"vfat\"}-, @code{\"fat16\"}- und @code{\"fat32\"}-Dateisystem werden automatisch LBA-kompatibel eingestellt, wenn sie keine @code{'esp}-Flag tragen."
