@@ -1482,47 +1482,72 @@ using password-store through rofi interface:
       (license license:gpl3))))
 
 (define-public rofi-pass-wayland
-  (package
-    (inherit rofi-pass)
-    (name "rofi-pass-wayland")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            ;; Set the clipboard and backend tools to ones for Wayland in the
-            ;; default configuration file.
-            (add-after 'fix-etc-path 'set-wayland-defaults
+  ;; Includes recent fixes.
+  (let ((commit "2ba0d0decf9b3e7fe9cd2bda5f8ccb933a29c63f")
+        (revision "0"))
+    (package
+      (name "rofi-pass-wayland")
+      (version (git-version "2.1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Seme4eg/rofi-pass-wayland")
+                (commit commit)))
+         (sha256
+          (base32
+           "1484jmkmqns24ccrxcw5qg0q2g7psll1336s3r5rdny31fpipfdw"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ; no tests
+             #:make-flags #~(list (string-append "PREFIX=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'remove-org
                    (lambda _
-                     (substitute* "config.example"
-                       ;; Note the typo in current configuration.
-                       (("#clibpoard_backend=xclip")
-                        "clipboard_backend=wl-clipboard")
-                       (("#backend=xdotool")
-                        "backend=wtype"))))
-            ;; Use Wayland related tools instead.
-            (replace 'wrap-path
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((bin (string-append #$output "/bin")))
-                  (for-each
-                   (lambda (script)
-                     (wrap-program (string-append bin "/" script)
-                       (list "PATH" 'prefix
-                             (map
-                              (lambda (binary)
-                                (dirname (search-input-file
-                                          inputs
-                                          (string-append "bin/" binary))))
-                              ;; wl-copy for wl-clipboard.
-                              '("pass" "pwgen" "rofi" "wl-copy" "wtype")))))
-                   (list "addpass" "rofi-pass")))))))))
-    (inputs
-     (modify-inputs inputs
-       (replace "xclip" wl-clipboard)
-       (replace "xdotool" wtype)
-       (delete "xset")))
-    (description (string-append
-                  (package-description rofi-pass)
-                  "\nThis package provides Wayland support by default."))))
+                     (substitute* "Makefile"
+                       ((".*README\\.org.*") ""))))
+                 (delete 'configure) ; no configure
+                 (delete 'build)     ; no build
+                 (add-after 'install 'wrap-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((bin (string-append #$output "/bin")))
+                       (for-each
+                        (lambda (script)
+                          (wrap-program (string-append bin "/" script)
+                            (list "PATH" 'prefix
+                                  (map
+                                   (lambda (binary)
+                                     (dirname (search-input-file
+                                               inputs
+                                               (string-append "bin/" binary))))
+                                   '("pass" "pwgen" "rofi" "qrencode"
+                                     "wtype" "wl-copy")))))
+                        (list "rofi-pass"))))))))
+      (inputs (list bash-minimal ;for wrap-program
+                    password-store
+                    pwgen
+                    qrencode
+                    rofi
+                    wl-clipboard
+                    wtype))
+      (home-page "https://github.com/Seme4eg/rofi-pass-wayland")
+      (synopsis "Rofi wayland frontend for password-store")
+      (description "Rofi-pass-wayland provides a way to manipulate information
+stored using password-store through rofi interface:
+@enumerate
+
+@item Create / Read / Update / Delete / move / copy password store entries
+@item Generate new passwords for entries
+@item Copy / type individual fields (or autotype) of selected entry
+@item Support for different password store roots (e.g. personal & work)
+@item Open URLs of entries with hotkey
+@item Generate and display QR code directly in rofi
+@item Generate and autotype in OTPs (optional, with pass-otp)
+@item Extensive configuration
+@end enumerate")
+      (license license:expat))))
 
 (define-public tessen
   (package
