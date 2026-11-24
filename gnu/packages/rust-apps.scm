@@ -3500,6 +3500,32 @@ Rust.  It compiles ST down to native machine code, targeting most
 @code{llvm}-supported targets.")
     (license (list license:lgpl3 license:gpl3))))
 
+(define-public rust-grass
+  (package
+    (name "rust-grass")
+    (version "0.13.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/connorskees/grass")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14rh8c0hxx9r4g75rb329i1iw67lqkxgd3xqn0ml090mrpccxw1j"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("crates/lib")))
+    (inputs (cargo-inputs 'rust-grass))
+    (home-page "https://github.com/connorskees/grass")
+    (synopsis "Sass to CSS compiler")
+    (description "This package provides a high level interface for compiling
+@code{Sass} into plain @code{CSS}.")
+    (license license:expat)))
+
 (define-public rust-swc
   (package
     (name "rust-swc")

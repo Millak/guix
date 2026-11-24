@@ -387,6 +387,10 @@
   (crate-source "ahash" "0.8.12"
                 "0xbsp9rlm5ki017c0w6ay8kjwinwm8knjncci95mii30rmwz25as"))
 
+(define rust-ahash-0.8.13
+  (crate-source "ahash" "0.8.13"
+                "0f1c9p631x5v0a9yc98hngbr4sw6248rkrhmd7mrw8q9fqj8kjhg"))
+
 (define rust-ahash-0.8.3
   (crate-source "ahash" "0.8.3"
                 "0bzcsxdl2wd6j2p4214qh9sqkqn69gi7f9lk1xi8yj063r6zd69c"))
@@ -5251,6 +5255,10 @@ fn main() {
 (define rust-clap-4.6.8
   (crate-source "clap" "4.6.8"
                 "0jnd0ilrh7yx5vlxjrnzanfm0lgad6p852wrsvc6j0kxb1w088xc"))
+
+(define rust-clap-4.6.9
+  (crate-source "clap" "4.6.9"
+                "0z1k2mq1fdh3vj2c0fafs8ql8i5644dwl32pinv2q6dycl5mqk44"))
 
 (define rust-clap-builder-4.5.23
   (crate-source "clap_builder" "4.5.23"
@@ -16018,6 +16026,10 @@ fn main() {
 (define rust-hashbrown-0.17.1
   (crate-source "hashbrown" "0.17.1"
                 "0jmqz7i4yl6cm7rbn0i2ffkfrmwi6xkmzkaldr2v8bcsx2v0jngd"))
+
+(define rust-hashbrown-0.17.2
+  (crate-source "hashbrown" "0.17.2"
+                "1g1194xfmdlc8wl098vwg4cqxfh51jwsxyk28glb5zx5lqhslpkk"))
 
 (define rust-hashify-0.2.9
   (crate-source "hashify" "0.2.9"
@@ -43440,6 +43452,10 @@ fn main() {
   (crate-source "zerocopy" "0.8.63"
                 "1n1fm40mq4adw83hvn56j6rhnph0lldccx11jq01l6863f7izzp5"))
 
+(define rust-zerocopy-0.8.64
+  (crate-source "zerocopy" "0.8.64"
+                "0r88gv6d4ga8j0iy73flfqxrvymxmr80aqrw1w04pil30c3g6hzd"))
+
 (define rust-zerocopy-derive-0.7.35
   (crate-source "zerocopy-derive" "0.7.35"
                 "0gnf2ap2y92nwdalzz3x7142f2b83sni66l39vxp2ijd6j080kzs"))
@@ -43543,6 +43559,10 @@ fn main() {
 (define rust-zerocopy-derive-0.8.63
   (crate-source "zerocopy-derive" "0.8.63"
                 "0zqc4g3yf378dkbsr68h1jjx3n0d4k4zvnxf83bv8gr9hfnd6fl6"))
+
+(define rust-zerocopy-derive-0.8.64
+  (crate-source "zerocopy-derive" "0.8.64"
+                "1ffqd322vmg8jjp7606i1ipc92v1n7kcfv9vr0wgnd9yzqhdijx5"))
 
 (define rust-zerofrom-0.1.4
   (crate-source "zerofrom" "0.1.4"
@@ -97198,6 +97218,73 @@ fn main() {
                                   rust-wit-parser-0.244.0
                                   rust-yansi-1.0.1
                                   rust-zmij-1.0.21))
+ (rust-grass =>
+             (list rust-ahash-0.8.13
+                   rust-allocator-api2-0.2.21
+                   rust-anstream-1.0.0
+                   rust-anstyle-1.0.14
+                   rust-anstyle-parse-1.0.0
+                   rust-anstyle-query-1.1.5
+                   rust-anstyle-wincon-3.0.11
+                   rust-bitflags-2.13.2
+                   rust-bumpalo-3.20.4
+                   rust-cfg-if-1.0.5
+                   rust-clap-4.6.9
+                   rust-clap-builder-4.6.7
+                   rust-clap-lex-1.1.2
+                   rust-codemap-0.1.3
+                   rust-colorchoice-1.0.5
+                   rust-equivalent-1.0.3
+                   rust-errno-0.3.15
+                   rust-fastrand-2.5.0
+                   rust-futures-core-0.3.34
+                   rust-futures-task-0.3.34
+                   rust-futures-util-0.3.34
+                   rust-getrandom-0.2.17
+                   rust-getrandom-0.4.3
+                   rust-hashbrown-0.14.5
+                   rust-hashbrown-0.17.2
+                   rust-indexmap-2.14.2
+                   rust-is-terminal-polyfill-1.70.2
+                   rust-js-sys-0.3.107
+                   rust-lasso-0.7.3
+                   rust-libc-0.2.191
+                   rust-linux-raw-sys-0.12.1
+                   rust-once-cell-1.21.4
+                   rust-once-cell-polyfill-1.70.2
+                   rust-paste-1.0.15
+                   rust-phf-0.11.3
+                   rust-phf-generator-0.11.3
+                   rust-phf-macros-0.11.3
+                   rust-phf-shared-0.11.3
+                   rust-pin-project-lite-0.2.18
+                   rust-ppv-lite86-0.2.21
+                   rust-proc-macro2-1.0.107
+                   rust-quote-1.0.47
+                   rust-r-efi-6.0.0
+                   rust-rand-0.8.8
+                   rust-rand-chacha-0.3.1
+                   rust-rand-core-0.6.4
+                   rust-rustix-1.1.6
+                   rust-rustversion-1.0.23
+                   rust-siphasher-1.0.4
+                   rust-slab-0.4.12
+                   rust-strsim-0.11.1
+                   rust-syn-2.0.119
+                   rust-syn-3.0.10
+                   rust-tempfile-3.27.0
+                   rust-unicode-ident-1.0.27
+                   rust-utf8parse-0.2.2
+                   rust-version-check-0.9.5
+                   rust-wasi-0.11.1+wasi-snapshot-preview1
+                   rust-wasm-bindgen-0.2.130
+                   rust-wasm-bindgen-macro-0.2.130
+                   rust-wasm-bindgen-macro-support-0.2.130
+                   rust-wasm-bindgen-shared-0.2.130
+                   rust-windows-link-0.2.1
+                   rust-windows-sys-0.61.2
+                   rust-zerocopy-0.8.64
+                   rust-zerocopy-derive-0.8.64))
  (rust-icicle-emu-0.1.0.4d7ed93 =>
                                 (list rust-addr2line-0.24.2
                                  rust-adler2-2.0.1
