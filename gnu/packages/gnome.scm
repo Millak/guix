@@ -14325,9 +14325,6 @@ applications.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-for-build
             (lambda _
-              (substitute* "data/resources/meson.build"
-                (("'sass'") "'sassc'")
-                (("'--no-error-css', '--no-source-map'") ""))
               (delete-file "Cargo.lock")))
           ;; The meson 'configure phase changes to a different directory and
           ;; we need it created before unpacking the crates.
@@ -14361,7 +14358,7 @@ applications.")
                          pkg-config
                          rust
                          `(,rust "cargo")
-                         sassc))
+                         rust-grass))
     (inputs (cons* bash-minimal
                    blueprint-compiler
                    glib
