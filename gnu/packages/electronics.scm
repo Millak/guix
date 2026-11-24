@@ -389,7 +389,7 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
 (define-public apycula
   (package
     (name "apycula")
-    (version "0.35")
+    (version "0.36")
     ;; The pypi tar.gz file includes the necessary .pickle files, not available
     ;; in the home-page repository.
     (source
@@ -397,7 +397,7 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
        (method url-fetch)
        (uri (pypi-uri "apycula" version))
        (sha256
-        (base32 "1iip1w949snngy41ljwhmskkcln33z41vwa8vbnqxsqjypf5pl8z"))))
+        (base32 "0gxbs67w1vlikfl6sab37cp4qnns6k88r7vf5spvk76hcbfdkc0r"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ;requires Gowin EDA tools
