@@ -264,7 +264,9 @@ It is typically used to display man pages on a web site.")
            less
            ruby-kramdown
            ruby-kramdown-parser-gfm
-           ruby-mustache
+           ;; TODO: Use regular package after
+           ;; <https://github.com/n-ronn/nronn/issues/61> is resolved.
+           ruby-mustache-for-ronn-ng
            ruby-nokogiri))
     (synopsis
      "Build manuals in HTML and Unix man page format from Markdown")

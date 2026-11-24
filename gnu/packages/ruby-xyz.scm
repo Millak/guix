@@ -15197,25 +15197,15 @@ powerful type checker for Ruby.")
 (define-public ruby-mustache
   (package
     (name "ruby-mustache")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "mustache" version))
        (sha256
-        (base32 "1l0p4wx15mi3wnamfv92ipkia4nsx8qi132c6g51jfdma3fiz2ch"))))
+        (base32 "1hlks2kkf3drbjb811cxyfp8f84rn9kjh9icms7idbz42ymgxgbm"))))
     (build-system ruby-build-system)
-    (native-inputs
-     `(("ruby-simplecov" ,ruby-simplecov)
-       ("test-patch"
-        ,(search-patch "ruby-mustache-1.1.1-fix-race-condition-tests.patch"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "patch" "-p1" "--batch" "-i"
-                     (assoc-ref inputs "test-patch")))))))
+    (native-inputs (list ruby-simplecov))
     (synopsis "Framework-agnostic way to render logic-free views")
     (description
      "Mustache is a framework-agnostic way to render logic-free views.
@@ -15225,6 +15215,20 @@ your views are broken into two parts: a Ruby class and an HTML
 template.")
     (home-page "https://github.com/mustache/mustache")
     (license license:expat)))
+
+(define-public ruby-mustache-for-ronn-ng
+  (hidden-package
+   (package
+     (inherit ruby-mustache)
+     (version "1.1.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "mustache" version))
+        (sha256
+         (base32 "003cyf76zmki1lnh55cvir7dkn0s70dm909dxn6sfk9m00s2886l"))))
+     ;; This older version has a few test failures.
+     (arguments (list #:tests? #f)))))
 
 (define-public ruby-mustermann
   (package
