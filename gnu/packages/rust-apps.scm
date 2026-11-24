@@ -905,35 +905,26 @@ license of dependencies.")
 (define-public cargo-readme
   (package
     (name "cargo-readme")
-    (version "3.3.1")
+    (version "3.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/webern/cargo-readme.git")
              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1jwh2j4lw1hk08aflgk7pamnhdbrzr47dc0ipzczn48k6008fm8l"))))
+        (base32 "0xv7av7sf559s27yyr8zywcqy54h05l0ngwvh07kpc87d3z30fgm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-test-warnings
-           (lambda _
-             ;; Otherwise the test case will see the warning being emitted
-             ;; that "config" is deprecated.
-             (when (file-exists? ".cargo/config")
-               (rename-file ".cargo/config"
-                            ".cargo/config.toml")))))))
+     (list #:install-source? #f))
     (inputs (cargo-inputs 'cargo-readme))
     (home-page "https://github.com/webern/cargo-readme")
     (synopsis
      "Cargo subcommand to generate README.md content from doc comments")
     (description
-     "This package provides a Cargo subcommand to generate README.md content from doc
-comments.")
+     "This package provides a Cargo subcommand to generate README.md content
+from doc comments.")
     (license (list license:expat license:asl2.0))))
 
 (define-public cargo-remark
