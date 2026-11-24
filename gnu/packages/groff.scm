@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
+;;; Copyright © 2026 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages less)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages texinfo)
@@ -234,25 +236,32 @@ It is typically used to display man pages on a web site.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-less-as-default-pager
+            (lambda _
+              ;; 'less' is smaller than 'more' from linux-utils.
+              (substitute* "bin/ronn"
+                (("'more -s'")
+                 "'less -s'"))))
           (add-after 'extract-gemspec 'fix-gemspec-mustache
             (lambda _
               (substitute* "ronn-ng.gemspec"
                 (("(<mustache>.freeze.*~>).*(\".*$)" all start end)
                  (string-append start " 1.0" end)))))
           (add-after 'wrap 'wrap-program
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((prog (string-append (assoc-ref %outputs "out") "/bin/ronn")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((prog (string-append #$output "/bin/ronn")))
                 (wrap-program prog
-                  `("PATH" ":" suffix ,(map
-                                        (lambda (exp_inpt)
-                                          (string-append
-                                           (assoc-ref %build-inputs exp_inpt)
-                                           "/bin"))
-                                        '("ruby-kramdown"
-                                          "ruby-mustache"
-                                          "ruby-nokogiri"))))))))))
+                  `("PATH" suffix ,(map (lambda (x)
+                                          (dirname (search-input-file inputs x)))
+                                        '("bin/groff"
+                                          "bin/kramdown"
+                                          "bin/less"
+                                          "bin/mustache"
+                                          "bin/nokogiri"))))))))))
     (inputs
      (list bash-minimal
+           groff
+           less
            ruby-kramdown
            ruby-kramdown-parser-gfm
            ruby-mustache
