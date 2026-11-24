@@ -27548,11 +27548,11 @@ as a modern file manager.")
     (license license:gpl3+)))
 
 (define-public emacs-whisper-el
-  (let ((commit "fd9bf5787a99dd31a4bdf54d2bd9821aacf84e93")
-        (revision "0"))
+  ;; No tag upstream.
+  (let ((commit "dfec03903fe57a99e9e1df3bb0d67395e7a53b8d")) ;version bump
     (package
       (name "emacs-whisper-el")
-      (version "0.4.7")
+      (version "0.4.9")
       (source
        (origin
          (method git-fetch)
@@ -27562,7 +27562,7 @@ as a modern file manager.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0za55s117v7sc7cj4xlxxhkaamjlggs1g319n7fz54saa2wzmdj5"))))
+           "1d4ikdswl2qg7qi71fw5d9i3p6sidpcmghhy5pswkk7jqv8g0rqh"))))
       (build-system emacs-build-system)
       (arguments
        (list
