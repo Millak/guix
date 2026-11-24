@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2017-2026 Maxim Cournoyer <maxim.cournoyer@gmail.com>>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019, 2026 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -26351,6 +26351,29 @@ because it lacks any explicit control flow statements, both looping and
 conditional evaluation can be achieved using section tags processing lists
 and lambdas.")
     (license license:gpl3+)))
+
+(define-public emacs-mustache-mode
+  (package
+    (name "emacs-mustache-mode")
+    (version "1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mustache/emacs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15gw4d0hp15rglsj8hzd290li4p0kadj2dsz0dgfcxld7hnimihk"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/mustache/emacs")
+    (synopsis "Major mode for editing Mustache files")
+    (description
+     "This Emacs major mode adds support for Mustache's more lenient tag
+values and includes a few commands to ease editing.  While the Mustache
+language can be used for any types of text, this mode is intended for using
+Mustache to write HTML.")
+    (license license:gpl2+)))
 
 (define-public emacs-org2web
   (package
