@@ -37,6 +37,7 @@
 ;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libffi)
@@ -15229,6 +15231,35 @@ template.")
          (base32 "003cyf76zmki1lnh55cvir7dkn0s70dm909dxn6sfk9m00s2886l"))))
      ;; This older version has a few test failures.
      (arguments (list #:tests? #f)))))
+
+;;; The documentation is built separately to avoid a circular dependency
+;;; (ronn-ng depends on ruby-mustache).
+(define-public mustache-documentation
+  (package
+    (inherit ruby-mustache)
+    (name "mustache-documentation")
+    (arguments
+     (list
+      #:tests? #f                       ;we do not want to run ruby tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (substitute* "Rakefile"
+                (("ronn-ng") "ronn"))
+              (invoke "rake" "man:build")))
+          (replace 'install
+            (lambda _
+              (let ((man-dir (string-append #$output "/share/man")))
+                (for-each (lambda (x)
+                            (install-file x man-dir))
+                          '("man/mustache.1"
+                            "man/mustache.5"))))))))
+    (native-inputs (list ronn-ng ruby-rake))
+    (inputs '())
+    (synopsis "Documentation for the Mustache template engine")
+    (description "This package provides the documentation (as manual pages)
+for the Mustache template engine.")))
 
 (define-public ruby-mustermann
   (package
