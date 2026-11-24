@@ -65,6 +65,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
@@ -100,6 +101,41 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public auto-auto-complete
+  ;; no release
+  (let ((commit "76a75f0eec01609cc76badc960fd9385affd40b1")
+        (revision "0"))
+    (package
+      (name "auto-auto-complete")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/maandree/auto-auto-complete")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bq2s1di1r0hmhdz20cw29gr2a385dfbgamv9pbadljck39bxllq"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no tests
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))
+      (native-inputs (list python-minimal))
+      (inputs (list libpng))
+      (home-page "https://codeberg.org/maandree/auto-auto-complete")
+      (synopsis "Autogenerate shell auto-completion scripts")
+      (description
+       "auto-auto-complete provides a @url{https://en.wikipedia.org/wiki/Lisp,
+Lisp} like declarative language for creating auto-completion scripts for
+commands in a shell-agnostic way.")
+      (license license:isc))))
 
 (define-public dash
   (package
