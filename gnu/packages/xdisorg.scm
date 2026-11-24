@@ -168,6 +168,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -1196,6 +1197,45 @@ of the screen selected by mouse.")
     ;; X11 license.
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))))
+
+(define-public scrotty
+  ;; no release, we take version from Makefile
+  (let ((commit "8908c18ff2d7a09a85fd545c9c22372c3b9d122a")
+        (revision "0"))
+    (package
+      (name "scrotty")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/maandree/scrotty")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1rzwdbmv8c05q0dlimfkw4l7nyzmbqmwfxf2qp63wlncyfryas8a"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'fix-fish-completion-path
+              (lambda _
+                (substitute* "mk/shell.mk"
+                  (("fish\\/completions")
+                   "fish/vendor_completions.d")))))))
+      (native-inputs (list pkg-config texinfo gettext-minimal
+                           auto-auto-complete))
+      (inputs (list libpng))
+      (home-page "https://codeberg.org/maandree/scrotty")
+      (synopsis "Screenshot program for the framebuffer")
+      (description
+       "Scrotty is a minimalist screenshotter for your framebuffers.
+It takes a screenshot of your TTY session.  X is not supported.")
+      (license license:gpl3+))))
 
 (define-public slop
   (package
