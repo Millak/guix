@@ -82,7 +82,7 @@ Spanish (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}),
 Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}),
 Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR,
 Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru,
-GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk,
+Книга рецептов GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk,
 Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv,
 Kokbok för GNU Guix}).  If you would like to translate
 this document in your native language, consider joining
