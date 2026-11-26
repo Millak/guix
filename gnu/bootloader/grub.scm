@@ -75,9 +75,7 @@
             grub-efi-netboot-bootloader
             grub-efi-netboot-removable-bootloader
             grub-mkrescue-bootloader
-            grub-minimal-bootloader
-
-            grub-configuration))
+            grub-minimal-bootloader))
 
 (define* (normalize-file file mount-point store-directory-prefix)
   "Strip MOUNT-POINT and prepend STORE-DIRECTORY-PREFIX, if any, to FILE, a
@@ -887,26 +885,6 @@ symlink to the store is not needed in this case."
   (bootloader
    (inherit grub-efi-bootloader)
    (package grub-hybrid)))
-
-
-;;;
-;;; Compatibility macros.
-;;;
-
-(define-syntax grub-configuration
-  (syntax-rules (grub)
-                ((_ (grub package) fields ...)
-                 (if (eq? package grub)
-                     (bootloader-configuration
-                      (bootloader grub-bootloader)
-                      fields ...)
-                   (bootloader-configuration
-                    (bootloader grub-efi-bootloader)
-                    fields ...)))
-                ((_ fields ...)
-                 (bootloader-configuration
-                  (bootloader grub-bootloader)
-                  fields ...))))
 
 
 ;;;
