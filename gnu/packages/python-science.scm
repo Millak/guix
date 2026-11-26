@@ -5856,34 +5856,39 @@ to do spectral analysis in Python.")
 (define-public python-snakemake-executor-plugin-slurm
   (package
     (name "python-snakemake-executor-plugin-slurm")
-    (version "1.7.0")
-    (home-page "https://github.com/snakemake/snakemake-executor-plugin-slurm/")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/snakemake/snakemake-executor-plugin-slurm")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x7ghrkvmxqbcjl69hxp5axa1av3s0mdc0i9xjg8qjnd3hgd82r3"))))
+        (base32 "1w0qd67ddyr75w6913l0xn2z270vjf7jdb8ddw9k4v3dlfpn9a6a"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python3" "tests/tests.py")))))))
-    (propagated-inputs (list python-numpy
-                             python-pandas
-                             python-pyyaml
-                             python-snakemake-executor-plugin-slurm-jobstep
-                             python-snakemake-interface-common
-                             python-snakemake-interface-executor-plugins))
-    (native-inputs (list python-poetry-core
-                         python-pytest
-                         snakemake))
+     (list
+      ;; tests: 132 passed
+      #:test-flags
+      #~(list "--ignore=tests/tests.py")   ;requires running cluster
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests?  #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-pyyaml
+           python-snakemake-executor-plugin-slurm-jobstep
+           python-snakemake-interface-common
+           python-snakemake-interface-executor-plugins
+           python-throttler))
+    (native-inputs
+     (list python-hatchling python-pytest snakemake which))
+    (home-page "https://github.com/snakemake/snakemake-executor-plugin-slurm/")
     (synopsis "Snakemake executor plugin: slurm")
     (description "A Snakemake executor plugin for running SLURM jobs.")
     (license license:expat)))
