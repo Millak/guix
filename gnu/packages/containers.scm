@@ -237,7 +237,7 @@ loading Compose files as specified by the
 (define-public go-github-com-containerd-accelerated-container-image
   (package
     (name "go-github-com-containerd-accelerated-container-image")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method git-fetch)
@@ -246,10 +246,10 @@ loading Compose files as specified by the
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "086ywdk8mnqnjj3a07ggcyf52cqqsr8cbx2iw2qrncd1slb9l0vv"))
+        (base32 "15plpqbx830j0pv69ki9am3aia6ncxhg420297z7id719lmgr967"))
        (modules '((guix build utils)))
-        (snippet
-         #~(begin
+       (snippet
+        #~(begin
             ;; It requires Windows-only packages in check phase
             ;; (go-github-com-microsoft-hcsshim)
             (delete-file-recursively "cmd/ctr")))))
