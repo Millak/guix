@@ -5896,28 +5896,20 @@ to do spectral analysis in Python.")
 (define-public python-snakemake-executor-plugin-slurm-jobstep
   (package
     (name "python-snakemake-executor-plugin-slurm-jobstep")
-    (version "0.3.0")
-    (home-page "https://github.com/snakemake/snakemake-executor-plugin-slurm-jobstep")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/snakemake/snakemake-executor-plugin-slurm-jobstep")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ly15ywmbfcm5z7jy7dxiidpw3immsdd2k80vrm4pza721irxcar"))))
+        (base32 "08h6glaz4mq2swlfdscp4mgb7pv733lg3l23m6b2w4cxwl9j1lmm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python3" "tests/tests.py")))))))
-    (native-inputs (list python-poetry-core
-                         python-pytest
-                         snakemake))
+    (arguments (list #:test-flags #~(list "tests/tests.py")))
+    (native-inputs (list python-poetry-core python-pytest snakemake))
+    (home-page "https://github.com/snakemake/snakemake-executor-plugin-slurm-jobstep")
     (synopsis "Snakemake executor plugin: slurm-jobstep")
     (description "A Snakemake executor plugin for running srun jobs inside of
 SLURM jobs (meant for internal use by python-snakemake-executor-plugin-slurm).")
