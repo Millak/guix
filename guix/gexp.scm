@@ -361,10 +361,6 @@ OBJ must be an object that has an associated gexp compiler, such as a
                         obj
                         system target graft?))))))))
 
-(define %expansion-cache-id
-  ;; Cache that maps file-like objects to their expansion (usually a string).
-  (allocate-store-connection-cache 'expansion))
-
 (define* (lower+expand-object obj
                               #:optional (system (%current-system))
                               #:key target (output "out"))
@@ -378,23 +374,22 @@ expand to file names, but it's possible to expand to a plain data type."
         (#f
          (raise (condition (&gexp-input-error (input obj)))))
         (lower
-         (mlet %store-monad ((graft? (grafting?)))
-           (mcached eq? (=> %expansion-cache-id)
-                    (mlet %store-monad ((lowered (if (derivation? obj)
-                                                     (return obj)
-                                                     (lower obj system target))))
-                      ;; LOWER might return something that needs to be further
-                      ;; lowered.
-                      (if (struct? lowered)
-                          ;; If we lack an expander, delegate to that of LOWERED.
-                          (if (not expand)
-                              (loop lowered)
-                              (return (expand obj lowered output)))
-                          (if (not expand)        ;self-quoting
-                              (return lowered)
-                              (return (expand obj lowered output)))))
-                    obj
-                    output system target graft?)))))))
+         (mlet* %store-monad ((graft?  (grafting?))
+                              (lowered (if (derivation? obj)
+                                           (return obj)
+                                           (mcached (lower obj system target)
+                                                    obj
+                                                    system target graft?))))
+           ;; LOWER might return something that needs to be further
+           ;; lowered.
+           (if (struct? lowered)
+               ;; If we lack an expander, delegate to that of LOWERED.
+               (if (not expand)
+                   (loop lowered)
+                   (return (expand obj lowered output)))
+               (if (not expand)                     ;self-quoting
+                   (return lowered)
+                   (return (expand obj lowered output))))))))))
 
 (define-syntax define-gexp-compiler
   (syntax-rules (=> compiler expander)

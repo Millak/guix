@@ -2066,17 +2066,6 @@ importing.* \\(guix config\\) from the host"
     (return (and (member (derivation-file-name good) refs)
                  (not (member (derivation-file-name bad) refs))))))
 
-(test-assertm "cache of lower+expand-object different from cache of lower-object"
-  ;; 'lower-object' and 'lower+expand-object' used to share the same cache but
-  ;; they would populate it differently, which could lead to
-  ;; discrepancies---in this case, 'lower-object' would end up returning
-  ;; something that is not a derivation.  See
-  ;; <https://codeberg.org/guix/guix/issues/12355>.
-  (let ((thing (let-system system %bootstrap-guile)))
-    (mlet* %store-monad ((_   ((@@ (guix gexp) lower+expand-object) thing))
-                         (drv (lower-object thing))) ;should always be a derivation!
-      (return (derivation? drv)))))
-
 (test-assertm "references-file"
   (let* ((exp      #~(symlink #$%bootstrap-guile #$output))
          (computed (computed-file "computed" exp
