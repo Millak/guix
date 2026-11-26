@@ -5875,10 +5875,14 @@ to do spectral analysis in Python.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (invoke "python3" "tests/tests.py")))))))
-    (native-inputs (list python-pandas
-                         python-poetry-core
+    (propagated-inputs (list python-numpy
+                             python-pandas
+                             python-pyyaml
+                             python-snakemake-executor-plugin-slurm-jobstep
+                             python-snakemake-interface-common
+                             python-snakemake-interface-executor-plugins))
+    (native-inputs (list python-poetry-core
                          python-pytest
-                         python-snakemake-executor-plugin-slurm-jobstep
                          snakemake))
     (synopsis "Snakemake executor plugin: slurm")
     (description "A Snakemake executor plugin for running SLURM jobs.")
