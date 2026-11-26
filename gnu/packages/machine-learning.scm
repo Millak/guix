@@ -651,7 +651,8 @@ distributions.")
          (snippet #~(delete-file-recursively "lib/googletest"))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "13c3yncgyjaajjvy8mi8095gikl80p9cg8knap14vvz4ldmfcl18"))))
+          (base32 "13c3yncgyjaajjvy8mi8095gikl80p9cg8knap14vvz4ldmfcl18"))
+         (patches (search-patches "fann-link-libm.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -668,6 +669,7 @@ distributions.")
                   (with-directory-excursion "tests"
                     (invoke "./fann_tests"))))))))
       (native-inputs (list googletest-1.13))
+      (inputs (list libomp))
       (home-page "https://libfann.github.io/fann")
       (synopsis "Fast Artificial Neural Network")
       (description
