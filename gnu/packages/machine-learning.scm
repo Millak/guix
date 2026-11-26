@@ -668,7 +668,7 @@ distributions.")
                   (with-directory-excursion "tests"
                     (invoke "./fann_tests"))))))))
       (native-inputs (list googletest-1.13))
-      (home-page "https://leenissen.dk/")
+      (home-page "https://libfann.github.io/fann")
       (synopsis "Fast Artificial Neural Network")
       (description
        "FANN is a neural network library, which implements multilayer
