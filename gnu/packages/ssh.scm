@@ -1025,7 +1025,7 @@ clients at a time.")
 (define-public ssh-tools
   (package
     (name "ssh-tools")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method git-fetch)
@@ -1034,7 +1034,7 @@ clients at a time.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bh6pp5ic4b8pbgzwqr516z8466x62kzwyaka38agz294qwck5sh"))))
+        (base32 "1aj9vvdb5mk5x9z5mqdrbw67z1qwxx5vaw2xsiw0ygp30qn8fj8v"))))
     (build-system go-build-system)
     (arguments
      (list
