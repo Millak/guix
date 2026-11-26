@@ -525,6 +525,39 @@ Rust.")
 provides semantic syntax highlighting and selections in the Kakoune text editor.")
     (license license:bsd-3)))
 
+(define-public kak-rainbow-rs
+ (let ((commit "23139218a18695c7ffb94a1853608847ea149919")
+       (revision "0"))
+  (package
+   (name "kak-rainbow-rs")
+   (version (git-version "0.1.0" revision commit))
+   (source
+    (origin
+     (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/jtrv/kak-rainbow-rs/")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0046lklfs6plw7mbd12l2nnlrv267dd3rwj9yfnvwi740qd83why"))))
+  (build-system cargo-build-system)
+  (arguments
+   (list
+    #:install-source? #f
+    #:phases
+    #~(modify-phases %standard-phases
+       (add-after 'unpack 'save-kakoune-plugin
+        (lambda _
+         (install-file "rc/rainbow.kak"
+                       (in-vicinity #$output "share/kak/autoload")))))))
+    (home-page "https://github.com/jtrv/kak-rainbow-rs")
+    (synopsis "Rainbow bracket highlighting for Kakoune")
+    (description
+     "kak-rainbow-rs is a Kakoune plugin that dynamically highlights all sorts
+of brackets inside your source code, so that you can distinguish them from
+each other in heavily nested source trees.  It is a Rust port of kak-rainbower.")
+    (license license:expat))))
+
 (define-public parinfer-rust
   (package
     (name "parinfer-rust")
