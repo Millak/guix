@@ -2846,7 +2846,7 @@ wlr-layer-shell.")
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.18.6")
+    (version "0.19.3")
     (source
      (origin
        (method git-fetch)
@@ -2855,7 +2855,7 @@ wlr-layer-shell.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1inrbkj8r16mfp06fxwmbav2chcfhp3sgmjwc8n9hk1pwyna2gxr"))))
+        (base32 "1mkcxqi69ygdnslcyrd55v0p2js2v928in437i33w2zw5iy0z1aa"))))
     (build-system meson-build-system)
     (arguments
      (list
