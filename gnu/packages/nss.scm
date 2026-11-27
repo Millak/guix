@@ -211,10 +211,21 @@ in the Mozilla clients.")
                     (substitute* "nss/tests/dbtests/dbtests.sh"
                       ((" -lt 5") " -lt 50"))
 
+                    #$@(if (target-64bit?)
+                           '()
+                           ;; The script fails to determine the source
+                           ;; directory when running under 'datefudge' (see
+                           ;; <https://issues.guix.gnu.org/72239>).  Help it.
+                           #~((substitute* "nss/tests/gtests/gtests.sh"
+                                (("SOURCE_DIR=.*")
+                                 (string-append "SOURCE_DIR=" (getcwd) "/nss\n")))))
+
+
                     (let ((release-date (getenv "GUIX_NSS_RELEASE_DATE")))
                       (when (string=? "" release-date)
                         (raise-exception "`GUIX_NSS_RELEASE_DATE' unset"))
-                      (invoke "faketime" release-date "./nss/tests/all.sh")))
+                      (invoke #$(if (target-64bit?) "faketime" "datefudge")
+                              release-date "./nss/tests/all.sh")))
                   (format #t "test suite not run~%"))))
           (replace 'install
             (lambda _
@@ -246,7 +257,7 @@ in the Mozilla clients.")
     (inputs (list sqlite zlib))
     (propagated-inputs (list nspr))               ;required by nss.pc.
     (native-inputs (list perl                     ;for tests
-                         libfaketime
+                         (if (target-64bit?) libfaketime datefudge)
                          which))
 
     ;; The NSS test suite takes around 48 hours on Loongson 3A (MIPS) when
