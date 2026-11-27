@@ -6719,7 +6719,7 @@ of Hidden Markov Models.")
 (define-public llm-proxy
   (package
     (name "llm-proxy")
-    (version "0.30.0")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
@@ -6728,7 +6728,7 @@ of Hidden Markov Models.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0979499zxzcjx87lwhvhw15f1zjp4dg6c8dkwpcshjr8nqllsg05"))))
+        (base32 "0qk54qwqq994zc2i9s0lhrv2kijfm9zyk5hxrkq7gkaj7860nfhf"))))
     (build-system cargo-build-system)
     (arguments
      (list

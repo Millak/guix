@@ -4643,6 +4643,10 @@ fn main() {
   (crate-source "cc" "1.11.3"
                 "0sgskgkiv1502hz51s6hd125a1jayb0dyv6aw1f38s5kmliy1w02"))
 
+(define rust-cc-1.12.0
+  (crate-source "cc" "1.12.0"
+                "0rldgzb9pvp7gl1kvjm7cc8716qpr51dk7lswixlcb8bk3r5rr4m"))
+
 (define rust-cc-1.2.16
   (crate-source "cc" "1.2.16"
                 "131bhgafc1i86vvjipkj0kwzz0hlpwrkl8mdbmzyq2g69calqwdy"))
@@ -10976,6 +10980,10 @@ fn main() {
 (define rust-find-msvc-tools-0.1.15
   (crate-source "find-msvc-tools" "0.1.15"
                 "0j5sh4lb7g8xh6kd67s0vz037ah5hlp9f2rbgbg9f41rqmf92rhw"))
+
+(define rust-find-msvc-tools-0.1.16
+  (crate-source "find-msvc-tools" "0.1.16"
+                "1j5r41nkns8g6na58c7k3d7yspclhd8d9rsik9awczbps48g2i1y"))
 
 (define rust-find-msvc-tools-0.1.4
   (crate-source "find-msvc-tools" "0.1.4"
@@ -43810,6 +43818,10 @@ fn main() {
   (crate-source "zerocopy" "0.8.65"
                 "1xdg4mymvj1fkszc4ks2fx6926qfiz1g7vbb7bjnzkbrz1sqmg1j"))
 
+(define rust-zerocopy-0.8.66
+  (crate-source "zerocopy" "0.8.66"
+                "0apldxqs5yj8qq99ldlsb8cbfjix9f2n1bq8qb38rz0lxrmaia6b"))
+
 (define rust-zerocopy-derive-0.7.35
   (crate-source "zerocopy-derive" "0.7.35"
                 "0gnf2ap2y92nwdalzz3x7142f2b83sni66l39vxp2ijd6j080kzs"))
@@ -43921,6 +43933,10 @@ fn main() {
 (define rust-zerocopy-derive-0.8.65
   (crate-source "zerocopy-derive" "0.8.65"
                 "0sw1kyr3niwfdwl3gzmqyz1irbd8ibqry0lmrxh1ys519rjd5gxq"))
+
+(define rust-zerocopy-derive-0.8.66
+  (crate-source "zerocopy-derive" "0.8.66"
+                "152zqmh8f9dw9r8aifajs9q24i3pz4108ybj8p5wzcyfjqxwm6zq"))
 
 (define rust-zerofrom-0.1.4
   (crate-source "zerofrom" "0.1.4"
@@ -75170,7 +75186,7 @@ fn main() {
                   rust-bitflags-2.13.2
                   rust-bumpalo-3.20.4
                   rust-bytes-1.12.2
-                  rust-cc-1.11.3
+                  rust-cc-1.12.0
                   rust-cfg-if-1.0.5
                   rust-cfg-aliases-0.2.2
                   rust-chacha20-0.10.2
@@ -75190,7 +75206,7 @@ fn main() {
                   rust-encoding-rs-0.8.44
                   rust-equivalent-1.0.3
                   rust-errno-0.3.15
-                  rust-find-msvc-tools-0.1.15
+                  rust-find-msvc-tools-0.1.16
                   rust-fnv-1.0.7
                   rust-foldhash-0.2.0
                   rust-form-urlencoded-1.2.3
@@ -75386,8 +75402,8 @@ fn main() {
                   rust-writeable-0.6.4
                   rust-yoke-0.8.4
                   rust-yoke-derive-0.8.4
-                  rust-zerocopy-0.8.65
-                  rust-zerocopy-derive-0.8.65
+                  rust-zerocopy-0.8.66
+                  rust-zerocopy-derive-0.8.66
                   rust-zerofrom-0.1.8
                   rust-zerofrom-derive-0.1.8
                   rust-zeroize-1.9.2
